@@ -1,0 +1,1 @@
+{"foot":"<style name=\"stl_monitor\"></style>","body": {"minit":"<script>minit('monitor',['content'], {srefs:['content'],sid:'stl_monitor'});<\/script>","misc":"<script>moduleCtx['monitor']=function(){\n    return {\n        run : function() {\n            \n        }\n    }\n}();<\/script>","content":""}}

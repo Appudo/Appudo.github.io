@@ -1,0 +1,40 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        lbox:{},
+        run : function() {
+            var i18n = this.i18n.info;
+            this.lbox.id = 'theLBox';
+            lightBoxInit(this.lbox, [{s:'/pub/img/node1.jpg',t:i18n.dsc2},
+                                     {s:'/pub/img/node2.jpg',t:i18n.dsc3},
+                                     {s:'/pub/img/node3.jpg',t:i18n.dsc4},
+                                     {s:'/pub/img/node4.jpg',t:i18n.dsc5},
+                                     {s:'/pub/img/node5.jpg',t:i18n.dsc6},
+                                     {s:'/pub/img/node6.jpg',t:i18n.dsc7},
+                                     {s:'/pub/img/node7.jpg',t:i18n.dsc8},
+                                     {s:'/pub/img/node8.jpg',t:i18n.dsc9}]);
+        }
+    }
+</script>
+<div id="i18nBase">doc</div>
+<div class="i18n style" id="content">
+    <div class="ct doc">
+        <h1>{{info.head}}</h1>
+        <p>{{info.dsc1}}</p>
+        <div>
+            <ol class="aty">
+                <li><p>{{info.fct1}}</p></li>
+                <li><p>{{info.fct2}}</p></li>
+                <li><p>{{info.fct3}}</p></li>
+                <li><p>{{info.fct4}}</p></li>
+                <li><p>{{info.fct5}}</p></li>
+                <li><p>{{info.fct6}}</p></li>
+                <li><p>{{info.fct7}}</p></li>
+                <li><p>{{info.fct8}}</p></li>
+            </ol>
+        </div>
+        <div class="lbox" id="theLBox"></div>
+        ###NAV###
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="style">
+    <style name="mstl">
+        #frmBox {
+            display:inline-block;
+            padding:10px;
+            background:#efefef;
+            -pie-background: linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#efefef), color-stop(100%,#e2e2e2));
+            background:-webkit-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-moz-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-ms-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-o-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            border-radius:3px;
+            border:1px solid #223560;
+        }
+    </style>
+</div>
+<script id="misc">
+    return {
+        rstFrm : function(frm) {
+            this.rstFrmErr(frm);
+            frm[0].reset();
+        },
+        rstFrmErr : function(frm) {
+            // TODO remove error messages
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm.serializeJSON();
+            console.log(data);
+            _this.doSubmit.call(_this, data);
+        },
+        errSubmit : function(data) {
+                // todo submit ERROR
+        },
+        finSubmit : function() {
+                    this.rstFrm($('#theFrm'));
+        },
+        doSubmit : function(data) {
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:JSON.stringify({cmd:10,data:JSON.stringify(data)})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(!data) {
+                    return;
+                }
+                if(data.r == 0) {
+                    _this.finSubmit()
+                } else {
+                    // TODO error
+                    alert('error');
+                }
+            });
+        },
+        run : function() {
+            var _this = this;
+            var frm = $('#theFrm');
+
+            frm.submit(function(e) {
+                e.preventDefault();
+                _this.validateFrm.call(_this, frm);
+            });
+        }
+    }
+</script>
+<div class="i18n" id="content">
+    <h3>{{ref.head}}</h3>
+    <pre>{{ref.txt}}</pre>
+    <div id="frmBox">
+        <form id="theFrm" class="frm min">
+            <label for="an">{{frm.an}}*:</label><input type="text" id="an" name="an" required>
+            <div>
+                <button type="submit" style="float:right;margin-top:5px;margin-right:10px">{{frm.sub}}</button>
+            </div>
+        </form>
+        <div style="clear:both;"></div>
+    </div>
+</div>

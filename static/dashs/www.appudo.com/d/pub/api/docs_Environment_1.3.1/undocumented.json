@@ -1,0 +1,33 @@
+{
+  "warnings": [
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_env/Sources/libappudo_env/Env.swift",
+      "line": 12,
+      "symbol": "CookieVar",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_env/Sources/libappudo_env/Env.swift",
+      "line": 15,
+      "symbol": "PostVar",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_env/Sources/libappudo_env/Env.swift",
+      "line": 18,
+      "symbol": "GetVar",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_env/Sources/libappudo_env/Env.swift",
+      "line": 21,
+      "symbol": "SessionVar",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_env"
+}

@@ -1,0 +1,18 @@
+<script id="misc">
+    return {
+        run : function() {
+            var res = $('#theRes');
+            var ok = window.location.search.indexOf('r=1') != -1;
+            if(ok) {
+                res.text(this.i18n.res.ok);
+            } else {
+                res.text(this.i18n.res.fail);
+            }
+        }
+    }
+</script>
+<div class="i18n" id="content">
+    <div class="linner">
+        <div id="theRes"></div>
+    </div>
+</div>

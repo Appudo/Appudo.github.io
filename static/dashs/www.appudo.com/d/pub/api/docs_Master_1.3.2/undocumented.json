@@ -1,0 +1,243 @@
+{
+  "warnings": [
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 35,
+      "symbol": "AccountInfo.ouid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 39,
+      "symbol": "AccountInfo.ruid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 43,
+      "symbol": "AccountInfo.rgid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 47,
+      "symbol": "AccountInfo.bgid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 79,
+      "symbol": "Account.CreatFlags.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 90,
+      "symbol": "Account.SSLAddFlag.ADD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 91,
+      "symbol": "Account.SSLAddFlag.UPDATE_ONLY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 92,
+      "symbol": "Account.SSLAddFlag.UPDATE_ADD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 524,
+      "symbol": "Account.!=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 531,
+      "symbol": "AccountSortHolder",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 538,
+      "symbol": "AccountList_Sort(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 542,
+      "symbol": "_AccountListItem",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 560,
+      "symbol": "AccountListItem.id",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 561,
+      "symbol": "AccountListItem.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 562,
+      "symbol": "AccountListItem.active",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 563,
+      "symbol": "AccountListItem.init(_:_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 575,
+      "symbol": "AccountList.startIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 576,
+      "symbol": "AccountList.endIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 578,
+      "symbol": "AccountList.index(after:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Account.swift",
+      "line": 586,
+      "symbol": "AccountList.nextList(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Package.swift",
+      "line": 14,
+      "symbol": "Package",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 21,
+      "symbol": "DomainID.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 33,
+      "symbol": "_ServerDomainListItem",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 44,
+      "symbol": "ServerDomain",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 81,
+      "symbol": "ServerDomainListItem.id",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 82,
+      "symbol": "ServerDomainListItem.accountId",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 83,
+      "symbol": "ServerDomainListItem.certId",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 84,
+      "symbol": "ServerDomainListItem.host",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 85,
+      "symbol": "ServerDomainListItem.init(_:_:_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 98,
+      "symbol": "ServerDomainList.startIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 99,
+      "symbol": "ServerDomainList.endIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 101,
+      "symbol": "ServerDomainList.index(after:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/ServerDomain.swift",
+      "line": 109,
+      "symbol": "ServerDomainList.nextList(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master/Sources/libappudo_master/appudo/Stats.swift",
+      "line": 12,
+      "symbol": "Stats",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/libappudo_master"
+}

@@ -1,0 +1,169 @@
+<!--
+    page.html is part of Appudo
+
+    Copyright (C) 2011
+        31e58341d31d3a196ed6502a68b4f87115456459d60f5a1d70c00779266aec60 source@appudo.com
+
+    Licensed under the Apache License, Version 2.0
+
+    See http://www.apache.org/licenses/LICENSE-2.0 for more information
+-->
+<div data-dojo-id="page" data-dojo-type="appudo.Container" data-dojo-props="ctx:{}">
+    <script type="dojo/method">
+        var parent = dijit.getEnclosingWidget(this.domNode.parentNode);
+        appudo.on(parent, 'show', this, function() {
+                dojo.global.page = this;
+        });
+
+        var ctx = dojo.mixin(parent.ctx, this.ctx);
+        var _this = this;
+        ctx.parent = parent;
+        ctx.editNls = editNls;
+
+        appudo.addStores({
+            fileStore : new appudo.ItemFileWriteStore({url:'/edit/1/1/data/'+ctx.absName, childrenAttrs:['c']})
+        }, ctx);
+
+        this.ctx = this.initCtx('run', ctx);
+    </script>
+    <script type="dojo/method" data-dojo-event="initCtx" data-dojo-args="widget, ctx">
+        var p = this;
+        var pctx = p.ctx;
+        if(!ctx)
+                ctx = {};
+        switch(widget) {
+        case 'run':
+            ctx.addE = function(t, c, f, i, a, b){
+                    return function(s, item, values){
+                        var p = ctx.absName != '' ? ctx.absName +'/' : '';
+                        var tp = {n:'["'+p+item.l+'"]'};
+                        var vi = values[i];
+                        if(a)
+                            vi = a(vi);
+                        return {t:t,c:c,field:f,value:vi,post:tp,onOk:function(v){
+                                s.setValue(item, i, v.value)
+                            },beforePost:function(v) {
+                                if(b)
+                                    v[i] = b(v[i]);
+                            }
+                        }
+                    };
+            }
+            ctx.addEM = function(t, c, f, i, a, b){
+                    return function(s, item, values){
+                        var p = ctx.absName != '' ? ctx.absName +'/' : '';
+                        var tp = {n:'["'+p+item.l+'"]'};
+                        var vi = values[i];
+                        if(a)
+                            vi = a(vi);
+                        return {t:t,c:c,field:f,value:vi,post:tp,onOk:function(v){
+                                s.setValue(item, i, v.value);
+                            },before:function(cnt, data){
+                                var node = dojo.create('div', null, cnt);
+                                var d = {
+                                            type:'text',
+                                            name:'value',
+                                            style:'width:100%',
+                                            value:vi,
+                                            required:true,
+                                        };
+                                new dijit.form.ValidationTextBox(d, node);
+
+                                node = dojo.create('div', {innerHTML:'<label>'+(editNls.rec)+'</label>'}, cnt);
+                                node = dojo.create('div', null, node);
+                                new dijit.form.CheckBox(
+                                          {
+                                            name:'rec',
+                                            checked:false,
+                                            style:'margin:8px 0 8px 0'
+                                          },
+                                        node);
+
+                                node = dojo.create('div', {innerHTML:'<label>'+(editNls.nof)+'</label>'}, cnt);
+                                node = dojo.create('div', null, node);
+                                new dijit.form.CheckBox(
+                                          {
+                                            name:'nof',
+                                            checked:false,
+                                            style:'margin-bottom:8px'
+                                          },
+                                        node);
+
+
+                                node = dojo.create('div', {innerHTML:'<label>'+(editNls.nod)+'</label>'}, cnt);
+                                node = dojo.create('div', null, node);
+                                new dijit.form.CheckBox(
+                                          {
+                                            name:'nod',
+                                            checked:false,
+                                            style:'margin-bottom:8px'
+                                          },
+                                        node);
+
+
+                                node = dojo.create('div', {innerHTML:'<label>'+(editNls.sym)+'</label>'}, cnt);
+                                node = dojo.create('div', null, node);
+                                new dijit.form.CheckBox(
+                                          {
+                                            name:'sym',
+                                            checked:false,
+                                            style:'margin-bottom:8px'
+                                          },
+                                        node);
+
+                            },beforePost:function(v, data) {
+                                var fv = 0;
+                                if(data.rec.length != 0)
+                                    fv += 1;
+                                if(data.nof.length != 0)
+                                    fv += 2;
+                                if(data.nod.length != 0)
+                                    fv += 4;
+                                if(data.sym.length != 0)
+                                    fv += 8;
+                                if(fv != 0)
+                                    v.f = fv;
+                                if(b)
+                                    v[i] = b(v[i]);
+                            }
+                        }
+                    };
+            }
+            break;
+        case 'files':
+                ctx.get = function(rowIndex, item){
+                    if(item)
+                        return {t:item.t ? item.t[0] : 0, l:item.l[0]}
+                    return {t:0, l:''};
+                }
+                ctx.name = function(value, idx) {
+                    var cls = value.t == 1 ? 'iFile' : 'iFolder';
+                    return '<span class="'+(cls)+' appudoIcon">'+value.l+'</span>';
+            };
+            ctx.mode = function(value, idx) {
+                return value.toString(8);
+            };
+            ctx.ed = [null, pctx.addEM(2, 'e', 'm', 'm', function(v) {return v.toString(8);}, function(v) {return parseInt('0'+v, '8');}),
+                            pctx.addE(2, 'e', 'u', 'u'),
+                            pctx.addE(2, 'e', 'g', 'g')];
+            break;
+        }
+        return ctx;
+    </script>
+    <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top'">
+        <div data-dojo-id="files" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('files'),style:'border-bottom:1px solid #E3E8EA'">
+            <div style="height:20px;"></div>
+        </div>
+    </div>
+    <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+        <div data-dojo-id="page.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="
+                   store:page.ctx.fileStore, clientSort:true, ed:files.ctx.ed, structure: [
+                                        {name: editNls.file, field: 'l', width:'40%', formatter:files.ctx.name, get:files.ctx.get},
+                                        {name: editNls.mode, field: 'm', width:'20%', formatter:files.ctx.mode},
+                                        {name: editNls.uid, field: 'u', width:'20%'},
+                                        {name: editNls.gid, field: 'g', width:'20%'}
+                                ]">
+            <script type="dojo/connect" data-dojo-event="startup"></script>
+        </div>
+    </div>
+</div>	

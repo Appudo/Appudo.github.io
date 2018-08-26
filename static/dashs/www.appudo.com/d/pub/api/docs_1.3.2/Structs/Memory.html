@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Memory Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/Memory" class="dashAnchor"></a>
+    <a title="Memory Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        Memory Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ManagedCharBuffer.html">ManagedCharBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray.html">TimedArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray/TimedArrayError.html">– TimedArrayError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserAsync.html">UserAsync</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/ControlResult.html">ControlResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo18HTTPRequestVersionO">HTTPRequestVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/InetAddr.html">InetAddr</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo12InetAddrTypeO">InetAddrType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo19InternalAppudoErrorO">InternalAppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo25InternalHTTPRequestStatusO">InternalHTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/UploadResult.html">UploadResult</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/StaticString.html">StaticString</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnopxSgAA10AsyncValueVyACGlF">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnoixSgAA10AsyncErrorVz_AA0C5ValueVyACGtlF">&lt;!(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yAA0C0CctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yyctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo4sendyypd_tF">send(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:9libappudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FastCodable.html">FastCodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/ACME.html">ACME</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ACME/RequestFlags.html">– RequestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncError.html">AsyncError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo10AsyncTimerV">AsyncTimer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Base64.html">Base64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BaseMenuItem.html">BaseMenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH.html">CHASH</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert.html">Cert</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert/CertFlags.html">– CertFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CertID.html">CertID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CharBufferData.html">CharBufferData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlData.html">ControlData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlInfo.html">ControlInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo3DirV">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Disk.html">Disk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8DiskStatV">DiskStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6DomainV">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo5EventV">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/CopyFlags.html">– CopyFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RemoveFlags.html">– RemoveFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessFlags.html">– AccessFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC.html">HMAC</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HTTPRequestStatus.html">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Hex.html">Hex</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html#/s:9libappudo4MailV8AuthTypeO">– AuthType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html">PDF</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFCreateFlags.html">– PDFCreateFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html#/s:9libappudo3PDFV13PDFSignDigestO">– PDFSignDigest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFSignFlags.html">– PDFSignFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4PageV">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Proc.html">Proc</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Rand.html">Rand</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RefCharBufferData.html">RefCharBufferData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4RoleV">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Run.html">Run</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RunID.html">RunID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SHComp.html">SHComp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryErrCode.html">SQLQryErrCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo7SettingV">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/System.html">System</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/URL.html">URL</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserListItem.html">UserListItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchEvent.html">WatchEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchFlag.html">WatchFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/zBase32.html">zBase32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Memory</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Memory</span></code></pre>
+
+                </div>
+              </div>
+            <p>Memory provides information about the used and maximum memory of the current run.
+The maximum memory each run can use is limited.
+If there is no memory pressure a run can use more memory than its initial maximum.
+If there is memory pressure the runs with higher memory usage are slowed down or terminated.
+A run should be designed to not use more memory than the allowed maximum at any time.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo6MemoryV4usedSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/used" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo6MemoryV4usedSivpZ">used</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the used memory of the current run in bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">used</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo6MemoryV3maxSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/max" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo6MemoryV3maxSivpZ">max</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the maximum usable memory of the current run in bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">max</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2018-08-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

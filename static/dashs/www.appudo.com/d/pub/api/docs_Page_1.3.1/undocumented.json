@@ -1,0 +1,215 @@
+{
+  "warnings": [
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/HTTPValueParser.swift",
+      "line": 14,
+      "symbol": "HTTPValueParser",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Page.swift",
+      "line": 19,
+      "symbol": "PageEventType.UPLOAD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Page.swift",
+      "line": 20,
+      "symbol": "PageEventType.ERROR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Page.swift",
+      "line": 21,
+      "symbol": "PageEventType.CACHE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Page.swift",
+      "line": 28,
+      "symbol": "PageEvent.init(id:data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 16,
+      "symbol": "_PageFileCacheHolder",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 32,
+      "symbol": "PageCacheResult._CACHED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 65,
+      "symbol": "PageFileCache.KeyFlags.PREQUEST_METHOD",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 66,
+      "symbol": "PageFileCache.KeyFlags.SCHEMA",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 67,
+      "symbol": "PageFileCache.KeyFlags.HOST",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 68,
+      "symbol": "PageFileCache.KeyFlags.PORT",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 69,
+      "symbol": "PageFileCache.KeyFlags.PATH",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 70,
+      "symbol": "PageFileCache.KeyFlags.GET_VARS",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 71,
+      "symbol": "PageFileCache.KeyFlags.POST_VARS",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 72,
+      "symbol": "PageFileCache.KeyFlags.COOKIE_VARS",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 73,
+      "symbol": "PageFileCache.KeyFlags.LOGIN",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 74,
+      "symbol": "PageFileCache.KeyFlags.SKIN",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 75,
+      "symbol": "PageFileCache.KeyFlags.LANG",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 76,
+      "symbol": "PageFileCache.KeyFlags.ALL",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 78,
+      "symbol": "PageFileCache.KeyFlags.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 82,
+      "symbol": "PageFileCache.KeyFlags.without(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageFileCache.swift",
+      "line": 87,
+      "symbol": "PageFileCache.lastModified",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageResultError.swift",
+      "line": 19,
+      "symbol": "PageResultError.None",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageResultError.swift",
+      "line": 20,
+      "symbol": "PageResultError.Invalid",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/PageResultError.swift",
+      "line": 21,
+      "symbol": "PageResultError.NotFound",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Print.swift",
+      "line": 15,
+      "symbol": "OutDummy",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Print.swift",
+      "line": 19,
+      "symbol": "out",
+      "symbol_kind": "source.lang.swift.decl.var.global",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Redirect.swift",
+      "line": 19,
+      "symbol": "RedirectState.STATE_303",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Upload.swift",
+      "line": 18,
+      "symbol": "UploadType.FILE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page/Sources/page/appudo/Upload.swift",
+      "line": 19,
+      "symbol": "UploadType.DIR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/page"
+}

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>HTTPClient Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/HTTPClient" class="dashAnchor"></a>
+    <a title="HTTPClient Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        HTTPClient Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DataBlob.html">DataBlob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserAsync.html">UserAsync</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo17HTTPRequestStatusO">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SQLQryError.html">SQLQryError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;!(_:).html">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;?(_:_:).html">&lt;?(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;?(_:_:).html">&lt;?(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/Blob.html">Blob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:6Appudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Account.html">Account</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Dir.html">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Domain.html">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MenuItem.html">MenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Page.html">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Role.html">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Setting.html">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserListItem.html">UserListItem</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:6Appudo10AsyncDelaya">AsyncDelay</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>HTTPClient</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">HTTPClient</span></code></pre>
+
+                </div>
+              </div>
+            <p>HTTPClient is used to transfer data to and from internal or external REST APIs with the http protocol.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC11HTTPVersionV"></a>
+                    <a name="//apple_ref/swift/Struct/HTTPVersion" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC11HTTPVersionV">HTTPVersion</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>HTTPVersion contains the HTTP versions useable with the HTTPClient.</p>
+
+                        <a href="../Classes/HTTPClient/HTTPVersion.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">HTTPVersion</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC3getAcA15HTTPRequestTypeO_AA4LinkVtFZ"></a>
+                    <a name="//apple_ref/swift/Method/get(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC3getAcA15HTTPRequestTypeO_AA4LinkVtFZ">get(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a HTTPClient instance for a link.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Link</p>
+
+</div>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>HTTPRequestType</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">get</span><span class="p">(</span><span class="n">_</span> <span class="nv">type</span> <span class="p">:</span> <span class="kt"><a href="../Enums.html#/s:6Appudo15HTTPRequestTypeO">HTTPRequestType</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">link</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPClient</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The request type for the request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>link</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The target link for the request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC4POSTAcA4LinkVFZ"></a>
+                    <a name="//apple_ref/swift/Method/POST(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC4POSTAcA4LinkVFZ">POST(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a HTTPClient instance for a link as a POST request.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Link</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">POST</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPClient</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>link</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The target link for the request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC3GETAcA4LinkVFZ"></a>
+                    <a name="//apple_ref/swift/Method/GET(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC3GETAcA4LinkVFZ">GET(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a HTTPClient instance for a link as a GET request.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Link</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">GET</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPClient</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>link</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The target link for the request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC6DELETEAcA4LinkVFZ"></a>
+                    <a name="//apple_ref/swift/Method/DELETE(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC6DELETEAcA4LinkVFZ">DELETE(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a HTTPClient instance for a link as a DELETE request.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Link</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">DELETE</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">HTTPClient</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>link</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The target link for the request.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC5closeSbyF"></a>
+                    <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC5closeSbyF">close()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Close the current connection to the peer.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC7connectAA10AsyncValueVySbGAA4LinkVF"></a>
+                    <a name="//apple_ref/swift/Method/connect(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC7connectAA10AsyncValueVySbGAA4LinkVF">connect(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a keep alive connection to a peer with a link.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">connect</span><span class="p">(</span><span class="n">_</span> <span class="nv">link</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>link</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The target link to connect to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC4sendAA10AsyncValueVySbGSSSg_Sb14removeEncodingSb13updateHeadersSb0H7CookiesAC11HTTPVersionV11httpVersiontF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:removeEncoding:updateHeaders:updateCookies:httpVersion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC4sendAA10AsyncValueVySbGSSSg_Sb14removeEncodingSb13updateHeadersSb0H7CookiesAC11HTTPVersionV11httpVersiontF">send(_:removeEncoding:updateHeaders:updateCookies:httpVersion:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send an HTTP request to the target with optional body data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">body</span> <span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">removeEncoding</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">updateHeaders</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">updateCookies</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">httpVersion</span> <span class="p">:</span> <span class="kt"><a href="../Classes/HTTPClient/HTTPVersion.html">HTTPVersion</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">V11</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>body</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The body data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>removeEncoding</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Remove the encoding of the result file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>updateHeaders</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Update the headers with the received data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>updateCookies</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Update the cookies with the received data.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>httpVersion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The HTTP version used with the send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC9postFilesSayAA8FileItemVGv"></a>
+                    <a name="//apple_ref/swift/Property/postFiles" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC9postFilesSayAA8FileItemVGv">postFiles</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get and set the files to send with the request.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">postFiles</span> <span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/FileItem.html">FileItem</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC7cookiesSaySSGv"></a>
+                    <a name="//apple_ref/swift/Property/cookies" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC7cookiesSaySSGv">cookies</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get and set the cookies to send with the request.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">cookies</span> <span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC7headerss10DictionaryVyS2SGv"></a>
+                    <a name="//apple_ref/swift/Property/headers" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC7headerss10DictionaryVyS2SGv">headers</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get and set additional headers to send with the request.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">headers</span> <span class="p">:</span> <span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC8encodingSSv"></a>
+                    <a name="//apple_ref/swift/Property/encoding" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC8encodingSSv">encoding</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get and set the encoding to send with the request.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">encoding</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC5isSSLSbv"></a>
+                    <a name="//apple_ref/swift/Property/isSSL" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC5isSSLSbv">isSSL</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the target is using the ssl protocol.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isSSL</span> <span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC4typeAA15HTTPRequestTypeOv"></a>
+                    <a name="//apple_ref/swift/Property/type" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC4typeAA15HTTPRequestTypeOv">type</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get and set the request type for the request.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    HTTPRequestType
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">type</span> <span class="p">:</span> <span class="kt"><a href="../Enums.html#/s:6Appudo15HTTPRequestTypeO">HTTPRequestType</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC9isPendingSbv"></a>
+                    <a name="//apple_ref/swift/Property/isPending" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC9isPendingSbv">isPending</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the current request has not finished.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isPending</span> <span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC8hasErrorSbv"></a>
+                    <a name="//apple_ref/swift/Property/hasError" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC8hasErrorSbv">hasError</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the request has failed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">hasError</span> <span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC8bodyDataAA8FileItemVSgv"></a>
+                    <a name="//apple_ref/swift/Property/bodyData" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC8bodyDataAA8FileItemVSgv">bodyData</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the body data as an unlinked file.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileItem
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">bodyData</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem.html">FileItem</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10HTTPClientC8bodyTextSSSgv"></a>
+                    <a name="//apple_ref/swift/Property/bodyText" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10HTTPClientC8bodyTextSSSgv">bodyText</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the body data as String.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">bodyText</span> <span class="p">:</span> <span class="kt">String</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2017-08-08)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

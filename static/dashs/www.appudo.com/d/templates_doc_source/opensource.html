@@ -1,0 +1,481 @@
+<style>
+    #about_tbl {
+        font-size:13px;
+        border-collapse: collapse;
+    }
+    #about_tbl th {
+        font-size:15px;
+    }
+    #about_tbl td {
+        padding-top: .5em;
+        padding-bottom: .5em;
+    }
+    #about_tbl td, #about_tbl th {
+        border-bottom:1px solid #94a9cc;
+        cellspacing:0;
+    }
+    #about_tbl tr:nth-child(even) {
+        background:#f4f8ff;
+    }
+</style>
+<script id="misc">
+    return {
+        run : function() {
+            var items = document.getElementById('about_tbl').getElementsByTagName('tbody')[0];
+            var rows = items.getElementsByTagName('tr');
+            var rl = rows.length - 1;
+            for(var i = 0; i < rl; i++) {
+                for(var j = 0, l = rl - i; j < l; j++) {
+                    var a = rows[j].getElementsByTagName('td')[0].childNodes[0].innerText.toLowerCase();
+                    var b = rows[j+1].getElementsByTagName('td')[0].childNodes[0].innerText.toLowerCase();
+                    if(a > b) {
+                        items.insertBefore(rows[j+1], rows[j]);
+                    }
+                }
+            }
+        }
+    }
+</script>
+<div id="i18nBase">doc</div>
+<div class="i18n style" id="content">
+    <div class="ct doc">
+        <h1 style="margin-bottom:40px;">Special thanks to the Third-Party Open Source Projects we can make use of.</h1>
+        <table id="about_tbl" class="tbl">
+            <thead>
+                <tr>
+                    <th width="200">Software</th>
+                    <th width="100">License</th>
+                    <th width="200">Link</th>
+                    <th width="200">Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a target="_blank" href="https://kristaps.bsd.lv/acme-client/">acme-client</a></td>
+                    <td><a target="_blank" href="/pub/l/acme.LICENSE">ISC License</a></td>
+                    <td><a target="_blank" href="https://github.com/kristapsdz/acme-client">https://github.com/kristapsdz/acme-client</a></td>
+                    <td>ACME client</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.chromium.org/">The Chromium Projects</a></td>
+                    <td><a target="_blank" href="/pub/l/chromium.LICENSE">BSD and others</a></td>
+                    <td><a target="_blank" href="https://chromium.googlesource.com/chromium/src">https://chromium.googlesource.com/chromium/src</a></td>
+                    <td>PDF creation</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.pgpool.net">Pgpool-II</a></td>
+                    <td><a target="_blank" href="/pub/l/pgpool2.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="git://git.postgresql.org/git/pgpool2.git">git://git.postgresql.org/git/pgpool2.git</a></td>
+                    <td>Mainly the parser with modifications, libsql-parser.so</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://rapidjson.org">RapidJSON</a></td>
+                    <td><a target="_blank" href="/pub/l/RapidJSON.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/miloyip/rapidjson/">https://github.com/miloyip/rapidjson/</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://dojotoolkit.org/">Dojo Toolkit</a></td>
+                    <td><a target="_blank" href="/pub/l/dojo.LICENSE">"New" BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/dojo">https://github.com/dojo</a></td>
+                    <td>Appudo edit</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://llvm.org/">LLVM</a></td>
+                    <td><a target="_blank" href="/pub/l/llvm.LICENSE">University of Illinois/NCSA</a></td>
+                    <td><a target="_blank" href="http://llvm.org/svn/llvm-project/llvm/trunk/">http://llvm.org/svn/llvm-project/llvm/trunk/</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://clang.llvm.org/">Clang</a></td>
+                    <td><a target="_blank" href="/pub/l/clang.LICENSE">University of Illinois/NCSA</a></td>
+                    <td><a target="_blank" href="http://llvm.org/svn/llvm-project/cfe/trunk">http://llvm.org/svn/llvm-project/cfe/trunk</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://swift.org/">Swift</a></td>
+                    <td><a target="_blank" href="/pub/l/swift.LICENSE">ALv2.0</a></td>
+                    <td><a target="_blank" href="https://github.com/apple/swift">https://github.com/apple/swift</a>/</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.postgresql.org/">PostgreSQL</a></td>
+                    <td><a target="_blank" href="/pub/l/postgres.LICENSE">PostgreSQL</a></td>
+                    <td><a target="_blank" href="https://www.postgresql.org/ftp/source/">https://www.postgresql.org/ftp/source/</a></td>
+                    <td>database server</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.famfamfam.com/">FAMFAMFAM</a></td>
+                    <td><a target="_blank" href="/pub/l/fam.LICENSE">Creative Commons</a></td>
+                    <td><a target="_blank" href="http://www.famfamfam.com/lab/icons/silk/">http://www.famfamfam.com/lab/icons/silk/</a></td>
+                    <td>With modifications, Appudo edit</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://ace.c9.io/">Ace</a></td>
+                    <td><a target="_blank" href="/pub/l/ace.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/ajaxorg/ace">https://github.com/ajaxorg/ace</a></td>
+                    <td>Appudo edit</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://github.com/gperftools/gperftools">TCMalloc</a></td>
+                    <td><a target="_blank" href="/pub/l/gtool.LICENSE">"New" BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/gperftools/gperftools">https://github.com/gperftools/gperftools</a></td>
+                    <td>libtcmalloc_minimal.so.4</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://doc.qt.io/qt-5/qmake-overview.html">qmake</a></td>
+                    <td><a target="_blank" href="/pub/l/qmake.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="http://code.qt.io/cgit/">http://code.qt.io/cgit/</a></td>
+                    <td>For development</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnu.org/software/gdb/">GNU Debugger (gdb)</a></td>
+                    <td><a target="_blank" href="/pub/l/gdb.LICENSE">GPL</a></td>
+                    <td><a target="_blank" href="git://sourceware.org/git/binutils-gdb.gi">git://sourceware.org/git/binutils-gdb.git</a></td>
+                    <td>For development</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://valgrind.org/">Valgrind</a></td>
+                    <td><a target="_blank" href="/pub/l/valgrind.LICENSE">GPLv2</a></td>
+                    <td><a target="_blank" href="svn://svn.valgrind.org/valgrind/trunk">svn://svn.valgrind.org/valgrind/trunk</a></td>
+                    <td>For development</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.libarchive.org/">libarchive</a></td>
+                    <td><a target="_blank" href="/pub/l/larchive.LICENSE">"New" BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/libarchive/libarchive">https://github.com/libarchive/libarchive</a></td>
+                    <td>libarchive.so.13, custom libattr.so.1 due to license confusion, custom liblzo2.so.2 due to GPL</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.nongnu.org/libunwind">libunwind</a></td>
+                    <td><a target="_blank" href="/pub/l/unwind.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://git.savannah.nongnu.org/libunwind.git">https://git.savannah.nongnu.org/libunwind.git</a></td>
+                    <td>libunwind.so.8</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://libcxx.llvm.org/">libc++</a></td>
+                    <td><a target="_blank" href="/pub/l/libcxx.LICENSE">UIUC</a></td>
+                    <td><a target="_blank" href="http://llvm.org/svn/llvm-project/libcxx/trunk/">http://llvm.org/svn/llvm-project/libcxx/trunk/</a></td>
+                    <td>libc++.so.1</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://gcc.gnu.org">GCC, the GNU Compiler Collection</a></td>
+                    <td><a target="_blank" href="/pub/l/gcc.LICENSE">GPLv3+ with "Runtime Library Exception"</a></td>
+                    <td><a target="_blank" href="https://gcc.gnu.org/viewcvs/gcc/">https://gcc.gnu.org/viewcvs/gcc/</a></td>
+                    <td>libstdc++.so.6, libgcc_s.so.1, libatomic.so.1</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://curl.haxx.se">libcurl</a></td>
+                    <td><a target="_blank" href="/pub/l/curl.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="https://github.com/curl/curl">https://github.com/curl/curl</a></td>
+                    <td>libcurl-gnutls.so.4</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://libbsd.freedesktop.org/wiki/">libbsd</a></td>
+                    <td><a target="_blank" href="/pub/l/libbsd.LICENSE">New BSD, MIT style or ISC</a></td>
+                    <td><a target="_blank" href="https://cgit.freedesktop.org/libbsd/tree/">https://cgit.freedesktop.org/libbsd/tree/</a></td>
+                    <td>libbsd.so.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.bzip.org/">bzip2</a></td>
+                    <td><a target="_blank" href="/pub/l/libbz2.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="http://www.bzip.org/downloads.html">http://www.bzip.org/downloads.html</a></td>
+                    <td>libbz2.so.1.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://sites.google.com/site/fullycapable/">libcap</a></td>
+                    <td><a target="_blank" href="/pub/l/libcap.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="https://git.kernel.org/pub/scm/linux/kernel/git/morgan/libcap.git">https://git.kernel.org/pub/scm/linux/kernel/git/morgan/libcap.git</a></td>
+                    <td>libcap.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://e2fsprogs.sourceforge.net/">E2fsprogs</a></td>
+                    <td><a target="_blank" href="/pub/l/e2fs.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="http://sourceforge.net/projects/e2fsprogs">http://sourceforge.net/projects/e2fsprogs</a></td>
+                    <td>libcom_err.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://directory.fsf.org/wiki/Libgcrypt">Libgcrypt</a></td>
+                    <td><a target="_blank" href="/pub/l/libgcrypt.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="git://git.gnupg.org/libgcrypt.git">git://git.gnupg.org/libgcrypt.git</a></td>
+                    <td>libgcrypt.so.11</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnupg.org/software/libgpg-error/index.html">Libgpg-error</a></td>
+                    <td><a target="_blank" href="/pub/l/libgpg.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="git://git.gnupg.org/libgpg-error.git">git://git.gnupg.org/libgpg-error.git</a></td>
+                    <td>libgpg-error.so.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://thrysoee.dk/editline/">Editline Library</a></td>
+                    <td><a target="_blank" href="/pub/l/libedit.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="http://thrysoee.dk/editline/">source</a></td>
+                    <td>libedit.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="www.postgresql.org">libpq5</a></td>
+                    <td><a target="_blank" href="/pub/l/postgres.LICENSE">PostgreSQL</a></td>
+                    <td><a target="_blank" href="https://www.postgresql.org/ftp/source/">https://www.postgresql.org/ftp/source/</a></td>
+                    <td>libpq.so.5</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.h5l.org/">Heimdal</a></td>
+                    <td><a target="_blank" href="/pub/l/libasn1.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="https://github.com/heimdal/heimdal.git">https://github.com/heimdal/heimdal.git</a></td>
+                    <td>libasn1.so.8, libkrb5.so.26, libroken.so.18, libwind.so.0, libheimbase.so.1, libheimntlm.so.0, libgssapi.so.3, libhx509.so.5, libhcrypto.so.4</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.icu-project.org/">libicuio</a></td>
+                    <td><a target="_blank" href="/pub/l/libicu.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="http://source.icu-project.org/repos/icu">http://source.icu-project.org/repos/icu</a></td>
+                    <td>libicudata.so.52, libicui18n.so.52, libicuio.so.52, libicuuc.so.52</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnu.org/software/libidn/">GNU IDN Library</a></td>
+                    <td><a target="_blank" href="/pub/l/libidn.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="git://git.savannah.gnu.org/libidn.git">git://git.savannah.gnu.org/libidn.git</a></td>
+                    <td>libidn.so.11</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://web.mit.edu/kerberos/">Kerberos</a></td>
+                    <td><a target="_blank" href="/pub/l/kerberos.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="https://github.com/krb5/krb5">https://github.com/krb5/krb5</a></td>
+                    <td>libk5crypto.so.3, libkrb5support.so.0, libgssapi_krb5.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.openldap.org">OpenLDAP</a></td>
+                    <td><a target="_blank" href="/pub/l/openldap.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="http://www.openldap.org/devel/gitweb.cgi">http://www.openldap.org/devel/gitweb.cgi</a></td>
+                    <td>liblber-2.4.so.2, libldap_r-2.4.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.lysator.liu.se/~nisse/nettle/">Nettle</a></td>
+                    <td><a target="_blank" href="/pub/l/libnettle.LICENSE">mixed</a></td>
+                    <td><a target="_blank" href="https://git.lysator.liu.se/nettle/nettle">https://git.lysator.liu.se/nettle/nettle</a></td>
+                    <td>libnettle.so.4</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://p11-glue.freedesktop.org/p11-kit.html">p11-kit</a></td>
+                    <td><a target="_blank" href="/pub/l/p11kit.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/p11-glue/p11-kit">https://github.com/p11-glue/p11-kit</a></td>
+                    <td>libp11-kit.so.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://rtmpdump.mplayerhq.hu">RTMPDump</a></td>
+                    <td><a target="_blank" href="/pub/l/rtmpdump.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="git://git.ffmpeg.org/rtmpdump">git://git.ffmpeg.org/rtmpdump</a></td>
+                    <td>librtmp.so.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.cyrusimap.org/">Cyrus IMAP</a></td>
+                    <td><a target="_blank" href="/pub/l/cyrus.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/cyrusimap/cyrus-imapd">https://github.com/cyrusimap/cyrus-imapd</a></td>
+                    <td>libsasl2.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.sqlite.org/">SQLite 3</a></td>
+                    <td><a target="_blank" href="/pub/l/sqlite.LICENSE">Public Domain</a></td>
+                    <td><a target="_blank" href="http://www.sqlite.org/download.html">source</a></td>
+                    <td>libsqlite3.so.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnu.org/software/libtasn1/">GNU Libtasn1</a></td>
+                    <td><a target="_blank" href="/pub/l/libtasn.LICENSE">LGPLv2.1+</a></td>
+                    <td><a target="_blank" href="git://git.savannah.gnu.org/libtasn1.git">git://git.savannah.gnu.org/libtasn1.git</a></td>
+                    <td>libtasn1.so.6</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://xmlsoft.org/">Libxml2</a></td>
+                    <td><a target="_blank" href="/pub/l/xml2.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="git://git.gnome.org/libxml2">git://git.gnome.org/libxml2</a></td>
+                    <td>libxml2.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnu.org/software/libc/">The GNU C Library (glibc)</a></td>
+                    <td><a target="_blank" href="/pub/l/glibc.LICENSE">LGPLv2.1</a></td>
+                    <td><a target="_blank" href="git://sourceware.org/git/glibc.git">git://sourceware.org/git/glibc.git</a></td>
+                    <td>libc.so.6, libdl.so.2, librt.so.1, libcrypt.so.1, libpthread.so.0, libresolv.so.2</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://people.redhat.com/~dhowells/keyutils/">keyutils</a></td>
+                    <td><a target="_blank" href="/pub/l/keyutils.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="http://people.redhat.com/~dhowells/keyutils/">source</a></td>
+                    <td>libkeyutils.so.1</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://tukaani.org/xz/">XZ Utils</a></td>
+                    <td><a target="_blank" href="/pub/l/lzma.LICENSE">Public Domain</a></td>
+                    <td><a target="_blank" href="https://git.tukaani.org/?p=xz.git;a=tree">https://git.tukaani.org/?p=xz.git;a=tree</a></td>
+                    <td>liblzma.so.5</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.nongnu.org/m17n/">m17n</a></td>
+                    <td><a target="_blank" href="/pub/l/m17n.LICENSE">LGPLv2.1</a></td>
+                    <td><a target="_blank" href="http://git.savannah.nongnu.org/cgit/m17n/m17n-lib.git">http://git.savannah.nongnu.org/cgit/m17n/m17n-lib.git</a></td>
+                    <td>libm.so.6</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://invisible-island.net/ncurses/">Ncurses</a></td>
+                    <td><a target="_blank" href="/pub/l/ncurses.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="http://invisible-island.net/ncurses/">source</a></td>
+                    <td>libtinfo.so.5</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://zlib.net/">zlib</a></td>
+                    <td><a target="_blank" href="/pub/l/zlib.LICENSE">BSD</a></td>
+                    <td><a target="_blank" href="https://github.com/madler/zlib">https://github.com/madler/zlib</a></td>
+                    <td>libz.so.1</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://github.com/realm/jazzy">Jazzy</a></td>
+                    <td><a target="_blank" href="/pub/l/jazzy.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/realm/jazzy">https://github.com/realm/jazzy</a></td>
+                    <td>API docs</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://sourceware.org/libffi/">libffi</a></td>
+                    <td><a target="_blank" href="/pub/l/ffi.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/libffi/libffi">https://github.com/libffi/libffi</a></td>
+                    <td>libffi.so.6</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.gnutls.org/">GnuTLS</a></td>
+                    <td><a target="_blank" href="/pub/l/gnutls.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="https://gitlab.com/gnutls/gnutls">https://gitlab.com/gnutls/gnutls</a></td>
+                    <td>libgnutls.so.26</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.soapui.org/">SoapUI</a></td>
+                    <td><a target="_blank" href="/pub/l/soapui.LICENSE">EUPL</a></td>
+                    <td><a target="_blank" href="https://github.com/SmartBear/soapui">https://github.com/SmartBear/soapui</a></td>
+                    <td>testing</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://jenkins.io/">Jenkins</a></td>
+                    <td><a target="_blank" href="/pub/l/jenkins.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/jenkinsci/jenkins">https://github.com/jenkinsci/jenkins</a></td>
+                    <td>testing</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.debian.org/">debian</a></td>
+                    <td><a target="_blank" href="https://www.debian.org/legal/licenses/">licensing</a></td>
+                    <td><a target="_blank" href="https://www.debian.org/distrib/">https://www.debian.org/distrib/</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.openssl.org/">OpenSSL</a></td>
+                    <td><a target="_blank" href="/pub/l/libssl.LICENSE">OpenSSL</a></td>
+                    <td><a target="_blank" href="git://git.openssl.org/openssl.git">git://git.openssl.org/openssl.git</a></td>
+                    <td>libssl.so.1.0.0, libcrypto.so.1.0.0</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://xdelta.org/">Xdelta3</a></td>
+                    <td><a target="_blank" href="/pub/l/xdelta.LICENSE">ALv2</a></td>
+                    <td><a target="_blank" href="https://github.com/jmacd/xdelta">https://github.com/jmacd/xdelta</a></td>
+                    <td>libxdelta3.appudo.so, modified to use as lib</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.kernel.org/">Linux Kernel</a></td>
+                    <td><a target="_blank" href="/pub/l/linux.LICENSE">GPLv2</a></td>
+                    <td><a target="_blank" href="https://git.kernel.org/">https://git.kernel.org/</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.ubuntu.com/">Ubuntu</a></td>
+                    <td><a target="_blank" href="https://www.ubuntu.com/about/about-ubuntu/licensing">licensing</a></td>
+                    <td><a target="_blank" href="http://cdimage.ubuntu.com/releases/">http://cdimage.ubuntu.com/releases/</a></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.treejs.cn/v3/main.php#_zTreeInfo">zTree</a></td>
+                    <td><a target="_blank" href="/pub/l/ztree.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/zTree/zTree_v3">https://github.com/zTree/zTree_v3</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://jquery.com/">jQuery</a></td>
+                    <td><a target="_blank" href="/pub/l/jquery.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://code.jquery.com/">https://code.jquery.com/</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/">jQuery prettyPhoto</a></td>
+                    <td><a target="_blank" href="/pub/l/pphoto.LICENSE">Creative Commons 2.5</a></td>
+                    <td><a target="_blank" href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/">source</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://flexslider.woothemes.com/">jQuery FlexSlider</a></td>
+                    <td><a target="_blank" href="/pub/l/flexslider.LICENSE">GPLv2</a></td>
+                    <td><a target="_blank" href="https://github.com/woocommerce/FlexSlider">https://github.com/woocommerce/FlexSlider</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://fitvidsjs.com/">jQuery FitVids</a></td>
+                    <td><a target="_blank" href="/pub/l/fitvids.LICENSE">WTFPL</a></td>
+                    <td><a target="_blank" href="https://github.com/davatron5000/FitVids.js">https://github.com/davatron5000/FitVids.js</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://fittextjs.com/">jQuery FitText</a></td>
+                    <td><a target="_blank" href="/pub/l/fittext.LICENSE">WTFPL</a></td>
+                    <td><a target="_blank" href="https://github.com/davatron5000/FitText.js">https://github.com/davatron5000/FitText.js</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://gsgd.co.uk/sandbox/jquery/easing/">jQuery Easing</a></td>
+                    <td><a target="_blank" href="/pub/l/easing.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="http://gsgd.co.uk/sandbox/jquery/easing/">source</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://osvaldas.info/examples/image-lightbox-responsive-touch-friendly/">jQuery Image lightbox</a></td>
+                    <td><a target="_blank" href="/pub/l/imlibox.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://osvaldas.info/examples/image-lightbox-responsive-touch-friendly/imagelightbox.js">source</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://swisnl.github.io/jQuery-contextMenu/">jQuery contextMenu</a></td>
+                    <td><a target="_blank" href="/pub/l/contextMenu.LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/swisnl/jQuery-contextMenu">https://github.com/swisnl/jQuery-contextMenu</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.mozilla.org/">Mozilla Firefox</a></td>
+                    <td><a target="_blank" href="/pub/l/mozilla.LICENSE">MPLv2.0</a></td>
+                    <td><a target="_blank" href="https://dxr.mozilla.org/mozilla-central/source/">https://dxr.mozilla.org/mozilla-central/source/</a></td>
+                    <td>For development and preview ISO</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://www.gnu.org/software/binutils/">GNU Binutils</a></td>
+                    <td><a target="_blank" href="/pub/l/binutils.LICENSE">LGPL</a></td>
+                    <td><a target="_blank" href="git://sourceware.org/git/binutils-gdb.git">git://sourceware.org/git/binutils-gdb.git</a></td>
+                    <td>For development e.g. ld, readelf, objcopy, addr2line as lib</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://peach.blender.org/">Big Buck Bunny Video</a></td>
+                    <td><a target="_blank" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons</a></td>
+                    <td><a target="_blank" href="https://peach.blender.org/">https://peach.blender.org/</a></td>
+                    <td>Appudo showcase</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="https://youtube.github.io/spfjs/">SPF</a></td>
+                    <td><a target="_blank" href="https://github.com/youtube/spfjs/blob/master/LICENSE">MIT</a></td>
+                    <td><a target="_blank" href="https://github.com/youtube/spfjs">https://github.com/youtube/spfjs</a></td>
+                    <td>Appudo HTML</td>
+                </tr>
+                <tr>
+                    <td><a target="_blank" href="http://twitter.github.io/hogan.js/">Hogan.js</a></td>
+                    <td><a target="_blank" href="https://github.com/twitter/hogan.js/blob/master/LICENSE">ALv2.0</a></td>
+                    <td><a target="_blank" href="https://github.com/twitter/hogan.js">https://github.com/twitter/hogan.js</a></td>
+                    <td>Appudo HTML</td>
+                </tr>
+            <tbody>
+        </table>
+        <div style="margin:20px 0 20px 0">
+            <p>Direct and indirect usages are mentioned here. Contact us in case we have overlooked you.</p>
+            <p>License may mean the one we make use of with the parts we use, not the whole license information. It may also be the license style and not the exact name.</p>
+        </div>
+        ###NAV###
+    </div>
+</div>

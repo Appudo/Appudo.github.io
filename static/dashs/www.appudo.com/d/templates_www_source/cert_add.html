@@ -1,0 +1,623 @@
+<style>
+    #ubox {
+        background:#fff;
+        border-radius:2px;
+        border:1px solid #223560;
+        height:30px;
+        text-align:center;
+        padding-top:5px;
+        cursor:pointer;
+        margin-bottom:20px;
+    }
+    #ubox.drop {
+        background:#b0b0b0;
+    }
+    .ldiv,.pdiv {
+        margin: 7px 10px 5px 10px;
+        display:inline-block; 
+    }
+    .ldiv {
+        float:left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width:17em;
+    }
+    .pdiv {
+        overflow:hidden; 
+        white-space:nowrap; 
+        text-overflow: ellipsis;
+        width:80%;
+    }
+    #progOuter {
+        position:relative;
+        padding:0;
+        background:#ffffff;
+        border:1px solid #ddd;
+        border-radius:4px;
+        margin-top:10px;
+        text-align:center;
+        height:30px;
+    }
+    #progPercent {
+        position:absolute;
+        left:0;
+        display: inline-block;
+        line-height: 30px;
+        vertical-align: bottom;
+        width:100%;
+        height:100%;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+    #progInner {
+        position:absolute;
+        left:0;
+        display:inline-block;
+        width:30px;
+        height:100%;
+        padding:0;
+        border-radius:4px;
+        background: #457edb;
+        box-shadow:0 -1px 0 2px #3e6dbb inset, 0 3px 4px rgba(0, 0, 0, 0.3), 0 3px rgba(255, 255, 255, 0.38) inset;
+        -webkit-box-shadow:0 -1px 0 2px #3e6dbb inset, 0 3px 4px rgba(0, 0, 0, 0.3), 0 3px rgba(255, 255, 255, 0.38) inset;
+        -moz-box-shadow:0 -1px 0 2px #3e6dbb inset, 0 3px 4px rgba(0, 0, 0, 0.3), 0 3px rgba(255, 255, 255, 0.38) inset;
+    }
+</style>
+<script id="misc">
+    return {
+        nosel:true,
+        files:{},
+        cFile:null,
+        progress:null,
+        end:null,
+        unload : function() {
+            this.finish();
+        },
+        finish : function() {
+            if(this.end) {
+                 this.end();
+                 this.end = null;
+            }
+        },
+        doValidate : function(pdata, o, after) {
+            postCredsCross(o, userBase('/server/', o.name), {data:'{"cmd":8,"data":' + JSON.stringify(JSON.stringify(pdata)) + '}',tk:o.tk}, after);
+        },
+        rstFrm : function(frm) {
+		    enableMain();
+            frm[0].reset();
+        },
+        doError : function(msg) {
+            if(this.remPending)
+                this.remPending();
+            this.finish();
+		    enableMain();
+		    if(msg)
+		        modalError(msg);
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm._sdata || frm.serializeJSON();
+            
+            _this.doRegister.call(_this, data);
+        },
+        showProgress : function (v) {
+            if(v)
+            {
+                $('#progPercent')[0].innerText = '0%';
+                setModal();
+            } else {
+                unsetModal();
+            }
+            
+            $('#theUpload').css('display', v ? 'block' :'none');
+        },
+        setProgress : function(v) {
+            v = Math.round(v);
+            this.progress.p[0].innerText = v + '%';
+            this.progress.i.css('width', Math.round((this.progress.o.width()*v)/100) + 'px');
+        },	
+        errSubmit : function(data) {
+            var i18n = this.i18n.info;
+            this.doError(i18n.ufail);
+        },
+        finSubmit : function() {
+		    this.setProgress(100);
+		    this.showProgress(false);
+		    this.rstFrm($('#CrtAddFrm'));
+			this.finish();
+        },      
+        doSubmit : function(data, o, rdata) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            var after = function(res) {
+                delete data['upr'];
+                if(res.r == 0) {
+                    _this.doUpload.call(_this, data, o, rdata);
+                } else {
+                    _this.doError(i18n.vfail);
+                }
+            };
+            var hf = _this.files.ssk || _this.files.ssc;
+            if(hf) {
+                _this.doValidate.call(_this, {an:data.an,dn:data.dn,sn:data.sn,on:data.on,se:data.se,eo:data.eo}, o, after);
+            } else {
+                after({r:0});
+            }
+        },
+        doRegister : function(fdata) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            /* register with user dash */
+            var pd = {dn:fdata.dn,ds:fdata.dsc,sn:fdata.sn};
+            if(fdata.ex && fdata.ty) {
+                pd.ex = 0;
+            }
+            postCreds(userBase('/admin/'), {data:'{"cmd":28, "data":' + JSON.stringify(JSON.stringify(pd)) + '}'}, function(data) {
+                if(data.r == 0) {
+                    if(_this.addPending)
+                        _this.addPending(parseInt(data.id));
+                    if(fdata.nn == '')
+                        fdata.nn = i18n.ukn;
+                    data.nn = fdata.nn;
+                    fdata.on = mainCtx.linfo.m;
+                    fdata.eo = "1";
+                    fdata.af = "1";
+                    fdata.an = data.n;
+                    fdata.dn = userBaseRaw('', '', data.n);
+                    delete fdata.nn;
+                    
+                    /* do cross login to node */
+                    crossLoginKeep(data.tn, function(d, end) {
+                        _this.end = end;
+                        if(d) {
+                            /* send request to node */
+            	            _this.doSubmit.call(_this, fdata, d, data);
+                        } else {
+                            _this.doError();
+                        }
+                    });
+                } else {
+                    _this.doError(i18n.rfail);
+                }
+            });
+        },
+        doUpload : function(fdata, o, rdata) {
+            this.setProgress(0);
+            this.showProgress(true);
+            var _this = this;
+			var fd = new FormData();
+			fd.append('data', JSON.stringify({cmd:2,data:JSON.stringify(fdata)}));
+			fd.append('tk', o.tk);
+			console.log(this.files);
+			if(this.files.ssk) {
+			    fd.append('name', 'ssk');
+			    fd.append('ssk', this.files.ssk);
+			}
+			if(this.files.ssc) {
+			    fd.append('name', 'ssc');
+			    fd.append('ssc', this.files.ssc);
+			}
+	        var xhr = new XMLHttpRequest();
+	        var stop = $('#abt');
+            
+            stop.unbind('click');
+            stop.click(function(e) {
+                e.preventDefault(); 
+                xhr.abort();
+            });
+            
+	        xhr.upload.addEventListener('progress', function(e) {
+	        	if(e.lengthComputable) {
+	        		var p = (e.loaded * 100 / (e.total));
+	        		_this.setProgress.call(_this, p);
+	        	}
+	        }, false);
+	        
+	        var doPost = function() {
+                xhr.open('POST', userBase('/server/', o.name), true);
+    	        xhr.send(fd);
+	        }
+	        
+	        xhr.addEventListener('load', function() {
+	            var response = {r:-1};
+				var ioArgs = xhr.ioArgs;
+	            if(xhr.status == 200) {  
+	                var response = validateRes(xhr.responseText, true);
+                    if(!response) {
+                        _this.doError();
+                        return;
+                    }
+	            }
+				if(response.r != 0)
+				{
+				    if(response.l) {
+                        crossLogin(o.id, function(d) {
+                            if(d) {
+                                o = d;
+                                fd.set('tk', o.tk);
+				                doPost();
+                            } else {
+                                _this.doError();
+                            }
+                        }, true);
+				        return;
+				    }
+				    _this.errSubmit.call(_this, response);
+				} else {
+			        _this.finSubmit.call(_this);
+                    if(_this.onAdd) {
+                        _this.onAdd(fdata, rdata);
+                    }
+				}
+	        }, false);
+	        xhr.addEventListener('error', function() {
+		        _this.errSubmit.call(_this);
+	        }, false);
+	        xhr.addEventListener('abort', function() {
+		        enableMain();
+                if(_this.remPending)
+                    _this.remPending();
+				_this.showProgress.call(_this, false);
+	        }, false);
+	        
+	        doPost();
+        },
+    	handleFiles : function(items, idx) {
+        	var _this = this;
+            var i18n = this.i18n.info;
+    	    if(items) {
+    	        if(idx < items.length) {
+        	        var theFile = $('#theFile');
+        	        var file = items[idx];
+        	        cFile = file;
+    	            theFile.off('onFileReady');
+    	            theFile.on('onFileReady', function() {
+    	                _this.handleFiles.call(_this, items, idx + 1);
+                    });
+        	        $('#theFile').css('display', 'block');
+        	        setModal();
+        	        $('#flval').text(file.name);
+    	        }
+    	    } else {
+                _this.doError(i18n.ffail);
+    	    }
+    	},
+        parseFileList : function(list) {
+            var info = {};
+            var result = [];
+			for(var i = 0, len = list.length; i < len; i++) {
+				if(list[i].webkitGetAsEntry && list[i].kind=='file') {
+					var item = list[i].webkitGetAsEntry();
+					if(item) {
+						this.parseFiles(info, item,result);
+						if(info.error)
+						    return null;
+					}
+				}
+			}
+			return info.error ? null : result;
+		},
+    	parseFiles : function(info, item, result) {
+        	var _this = this;
+    	    if(info.error)
+    	        return;
+			if(item.isFile) {
+			    result.push(item);
+			} else 
+			if(item.isDirectory) {
+				var rd = item.createReader();
+		    	rd.readEntries(function(items, a) {
+					if(items.length != 0) {
+    					var l = [];
+    					for(var i = 0, len = items.length; i< len; i++) {
+    					    _this.parseFiles(info, items[i], result);
+    					    if(info.error)
+    					        return;
+    					}
+					}
+				}, function(){
+				    info.error = true;
+				    /* doUploadEnd(info);  */
+				});
+			}
+		},
+		updFiles : function() {
+		    var ck = this.files.ssk;
+		    var cc = this.files.ssc;
+		    var no = this.i18n.frm.no;
+		    $('#ck').text(ck ? ck.name : no);
+		    $('#cc').text(cc ? cc.name : no);
+		},
+        hide : function() {
+            this.onUnload(true);
+        },
+        dmnClose : function(e) {
+            var _this = e.data.ctx;
+            if ($(e.target).closest("#dmnSearch").length === 0 && e.target != $('#dmnBtn')[0]) {
+                $(document).off('click', _this.dmnClose);
+                _this.showSearch('dmn', true);
+            }
+        },
+        sslClose : function(e) {
+            var _this = e.data.ctx;
+            if ($(e.target).closest("#sslSearch").length === 0 && e.target != $('#sslBtn')[0]) {
+                $(document).off('click', _this.sslClose);
+                _this.showSearch('ssl', true);
+            }
+        },
+        showSearch : function(ty, off) {
+            var s = $('#' + ty + 'Search');
+            
+            if(!s.hasClass('block')) {
+                s.toggleClass('block');
+                $(document).on('click', {ctx:this}, this[ty + 'Close']);
+                var b = $('#' + ty + 'Btn');
+                var bo = b.offset();
+                s.css('left', bo.left);
+                s.css('top', bo.top + b.outerHeight());
+                if(s.offset().left + s.outerWidth() > $(window).width()) {
+                    s.css('left', bo.left + b.outerWidth() - s.width());
+                }
+                $('#' + ty + 'Input').focus();
+            }
+            
+            if(off)
+                s.toggleClass('block');
+        },
+        filterSearch : function(ty) {
+            console.log('filter')
+            var input, filter, ul, li, a, i;
+            input = $('#' + ty + 'Input');
+            filter = input.val().toUpperCase();
+            div = $('#' + ty + 'Search');
+            a = div[0].getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        },
+        run : function() {
+            var _this = this; 
+            var i18n = this.i18n.info;
+            var frm = $('#CrtAddFrm');
+            var theFile = $('#theFile');
+            this.progress = {o:$('#progOuter'),i:$('#progInner'),p:$('#progPercent')};
+               
+            $('#abrt').click(function(){_this.hide.call(_this);});
+            $('#dmnBtn').click(function(e){_this.showSearch.call(_this, 'dmn');});
+            $('#sslBtn').click(function(e){_this.showSearch.call(_this, 'ssl');});
+            $('#dmnSBtn').click(function(){_this.filterSearch.call(_this, 'dmn');});
+            $('#sslSBtn').click(function(){_this.filterSearch.call(_this, 'ssl');});
+            
+            handleError(frm, function() {
+		        disableMain();
+                _this.validateFrm.call(_this, frm);
+            }, '', function() {
+                var errs = [];
+                var data = frm[0]._sdata || frm.serializeJSON();
+                frm[0]._sdata = data;
+                
+                var lbl;
+                
+                if(data.up != data.upr) {
+    	            lbl = $('label[for=upr]').text();
+                    errs.push({i:$('#upr'),l:lbl, m:i18n.epwm});
+                }
+                if(data.di && data.ds == '') {
+    	            lbl = $('label[for=ds]').text();
+                    errs.push({i:$('#ds'),l:lbl, m:i18n.edsk});
+                }
+                if(data.se && data.sn == '') {
+    	            lbl = $('label[for=se]').text();
+                    errs.push({i:$('#se'),l:lbl, m:i18n.essln});
+                }
+                if(data.se) {
+                    if(!data.sc && (!_this.files.ssk || !_this.files.ssc)) {
+                        if(!_this.files.ssk) {
+            	            lbl = $('label[for=ck]').text();
+                            errs.push({i:$('#ssk'),l:lbl, m:i18n.esslf});
+                        }
+                        if(!_this.files.ssc) {
+            	            lbl = $('label[for=cc]').text();
+                            errs.push({i:$('#ssk'),l:lbl, m:i18n.esslf});
+                        }
+                    }
+                } else
+                if(_this.files.ssk || _this.files.ssc) {
+                    if(_this.files.ssk) {
+        	            lbl = $('label[for=ck]').text();
+                        errs.push({i:$('#ssk'),l:lbl, m:i18n.esslnf});
+                    }
+                    if(_this.files.ssc) {
+        	            lbl = $('label[for=cc]').text();
+                        errs.push({i:$('#ssk'),l:lbl, m:i18n.esslnf});
+                    }
+                }
+                
+                if(data.eo && data.on == '') {
+    	            lbl = $('label[for=on]').text();
+                    errs.push({i:$('#on'),l:lbl, m:i18n.eon});
+                }
+                
+                return errs;
+            });
+            
+            var cluf = function() {
+                theFile.css('display', 'none');
+                unsetModal();
+                cFile = null;
+                _this.updFiles.call(_this);
+    	        theFile.trigger('onFileReady');
+            }
+            $('#ssk').click(function(e) {
+                e.preventDefault(); 
+                _this.files.ssk = cFile;
+                cluf();
+            });
+            $('#ssc').click(function(e) {
+                e.preventDefault(); 
+                _this.files.ssc = cFile;
+                cluf();
+            });
+            $('#non').click(function(e) {
+                e.preventDefault(); 
+                cluf();
+            });
+            
+            var dropBox = $('#ubox');  
+            
+            var file = $('input[type="file"]');
+            file.on('change', function(e) {
+                _this.handleFiles.call(_this, file[0].files, 0);
+            });
+            dropBox.on('click', function() {
+                file.trigger('click');
+            });
+            
+            dropBox[0].ondrop = function(e) {
+                e.preventDefault();  
+                dropBox.removeClass('drop');
+                if(!e.dataTransfer) {
+                    return false;
+                }
+                var items;
+                if ((items = e.dataTransfer.items)) {
+                } else 
+                if((items = e.dataTransfer.files)){
+                } else {
+                    return false;
+                }
+                
+                var farr = _this.parseFileList.call(_this, items);
+                
+                var fileData = function(items, idx, result, after) {
+                    if(idx < items.length) {
+        			    items[idx].file(function(file) {
+        			        result.push(file);
+    					    fileData(items, idx + 1, result, after);
+    					}, function(){
+    					    after(null);
+    					});
+                    } else {
+                        after(result);
+                    }
+                }
+                
+                fileData(farr, 0, [], function(r) {
+                    _this.handleFiles.call(_this, r, 0);
+                });
+                
+            } 
+            
+            dropBox[0].ondragover = function(e) {
+                e.preventDefault();
+                dropBox.addClass('drop');
+            }
+            
+            dropBox[0].ondragleave = function(e) {
+                e.preventDefault();
+                dropBox.removeClass('drop');
+            }
+        }
+    }
+</script>
+<div class="i18n style" id="modalLayer">
+    <div id="theUpload" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
+        <div class="dlg">
+            <div class="ltop"><span>{{prg.lbl}}</span></div><div>
+            <div id="progOuter"><div id="progInner"></div>
+            <span id="progPercent"></span></div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="frm btn" style="margin-right:0;">
+            <button style="float:right;" type="button" name="abt" id="abt">{{prg.abt}}</button>
+        </div>
+        </div>
+    </div>
+    <div id="theFile" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="fileModal" aria-hidden="true">
+        <div class="dlg">
+            <div class="ltop"><span>{{afl.sel}}</span></div>
+            <div class="frm btn"><div style="display:inline-block;margin-top:-10px;width:100%;"><label style="display:inline-block;overflow: hidden;">{{afl.fl}}:</label>
+            <div id="flval" class="pdiv"></div></div><div style="clear:both;">
+            </div>
+                <button type="button" name="ssk" id="ssk">{{afl.key}}</button><span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="ssc" id="ssc">{{afl.crt}}</button><span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="non" id="non">{{afl.non}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="i18n style" id="add_form">
+    <div class="htop"><h1>{{info.add}}</h1></div>
+    <div class="frmBox">
+        <div id="sslSearch" class="searchContent">
+            <form onsubmit="return false;" class="frm">
+                <div>
+                    <input type="text" placeholder="{{frm.ssrh}}" id="sslInput" class="search">
+                    <button type="submit" id="sslSBtn">{{frm.srh}}</button>
+                </div>
+            </form>
+            <a href="#about">About</a><a href="#base">Base</a>
+            <a href="#blog">Blog</a><a href="#contact">Contact</a>
+            <a href="#custom">Custom</a><a href="#support">Support</a>
+            <a href="#tools">Tools</a>
+        </div>
+        <div id="dmnSearch" class="searchContent">
+            <form onsubmit="return false;" class="frm">
+                <div>
+                    <input type="text" placeholder="{{frm.dsrh}}" id="dmnInput" class="search">
+                    <button type="submit" id="dmnSBtn">{{frm.srh}}</button>
+                </div>
+            </form>
+            <a href="#about">About</a><a href="#base">Base</a>
+            <a href="#blog">Blog</a><a href="#contact">Contact</a>
+            <a href="#custom">Custom</a><a href="#support">Support</a>
+            <a href="#tools">Tools</a>
+        </div>
+        <form id="CrtAddFrm" class="frm min">
+            <div class="box1" style="float:left;"> 
+                <label for="se">{{frm.se}}</label><input type="checkbox" id="se" name="se" value="se">
+                <label for="sn">{{frm.sn}}*:</label>
+                <div class="searchFrame" style="float:right;">
+                    <button id="sslBtn" class="searchBtn" type="button">▼</button>
+                </div>
+                <input style="width:16em;" type="text" id="sn" name="sn" required>
+                <label  for="dn">{{frm.dn}}*:</label>
+                <div class="searchFrame" style="float:right;">
+                    <button id="dmnBtn" class="searchBtn" type="button">▼</button>
+                </div>
+                <input style="width:16em;" type="text" id="dn" name="dn" pattern="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$" required>
+                <label for="dsc">{{frm.dsc}}:</label>
+                <div style="margin:0 10px 0 10px;">
+                    <textarea id="dsc" name="dsc" style="height:90px"></textarea>
+                </div>
+            </div>
+            <div class="box2" style="float:left;">  
+                    <div style="clear:both;margin-bottom:5px;"></div>
+                    <input type="file" style="display: none">
+                    <div id="ubox">
+                        {{frm.drop}}
+                    </div>
+                    <label for="cc">{{frm.cc}}:</label><div id="cc" class="ldiv">{{frm.no}}</div>
+                    <label for="ck">{{frm.ck}}:</label><div id="ck" class="ldiv">{{frm.no}}</div>
+                    <label for="sc">{{frm.sc}}</label><input type="checkbox" id="sc" name="sc" value="sc">
+                    <label for="ex">{{frm.ex}}:</label>
+                    <select id="ty" name="ty" style="width:6em;float:right;margin:5px 0 5px 0;">
+                        <option>{{frm.dy}}</option>
+                        <option>{{frm.mo}}</option>
+                        <option>{{frm.yr}}</option>
+                    </select><input type="text" id="ex" name="ex" style="width:12em;" pattern="[0-9]*">
+                    <div style="clear:both;"></div>
+                    <div style="margin-top:55px;">
+                        <input type="submit" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.sub}}">
+                        <input type="button" id="abrt" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.cls}}">
+                    </div>
+                </div>
+        </form>
+        <div style="clear:both;"></div>
+    </div>
+</div>

@@ -1,0 +1,449 @@
+<div class="style">
+    <style name="mstl">
+        #frmBox {
+            display:inline-block;
+            padding:10px;
+            background:#efefef;
+            -pie-background: linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#efefef), color-stop(100%,#e2e2e2));
+            background:-webkit-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-moz-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-ms-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-o-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            border-radius:3px;
+            border:1px solid #223560;
+        }
+        #ubox {
+            background:#e2e2e2;
+            border-radius:2px;
+            border:1px solid #223560;
+            height:30px;
+            text-align:center;
+            padding-top:5px;
+        }
+        #ubox.drop {
+            background:#b0b0b0;
+        }
+        #box1, #box2 {
+            padding:20px;
+        }
+        #box2 {
+            border-left:1px solid black;
+        }
+        .ldiv {
+            margin: 7px 10px 5px 10px;
+            float:left;
+        }
+        #progOuter {
+            padding:0;
+            background:rgba(30, 30, 30, 0.13);
+            border:1px solid #ddd;
+            border-radius:4px;
+            margin-top:10px;
+            text-align:center;
+        }
+        #progPercent {
+            display: inline-block;
+            line-height: 30px;
+            vertical-align: bottom;
+            width:250px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        #progInner {
+            display:inline-block;
+            width:30px;
+            height:30px;
+            padding:0;
+            position:absolute;
+            background:rgba(53, 53, 53, 0.23);
+        }
+    </style>
+</div>
+<script id="misc">
+    return {
+        files:{},
+        cFile:null,
+        progress:null,
+        doValidate : function(pdata, after) {
+            showLoad();
+            $.post('/server/', {data:'{"cmd":8,"data":' + JSON.stringify(pdata) + '}'}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(!data) {
+                    return;
+                }
+                after(data);
+            });
+        },
+        rstFrm : function(frm) {
+            this.rstFrmErr(frm);
+            frm[0].reset();
+        },
+        rstFrmErr : function(frm) {
+            // TODO remove error messages
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm.serializeJSON();
+            console.log(data);
+            if(data.up != data.upr) {
+                //TODO add password error message
+                    alert('error');
+                return;
+            }
+            if(data.di && data.ds == '') {
+                //TODO add disk size error message
+                    alert('error');
+                return;
+            }
+            if(data.se && data.sn == '') {
+                //TODO need ssl name error message
+                    alert('error');
+                return;
+            }
+
+            if(data.se) {
+                if(!data.sc && (!_this.files.ssk || !_this.files.ssc)) {
+                    //TODO need ssl files error message
+                    alert('error');
+                    return;
+                }
+            } else
+            if(this.files.ssk || this.files.ssc) {
+                //TODO do not need ssl files error message
+                    alert('error');
+                return;
+            }
+
+            if(data.eo && data.on == '') {
+                //TODO need owner name error message
+                    alert('error');
+                return;
+            }
+            var after = function() {
+                delete data['upr'];
+                _this.doSubmit.call(_this, data);
+            };
+            var hf = this.files.ssk || this.files.ssc || this.files.pkg;
+            if(hf) {
+                this.doValidate({an:data.an,dn:data.dn,sn:data.sn,on:data.on,se:data.se,eo:data.eo}, after);
+            } else {
+                after();
+            }
+        },
+        showProgress : function (v) {
+            if(v)
+            {
+                $('#progPercent')[0].innerText = '0%';
+            }
+
+            $('#theUpload').css('display', v ? 'block' :'none');
+        },
+        setProgress : function(v) {
+            v = Math.round(v);
+            this.progress.p[0].innerText = v + '%';
+            this.progress.i.css('width', Math.round((this.progress.o.width()*v)/100) + 'px');
+        },
+        errSubmit : function(data) {
+                // todo submit ERROR
+                    alert('error');
+        },
+        finSubmit : function() {
+                    this.setProgress(100);
+                    this.showProgress(false);
+                    this.rstFrm($('#theFrm'));
+        },
+        doSubmit : function(data) {
+            this.setProgress(0);
+            this.showProgress(true);
+            var _this = this;
+                        var fd = new FormData();
+                        fd.append('data', JSON.stringify({cmd:2,data:JSON.stringify(data)}));
+                        if(this.files.ssk) {
+                            fd.append('name', 'ssk');
+                            fd.append('ssk', this.files.ssk);
+                        }
+                        if(this.files.ssc) {
+                            fd.append('name', 'ssc');
+                            fd.append('ssc', this.files.ssc);
+                        }
+                        if(this.files.pkg) {
+                            fd.append('name', 'pkg');
+                            fd.append('pkg', this.files.pkg);
+                        }
+                var xhr = new XMLHttpRequest();
+                var stop = $('#abt');
+
+            stop.unbind('click');
+            stop.click(function(e) {
+                e.preventDefault();
+                xhr.abort();
+            });
+
+                xhr.upload.addEventListener('progress', function(e) {
+                        if(e.lengthComputable) {
+                                var p = (e.loaded * 100 / (e.total));
+                                _this.setProgress.call(_this, p);
+                        }
+                }, false);
+
+                xhr.addEventListener('load', function() {
+                    var response = {r:0};
+                                var ioArgs = xhr.ioArgs;
+                    if(xhr.status == 200) {
+                        var response = validateRes(xhr.responseText);
+                    if(!response) {
+                        return;
+                    }
+                    }
+                                if(response.r == 0)
+                                {
+                                    _this.finSubmit.call(_this);
+                                }
+                                else
+                                {
+                                    _this.errSubmit.call(_this, response);
+                                }
+                }, false);
+                xhr.addEventListener('error', function() {
+                        _this.errSubmit.call(_this);
+                }, false);
+                xhr.addEventListener('abort', function() {
+                                _this.showProgress.call(_this, false);
+                }, false);
+            xhr.open('POST', '/server/', true);
+                xhr.send(fd);
+        },
+        handleFiles : function(items, idx) {
+            if(items) {
+                if(idx < items.length) {
+                        var _this = this;
+                        var theFile = $('#theFile');
+                        var file = items[idx];
+                        cFile = file;
+                    theFile.off('onFileReady');
+                    theFile.on('onFileReady', function() {
+                        _this.handleFiles.call(_this, items, idx + 1);
+                    });
+                        $('#theFile').css('display', 'block');
+                        $('#flval').text(file.name);
+                }
+            } else {
+                // TODO file add error
+                    alert('error');
+            }
+        },
+        parseFileList : function(list) {
+            var info = {};
+            var result = [];
+                        for(var i = 0, len = list.length; i < len; i++) {
+                                if(list[i].webkitGetAsEntry && list[i].kind=='file') {
+                                        var item = list[i].webkitGetAsEntry();
+                                        if(item) {
+                                                this.parseFiles(info, item,result);
+                                                if(info.error)
+                                                    return null;
+                                        }
+                                }
+                        }
+                        return info.error ? null : result;
+                },
+        parseFiles : function(info, item, result) {
+            if(info.error)
+                return;
+                        if(item.isFile) {
+                            result.push(item);
+                        } else
+                        if(item.isDirectory) {
+                                var rd = item.createReader();
+                        rd.readEntries(function(items, a) {
+                                        if(items.length != 0) {
+                                        var l = [];
+                                        for(var i = 0, len = items.length; i< len; i++) {
+                                            this.parseFiles(info, items[i], result);
+                                            if(info.error)
+                                                return;
+                                        }
+                                        }
+                                }, function(){
+                                    info.error = true;
+                                    //doUploadEnd(info);
+                                });
+                        }
+                },
+                updFiles : function() {
+                    var pf = this.files.pkg;
+                    var ck = this.files.ssk;
+                    var cc = this.files.ssc;
+                    var no = this.i18n.frm.no;
+                    $('#pf').text(pf ? pf.name : no);
+                    $('#ck').text(ck ? ck.name : no);
+                    $('#cc').text(cc ? cc.name : no);
+                },
+        run : function() {
+            var _this = this;
+            var frm = $('#theFrm');
+            var theFile = $('#theFile');
+            this.progress = {o:$('#progOuter'),i:$('#progInner'),p:$('#progPercent')};
+
+            frm.submit(function(e) {
+                e.preventDefault();
+                _this.validateFrm.call(_this, frm);
+            });
+
+            var cluf = function() {
+                theFile.css('display', 'none');
+                cFile = null;
+                _this.updFiles.call(_this);
+                theFile.trigger('onFileReady');
+            }
+            $('#ssk').click(function(e) {
+                e.preventDefault();
+                _this.files.ssk = cFile;
+                cluf();
+            });
+            $('#ssc').click(function(e) {
+                e.preventDefault();
+                _this.files.ssc = cFile;
+                cluf();
+            });
+            $('#pkg').click(function(e) {
+                e.preventDefault();
+                _this.files.pkg = cFile;
+                cluf();
+            });
+            $('#non').click(function(e) {
+                e.preventDefault();
+                cluf();
+            });
+
+            var dropBox = $('#ubox');
+
+            var file = $('input[type="file"]');
+            file.on('change', function(e) {
+                _this.handleFiles.call(_this, file[0].files, 0);
+            });
+            dropBox.on('click', function() {
+                file.trigger('click');
+            });
+
+            dropBox[0].ondrop = function(e) {
+                e.preventDefault();
+                dropBox.removeClass('drop');
+                if(!e.dataTransfer) {
+                    return false;
+                }
+                var items;
+                if ((items = e.dataTransfer.items)) {
+                } else
+                if((items = e.dataTransfer.files)){
+                } else {
+                    return false;
+                }
+
+                var farr = _this.parseFileList.call(_this, items);
+                _this.handleFiles.call(_this, farr, 0);
+            }
+
+            dropBox[0].ondragover = function(e) {
+                e.preventDefault();
+                dropBox.addClass('drop');
+            }
+
+            dropBox[0].ondragleave = function(e) {
+                e.preventDefault();
+                dropBox.removeClass('drop');
+            }
+        }
+    }
+</script>
+<div class="i18n" id="other">
+    <div id="theUpload" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
+        <div class="dlg">
+                <div class="ltop">
+                <span>{{prg.lbl}}</span>
+            </div>
+            <div>
+                <div id="progOuter"><div id="progInner"></div><span id="progPercent"></span></div>
+            </div>
+            <div style="clear:both;"></div>
+                <div class="frm btn" style="margin-right:0;">
+                <button style="float:right;" type="button" name="abt" id="abt">{{prg.abt}}</button>
+            </div>
+                </div>
+    </div>
+    <div id="theFile" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="fileModal" aria-hidden="true">
+        <div class="dlg">
+                <div class="ltop">
+                <span>{{afl.sel}}</span>
+            </div>
+                <div class="frm btn">
+                    <div style="display:inline-block;margin-top:-10px;"><label>{{afl.fl}}:</label><div id="flval" class="ldiv"></div></div>
+                    <div style="clear:both;"></div>
+                <button type="button" name="ssk" id="ssk">{{afl.key}}</button>
+                <span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="ssc" id="ssc">{{afl.crt}}</button>
+                <span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="pkg" id="pkg">{{afl.pkg}}</button>
+                <span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="non" id="non">{{afl.non}}</button>
+            </div>
+                </div>
+    </div>
+</div>
+<div class="i18n" id="content">
+    <h3>{{upl.head}}</h3>
+    <pre>{{upl.txt}}</pre>
+    <div id="frmBox">
+        <form id="theFrm" class="frm min">
+            <div id="box1" style="float:left;">
+                <input type="text" style="display:none">
+                <input type="password" style="display:none">
+                <label for="an">{{frm.an}}*:</label><input type="text" id="an" name="an" required>
+                <label for="dn">{{frm.dn}}*:</label><input type="text" id="dn" name="dn" pattern="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$" required>
+                <label for="un">{{frm.un}}*:</label><input type="text" id="un" name="un" required>
+                <label for="up">{{frm.up}}*:</label><input type="password" id="up" name="up" required>
+                <label for="upr">{{frm.upr}}*:</label><input type="password" id="upr" name="upr" required>
+                <label>{{frm.ao}}:</label>
+                <div style="clear:both;"></div>
+                <div class="noclear">
+                    <label for="ac">{{frm.ac}}</label>
+                    <input type="checkbox" id="ac" name="ac" value="ac" checked>
+                    <label for="ed">{{frm.ed}}</label>
+                    <input type="checkbox" id="ed" name="ed" value="ed">
+                    <label for="ma">{{frm.ma}}</label>
+                    <input type="checkbox" id="ma" name="ma" value="ma">
+                    <label for="di">{{frm.di}}</label>
+                    <input type="checkbox" id="di" name="di" value="di">
+                </div>
+                <label for="ds">{{frm.ds}} (MB):</label><input type="text" id="ds" name="ds" pattern="[0-9]*">
+                <label for="pp">{{frm.pp}}:</label><input type="text" id="pp" name="pp">
+                <div style="clear:both;"></div>
+            </div>
+            <div id="box2" style="float:left;">
+                <input type="file" style="display: none" />
+                <div id="ubox">
+                    {{frm.drop}}
+                </div>
+                <label for="pf">{{frm.pf}}:</label><div id="pf" class="ldiv">{{frm.no}}</div>
+                <label for="cc">{{frm.cc}}:</label><div id="cc" class="ldiv">{{frm.no}}</div>
+                <label for="ck">{{frm.ck}}:</label><div id="ck" class="ldiv">{{frm.no}}</div>
+                <label for="sc">{{frm.sc}}</label><input type="checkbox" id="sc" name="sc" value="sc">
+                <label for="sn">{{frm.sn}}:</label><input type="text" id="sn" name="sn">
+                <label for="se">{{frm.se}}</label>
+                <input type="checkbox" id="se" name="se" value="se">
+                <label for="on">{{frm.on}}:</label><input type="text" id="on" name="on" placeholder="{{frm.ef}}">
+                <label for="eo">{{frm.eo}}</label>
+                <input type="checkbox" id="eo" name="eo" value="eo">
+                <div style="clear:both;"></div>
+                <div>
+                    <button type="submit" style="float:right;margin-top:5px;margin-right:10px">{{frm.sub}}</button>
+                </div>
+            </div>
+        </form>
+        <div style="clear:both;"></div>
+    </div>
+</div>

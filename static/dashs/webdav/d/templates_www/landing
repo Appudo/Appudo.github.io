@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--[if lt IE 8 ]><html class="ie ie7"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8"> <![endif]-->
+<!--[if IE 9 ]><html class="ie ie9"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!-->
+<html> 
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>APPUDO</title>
+    <meta name="description" content="webdav">
+    <meta name="viewport" content="width=1335">
+
+    <!-- Favicons
+    <link rel="shortcut icon" href="favicon.png" >
+    -->
+    <script>
+        function preInit() {
+            
+        }
+    </script>
+</head>
+<body onload="preInit();">
+    <div>123</div>
+</body>
+</html>

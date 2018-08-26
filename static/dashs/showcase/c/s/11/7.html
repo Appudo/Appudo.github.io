@@ -1,0 +1,539 @@
+<!-- ###MAIN### START --><!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="###$rdir###/css/zTreeStyle.css" type="text/css">
+        <!-- ###STYLE### START -->
+        <link rel="stylesheet" href="###$rdir###/css/wschat.css">
+        <!-- ###STYLE### END -->
+        <script type="text/javascript" src="###$rdir###/js/jquery-1.10.2.min.js"></script>
+        <style>
+            body {
+            }
+            
+            .loginItem {
+                position:absolute;
+                display:none;  
+                right: 20px;
+                margin-top: -30px;
+            }
+            
+            .parent {
+                position:relative;
+            }
+            
+            .block {
+                width:500px;
+                height:425px;
+                vertical-align:top;
+                overflow:hidden;
+                margin: 0 auto;
+            }
+            
+            .bbutton {
+                float:right;
+                margin:5px 0px 0 10px;
+                width: 100px;
+            }
+            
+            .theError {
+                margin-left:10px;
+                display:none;
+                color:red;
+            }
+            
+            input[type="text"]{
+                width:390px;
+            }
+            
+            #thePoll {
+                font-weight:bold;
+            }
+            
+            #pollBlock {
+                padding-bottom:8px;
+                width:500px;
+                overflow-y:auto;
+                overflow-x:hidden;
+            }
+            
+            #theAddMod, #theClear, #theDel {
+                display:none;
+                padding:10px;
+                border-radius:4px;
+                border:1px solid #ddd;
+                background:#fff;
+                width:400px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                margin: auto;
+                margin-top:6%;
+                padding-bottom:10px;
+            }
+            
+            .view {
+                display:hidden;
+            }
+            
+            .block a {
+                color:#11ABA8;
+                text-decoration: none;
+            }
+            
+            #theItems {
+                min-height:0;
+            }
+            
+            #theItems li input {
+                float:left;
+                margin:10px 10px 0px 10px;
+            }
+            
+            #theItems .inner {
+                display:inline-block;
+                width:0px;
+                height:34px;
+                padding:0;
+                position:absolute;
+                background:rgba(170, 220, 222, 0.23);
+            }
+            
+            #theItems .outer {
+                padding:0;
+                background:rgba(221, 221, 221, 0.13);
+            }
+            
+            #theItems .lbl {
+                margin-left:4px;
+                margin-right:50px;
+            }
+            
+            #theItems li span {
+                line-height:30px;
+            }
+            
+            #theItems .outer span {
+                line-height:30px;
+                color:#3d4145;
+            }
+            
+            #theItems li label {
+                display:inline-block;
+                width:80%;
+                margin-right:-200px;
+            }
+            
+            #theSum {
+                float:left;
+            }
+        </style>
+        <script>  
+            var theItems;
+            var hasLogin = false;
+            var theTicket = 0;
+            var pending = 0;
+            var canVote = 1;
+            var pollData = {t:0};
+   
+            document.onUpdate = function(result) {
+                if(result.t != 'poll')
+                    return;
+                if(result.h && theTicket != result.h) {
+                    hideAll()
+                    loadPollView();
+                }
+                theTicket = 0;
+            }
+            
+            document.onNeedLogout = function(v) {
+                needLogin(!v)
+                hasLogin = v;
+            }
+            
+            function needLogin(v) {
+                $(".loginItem").css('display', v ?  'none' :  'block');
+                $("#theLogin").css('display', v ? 'block' : 'none');
+            }
+            
+            function getVal(name, prop) {
+                return $(name)[0][prop];
+            }
+            function setVal(name, prop, val) {
+                $(name)[0][prop] = val
+            }
+            
+            function doVote() {
+                if(pending)
+                    return;
+                var v = $("input[name='theRadio']:checked").val();
+                var result;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_POLL_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            var o = collectPollView({i:v});
+                            setupResultView(o);
+                        } 
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=v&d={"i":"' + v + '"}&h=' + theTicket);
+                return false;
+            }
+            
+            function doClear() {
+                if(pending)
+                    return;
+                var result;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_POLL_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            var o = collectPollView();
+                            for(var i = 0, l = o.items.length; i < l; i++) {
+                                o.items[i].v = 0;
+                            }
+                            setupPollView(o);
+                        } 
+                        $("#theClear").css('display', 'none');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=c&d={"i":"' + pollData.i + '","c":1}&h=' + theTicket);
+                return false;
+            }
+            
+            function doDel() {
+                if(pending)
+                    return;
+                var id = getVal("#theDel", "_id");
+                var result;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_POLL_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            $('#item' + id)[0].parentNode.remove();
+                        } 
+                        $("#theDel").css('display', 'none');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=d&d={"i":"' + id + '","t":1}&h=' + theTicket);
+                return false;
+            }
+            
+            function hideAll(v) {
+                v == showAdd || showAdd(false)
+                v == showMod || showMod(false)
+                v == showDel || showDel(false)
+                v == showClear || showClear(false)
+            }
+            
+            function setupAddMod(add, label, id) {
+                var div = document.getElementById("theAddMod").children[0];
+                var span = div.getElementsByTagName("span")[0];
+                span.innerHTML = add ? "Add Item:" : "Modify Item:"
+                setVal("#modButton", "_add", add);
+                setVal("#modButton", "_id", id);
+                $("#addLabel").val(add ? "" : label);
+            }
+            
+            function doAddMod() {
+                if(pending)
+                    return;
+                var add = getVal("#modButton", "_add");
+                var t = getVal("#modButton", "_type");
+                var label = $("#addLabel").val();
+                var result;
+                var xhr = new XMLHttpRequest();
+                $(".theError").css('display','none');
+                xhr.open('POST', '###PAGE_POLL_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            if(add) {
+                                var o = collectPollView();
+                                o.items.push({i:result.d,l:label,v:0});
+                                if(canVote) {
+                                    setupPollView(o);
+                                } else {
+                                    setupResultView(o);
+                                }
+                            } else {
+                                if(t == 1) {
+                                    var id = getVal("#modButton", "_id");
+                                    var div = $("#item" + id)[0];
+                                    //var l = div.children[0].innerHTML;
+                                    if(canVote) {
+                                        setupViewItem(div.parentNode, {i:id,l:label,v:0});
+                                    } else {
+                                        var r = {i:id}
+                                        var o = collectPollView(r);
+                                        setupResultItem(div.parentNode, {i:id,l:label,v:r.v}, o.sum - 1);
+                                    }
+                                } else {
+                                    $('#thePoll')[0].innerHTML = label;
+                                    pollData.l = label;
+                                }
+                                needLogin(!hasLogin);
+                            }
+                            hideAll();
+                        } else {
+                            $(".theError").css('display','inline-block');
+                        }
+                    }
+                }
+                
+                pending = 1;
+                theTicket = Math.random();
+                if(add) {
+                    xhr.send('t=a&d={"i":"' + pollData.i + '","l":' + JSON.stringify(label) + ',"t":1}&h=' + theTicket);
+                } else {
+                    xhr.send('t=m&d={"i":"' + getVal("#modButton", "_id") + '","l":' + JSON.stringify(label) + ',"t":' + t + '}&h=' + theTicket);
+                }
+            }
+            
+            function showAdd(v) {
+                if(v) {
+                    hideAll(showAdd);
+                    setupAddMod(true);
+                }
+                $("#theAddMod").css('display', v ? 'block' : 'none');
+                
+            }
+            
+            function showMod(v, info) {
+                if(v) {
+                    hideAll(showMod);
+                    setupAddMod(false, info.l, info.i);
+                    
+                    setVal("#modButton", "_type", info.t !== undefined ? info.t : 1);
+                }
+                $("#theAddMod").css('display', v ? 'block' : 'none');
+                
+            }
+            
+            function doAnimate(o) {
+                var items = o.items;
+                var full = $('.outer').width();
+                $('.percent').css('display', 'none');
+                
+                for(var i = 0, l = items.length; i < l; i++) {
+                  var id = '#item' + items[i].i
+                  $(id).find('.outer').animate({width: full}, 1000);
+                  $(id).find('.inner').animate({width: (items[i].v / o.sum) * full}, 1000);
+                
+                };
+                $('.percent').delay('1000').fadeIn('fast');
+                $('#theSum').delay('1000').fadeIn('fast');
+            }
+            
+            function showClear(v) {
+                if(v) {
+                    hideAll(showClear);
+                }
+                $("#theClear").css('display', v ? 'block' : 'none');
+                
+            }
+            
+            function showDel(v, info) {
+                if(v) {
+                    hideAll(showDel);
+                    var div = document.getElementById("delTxt");
+                    var span = div.getElementsByTagName("span")[0];
+                    span.innerHTML = 'Confirm deletion of item "' + info.l + '".';
+                    setVal("#theDel", "_id", info.i)
+                }
+                $("#theDel").css('display', v ? 'block' : 'none');
+            }
+            
+            function Init() { 
+                if(location.protocol !== 'https:') {
+				    window.location = location.href.replace('http:', 'https:')
+                }
+                
+                $("#addButton").click(function() {showAdd(true); return false; });
+                $("#clearButton").click(function() {showClear(true); return false; });
+                $("#modStopButton").click(function() {showAdd(false); return false; });
+                $("#delStopButton").click(function() {showDel(false); return false; });
+                $("#clearStopButton").click(function() {showClear(false); return false; });
+                $("#modButton").click(function(e) {e.preventDefault(); doAddMod(); return false; });
+                $("#delButton").click(function(e) {e.preventDefault(); doDel(); return false; });
+                $("#clearOkButton").click(function(e) {e.preventDefault(); doClear(); return false; });
+                $("#voteButton").click(function(e) {e.preventDefault(); doVote(); return false; });
+                loadPollView();
+                document.complete = true;
+            }
+            
+            function collectPollView(update) {
+                var items = $('#theItems')[0].children;
+                var newItems = [];
+                var sum = 0;
+                for (idx in items) {
+                    if(items[idx].children) {
+                        var div = items[idx].children[0];
+                        var data = div.getAttribute('data').split(',');
+                        var v = parseInt(data[2]);
+                        if(update && update.i == data[0]) {
+                            update.v = v
+                            v++;
+                        }
+                        newItems.push({i:data[0],l:data[1],v:v});
+                        sum += v;
+                    }
+                }
+                return {items:newItems, sum:sum};
+            }
+            
+            function loadPollView() {
+                var xhr = new XMLHttpRequest();
+                var result;
+                xhr.open('POST', '###PAGE_POLL_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result && result.items) {
+                            pollData.i = result.i;
+                            pollData.l = result.l;
+                            $('#thePoll')[0].innerHTML = result.l;
+                            if(result.v == 1) {
+                                var sum = 0;
+                                for(var i = 0, l = result.items.length; i < l; i++) {
+                                    sum += result.items[i].v;
+                                }
+                                setupResultView({items:result.items,sum:sum});
+                            } else {
+                                setupPollView({items:result.items,sum:0});
+                            }
+                        }
+                    }
+                }
+                xhr.send('t=l');
+            }
+            
+            function setupViewItem(li, item) {
+                li.innerHTML = '<div id="item' + item.i + '" data="' + item.i + ',' + item.l + ',' + item.v + '"><input name="theRadio" value="' + item.i + '" id="l' + item.i + '" type="radio"><label for="l' + item.i + '">' + item.l + '</label><span class="loginItem"><a href="#" onclick="showMod(true, {i:\'' + item.i + '\',l:\'' + item.l + '\'});return false;">edit</a> / <a href="#" onclick="showDel(true, {i:\'' + item.i + '\',l:\'' + item.l + '\'});return false;">delete</a></span></div>';
+            }
+            
+            function setupResultItem(li, item, sum) {
+                var percent = Math.round(item.v/sum * 100);
+                li.innerHTML = '<div id="item' + item.i + '" data="' + item.i + ',' + item.l + ',' + item.v + '"><div class="outer"><div class="inner"></div><span class="lbl">' + item.l + '</span><span class="percent">' + percent + '%</span><span class="loginItem"><a href="#" onclick="showMod(true, {i:\'' + item.i + '\',l:\'' + item.l + '\'});return false;">edit</a> / <a href="#" onclick="showDel(true, {i:\'' + item.i + '\',l:\'' + item.l + '\'});return false;">delete</a></span></div></div>';
+            }
+            
+            function setupPollView(o) {
+                var items = o.items;
+                var theItems = document.getElementById("theItems");
+                theItems.innerHTML = '';
+                items = sortNodesByLabel(items);
+                for(var i = 0, l = items.length; i < l; i++) {
+                    var li = document.createElement("li");
+                    var item = items[i];
+                    setupViewItem(li, item);
+                    theItems.appendChild(li);
+                }
+                
+                canVote = 1;
+                $('#voteButton').css('display', 'block');
+                $('#theSum').css('display', 'none');
+                needLogin(!hasLogin);
+            }
+            
+            function setupResultView(o) {
+                var items = o.items;
+                var theItems = document.getElementById("theItems");
+                theItems.innerHTML = '';
+                items = sortNodesByLabel(items);
+                for(var i = 0, l = items.length; i < l; i++) {
+                    var li = document.createElement("li");
+                    var item = items[i];
+                    setupResultItem(li, item, o.sum);
+                    theItems.appendChild(li);
+                }
+                canVote = 0;
+                $('#voteButton').css('display', 'none');
+                $('#theSum').css('display', 'none');
+                $('#theSum')[0].innerHTML = o.sum + ' votes';
+                needLogin(!hasLogin);
+                doAnimate(o);
+            }
+        
+            function sortNodesByLabel(items) {
+                return items.slice(0).sort(function(a,b) {
+                    return (a['l'] > b['l']) ? 1 : (a['l'] < b['l']) ? -1 : 0;
+                });
+            }
+        </script>
+    </head>
+    <body onLoad="Init();">
+        <div class="parent">
+            <div id="poll" class="block">
+                <form>
+                    <span id="thePoll"></span><span class="loginItem" style="float:right"><a href="#" onclick="showMod(true, pollData);return false;">edit</a></span>
+                    <div id="pollBlock">
+                            <ul id="theItems" class="ztree"></ul>
+                    </div>
+                    <input style="float:left;margin:5px 5px 0 0;" type="submit" id="voteButton" value="Submit">
+                    <span id="theSum"></span>
+                </form>
+                <div class="loginItem">
+                    <input type="button" id="clearButton" class="bbutton" value="Clear">
+                    <input type="button" id="addButton" class="bbutton" value="Add">
+                </div>
+            </div>
+            <form>
+            <div id="theAddMod">
+                <div style="border-bottom:1px solid #ddd"><span>Add Item:</span><div class="theError">error...</div></div>
+                <div>
+                    <label style="color:#fff;font: 4px/5px 'opensans-bold', sans-serif;">Label</label><input type="text" id="addLabel" placeholder="Label...">
+                </div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="button" id="modStopButton" value="Cancel">
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="modButton" value="Submit">
+                </div>
+            </div>
+            <div id="theDel">
+                <div style="border-bottom:1px solid #ddd"><span>Delete Item?</span><div class="theError">error...</div></div>
+                <div id="delTxt">
+                    <span>The deletion of item connot be undone!</span>
+                </div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="button" id="delStopButton" value="Cancel">
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="delButton" value="Submit">
+                </div>
+            </div>
+            <div id="theClear">
+                <div style="border-bottom:1px solid #ddd"><span>Clear poll?</span><div class="theError">error...</div></div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="button" id="clearStopButton" value="Cancel">
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="clearOkButton" value="Submit">
+                </div>
+            </div>
+            </form>
+        </div>
+    </body>
+</html><!-- ###MAIN### END -->

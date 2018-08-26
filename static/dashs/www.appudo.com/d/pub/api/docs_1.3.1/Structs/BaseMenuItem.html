@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BaseMenuItem Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/BaseMenuItem" class="dashAnchor"></a>
+    <a title="BaseMenuItem Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        BaseMenuItem Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ManagedCharBuffer.html">ManagedCharBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray.html">TimedArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray/TimedArrayError.html">– TimedArrayError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserAsync.html">UserAsync</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/ControlResult.html">ControlResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/InetAddr.html">InetAddr</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo12InetAddrTypeO">InetAddrType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo19InternalAppudoErrorO">InternalAppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo25InternalHTTPRequestStatusO">InternalHTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/UploadResult.html">UploadResult</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnopxSgAA10AsyncValueVyACGlF">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnoixSgAA10AsyncErrorVz_AA0C5ValueVyACGtlF">&lt;!(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yAA0C0CctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yyctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo4sendyypd_tF">send(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:9libappudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FastCodable.html">FastCodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/ACME.html">ACME</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ACME/RequestFlags.html">– RequestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncError.html">AsyncError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo10AsyncTimerV">AsyncTimer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Base64.html">Base64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BaseMenuItem.html">BaseMenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH.html">CHASH</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert.html">Cert</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert/CertFlags.html">– CertFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CertID.html">CertID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CharBufferData.html">CharBufferData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlData.html">ControlData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlInfo.html">ControlInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo3DirV">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Disk.html">Disk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8DiskStatV">DiskStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6DomainV">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo5EventV">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC.html">HMAC</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HTTPRequestStatus.html">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Hex.html">Hex</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html#/s:9libappudo4MailV8AuthTypeO">– AuthType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html">PDF</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFCreateFlags.html">– PDFCreateFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html#/s:9libappudo3PDFV13PDFSignDigestO">– PDFSignDigest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFSignFlags.html">– PDFSignFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4PageV">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Proc.html">Proc</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Rand.html">Rand</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4RoleV">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Run.html">Run</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RunID.html">RunID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryErrCode.html">SQLQryErrCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo7SettingV">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/System.html">System</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/URL.html">URL</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserListItem.html">UserListItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchEvent.html">WatchEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchFlag.html">WatchFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/zBase32.html">zBase32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>BaseMenuItem</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">BaseMenuItem</span><span class="o">&lt;</span><span class="kt">TheID</span><span class="o">&gt;</span></code></pre>
+
+                </div>
+              </div>
+            <p>The BaseMenuItem is used to walk and access the ordered pages of the run tree.
+Mirroring the tree structure of accessible menu pages.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Link
+
+</div>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemV10getChildAtACyxGSgSiF"></a>
+                    <a name="//apple_ref/swift/Method/getChildAt(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemV10getChildAtACyxGSgSiF">getChildAt(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a child of the MenuItem.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getChildAt</span><span class="p">(</span><span class="n">_</span> <span class="nv">idx</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">BaseMenuItem</span><span class="o">&lt;</span><span class="kt">TheID</span><span class="o">&gt;</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>idx</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The index of the child to return.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemV11numChildrenSivp"></a>
+                    <a name="//apple_ref/swift/Property/numChildren" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemV11numChildrenSivp">numChildren</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the number of children of the MenuItem.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">numChildren</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemV6activeSbvp"></a>
+                    <a name="//apple_ref/swift/Property/active" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemV6activeSbvp">active</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the MenuItem is the item of the current page.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">active</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemV4linkAA4LinkVvp"></a>
+                    <a name="//apple_ref/swift/Property/link" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemV4linkAA4LinkVvp">link</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the Link to the page of the MenuItem.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">link</span><span class="p">:</span> <span class="kt"><a href="../Structs/Link.html">Link</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemV4nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemV4nameSSvp">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the name of the page visible in the run tree.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemVA2A5RunIDVRszlE3getAA10AsyncValueVyACyAEGSgGAA0E0V_s5Int32VAO5shiftAO2uptFZ"></a>
+                    <a name="//apple_ref/swift/Method/get(_:_:shift:up:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemVA2A5RunIDVRszlE3getAA10AsyncValueVyACyAEGSgGAA0E0V_s5Int32VAO5shiftAO2uptFZ">get(_:_:shift:up:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a MenuItem tree with a single page as root.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">get</span><span class="p">(</span><span class="n">_</span> <span class="nv">runId</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Run.html">Run</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">height</span> <span class="p">:</span> <span class="kt">Int32</span><span class="p">,</span> <span class="nv">shift</span> <span class="p">:</span> <span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">up</span><span class="p">:</span> <span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">MenuItem</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>runId</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The id for the root run.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>height</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The height of the tree.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>shift</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Move left or right on the same level.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>up</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Move to parent level.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo12BaseMenuItemVA2A3RunVRszlE3getAA10AsyncValueVyACyAEGSgGAE_s5Int32VAM5shiftAM2uptFZ"></a>
+                    <a name="//apple_ref/swift/Method/get(_:_:shift:up:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo12BaseMenuItemVA2A3RunVRszlE3getAA10AsyncValueVyACyAEGSgGAE_s5Int32VAM5shiftAM2uptFZ">get(_:_:shift:up:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a MenuItem tree with a single page as root.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">get</span><span class="p">(</span><span class="n">_</span> <span class="nv">runId</span> <span class="p">:</span> <span class="kt"><a href="../Structs/Run.html">Run</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">height</span> <span class="p">:</span> <span class="kt">Int32</span><span class="p">,</span> <span class="nv">shift</span> <span class="p">:</span> <span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">up</span><span class="p">:</span> <span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">TreeMenuItem</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>runId</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The id for the root run.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>height</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The height of the tree.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>shift</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Move left or right on the same level.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>up</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Move to parent level.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2018-07-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

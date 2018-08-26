@@ -1,0 +1,35 @@
+<!-- ###NORM### START -->;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     ns1.appudo.com. dns.appudo.com. (
+                     ###SERIAL###         ; Serial
+                          43200         ; Refresh
+                           7200         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.appudo.com.
+@       IN      NS      ns2.appudo.com.
+@       IN      NS      ns3.appudo.com.
+<!-- ###WITH_IPV4### START -->###DOMAIN###       IN      A       ###IPV4###<!-- ###WITH_IPV4### END -->
+;@      IN      AAAA    ::1
+<!-- ###NORM### END -->
+<!-- ###REVERSE### START -->
+$ORIGIN ###REVERSE_ORIGIN###.in-addr.arpa.
+$TTL 86400
+@       IN      SOA     ns1.appudo.com. dns.appudo.com. (
+                        2001062501 ; serial
+                        21600      ; refresh after 6 hours
+                        3600       ; retry after 1 hour
+                        604800     ; expire after 1 week
+                        86400 )    ; minimum TTL of 1 day
+;
+@       IN      NS      ns1.appudo.com.
+@       IN      NS      ns2.appudo.com.
+@       IN      NS      ns3.appudo.com.
+;
+<!-- ###REVERSE_PTRS### START -->
+###REVERSE_PTR###      IN      PTR     ###DOMAIN###.
+<!-- ###REVERSE_PTRS### END -->
+<!-- ###REVERSE### END -->

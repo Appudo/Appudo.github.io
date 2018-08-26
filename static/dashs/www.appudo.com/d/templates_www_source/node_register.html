@@ -1,0 +1,126 @@
+<style>
+    .box1 { 
+        margin-top:32px;
+    }
+</style>
+<script id="misc">
+    return {
+        nosel:true,
+        rstFrm : function(frm) {
+            frm[0].reset();
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm[0]._sdata || frm.serializeJSON();
+            _this.doSubmit.call(_this, data);
+        },
+        finSubmit : function() {
+		    this.rstFrm($('#regNFrm'));
+        },
+        doSubmit : function(fdt) {
+            var _this = this;
+            var info = this.i18n.info;
+            var ty = 0;
+            
+            if(!isMaster())
+            {
+                fdt.ex = 1;
+            }
+            
+            ty |= fdt.ex ? 1 << 0 : 0;  
+            ty |= fdt.ma ? 1 << 1 : 0;  
+            ty |= fdt.dn ? 1 << 2 : 0;  
+            ty |= fdt.us ? 1 << 3 : 0;  
+            ty |= fdt.pk ? 1 << 4 : 0;  
+            ty |= fdt.st ? 1 << 5 : 0;  
+            ty |= fdt.sc ? 1 << 6 : 0;  
+            fdt.ty = ty;
+            
+            var d = {cmd:8, data:JSON.stringify({ds:fdt.ds, ty:ty})}
+            var ds = fdt.ds;
+            
+            delete fdt.ds;
+            delete fdt.ma;
+            delete fdt.dn;
+            delete fdt.us;
+            delete fdt.pk;
+            delete fdt.st;
+            delete fdt.sc;
+            delete fdt.ex;
+            
+            postCreds(userBase('/admin/'), {data:JSON.stringify(d), fwd:JSON.stringify(fdt)}, function(data) {
+                if(data.r != 0) {
+                    modalError(info.afail)
+                } else {
+                    _this.finSubmit();
+                    if(_this.onAdd) {
+                        fdt.ds = ds;
+                        _this.onAdd(fdt, data);
+                    }
+                }
+            });
+        },
+        hide : function() {
+            this.onUnload(true);
+        },
+        run : function() {
+            var _this = this; 
+            var frm = $('#regNFrm');
+            
+            $('#abrt').click(function(){_this.hide.call(_this);});
+               
+            handleError(frm, function() {
+                _this.validateFrm.call(_this, frm);
+            }, '');   
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="add_form">
+    <div>
+        <div class="htop"><h1>{{info.add}}</h1></div>
+        <div class="frmBox">
+            <form id="regNFrm" class="frm min">
+                <div class="box1" style="float:left;">
+                    <label for="ipv4">{{frm.ipv4}}*:</label><input type="text" id="ipv4" name="ipv4" pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$" required>
+                    <label for="ipv6">{{frm.ipv6}}:</label><input type="text" id="ipv6" name="ipv6" pattern="((^|:)([0-9a-fA-F]{0,4})){1,8}$">
+                    <label class="master">Node Options:</label>
+                    <div style="clear:both;"></div>
+                    <div class="noclear master">
+                        <label for="ma">{{frm.ma}}</label>
+                        <input type="checkbox" id="ma" name="ma" value="ma">
+                        <label for="dn">{{frm.dn}}</label>
+                        <input type="checkbox" id="dn" name="dn" value="dn">
+                        <label for="us">{{frm.us}}</label>
+                        <input type="checkbox" id="us" name="us" value="us">
+                        <label for="pk">{{frm.pk}}</label>
+                        <input type="checkbox" id="pk" name="pk" value="pk">
+                        <div style="clear:both;"></div>
+                        <label for="st">{{frm.st}}</label>
+                        <input type="checkbox" id="st" name="st" value="st">
+                        <label for="sn">{{frm.sc}}</label>
+                        <input type="checkbox" id="sc" name="sc" value="sc">
+                        <label for="ex">{{frm.ex}}</label>
+                        <input type="checkbox" id="ex" name="ex" value="ex">
+                    </div>
+                </div>
+                <div class="box2" style="float:left;">
+                    <label for="ps">{{frm.ps}}*:</label>
+                    <div style="clear:both;"></div>
+                    <div style="margin:0 10px 0 10px;"><textarea id="ps" name="ps" required></textarea></div>
+                    <label for="ds">{{frm.ds}}:</label>
+                    <div style="clear:both;"></div>
+                    <div style="margin:0 10px 0 10px;"><textarea id="ds" name="ds"></textarea></div>
+                    <div>
+                        <input type="submit" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.sub}}">
+                        <input type="button" id="abrt" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.cls}}">
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

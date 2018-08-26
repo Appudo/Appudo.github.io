@@ -1,0 +1,59 @@
+<style>
+    .nologin {
+        visibility:hidden;
+    }
+    .nodisp {
+        display:none;
+    }
+</style>
+<script id="misc">
+    return {
+        run : function() {
+            console.log('load');
+            var s = parseSearch(window.location.search);
+            
+            if(s.reg == 1) {
+                $('#reg_txt').removeClass("nodisp");
+            }
+            
+            $('#login').addClass('nologin');
+            
+            var frm = $('#reloginFrm');
+            frm.submit(function(e) {
+                e.preventDefault();
+                var data = frm.serializeJSON();
+                frm[0].reset();
+                doLogin({email:data.email1,password:data.password1}, "?reg=1");
+            });
+        },
+        unload : function() {
+            console.log('unload');
+            $('#login').removeClass('nologin');
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner" style="text-align:center;">
+        <div style="display:inline-block;text-align:initial;margin-top:50px;">
+            <h2 style="margin-bottom:10px;">{{info.head}}</h2>
+            <div class="frmBox">
+                <div id="reg_txt" class="nodisp full info">{{info.reg}}</div>
+                <form id="reloginFrm" action="none" class="frm sfrm">
+                    <input style="display:none;" type="text" name="login">
+                    <input style="display:none;" type="password" name="password">
+                    <div class="lgn">
+                        <div><input class="full" name="email1" id="email1" type="text" placeholder="{{login.em}}"></div>
+                        <div><input class="full" name="password1" id="password1" type="password" placeholder="{{login.pw}}"></div>
+                        <div style="text-align:center;margin:10px 0 0"> 
+                            <input class="full" type="submit" name="doLn" value="{{login.sub}}">
+                            <div>
+                                <a class="spf-link" href="/confirm" id="lst" tabindex="-1">{{login.lst}}</a><pre style="display:inline-block;"> - </pre><a class="spf-link" href="/" id="lst" tabindex="-1">{{login.rst}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>  
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

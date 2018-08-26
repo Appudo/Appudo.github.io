@@ -1,0 +1,36 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        run : function() {
+            var api = $('.ct_ct .api');
+            api.attr('href', apiRef());
+            var vers = $('.ct_ct .version');
+            vers.text(fullVersion() + ' ' + vers.text());
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+     <div class="linner">
+        <h1 class="ct_head">{{info.head}}</h1>
+        <div class="ct_ct">
+            <div class="men">
+                <a href="#version">{{info.ver}}</a><br>
+                <a href="#docs">{{info.doc}}</a><br>
+                <a href="#api">{{info.api}}</a><br>
+            </div>
+            <div>
+                <h2 id="version" class="ct_h">{{info.ver}}</h2>
+                <div class="pre version">{{info.vert}}</div>
+            </div>
+            <div>
+                <h2 id="docs" class="ct_h">{{info.doc}}</h2>
+                <div class="pre">{{info.doct1}} <a target="_blank" href="/doc/">{{info.doc}}</a> {{info.doct2}} <a href="/legal#contact">{{info.doct3}}</a> {{info.doct4}}</div>
+            </div>
+            <div>
+                <h2 id="api" class="ct_h">{{info.api}}</h2>
+                <div class="pre">{{info.apit1}} <a class="api" target="_blank" href="">{{info.apit2}}</a> {{info.apit3}}</div>
+            </div>
+        </div>
+    </div>
+</div>

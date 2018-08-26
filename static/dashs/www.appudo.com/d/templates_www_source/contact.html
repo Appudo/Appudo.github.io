@@ -1,0 +1,106 @@
+<style>
+    #ctFrm {
+        width: 500px;   
+        overflow:hidden; 
+    }
+    
+    #ctFrm label {
+        margin-top:10px;
+        display:block;
+    }
+    
+    #ct_err {
+        color:red;
+    }
+    
+    #ct_mail, #ct_msg {
+        width:412px;
+    }
+    
+    
+    #ct_comment {
+        float left;
+        margin-left:801px;
+    }
+    
+    #ct_sub {
+        float:right;
+        margin-right:80px;
+    }
+    
+    #ct_head {
+        font-weight:bold;
+        margin-bottom:10px;
+    }
+</style>
+<script id="misc">
+    return {
+         sname:null,
+         dec : function(idx) {
+            var _this = this;
+            var sub = $("#ct_sub");
+            sub.attr('value', "Wait " + idx);
+            if(--idx < 0)
+            {
+                sub.attr('value', _this.sname);
+                sub.attr('disabled', false);
+                return;
+            }
+            setTimeout(function() {
+                _this.dec(idx);
+            }, 1000);
+        },
+        checkFrm : function() {
+            var err = $("#ct_err");
+            var txt = $("#ct_msg");
+            err.html('');
+            err.css('display', 'none');
+            if(txt[0].value.length > 1000) {
+                err.css('display', 'block');
+                err.html('Your request has ' + txt[0].value.length + ' characters.<br> We only support requests up to 1000 characters.');
+                return false;
+            }
+            return true;
+        },
+        run : function() {
+            var _this = this;
+            var frm = $('#ctFrm');
+            var sub = $("#ct_sub");
+            var hash = $("#ct_hash");
+            if(sub) {
+                sname = sub.attr('value');
+                sub.attr('disabled', true);
+                _get('/contact/', function(data) {
+                    hash.attr('value', data);
+                    _this.dec(5);
+                });
+            }
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+                if(_this.checkFrm()) {
+                    var d = frm.serializeJSON();
+                    _post('/contact/', d, function(data) {
+                        console.log(data);
+                    });
+                }
+            })
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <div id="frm">
+            <h3 id="ct_head">Contact Form</h3>
+            <div id="ct_err" style="display:none;">ERROR</div>
+            <form id="ctFrm" method="POST" action='/contact/'>
+                <input type="hidden" id="ct_hash" name="hash" value=''>
+                <label>Your Email:</label><input type="email" id="ct_mail" name="mail" required>
+                <label>Your Request (max. 1000 characters):</label>
+                <textarea id="ct_msg" name="msg" cols="50" rows="13" required></textarea>
+                <input tabindex="-1" type="text" id="ct_comment" name="comment">
+                <input type="submit" id="ct_sub" value="Send">
+            </form>
+        </div>
+    </div>
+</div>

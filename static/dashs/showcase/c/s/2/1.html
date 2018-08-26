@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <style>
+    </style>
+    <script>
+    var isSecure = location.protocol === 'https:';
+    var theURI = (isSecure ? "wss://" : "ws://") + window.location.hostname + '###WSSTREM_SERVER###'
+    var theVideo;
+    var theData;
+    var ready = 0;
+    var idx = 0;
+    var pending = 0;
+    var transfer = 0;
+    var needSeek = 0;
+    var lookahead = 30000;
+    var theMedia = new MediaSource();
+    
+    function Init()
+    {
+        if(window.MozWebSocket)
+        {
+            window.WebSocket = window.MozWebSocket;
+        }
+        
+        theVideo = document.getElementById("theVideo");
+        theVideo.disabled = true;
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/pub/###SDIR###/bunny.json', true);
+        xhr.onreadystatechange = function(e) {
+            if(this.readyState == 4 && this.status == 200) {
+                theData = JSON.parse(this.responseText);
+                theData.data.push({});
+                ready++;
+                onStart();
+          }
+        }
+        xhr.send();
+        doConnect();
+        document.complete = true;
+    }
+    
+    function doConnect()
+    {
+        websocket = new WebSocket(theURI);
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        
+    }
+    
+    function onOpen(evt)
+    {
+        ready++;
+        onStart();
+    }
+    
+    var sourceBuffer
+    function onMessage(evt)
+    {
+        getBuffer(evt.data, function(data) {
+            var d = theData.data;
+            d[idx].complete = true;
+            sourceBuffer.appendBuffer(data);
+            transfer = false;
+        });
+    }
+
+    function onError(evt)
+    {
+    }
+
+    function onClose(evt)
+    {
+    }
+    
+    function getBuffer(blob, after)
+    {
+        var arrayBuffer;
+        var reader = new FileReader();
+        reader.onload = function() {
+            after(this.result)
+        };
+        reader.readAsArrayBuffer(blob)
+    }
+    
+    function getInfo(idx)
+    {
+        var d = theData.data;
+        var max = d.length - 1;
+        if(idx >= max)
+            return {offset:0, len:0};
+        var len = idx == max - 1 ? theData.size - d[idx].offset :  d[idx + 1].offset - d[idx].offset;
+        var offset = d[idx].offset;
+        if(idx == 0) {
+            len += offset;
+            offset = 0;
+        }
+        return {offset:offset, len:len}
+    }
+    
+    function requestChunk(idx)
+    {
+        var d = theData.data;
+        if(!d[idx].complete)
+        {
+            transfer = true;
+            websocket.send(JSON.stringify(getInfo(idx)));
+        }
+    }
+    
+    function trySeek()
+    {
+        if(transfer || sourceBuffer.updating) {
+            needSeek = true;
+            return;
+        }
+        if(theMedia.readyState == "open") {
+            sourceBuffer.abort();
+        }
+        var d = theData.data;
+        var max = d.length - 1;
+        var i = 0;
+        for(; i < max; i++) {
+            if(theVideo.currentTime < d[i].time / 1000)
+                break;
+        }
+        idx = i;
+        if(idx > 3)
+            idx -= 3;
+        tryFetch();
+    }
+    
+    function tryFetch()
+    {
+        var d = theData.data;
+        var max = d.length - 1;
+        
+        if(idx >= max) {
+            if(theMedia.readyState == "open") {
+                theMedia.endOfStream();
+            }
+            return;
+        }
+        
+        var l = d[idx].time <= lookahead ? 0 : d[idx].time - lookahead;
+        if(d[idx].time / 1000 - theVideo.currentTime < (lookahead / 1000) && !pending)
+            pending++;
+            
+        if(!transfer && pending && !sourceBuffer.updating)
+        {
+                
+            pending--;
+            idx++;
+            requestChunk(idx);
+        }
+    }
+    
+    function onStart()
+    {
+        if(ready == 2) {
+            theVideo.disabled = false;
+            theVideo.src = URL.createObjectURL(theMedia)
+            
+            theMedia.addEventListener('sourceopen', function(e) {
+                try  {
+                sourceBuffer = theMedia.addSourceBuffer('video/mp4; codecs="avc1.640029, mp4a.40.5"');
+                sourceBuffer.mode = 'segments';// sequence
+                requestChunk(idx);
+                if(!document.nostart)
+                    theVideo.play();
+                sourceBuffer.addEventListener('updateend', function(e) {
+                    if(needSeek) {
+                        needSeek = false;
+                        trySeek();
+                    }
+                    if(!transfer && pending && !sourceBuffer.updating)
+                    {
+                        pending--;
+                        idx++;
+                        requestChunk(idx);
+                    }
+                }, false);
+                } catch(e) {
+                    
+                }
+            }, false);
+            
+            theVideo.addEventListener('timeupdate',function(){
+                tryFetch();
+            },false);
+            
+            theVideo.addEventListener('progress', function(e) {
+                var d = theData.data;
+                var max = d.length - 1;
+                    
+                if(theMedia.readyState == "closed")
+                    return;
+                
+                tryFetch();
+            });
+            
+            theVideo.addEventListener('seeking', function(e) {
+                trySeek();
+            });
+        }
+    }
+    </script>
+    </head>
+    <body onLoad="Init();">
+            <div>
+                <video controls id="theVideo" width="500" height="282"></video>
+            </div>
+    </body>
+</html>

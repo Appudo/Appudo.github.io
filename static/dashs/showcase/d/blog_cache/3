@@ -1,0 +1,823 @@
+<!DOCTYPE HTML><html xmlns="http://www.w3.org/1999/xhtml"><head><title>The Blog</title><link href="/pub/Appudo/css/wschat.css" rel="stylesheet" type="text/css"/>    
+    
+    <link rel="prev" href="./2"/>
+    <link rel="next" href="./4"/>
+    <script type="text/javascript" src="/pub/Appudo/js/jquery-1.10.2.min.js"></script>
+    <style>
+        html, body {
+            height:100%;
+            overflow:hidden;
+            font-family: 'opensans-regular', sans-serif;
+            font-weight: normal;
+            font-size: 15px;
+            line-height: 30px;
+            color: #838C95;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        label {
+             color:#fff;
+             font: 4px/5px 'opensans-bold', sans-serif;
+        }
+        
+        select:invalid { 
+            color: gray; 
+        }
+        
+        #main a {
+            color:#11ABA8;
+            text-decoration: none;
+        }
+            
+        #main {
+            height:100%;  
+        }
+        #thePosts {
+            position:fixed;
+            top:40px;   
+            left: 0px;
+            right:0px;
+            bottom:50px;
+            overflow:auto;
+        }
+        
+        #thePosts .inner,  #main > span {
+            left: 50%;
+            margin-right: -50%;
+            margin-left:-200px;
+        }
+        
+        #main > span {
+            top:0px;
+            position:fixed;
+            margin: 6px 0 8px -200px;
+        }
+        
+        #thePosts .inner {
+            position:relative;
+            width:400px;
+            height:100%;
+        }
+        
+        #foot {
+            position:fixed;
+            height:50px;
+            bottom:0px;
+            left: 0px;
+            right: 0px;
+        }
+        
+        #foot .inner {    
+            padding-top:10px;
+            text-align: center;
+        }
+        
+        .first {
+            margin-left:50px;
+        }
+        .last {
+            margin-right:50px;
+        }
+            
+        #theAddMod, #theDel, #theCat {
+            display:none;
+            padding:10px;
+            border-radius:4px;
+            border:1px solid #ddd;
+            background:#fff;
+            width:400px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            margin: auto;
+            margin-top:6%;
+            padding-bottom:10px;
+        }
+        
+        .post {
+            text-align:left;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            border-radius: 4px;
+            background: linear-gradient(0deg,#ddd 1%,#fff 1%);
+            padding: 5px;
+            margin-bottom:20px;
+        }
+        
+        .post p {
+            margin:0;
+        }
+        
+        .post .tb {
+            text-align:right;
+        }
+        
+        .post .txt {
+            font-style: italic;
+        }
+        
+        .post .tb > span {
+            font-style: italic;
+        }
+        
+        .loginItem {
+            display:none;  
+        }
+            
+        .theError {
+            margin-left:10px;
+            display:none;
+            color:red;
+        }
+        
+        .bbutton {
+            float:right;
+            margin:5px 0px 0 10px;
+        }
+        
+        .panel {
+            position: fixed;    
+            left: 180px;
+            top: 0px;
+        }
+        .admin {
+            float: right;  
+            margin-top: -25px;
+        }
+        
+        #catList {
+            border:1px solid #ddd;
+            overflow:auto;
+            height:150px;
+        }
+            
+        #catList > div span {
+            margin: 0 10px 0 10px;
+        }
+            
+        #catList .sel {
+            background-color: #11ABB0;
+            color: #FFF;
+        }
+        
+        #addHead, #addText, #catLabel {
+            width: 394px;
+        }
+        
+        #addText {
+            height:70px;
+            min-height: initial;
+            font: 14px/24px 'montserrat-light', sans-serif;
+        }
+        
+        #addCat {
+            width: 400px;
+            height:25px;
+            margin-bottom:-6px;
+        }
+        
+        .rbutton, .lbutton {
+            margin:10px 5px 0 0;
+        }
+        .rbutton {
+            float:right;
+        }
+        .lbutton {
+            float:left;
+        }
+        .cur {
+            font-weight:bold;
+        }
+    </style>
+    <script>
+        var hasLogin = false;
+        var pending = false;
+        var theTicket = 0;
+        var categories = null;
+        var selLast, selDiff;
+        var selDelay = 600;
+        var selCls = 'sel';
+        
+        document.onUpdate = function(result) {
+            if(result.t != 'blog')
+                return;
+            if(result.h && theTicket != result.h) {
+                hideAll()
+            }
+            theTicket = 0;
+        }
+        
+        document.onNeedLogout = function(v) {
+            needLogin(!v)
+            hasLogin = v;
+        }
+        
+        function needLogin(v) {
+            $('.loginItem').css('display', v ?  'none' :  'block');
+           // $('#theLogin').css('display', v ? 'block' : 'none');
+        }
+        
+        function loadCategories(after) {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        categories = result.d;
+                        setupCatView(categories);
+                        if(after)
+                            after();
+                    }
+                } 
+                
+                if(error) {
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=c&h=' + theTicket);
+            return false;
+        }
+        
+        function sortCatsByLabel(items) {
+            return items.slice(0).sort(function(a,b) {
+                return (a['l'] > b['l']) ? 1 :(a['l'] < b['l']) ? -1 :0;
+            });
+        }
+    
+        function setupCatView(cats) {
+            var values = [];
+            var options = $('#addCat')
+            var list = $('#catList')[0]
+            var o = $('<option>', {value:'123', text:'Category...'});
+            list.innerHTML = '';
+            options[0].innerHTML = '';
+            options.append(o);
+            o.prop('disabled', true);
+            o.prop('selected', true);
+            o.prop('hidden', true);
+            for (k in cats) {
+                if(cats.hasOwnProperty(k)) {
+                    values.push({l:k,i:cats[k]});
+                }
+            }
+            values = sortCatsByLabel(values);
+            for (var i = 0; i < values.length; i++) {
+                var v = values[i];
+                var div = document.createElement('div');
+                div.setAttribute('id', 'cat' + v.i);
+                div.setAttribute('data', v.i);
+                div.innerHTML = '<span>' + v.l + '</span>';
+                list.appendChild(div);
+                options.append($('<option>', {value:v.i, text:v.l}));
+            }
+            setVal($('#catLabel'), '_id', '');
+        }
+        
+        function hideAll(v) {
+            v == showAdd || showAdd(false)
+            v == showMod || showMod(false)
+            v == showDel || showDel(false)
+            v == showCat || showCat(false)
+            $('.theError').css('display','none');
+        }
+        
+        function setupAddMod(obj) {
+            var modButton = $("#modButton");
+            modButton.unbind('click');
+            if(obj) {
+                modButton.click(function(e) {e.preventDefault(); doModPost(); return false; });
+                var div = $('#item' + obj.i);
+                var data = getData(div[0]) || {};
+                if(data.cat) {
+                    var cat = categories[data.cat];
+                    if(cat){
+                        $('#addCat option')
+                         .removeAttr('selected')
+                         .filter('[value=' + cat + ']')
+                             .prop('selected', true);
+                    }
+                }
+                $('#addHead').val(data.head);
+                $('#addText').val(data.txt);
+                setVal($('#addHead'), '_id', obj.i);
+            } else {
+                modButton.click(function(e) {e.preventDefault(); doAddPost(); return false; });
+                $('#addCat').prop('selectedIndex', 0);
+                $('#addHead').val('');
+                $('#addText').val('');
+            }
+        }
+        
+        function updateData(id, data) {
+            var div = $('#item' + id)[0]
+            var txt = $(div).find('.txt')[0];
+            var head = $(div).find('.head')[0];
+            var cat = $(div).find('.cat')[0];
+            head.innerHTML = data.head;
+            txt.innerHTML = data.txt;
+            cat.innerHTML = data.catLabel;
+        }
+        
+        function getData(div) {
+            var txt = $(div).find('.txt')[0];
+            var head = $(div).find('.head')[0];
+            var cat = $(div).find('.cat')[0];
+            return {txt:txt.innerHTML,head:head.innerHTML,cat:cat.innerHTML};
+        }
+        
+        function getCatData(div) {
+            var d = div.getAttribute('data').split(',');
+            return {l:div.children[0].innerHTML,i:d[0]}
+        }
+            
+        function showAdd(v) {
+            if(v) {
+                function go() {
+                    setupAddMod();
+                    hideAll(showAdd);
+                    $('#theAddMod').css('display', 'block');
+                }
+                if(!categories) {
+                    loadCategories(go);
+                    return;
+                } 
+                go();
+            }
+            $('#theAddMod').css('display', v ? 'block' : 'none');
+        }
+            
+        function showMod(v, info) {
+            if(v) {
+                function go() {
+                    setupAddMod(info);
+                    hideAll(showMod);
+                    $('#theAddMod').css('display', 'block');
+                }
+                if(!categories) {
+                    loadCategories(go);
+                    return;
+                } 
+                go();
+            }
+            $('#theAddMod').css('display', v ? 'block' : 'none');
+        }
+        
+        function showDel(v, info) {
+            if(v) {
+                if(!info.nohide)
+                    hideAll(showDel);
+                var div = document.getElementById("delTxt");
+                var span = div.getElementsByTagName("span")[0];
+                if(info.l) {
+                    span.innerHTML = 'Confirm deletion of item "' + info.l + '".';
+                } else {
+                    var data = getData($('#item' + info.i)[0]);
+                    span.innerHTML = 'Confirm deletion of item "' + data.head + '".';
+                }
+                var delButton = $('#delButton');
+                delButton.unbind('click');
+                delButton.click(function(e) {e.preventDefault(); info.after(info); return false; });
+            }
+            $('#theDel').css('display', v ? 'block' : 'none');
+        }
+            
+        function showCat(v) {
+            if(v) {
+                hideAll(showCat);
+                if(!categories) {
+                    loadCategories();
+                }
+            } else {
+                $("#catLabel").val('');
+            }
+            $('#theCat').css('display', v ? 'block' : 'none');
+            
+        }
+            
+        function doAddPost() {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var head = $('#addHead').val();
+            var txt = $('#addText').val();
+            var cat = $('#addCat').val();
+            var catLabel = $( "#addCat option:selected" ).text();
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        window.location.replace('./');
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=a&d={"l":' + JSON.stringify(txt) + ',"h":' + JSON.stringify(head) + ',"c":"' + cat + '","t":1}&h=' + theTicket);
+            return false;
+        }
+        
+        function doModPost() {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var head = $('#addHead').val();
+            var txt = $('#addText').val();
+            var cat = $('#addCat').val();
+            var catLabel = $( "#addCat option:selected" ).text();
+            var id = getVal($('#addHead'), '_id');
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        hideAll();
+                        updateData(id, {head:head,txt:txt,catLabel:catLabel});
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=m&d={"i":"' + id + '","l":' + JSON.stringify(txt) + ',"h":' + JSON.stringify(head) + ',"c":"' + cat + '","t":1}&h=' + theTicket);
+            return false;
+        }
+        
+        function doDelPost(info) {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        hideAll();
+                        $('#item'+info.i).remove();
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=d&d={"i":"' + info.i + '","t":1}&h=' + theTicket);
+            return false;
+        }
+        
+        function doAddCat() {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var label = $('#catLabel').val();
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        categories[label] = result.d;
+                        setupCatView(categories);
+                        $('#catLabel').val('');
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=a&d={"l":' + JSON.stringify(label) + ',"t":0}&h=' + theTicket);
+            return false;
+        }
+        
+        function doModCat() {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var label = $('#catLabel').val();
+            var id = getVal($('#catLabel'), '_id');
+            if(id == '' || label == '')
+                return;
+            var data = getCatData($('#cat' + id)[0]);
+            if(data.l == label)
+                return;
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        categories[label] = id;
+                        delete categories[data.l];
+                        setupCatView(categories);   
+                        $('#catLabel').val('');
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=m&d={"i":"' + data.i + '","l":' + JSON.stringify(label) + ',"t":0}&h=' + theTicket);
+            return false;
+        }
+        
+        function findCatData(extend) {
+            var id = getVal($('#catLabel'), '_id');
+            var res;
+            if(id == '')
+                res = {i:'',l:''};
+            res = getCatData($('#cat' + id)[0]);
+            if(extend) {
+                jQuery.extend(res, extend);
+            }
+            return res;
+        }
+        
+        function doDelCat() {
+            if(pending)
+                return;
+            var result;
+            var error = true;
+            var id = getVal($('#catLabel'), '_id');
+            if(id == '')
+                return;
+            var data = getCatData($('#cat' + id)[0]);
+            var xhr = new XMLHttpRequest();
+            $('.theError').css('display','none');
+            xhr.open('POST', '../page_blog_server/', true);
+            xhr.onreadystatechange = function(e) {
+                if(this.readyState != 4)
+                    return;
+                pending = 0;
+                if(this.status == 200) {
+                    result = JSON.parse(this.responseText);
+                    if(result.r == '1') {
+                        error = false;
+                        delete categories[data.l];
+                        setupCatView(categories);   
+                        $('#catLabel').val('');
+                    }
+                } 
+                
+                if(error) {
+                    $('.theError').css('display','inline-block');
+                }
+            }
+            pending = 1;
+            theTicket = Math.random();
+            xhr.send('t=d&d={"i":"' + id + '","t":0}&h=' + theTicket);
+            return false;
+        }
+        
+        function getTarget(e) {
+            return e.toElement || (e.originalEvent ? e.originalEvent.target : undefined) || e.target;
+        }
+            
+        function getVal(name, prop) {
+            return $(name)[0][prop];
+        }
+        function setVal(name, prop, val) {
+            $(name)[0][prop] = val
+        }
+    
+        function Init()
+        {
+            var cats = $('#catList');     
+        
+            function findCat(t) {
+                var p = cats[0];
+                var n;
+                while((n = t.parentNode) !== p) {
+                    t = n;
+                }
+                return t;
+            }  
+            
+            cats.bind('mousedown mouseup', function(e) {
+                e.preventDefault();
+                if(e.type == 'mousedown') {
+                    selLast = e.timeStamp;
+                } else {
+                    selDiff = e.timeStamp - selLast;
+                    if(selDiff < selDelay) {
+                        cats.find('.' + selCls).each(function() {
+                            $(this).removeClass(selCls);
+                        })
+                        var n = findCat(getTarget(e));
+                        var d = getCatData(n);
+                        var l = $('#catLabel');
+                        $(n).toggleClass(selCls);
+                        setVal(l, '_id', d.i);
+                        l.val(d.l);
+                    }
+                }
+            });
+                
+            $('#addCatButton').click(function() {showCat(true); return false; });
+            $('#addPostButton').click(function() {showAdd(true); return false; });
+            $('#modStopButton').click(function() {showAdd(false); return false; });
+            $('#delStopButton').click(function() {showDel(false); return false; });
+            $('#catStopButton').click(function() {showCat(false); return false; });
+            $('#catAddButton').click(function(e) {e.preventDefault(); doAddCat(); return false; });
+            $('#catModButton').click(function(e) {e.preventDefault(); doModCat(); return false; });
+            $('#catDelButton').click(function(e) {e.preventDefault(); showDel(true, findCatData({nohide:true,after:function() {showCat(true);doDelCat()}})); return false; });
+            
+            $('#thePosts').find('.dt').each(function() {
+                var date = new Date(parseInt($(this)[0].innerHTML, 10)*1000);
+                $(this)[0].innerHTML = date.toLocaleString('en-US', { hour12: false });
+            });
+            
+            document.complete = true;
+        }
+    </script>
+    </head>
+    <body onLoad="Init();">
+        <div id="main">
+            <span>Did you Know?</span>
+            <div class="loginItem panel">
+                <input type="button" id="addCatButton" class="bbutton" value="Edit Categories">
+                <input type="button" id="addPostButton" class="bbutton" value="Add Post">
+            </div>
+            <div id="thePosts"> 
+                <div class="inner">
+                    
+                    <div id="item14">
+                        <div class="post">
+                            <div></div><div class="head"></div><p class="txt">&ldquo;You can make packages from accounts and deploy them into other accounts.&rdquo;</p> <div class="tb">from <span></span> at <span class="dt">1500090920</span> in <span class="cat">Packages</span></div>
+                        </div>                        
+                        <div class="loginItem admin">
+                            <a href="#" onclick="showMod(true, {i:'14',n:this});return false;">edit</a> / <a href="#" onclick="showDel(true, {i:'14',after:function(v){doDelPost(v)}});return false;">delete</a>
+                        </div>
+                    </div>
+                    
+                    <div id="item13">
+                        <div class="post">
+                            <div></div><div class="head"></div><p class="txt">&ldquo;Access logs from the http server are stored and rotated in the accounts log folder.&rdquo;</p> <div class="tb">from <span></span> at <span class="dt">1500090722</span> in <span class="cat">File Server</span></div>
+                        </div>                        
+                        <div class="loginItem admin">
+                            <a href="#" onclick="showMod(true, {i:'13',n:this});return false;">edit</a> / <a href="#" onclick="showDel(true, {i:'13',after:function(v){doDelPost(v)}});return false;">delete</a>
+                        </div>
+                    </div>
+                    
+                    <div id="item12">
+                        <div class="post">
+                            <div></div><div class="head"></div><p class="txt">&ldquo;Only the pub folder is accessible through the http server with "/pub".&rdquo;</p> <div class="tb">from <span></span> at <span class="dt">1500090710</span> in <span class="cat">File Server</span></div>
+                        </div>                        
+                        <div class="loginItem admin">
+                            <a href="#" onclick="showMod(true, {i:'12',n:this});return false;">edit</a> / <a href="#" onclick="showDel(true, {i:'12',after:function(v){doDelPost(v)}});return false;">delete</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div id="foot">
+                <div class="inner">
+                    
+                        <a class="" href="./2">Newer</a>
+                        
+                        
+                        
+                    
+                        <a class="first" href="./">First</a>
+                        
+                        
+                        |
+                    
+                        <a class="" href="./1">1</a>
+                        
+                        
+                        |
+                    
+                        <a class="" href="./2">2</a>
+                        
+                        
+                        |
+                    
+                        
+                        <span class="cur">3</span>
+                        
+                        |
+                    
+                        <a class="" href="./4">4</a>
+                        
+                        
+                        |
+                    
+                        <a class="last" href="./4">Last</a>
+                        
+                        
+                        
+                    
+                        <a class="" href="./4">Older</a>
+                        
+                        
+                        
+                    
+                </div>
+            </div>
+            <form>
+                <div id="theAddMod">
+                    <div style="border-bottom:1px solid #ddd"><span>Add Post:</span><div class="theError">error...</div></div>
+                    <div>
+                        <label>Category</label><select id="addCat"></select>
+                    </div>
+                    <div>
+                        <label>Head</label><input type="text" id="addHead" placeholder="Head...">
+                    </div>
+                    <div>
+                        <label>Text</label><textarea id="addText" placeholder="Text..."></textarea>
+                    </div>
+                    <div>
+                        <input class="rbutton" type="button" id="modStopButton" value="Cancel">
+                        <input class="rbutton" type="submit" id="modButton" value="Submit">
+                    </div>
+                </div>
+                <div id="theCat">
+                    <div><span>Categories:</span><div class="theError">error...</div></div>
+                    <div id="catList">
+                    </div>
+                    <div>
+                        <label>Label</label><input type="text" id="catLabel" placeholder="Label...">
+                    </div>
+                    <div>
+                        <input class="rbutton" type="button" id="catStopButton" value="Cancel">
+                        <input class="rbutton" type="submit" id="catDelButton" value="Delete">
+                        <input class="rbutton" type="submit" id="catModButton" value="Update">
+                        <input class="lbutton" type="submit" id="catAddButton" value="Add New">
+                    </div>
+                </div>
+                <div id="theDel">
+                    <div style="border-bottom:1px solid #ddd"><span>Delete Item?</span><div class="theError">error...</div></div>
+                    <div id="delTxt">
+                        <span>The deletion of item connot be undone!</span>
+                    </div>
+                    <div>
+                        <input class="rbutton" type="button" id="delStopButton" value="Cancel">
+                        <input class="rbutton" type="submit" id="delButton" value="Submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

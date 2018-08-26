@@ -1,0 +1,503 @@
+<style>
+    @media print {
+        #main_content div {
+            display:block !important;
+        }
+        .invisible {
+            display:none !important;
+        } 
+        .visible {
+            display:inline !important;
+        } 
+        .break {
+            page-break-before:always;
+        }
+    }
+    
+    #main_content h2 {
+        margin:10px 0 10px 0;
+    }
+      
+    sup {
+      position: relative;
+      font-size: 40%;
+      line-height: 0;
+      vertical-align: baseline;
+      top: -1.2em;
+    }
+    ol.nn li {
+        list-style-type: none;
+    }
+    
+    table.TB  td {
+        text-align: left;
+      padding:8px;
+      border: 1px solid #ebebeb;
+    }
+
+    .highlight .o { color: #b6b6b6; }
+    .highlight .p { color: #6d6d6d; }
+    .highlight .kc { color: #d28445; }
+    .highlight .kd { color: #d28445; }
+    .highlight .s1 { color: #90a959; }
+    
+    code, pre {
+      margin-bottom: 20px;
+      font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
+      font-size: 14px;
+      color: #222;
+    }
+    
+    code {
+      padding: 0 3px;
+      background-color: #f2f2f2;
+      border: solid 1px #ddd;
+    }
+    
+    pre {
+      padding: 5px;
+      overflow: auto;
+      color: #494949;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    pre code {
+      padding: 0;
+      color: #f2f2f2;
+      border: none;
+    }
+    
+    pre.highlight {
+      border: 1px solid #ebebeb;
+    }
+    table {
+      width: 100%;
+      border: 1px solid #ebebeb;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin:10px 0 10px 0;
+    }
+    
+    th {
+      font-weight: 500;
+    }
+    
+    .anchor {
+        height:25px;
+    }
+</style>
+<script id="misc">
+    return {
+        o:false,
+        expd:function(id, link) {
+            return function(ev, exp) {
+                if(ev) {
+                    ev.preventDefault();
+                }
+                var e = document.getElementById(id);
+                if((e.style.display ==  'none' && exp === undefined) || (exp !== undefined && exp)) {
+                    e.style.display = 'block';
+                    if(ev) {
+                        var prev = link.previousSibling;
+                        history.pushState({}, '', prev.hash);
+                    }
+                } else {
+                    e.style.display = 'none';
+                }
+            }
+        },
+        Init:function () {
+            var links = document.body.querySelectorAll('h2 .c');
+            var items = document.body.querySelectorAll('#main_content div');
+            var i = 0;
+            for(; i < items.length; i++ ) { 
+                var tid =  i + '_cps';
+                var fkt = this.expd(tid, links[i]);
+                items[i].id = tid;
+                links[i].onclick = fkt;
+                fkt();
+            }
+            var l = location ? location : window.location;
+            if(l.hash != "") {
+                this._expda(true);
+                this.o = true;
+            }
+        },
+        expda:function() {
+            this.o = !this.o;
+            this._expda(this.o);
+        },
+        _expda:function(v) {
+            var links = document.body.querySelectorAll('h2 .c');
+            var i = 0;
+            for(; i < links.length; i++ ) {
+                var fkt = links[i].onclick;
+                fkt(null, v);
+            }
+        },
+        run : function() {
+            console.log()
+            var _this = this;
+            $($('#container').find('a')[0]).click(function() {
+                _this.expda();
+            });
+            this.Init();
+        }
+    }
+</script>
+<div id="i18nBase">doc</div>
+<div class="i18n style" id="content">
+    <div class="ct doc">
+        <h1>{{info.head}}</h1>
+    <div id="container">
+      <div class="inner">
+        <div class="invisible" style="margin:0 30px 40px 0;">
+        <a href="#" style="float:right;">expand/collapse all</a> 
+        </div>
+        <section id="main_content">
+        <h2>
+        <a id="unique" class="anchor" href="#unique" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What makes APPUDO special?</a>
+        </h2>
+        <div>
+        <p>The main goal of APPUDO is to significantly increase the reuseability and adaptation of custom cloud software. To this end,  APPUDO offers new cloud development <a href="#resource-isolation">paradigms</a>. 
+        </p>
+        <p>
+        APPUDO is an all in one solution with user and account management preserving high flexibility down to the lowest level.
+        </p>
+        <p>
+        Easy direct interoperability with other technologies is a design goal to let APPUDO form a solution broker for different needs.
+        </p>
+        <p>
+        With it's loosely coupled design approach, APPUDO allows for highly dynamic, more secure and atomated composition of software parts.
+        </p>
+        <p>
+        To increase scalability APPUDO features a seamless service oriented containerization approach to share resources.
+        </p>
+        <p>
+        Creating the single layers of APPUDO from scratch has resulted in a platform with many benefits. Ease of development and deployment due to the new kind of resource management and isolation are only two of them. 
+        </p>
+        <p>
+        APPUDO has mechanisms to detect and signal slow input and fast input but slow output situations without the need for whole system parts to fail. This makes it possible to react on special situations like attacks or false usage before memory or other resources are exhausted.
+        </p>
+        <p>
+        APPUDO <a href="#why-swift">makes use of Swift</a> the programming language but it is very different from other Swift solutions. It is not a library useable by Swift and Swift is not a key feature. Instead, it is a system extensible with Swift and possibly with other languages. 
+        APPUDO is not necessarily tied to a specific programming language. 
+        </p>
+        </div>
+        
+        <h2>
+        <a id="needed-skills" class="anchor" href="#needed-skills" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What skills are needed to create a service with APPUDO?</a>
+        </h2>
+        <div>
+        <p>The multi-tier architecture allows developers to create software parts that are useable by non-developers to create their own services. Thus with APPUDO, users can create services even without software developing skills. </p>
+        </div>
+
+        <h2>
+        <a id="exciting-use-case" class="anchor" href="#exciting-use-case" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What is an exciting use case for APPUDO?</a>
+        </h2>
+        <div>
+        <p>
+            There are some very exciting <a href="#appudo-run">runs</a> in the making. One of them is the OpsAgent, which will offer human-like dialog interfaces for user-defined code operations. An abstract model definition based on human language is mapped to custom user functions forming the run. 
+            </p>
+            <p>
+            With the OpsAgent run it is not only possible to easily automate processes, but to make complicated technical tasks available to non-technical users. What we see today is that tech people are repeatedly "called in" for a certain task they understand best. Of course they need to stop their important current work for this even if the task is trivial and boring to them. 
+            </p>
+            <p>
+            In the future the answer to this kind of calling in will likely be "have you asked my OpsAgent?". 
+            </p>
+            <p>
+            Expect other novel approches going public when the time is right. 
+        </p>
+        </div>
+        
+        <h2>
+        <a id="current-state" class="anchor" href="#current-state" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a> 
+        <a href="#" class="c">What is the current state of APPUDO?</a>
+        </h2>
+        <div>
+        <p>
+            The idea of APPUDO dates back to 2010 and the initial development started years ago. Back then, there was no programming language we could easily adapt so we build our own compiler frontend based on LLVM with a syntax close to javascript, but statically typed. It was well tested and used internally for several use cases, but with the emerge of Swift we decided to release APPUDO to the public. With the transition to the Swift language there was a redesign of key parts.
+            </p>
+            <p>
+             The current release is in preview state and, like Swift, we do not consider it to be mature yet. This does not mean you should not use it but it will probably not behave as expected in all possible situations. Especially the example frontend is behind the possibilities of APPUDO, as it only exits to demonstrate how the system works in general. There will be Swift API bindings for the backend making it easy to create a backend connection trough a custom run.
+        </p>
+        </div>
+
+        <h2>
+        <a id="related-to-containers" class="anchor" href="#related-to-containers" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">How is APPUDO related to containers?</a>
+        </h2>
+        <div>
+        <p>APPUDO introduces a new level of containerization. Programming language-aware, but not intrusive, and compiler-aided on the application level. What current containers offer is the ease of maintenance and scalability due to a consistent isolation context. This makes deployment simple and operations happy - but what about the developers? Containers are generalized constructs and per se only able to handle operation system level resources. </p><p>We think these characteristics of current containers restrict their usefulness for developers and that it can even slow down development. APPUDO offers a new kind of containerization on the application level that relaxes the isolation part and simplifies resource management. Developers must not take special care to scale an application since APPUDO offers services designed to seamlessly add instances and hide the complexity from the developer.</p><p>
+        APPUDO addresses problems related to containers as they exists and how they are used today. In many cases nobody but the programmers know what is going on within a containerized application and the resources it uses. Therefore for non trivial applications with shared resources there must be a close coordination between development and deployment upfont. This is different with APPUDO where resources are visibly defined with the application during development and reassigned later for deployment.</p>
+        </div>
+
+        <h2>
+        <a id="appudo-structure" class="anchor" href="#appudo-structure" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">How is APPUDO structured?</a>
+        </h2>
+        <div>
+        <p>Technically, APPUDO is a collection of isolated services able to share some data if necessary. Some of them are:
+            <table  class="TB">
+                <tr>
+                    <td>appudo_backend</td><td>A service to manage the overall state of APPUDO from the outside world.</td>
+                </tr>
+                <tr>
+                    <td>appudo_compiler</td><td>Compiles runs and other data useable by the appudo_exec service.</td>
+                </tr>
+                <tr>
+                    <td>appudo_cachecomp</td><td>Cache and compress data for other services.</td>
+                </tr>
+                <tr>
+                    <td>appudo_database</td><td>Manages multiple database connections useable by other services.</td>
+                </tr>
+                <tr>
+                    <td>appudo_exec</td><td>Contains runs and executes code within an isolated context.</td>
+                </tr>
+                <tr>
+                    <td>appudo_log</td><td>Monitors services with watchdogs and provides error and service logging.</td>
+                </tr>
+                <tr>
+                    <td>appudo_master</td><td>The main service starting and recovering other services.</td>
+                </tr>
+                <tr>
+                    <td>appudo_sslproxy</td><td>Transparently handles ssl connections for other services.</td>
+                </tr>
+                <tr>
+                    <td>appudo_websocket</td><td>Distributes connections for websocket listeners accross multiple instances.</td>
+                </tr>
+                <tr>
+                    <td>appudo_m2m</td><td>Distributes connections for M2M listeners accross multiple instances.</td>
+                </tr>
+                <tr>
+                    <td>appudo_httpserver</td><td>Handles incoming HTTP connections.</td>
+                </tr>
+                <tr>
+                    <td>appudo_batch</td><td>Manages the time based execution of runs.</td>
+                </tr>
+            </table>
+            </p>
+            <p>
+                APPUDO is a multi-account system able to manage runs, databases, users, groups and other items per account. 
+            </p>
+            <p>
+                The service structure of APPUDO makes it possible to have different implementations for a service instance at the same time. 
+                Implementations can also be switched during runtime with the possibility to add or remove service instances.
+        </p>
+            <p>
+                APPUDO services are designed to have one thread only with each instance and use a special execution "multiplexing" mechanism. Since service instances are mostly independent, data races must not happen. 
+            </p>
+        </div>
+        
+        <h2>
+        <a id="resource-isolation" class="anchor" href="#resource-isolation" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">How does APPUDO isolate and manage resources?</a>
+        </h2>
+        <div>
+        <p>The services APPUDO consists of are mostly isolated. The execution of custom code is done in multiple instances of the appudo_exec service. It is possible to move and group the code into different isolated instances. This also has a practical reason for now since Swift can not recover from fatal errors. Therefore, the whole service must be restarted and with APPUDO it is possible to seperate potentially unstable code into different instances. At the same time other services are not affected from a fatal error what makes it possible for a restarted service to keep active connections and other resources.
+        </p>
+        <p>
+        Additionally, APPUDO introduces a new kind of virtual resource managment. Resources can be logically connected with a virtual name that is only available in the defined units of code. The actual resource can be replaced at any time with another one without the need to change the code.</p>
+        </div>
+        
+        <h2>
+        <a id="compiler-contexts" class="anchor" href="#compiler-contexts" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What are compiler contexts?</a>
+        </h2>
+        <div>
+        <p>The concept of compiler contexts is a very special and important design feature of APPUDO. A piece of code in APPUDO gets a logical context to compile it. Theoretically the same code can work differently in APPUDO with another context. Other languages use annotations inside of the code to give it a special meaning. We decided not to change the code but give it a meaning from the outside. This has the pratical reason not to extend and bloat the language. At the same time it contributes to the goal using pieces of software in different contexts without the need to change it. </p>
+        </div>
+        
+          <h2>
+        <a id="context-example" class="anchor" href="#context-example" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Is there a simple example that illustrates the benefits of compiler contexts?</a>
+        </h2>
+        <div>
+        <p>
+            Let's assume there is an SQL query to get some data from a database table.            
+            <pre class="highlight"><span class="kd">var</span> qry <span class="o">=</span> SQLQry<span class="p">(</span><span class="s1">"SELECT * FROM test"</span><span class="p">)</span>
+            </pre>
+            How does the code change with a different database table? 
+            </p>
+            <p>
+            The code must not change at all, the names used for database tables are virtual names connected to real database tables outside of the code. This can be changed anytime without the need to touch the code. 
+            </p>
+            <p>
+            The overall basic idea is not to use some kind of settings mechanism within the code but change the meaning of the code from the outside.
+            </p>
+            <p>
+            As a result one can create packages of an account and deloy it into another account. Using a prefix it is even possible to deploy the package into the same account resulting in a copy of all resources.
+            </p>
+        </div>
+        
+        <h2>
+        <a id="appudo-scale" class="anchor" href="#appudo-scale" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">How does APPUDO scale?</a>
+        </h2>
+        <div>
+        <p>APPUDO features an internal service structure that allows to dynamically add and remove instances on demand. Each service is designed to seamlessly take its parts of the current workload or hand it over to another instance.
+        <br/>
+        Scaling includes the ability to keep resource usage wintin a defied window. APPUDO internally uses a configurable number of tokens that can flow trough the system at any given time.
+        </p>
+        <p>
+        A simple example: Let's say we want to build a massive scale IoT platform and it should use containerization to fulfill different use cases dynamically at the same time. One solution is to have one container per use case and let each handle it's own network connections. Now any new use case will add additional overhead to this solution and it is hard to do a scalable assignment between for example the cores of a machine and the running jobs. Of course we could immediately go with another machine but does it make sense just because we can't use one machine in an optimal way.
+        </p>
+        <p>
+        With APPUDO containerization is done in a service oriented fashion what makes it possible to combine all the network connections in one service. The service itself can then make use of the cores of a machine and decouple from the number of use cases.
+        </p>
+        </div>
+        
+        <h2 class="break">
+        <a id="appudo-async" class="anchor" href="#appudo-async" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Does APPUDO support asynchronous handling?</a>
+        </h2>
+        <div>
+        <p>With APPUDO we introduce operators for async and await style handling. Most of the APPUDO APIs are async and can also be forced to work synchronous. This way there is no need for two APIs as seen with other languages.</p>
+        </div>
+        
+        <h2>
+        <a id="appudo-run" class="anchor" href="#appudo-run" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What is a "Run"?</a>
+        </h2>
+        <div>
+        <p>In APPUDO a Run provides an entry point for isolated application units. Each run can be placed in a different isolation context. The special thing about a run is that the code does not necessarily determine its final purpose thanks to the lack of code based annotations. There are different kinds of runs like html page or websocket. But compatible run kinds can be switched without the need to change the code. This makes it possible to easily reuse code in different contexts. Currently two runs are publicly available. The "page" run to create dynamic html pages and the "websocket" run to add websocket listeners.</p>
+        <p>A big advantage with runs is the lack of explicit routing. Routing for runs is handled transparently and there is no need to write then in code.</p>
+        </div>
+        
+        <h2>
+        <a id="appudo-run-example" class="anchor" href="#appudo-run-example" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">How does a simple "Run" look like?</a>
+        </h2>
+        <div>
+        <p>
+        To add a websocket echo server go to the run tree, add a run and configure it be a websocket listener. Then just paste this to the code section:
+         <pre class="highlight">
+<span class="kd">import</span> libappudo;
+<span class="kd">import</span> libappudo_run;
+
+<span class="kd">func</span> onMessage<span class="p">(</span>ev<span class="kc"> : </span>WebSocketEvent<span class="p">) {  </span>
+    ws.send(txt:ev.data, ev.target)
+<span class="p">} </span>
+        </pre>
+        </p>
+        </div>
+
+        <h2>
+        <a id="why-swift" class="anchor" href="#why-swift" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Why Swift as a language?</a>
+        </h2>
+        <div>
+        <p>We started APPUDO with our own language for internal usage before Swift appeared. At that time, there was no alternative that suited our needs and we had no intentions to make it a public service. Two important features make Swift a perfect fit for APPUDO. Like our initial language it is based on LLVM and it has the same memory model. There are comments about the lack of a tracing garbage collector for Swift and how bad this is. From our perspective, this is one of its biggest strengths. Other languages tend to have what we call a "memory lock-in". They are meant to be memory black boxes cleaning themselves up but most often at the expense of interoperability. Thus, what can be done with stock Swift and LLVM would be impossible with other languages without massive core changes.
+        </p>
+        <p>
+        The APPUDO platform itself was not created with Swift. It is mostly based on C/C++ and ASM, which is what makes it different from other Swift solutions. It is not a runtime that works from inside of Swift, but a framework that can connect Swift parts to dynamically form a bigger system.
+        </p>
+        </div>
+        
+        <h2>
+        <a id="swift-caas" class="anchor" href="#swift-caas" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Is Swift the perfect fit for a compiler-as-a-service platform?</a>
+        </h2>
+        <div>
+        <p>Swift has many benefits compared to other language solutions. But it is in an early stage and there are some missing pieces we want to mention here.
+        <ol class="nn">
+        <li> a) Recover from fatal errors without the need to kill a process.</li> 
+        <li> b) Have a flag to prevent the use of unsafe C pointer code.</li> 
+        <li> c) Add a private module search path option. Private modules can not be imported from code but from other imported modules.</li> 
+        <li> d) Do NOT add async/await as a language feature. Instead add yield and custom keyword operators.</li> 
+        </ol>
+        </p>
+        </div>
+
+        <h2 class="break">
+        <a id="open-source" class="anchor" href="#open-source" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Is APPUDO open source?</a>
+        </h2>
+        <div>
+        <p>We prepared everything to release it under the Apache 2.0 license, but only parts of APPUDO are open source by now. We have an ongoing discussion and not yet decided when to release the other parts. The current open source parts are the runtime, frontend, database model and the unit tests. We will base our final decision on the feedback we get after the intial release.
+        </p>
+        </div>
+        
+        <h2>
+        <a id="appudo-extend" class="anchor" href="#appudo-extend" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What possibilities are there to extend APPUDO?</a>
+        </h2>
+        <div>
+        <p>
+        There are three direct and the usual indirect ways to extend APPUDO.
+             <ol class="nn">
+            <li> a) The primary way is to add swift code to a run. We currently elaborate how we want to handle additional source files per run.</li> 
+            <li> b) Dynamically add Swift or other C interfacing modules. Currently, modules are only loaded at the startup of the exec service. Restart appudo_exec with a TERM signal.</li> 
+            <li> c) Statically add Swift or other C interfacing modules to the exec service. Parts of APPUDO must be relinked to do this.</li> 
+            </ol>
+        </p>
+        </div>
+    
+        <h2>
+        <a id="appudo-platform" class="anchor" href="#appudo-platform" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">What platform does APPUDO support?</a>
+        </h2>
+        <div>
+        <p>
+            APPUDO is optimized to work on 64 bit platforms. The current supported arichtectures are <strong>AArch64</strong> and <strong>x86_64</strong>. The smallest device we have tested APPUDO with is a Raspberry PI3 with a 64 bit kernel.
+        </p>
+        <p>
+            APPUDO is currently Linux only.
+        </p>
+        </div>
+        
+        <h2>
+        <a id="appudo-name" class="anchor" href="#appudo-name" aria-hidden="true">
+            <span aria-hidden="true" class="octicon octicon-link"></span>
+        </a>
+        <a href="#" class="c">Why the name APPUDO?</a>
+        </h2>
+        <div>
+        <p>
+            APPUDO is short for "App You Do". 
+        </p>
+        </div>
+        </section>
+      </div>
+    </div>
+        ###NAV###
+    </div>
+</div>

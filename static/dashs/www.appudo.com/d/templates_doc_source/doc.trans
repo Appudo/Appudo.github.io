@@ -1,0 +1,110 @@
+{
+    history:{{[
+  {
+    "t": "templates_doc/doc",
+    "s": "templates_doc_source/doc.html"
+  }
+]}},
+    transform:function(intxt, inname, outname, result) {
+        
+        var cleanNode = function(n) {
+            var children = n.childNodes;
+            for(var i =0, l = children.length; i < l; i++) {
+                if(children[i] && 
+                   children[i].nodeType == 3 && 
+                   !/\S/.test(children[i].nodeValue)) {
+                    n.replaceChild(document.createTextNode(''), children[i]);
+                } else if(children[i]) {
+                    cleanNode(children[i]);
+                }
+            }
+        }
+        
+        var printList = function(o, r, i){
+            o.txt += '<ol>';
+            var n = Object.getOwnPropertyNames(r);
+            for (var key in n) {
+                var t = r[n[key]];
+                o.txt += '<li>'
+                /*
+                if(i == 0) 
+                    o.txt += '<h2>'
+                    */
+                if(typeof t == "string")
+                    o.txt += '<a class="spf-link" href="' + t + '">';
+                o.txt +=n[key]
+                if(typeof t == "string")
+                    o.txt += '</a>';
+                /*
+                if(i == 0) 
+                    o.txt += '</h2>'
+                    */
+                if(typeof t == "object")
+                    printList(o, t, i+1);
+                o.txt += '</li>';
+            }
+            o.txt += '</ol>';
+        }
+    
+        appudo.postPlain('/edit/8/3/'+appudo.random(), 'f=templates_doc_source/toc.js&i=0', function() {
+        }).then(function(data){
+            var jd = JSON.parse(data);
+        
+            var m = outname.split('/');
+            var p1 = '';
+            var p2 = '';
+            var i18n = [];
+            var stl = [];
+            var srefs = [];
+            var base = '';
+            m = 'doc+' + m[m.length-1];
+            var node = dojo.create("div", {'style':'display:hidden;'});
+            node.innerHTML = intxt;
+            dojo.forEach(node.children, function(n, idx){
+                if(n.tagName == 'STYLE') {
+                    stl.push(n);
+                    return;
+                }
+                if(n.id == 'i18nBase') {
+                    base = ',i18nBase:\''+n.innerHTML.trim()+'\'';
+                    return;
+                }
+                if(dojo.hasClass(n, 'style')){
+                    srefs.push(n.id);
+                }
+                cleanNode(n);
+                var inner = n.innerHTML;
+                if(n.id == 'menu') {
+                    var o = {txt:''};
+                    printList(o, jd, 0);
+                    inner = inner.replace('###CONTENT###', o.txt);
+                }
+                inner = appudo.jsonEscape(inner, 0, inner.length);
+                if(n.id == 'misc') {
+                    inner = '<script>moduleCtx[\'' + m + '\']=function(){' + inner + '}();</script>'
+                }
+                p2 += '"' + n.id + '":"' + inner + '",';
+                if(dojo.hasClass(n, 'i18n'))
+                    i18n.push(n.id);
+            });
+            node.remove();
+            p2 = p2.slice(0,-1);
+            p1 += '{';
+            if(stl.length != 0) {
+                p1 += '"foot":"<style name=\\\"stl_' + m + '\\\">'
+                dojo.forEach(stl, function(n, idx){
+                    cleanNode(n);
+                    var inner = n.innerHTML;
+                    inner = appudo.jsonEscape(inner, 0, inner.length);
+                    p1 += inner;
+                });
+                p1 += '</style>",';
+            }
+            p1 += '"body": {"minit":"<script>minit(\'' + m + '\',[\''+ i18n.join('\',\'') + '\'], {srefs:[\''+ srefs.join('\',\'') + '\'],sid:\'stl_' + m + '\'' + base + '});</script>",';
+            p2 += '}}';
+            // TODO walk the top level items and create an spf template
+            // add hidden div, walk children, get ids, build the json, remove hidden div
+            result(p1 + p2);
+        });	
+    }
+}

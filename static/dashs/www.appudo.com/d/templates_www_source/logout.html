@@ -1,0 +1,39 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        active:true,
+        unload : function() {
+            this.active = false;
+        },
+        run : function() {
+            var _this = this;
+            var time = $('#ltime');
+            var step = function(idx) {
+                if(idx != 5) {
+                    time.text(5 - idx);
+                    setTimeout(function() {
+                        if(_this.active)
+                            step(idx + 1);
+                    }, 1000);
+                } else {
+                    if(_this.active)
+                        spf.navigate('/');
+                }
+            }
+            step(0);
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <div style="width:100%;text-align:center;margin-top:50px">
+            <h1>{{info.head}}</h1>
+            <div style="margin-top:20px">
+                {{info.red}}
+            </div>
+            <div id="ltime" style="margin-top:20px;font-weight:bold;">
+            </div>
+        </div>
+    </div>
+</div>

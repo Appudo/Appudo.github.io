@@ -1,0 +1,1838 @@
+<!DOCTYPE HTML>
+<!--
+    admin.html is part of Appudo
+
+    Copyright (C) 2011-2016
+        31e58341d31d3a196ed6502a68b4f87115456459d60f5a1d70c00779266aec60 source@appudo.com
+
+    Licensed under the Apache License, Version 2.0
+
+    See http://www.apache.org/licenses/LICENSE-2.0 for more information
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="./release/dijit/themes/claro/document.css"/>
+	<link rel="stylesheet" href="./release/dijit/themes/claro/claro.css"/>
+	<style type="text/css">
+		@import "./release/dojox/grid/resources/Grid.css";
+  		@import "./release/dojox/grid/resources/claroGrid.css";
+
+		.claro  .dijitTooltipDialog .dijitTooltipContainer {
+			border-radius:0px;
+			-moz-border-radius:0px;
+		}
+		.dBtn .dijitButton .dijitButtonNode, .fBtn .dijitButton .dijitButtonNode {
+			border-radius:0px;
+			-moz-border-radius:0px;
+			-webkit-box-shadow: transparent 0px 0px 0px;
+			background-color: #EAEFFF;
+			border: 1px solid #91A4B5;
+			background-position: 0px -149px;
+		}				
+		
+		.claro .dijitTreeNode .dijitTreeRowSelected {
+			background-repeat:repeat-x;
+			background-color:#cfe5fa;
+			padding:3px 0 1px;
+			margin:0;
+			border:solid 1px #769dc0;
+			color:#000000;
+		}
+		.claro .dijitTreeRowHover {
+			background-color:none;
+			background-color:transparent;
+			background-color:rgba(171, 214, 255, 0);  
+			padding:4px 1px 2px 0;
+  			margin:0 1px;
+			border-width:0;
+			color:inherited;
+		}
+		
+		.claro .dijitDialogTitleBar {
+			border-color:#BDDDFC;
+		}
+		
+		.claro .dijitDialogTitle { 
+			background-position:left;
+		}
+		
+		.claro .dijitDialogPaneContent {
+			height:100%;
+		}
+		
+		.frm textarea {
+			float:left;
+		}
+		
+		.frm .dijitButtonNode {
+			background:none !important;
+			border:none !important;
+			-webkit-box-shadow:none !important;
+			-moz-box-shadow:none !important;
+			box-shadow:none !important;
+		}	
+		
+		.claro .frm .dijitTitlePaneTitle {
+			border: 1px solid #EEE;
+			padding: 3px 7px;
+		}
+		
+		.claro .frm .dijitTitlePaneContentOuter {
+			border: 1px solid #FFF;
+		}
+		
+		html, body { height:100%; width:100%; padding:0; border:0; overflow:hidden; }
+		* { font-size:12px; }
+		#main { height:100%; width:100%; border:0; padding:4px; }
+		#header { margin:0px; }
+
+		#loader { 
+			padding:0;
+			margin:0;
+			position:absolute; 
+			vertical-align:middle;
+			top:0; 
+			left:0; 
+			width:100%; 
+			height:100%;  
+			background:#FFF; 
+			z-index:1000;
+		}
+		
+		#loaderInner {
+			padding:5px;
+			left:0;
+			top:0; 		
+			position:relative; 
+			font-size:15px;
+			width:150px; 	
+			background:#E5F1FC; 	
+		}
+		
+		.load {
+			z-index:-999;
+			position:absolute;
+			margin:10px;
+			top:0px;
+			left:0px;
+		}
+
+		hr.spacer { border:0; background-color:#ededed; width:80%; height:1px; } 
+  		  		
+  		.claro .Selector {
+  			background:#EAF0F5;
+  		}
+  		
+  		.claro div.dojoxGrid {
+  			border:none;
+  		} 
+  		
+  		.claro .dijitTabContainerTop div.dojoxGrid {
+  			top:23px;
+  			margin-bottom:20px;
+  		} 
+  		
+  		.dijitTabContainerTop .dojoxGridHeader {
+  			left:0px !important; 
+  		}  
+  		
+  		.claro .mPane .dojoxGridMasterHeader {
+  			border-top:none;  
+  		}  			
+  		
+  		.claro .mPane .dojoxGridView {
+  			top:-1px !important;
+  		}
+  		
+  		.claro .dijitTabContainerTop .dojoxGridView {
+  			top:-2px !important;
+  		}
+  		
+  		.claro .dojoxGridCell {
+  			border:1px #FFF solid;
+  			border-width: 1px 0 1px 0;  			
+  		}
+  		
+  		.dBtn .dijitButtonNode  {
+  			width:50px; 
+  		}
+  		
+  		.fBtn .dijitButtonNode  {
+  			width:70px; 
+  		}
+  		
+  		.mBtn {
+  			float:right;
+  			height:0px;
+  			padding:0px !important;
+  			border:none !important;
+  		}
+  		  		
+		.dijitAccordionText, .dLabel, 
+		.dijitDialogTitle, .fInf {
+			font-size:1.2em;
+		} 
+		
+		.claro .dijitToolbar > span { 
+			margin:0px -2px 0px -2px;
+		}
+		
+		.dijitToolbar .dijitDisabled .dijitIcon {
+			alpha(opacity=75);
+			-moz-opacity:0.75;
+			opacity:0.75;
+		}    
+		
+		.iCon, .iConAdd, .iOut, 
+		.iAdd, .iInt, .iDel,
+		.iUser, .iUserAdd
+		{
+			background-position:center center;
+			background-repeat:no-repeat;
+			width:16px;
+			height:16px;
+		}
+		
+		.appudoIcon {
+			background-position:left center;
+			padding:2px 0px 2px 20px;
+		}
+		
+		.appudoIconR {
+			background-position:right center;
+			padding:2px 20px 2px 0px;
+		}	
+			
+		.iCon {
+			background-image:url(./img/con.png);
+		}
+		
+		.iConAdd {
+			background-image:url(./img/con_add.png);
+		}
+		
+    	.iOut {
+			background-image:url(./img/out.png);
+		}
+		
+		.iAdd {
+			background-image:url(./img/add.png);
+		}
+		
+		.iInt {
+			background-image:url(./img/int.png);
+		}
+		
+		.iDel {
+			background-image:url(./img/bin.png);
+		}
+		
+		.iUser {
+			background-image:url(./img/user.png);
+		}
+		
+		.iUserAdd {
+			background-image:url(./img/user_add.png);
+		}
+		
+    	#mainTab > .dijitTabPaneWrapper  { 
+    		border:none;
+    	}   	
+    	
+    	.claro .dijitTabContainerTop-dijitContentPane {
+    		padding:0px 0px 5px 0px;
+    		overflow-x:hidden;
+    	}
+    	
+    	.dijitTabContainerTop-dijitContentPane > .dijitToolbar {
+			padding:0px 2px 2px 2px;
+			height:22px;
+			width:100%;
+			position:absolute;
+    		z-index:50;
+    	}
+    	
+    	.tabLabel {
+    		vertical-align:bottom;
+    	}				
+    	
+    	.dijitTreeLabel {
+    		vertical-align:middle;
+    	}	
+    	
+    	.mPane {
+    		padding:5px;
+    	}
+    	
+    	.hideExpando .dijitTreeIsRoot > div > img {
+    		visibility:hidden;
+    		width:0px;
+    	} 
+    	
+    	.Hide {
+    		dispay:none;
+    		width:0px;
+    		height:0px;
+    	}
+    		
+    	.Over {
+    		position:absolute;
+    		background-color:#fff;
+    		z-index:2000;
+    		left:0px;
+    		right:0px;
+    		top:0px;
+    		bottom:0px;
+    	}
+    	
+    	.claro .dijitTreeExpando, .claro .dojoxGridExpandoNode {    	
+			background-image:url(./img/exp.png);
+    	}
+    	
+    	.claro .dijitTreeExpandoLeaf, .dojoxGridNoChildren .dojoxGridExpandoNode {    	
+			background-image:none;
+    	}
+    	
+    	.frm label {
+    		float:left; 
+    		width:10em; 
+    		text-align:left;  
+    		margin:0.8em 1.5em 0.5em 2em; 
+    		color:#0C0C0C;
+    	}
+    	
+    	.dCnt label {
+    		margin:2em 1em 0 0; 
+    	}
+    	
+    	.frm .dijitCheckBox {
+    		margin:0.7em 0 0.2em 0; 
+    	}
+    	
+    	.frm br { 
+    		clear:both; 
+    	}
+		
+		.claro .dijitDialogPaneContent { 
+    		background-color: #BDDDFC;
+    		padding: 2px;
+		}
+  		 		
+  		.info  {
+  			margin:30px 10px 0 10px;
+  			float:left;
+  			position: relative;
+			left: -50%;
+  		}
+  		
+  		.info > div {
+  			float:left;
+  			padding:10px;
+  			margin:10px;
+  			padding-top:2px;
+  			margin-top:2px;  			
+  		}
+  		
+  		.info label, .info span {
+  			font-size:1.2em;
+  		}				
+		
+		.clr {
+			clear:both;
+			height:0px;
+		}
+		
+		.fInf {
+    		background-color: #F2F5FF;
+    		border: #769DC0 1px solid;
+    		border-right:none;
+			float:left;
+			margin-top:25px;
+			padding:8px 15px 8px 8px;
+    		color:#0D3A7B; 
+    		font-weight:bold; 
+		}
+		
+		.bframe, .if {
+			width:100%;
+			height:100%;
+			border:none; 
+			overflow:hidden;
+		}
+	</style>
+	<script type="text/javascript" src="./release/dojo/dojo.js.uncompressed.js" charset="utf-8"
+		data-dojo-config="parseOnLoad: false, baseUrl:'./',
+			paths:{	appudo:'.', 
+					dojo:'release/dojo', 
+					dijit:'release/dijit',
+					dojox:'release/dojox'
+					}, 
+	        		isDebug: true"></script>	     
+	<script type="text/javascript">  
+		require([
+			'dojo/_base/kernel',
+			'dijit',
+			'dojo/_base/declare',
+			'dojo/i18n!appudo/nls/main',
+			'dojo/i18n!appudo/nls/master',
+			'dojo/on',
+			"dojo/_base/xhr",
+			
+			'dojo/parser',
+
+			'dojo/date/locale',
+			'dijit/Menu',
+			'dijit/ProgressBar',
+			'dijit/TitlePane',
+			'dijit/Tooltip',
+			'dijit/Tree',
+			'dijit/Toolbar',
+			'dijit/ToolbarSeparator',
+			
+			'dojo/dnd/Source', 
+			'dijit/tree/dndSource',
+			
+			'dijit/MenuBar',
+			'dijit/MenuBarItem',
+			'dijit/PopupMenuBarItem',
+			'dijit/MenuItem',
+			'dijit/PopupMenuItem',
+			
+		    'dijit/form/Form',
+			'dijit/form/CheckBox',
+			'dijit/form/Textarea',
+			'dijit/form/SimpleTextarea',
+			'dijit/form/FilteringSelect',
+			'dijit/form/TextBox',
+			'dijit/form/DateTextBox',	
+			'dijit/form/TimeTextBox',	
+			'dijit/form/Select',	
+			'dijit/form/CurrencyTextBox',	
+			'dijit/form/Button',
+			'dijit/InlineEditBox',
+			'dijit/form/NumberSpinner',
+			'dijit/form/DropDownButton',
+			'dijit/form/RadioButton',		
+			
+			'dijit/layout/AccordionContainer',
+			'dijit/layout/ContentPane',
+			'dijit/layout/TabContainer',
+			'dijit/layout/BorderContainer',
+			'dijit/Dialog',		
+			'dijit/TooltipDialog',		
+			'dojo/data/ItemFileReadStore',
+			'dojo/data/ItemFileWriteStore',
+			'dojo/store/Memory',
+			
+			'dojox/grid/DataGrid',
+			'dojox/grid/LazyTreeGrid'
+			
+		], function(dojo, dijit, declare, nls, masNls, on, xhr) {
+			var global = dojo.global;
+   			global.nls = nls;
+   			global.masNls = masNls;
+
+			if(!window.console)
+				window.console = {log:function(txt){}};
+			
+			dojo.addOnLoad(function() {
+				appudo.initCls();
+				dojo.parser.parse(dojo.byId('container'));
+
+				setTimeout(function hideLoader() {
+					dojo.fadeOut({ 
+						node: 'loader', 
+						duration:500,
+						onEnd: function(n){
+							n.style.display = 'none';
+							initState();
+							updateState();
+						}
+					}).play();
+				}, 250);  
+			});
+			
+			global.tmpl = {
+                                        status : new dojo._Url('/edit/:/'),
+					editor : new dojo._Url('./tmpl/editor.html'),
+			}
+			var FWS = declare(dojo.data.ItemFileWriteStore, {
+				getValueDeleted: function(item, prop){
+					return item[prop];
+				},
+				onDeleteStart: function(item){
+					
+				},
+				delItem: function(item){	
+					this.onDeleteStart(item);
+			    	this.deleteItem(item);
+				},
+				delById: function(id, p){
+					if(p){
+						this.fetch({
+							query: {p:p},
+							onComplete: dojo.hitch(this, function(items){
+								var _this = this;
+								dojo.forEach(items, function(it) {
+									_this.deleteItem(it);
+								});
+							}),
+							onError: function() {}
+						});
+					}					
+					this.fetch({
+						query: {id:id},
+						onComplete: dojo.hitch(this, function(items){
+							if(items.length != 0)
+								this.deleteItem(items[0]);
+						}),
+						onError: function() {}
+					});
+				}
+			});
+			
+			function convert(bytes) {
+			    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+			    if (bytes == 0) return 'n/a';
+			    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+			    return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+			};
+			
+			var sItems = [];
+			function initState() {
+				var i = 0;
+				var n = dojo.query('span', state.domNode);
+				dojo.forEach(n, function(item) { 
+					if(i < 10)
+						sItems.push(item);
+					i++;
+				});
+			}
+			function updateState() {
+				var obj = dojo.fromJson(dojo.cache(tmpl.status));	
+				if(obj) {
+					dojo.cache(tmpl.status, null);
+					sItems[0].innerHTML = obj.tRequests;
+					sItems[1].innerHTML = obj.tSSLRequests;
+					sItems[2].innerHTML = obj.tTimeouts;
+					sItems[3].innerHTML = obj.kProcesses;
+					sItems[4].innerHTML = obj.kRequests;
+					sItems[5].innerHTML = convert(obj.tBytesIn/5) + '/sec';
+					sItems[6].innerHTML = convert(obj.tBytesOut/5) + '/sec';
+					sItems[7].innerHTML = (obj.tCpu/5).toFixed(5) + ' sec';
+					sItems[8].innerHTML = obj.tLoad + ' %';
+					sItems[9].innerHTML = obj.tRam + ' %';		
+				}
+				setTimeout(function() {
+					updateState();
+				}, 2000);				
+			}
+			
+			var FSM = declare(dijit.tree.ForestStoreModel, {
+				pId:'id',
+				cMask:1,
+			    mayHaveChildren: function(item) {
+			         return item === this.root ? true : (this.store.getValue(item, 'c') & this.cMask);
+			    },			
+				getChildren: function(item, onComplete, onError) {	
+					if(item === this.root){
+						if(this.root.children){
+							onComplete(this.root.children);
+						}else{
+							this.store.fetch({
+								query: this.query,
+								onComplete: dojo.hitch(this, function(items){
+									this.root.children = items;
+									if(this.sort)
+										items.sort(this.sort);
+									onComplete(items);
+								}),
+								onError: onError
+							});
+						}
+					}else{
+						var qry = {p: (this.store.getValue(item, this.pId))};
+						if(this.cquery)
+							dojo.mixin(qry, this.cquery);
+						this.store.fetch({
+							query: qry,
+							onComplete: dojo.hitch(this, function(items){
+								if(this.sort)
+									items.sort(this.sort);
+								onComplete(items);
+							}),
+							onError: onError
+						});
+					}
+				},
+			    pasteItem : function(childItem, oldParentItem, newParentItem, bCopy, insertIndex){
+			    	var store = this.store;
+					if(oldParentItem === this.root && !bCopy)
+						this.onLeaveRoot(childItem);
+					if(newParentItem && newParentItem !== this.root)
+					{
+						store.setValues(childItem, 'p', store.getIdentity(newParentItem));
+						this.getChildren(newParentItem,  dojo.hitch(this, function(items){
+							this.onChildrenChange(newParentItem, items);
+						}), this.onError);
+			    	}
+					if(oldParentItem && oldParentItem !== this.root && oldParentItem != newParentItem)
+					{
+						this.getChildren(oldParentItem,  dojo.hitch(this, function(items){
+							this.onChildrenChange(oldParentItem, items);
+						}), this.onError);
+			    	}
+					if(newParentItem === this.root)
+						this.onAddToRoot(childItem); 
+				},		
+				/*		
+				onChange : function(item){					
+			    	var store = this.store;
+			    	var p = store.getValue(item, 'p');
+			    	
+			    	if(p !== undefined){
+			    		store.fetch({
+							query: {id:'o'+p},
+							onComplete: dojo.hitch(this, function(items){
+								if(items.length == 0)
+									return;
+								this.getChildren(items[0],  dojo.hitch(this, function(it){
+									this.onChildrenChange(items[0], it);
+								}), this.onError);								
+							}),
+							onError: this.onError
+						});
+					}
+				}
+				*/
+			});
+			
+			var sorter = function(s) {return function(a,b){
+				var at = s.getValue(a, 't');
+				var bt = s.getValue(b, 't');
+				if(at == bt) {
+					return s.getValue(a, 'l').localeCompare(s.getValue(b, 'l'));
+				} else {
+					return at > bt ? 1 : -1;
+				}
+			}}; 
+
+			global.stores = {
+                                accStore : new FWS({url:'/edit/4/0/'}),
+                                urlStore : new FWS({url:'/edit/4/1/'})
+			}
+			
+			global.models = {
+				urlModel : FSM({store:stores.urlStore, 
+						rootId:'r', pId:'oid', cMask:1, query:{oid:'*'}}),
+			}
+			
+			global.gridInit = function(model, store, mergeStore) {
+				return function() {
+					this.treeModel = models[model];
+					if(mergeStore){ 
+						merge(stores[store], stores[mergeStore]);
+					}			
+				};	
+			};
+			
+			function insert(viewStore, mergeStore, entry) {
+				var id = viewStore.getValue(entry, 'oid');
+				var l = viewStore.getValue(entry, 'l');
+				var c = viewStore.getValue(entry, 'c');			
+				mergeStore.newItem({id:'o'+id, oid:id ,l:l, c:c}); 
+			}
+
+			function merge(viewStore, mergeStore) {
+				if(mergeStore._merged)
+					return;
+				mergeStore._merged = true;
+				appudo.on(viewStore, 'New', function(newItem, parentInfo) {
+					insert(viewStore, mergeStore, newItem);
+				});
+				appudo.on(viewStore, 'DeleteStart', function(item) {
+					var id = viewStore.getValue(item, 'oid');
+					mergeStore.delById('o'+id, id);
+				});
+				viewStore.fetch({query:{oid:'*'}, onComplete:function(views){
+					dojo.forEach(views, function(entry, i) { 
+						insert(viewStore, mergeStore, entry);
+					});
+				}});
+			}
+			
+			global.appudo = {
+				ForestStoreModel: FSM,
+				xhr:xhr,
+				modal:false,       
+				on : function(target, event, scope, fkt) { 
+					if(!fkt) {
+						fkt = scope;
+						scope = null;
+					}
+					if(scope) 
+						fkt = dojo.hitch(scope, fkt);
+					return on(target, event, fkt);
+				},
+				intToCheck : function(v) { 
+					return v == 1 ? ['on'] : [];
+				},
+				checkToInt : function(v) { 
+					return v && v.length != 0 ? 1 : 0;
+				},
+				hasValues : function(item, values) {
+					values.forEach(function(prop) {
+						if(item[prop] === undefined)
+							return false;
+					});
+					return true;
+				},
+				showMenuItem : function(item, hide) {
+					if(hide)
+						dojo.style(item.domNode, 'display', 'none');
+					else
+						dojo.style(item.domNode, 'display', 'table-row');
+				},
+				printf : function (fmt, args) {
+				    var i = 0;
+				    return fmt.replace(/%((%)|s)/g, function (d) { return d[2] || args[i++] })
+				},
+
+				gridFmt : function(cls, fkt) {
+					if(!fkt)
+						return function(value, idx) {
+							return '<span class="'+(cls)+' appudoIcon">'+value+'</span>';
+						};
+					else
+						return function(value, idx) {
+							return '<span class="'+fkt(value, true)+' appudoIcon">'+fkt(value)+'</span>';
+						};
+				},
+
+				getPlain : function(url, handler) {
+					var get = {
+						url: url,   
+						handleAs:'json',
+	        			headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+	        			load: function(data) {},
+						error: function(error) {}
+					};
+					if(handler && handler.load)
+						get.load = handler.load;
+					if(handler && handler.error)
+						get.error = handler.error;
+					var deferred = xhr.get(get);
+				},
+				
+				postPlain : function(url, txt, handler) {
+					var post = {
+						url: url,
+						rawBody:txt,       
+						handleAs:'json',
+	        			headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+	        			load: function(data) {},
+						error: function(error) {}
+					};
+					if(handler && handler.load)
+						post.load = handler.load;
+					if(handler && handler.error)
+						post.error = handler.error;
+					var deferred = xhr.post(post);
+				},
+				
+				treeFmt : function(root, lvl, v) {
+					return [
+						function(value, idx, level) {
+							return '<span class="'+(level == 0 ? root : lvl)+' appudoIcon">'+value+'</span>';
+						}, 
+						function(value, idx, level) {
+							return '<span class="'+lvl+' appudoIcon">'+value+'</span>';
+						}
+					]
+				},
+				initCls : function() {
+
+					appudo.askAdd = function(target, txt, ok) {
+						appudo.ask(txt, target, {before:appudo.askAddText(), onOk:ok});
+					};
+					var ctrl = {
+						_itemPages:[],
+						_itemHooks:[],
+						getHook : function(type) {
+							return this._itemHooks[type];
+						},
+						getPage : function(data) {
+							var _this = this;
+							return function(parent) {dojo.mixin(parent.ctx, data);return dojo.cache(_this._itemPages[data.type])};
+						},
+						selStr : function(selection) {
+							var _this = this;
+							var nodes = [];
+							var model = this.model;
+							var store = model ? model.store : this.store; 
+
+							if(this.treeModel) {
+								dojo.forEach(selection, function(entry, i) {
+									nodes.push(store.getIdentity(entry));
+								});
+							} else {
+								dojo.forEach(selection, function(entry, i) {
+									nodes.push(store.getIdentity(entry));
+								});
+							}
+							var str = dojo.toJson(nodes);
+							str=  '{' + str.substr(1, str.length-2) + '}';
+							return str;
+						},						
+						addItem : function(call, data, node, ins) {
+							var _this = this;
+							if(!ins)
+								ins = this.insPnt();
+							appudo.blockItems(this);
+							dojo.xhrPost({
+                                                                url : '/edit/3',
+								handleAs: 'json',							
+								content:dojo.mixin({c:call}, data),
+								load : function(response, ioArgs) {
+									if(response && response.r == 0) {
+										var m = _this.model;
+										var s = m ? m.store : _this.store;
+										var i = {}
+										if(s.idInf)
+											i[s.idInf] = parseInt(response.d);
+										else
+											i.id = parseInt(response.d);
+										var n = _this.ins(dojo.mixin(i, node), ins);
+										appudo.blockItems(_this, false);
+									} else {
+										_this._onError(response, ioArgs);
+									}
+									return response;
+								},
+								error : dojo.hitch(this, this._onError)
+							});
+						},						
+						_onError : function(response, ioArgs)  {
+							appudo.blockItems(this, false);
+							return response;
+						},						
+						delItem : function(call, data, selected) {	
+							appudo.blockItems(this);
+							var _this = this;
+							var model = this.model;
+							var store = model ? model.store : this.store;
+							if(!selected)
+                                                                selected = this.selTop();
+							dojo.xhrPost({
+                                                                url : '/edit/3',
+								handleAs: 'json',  
+                                                                content:dojo.mixin({c:call, n:this.selStr(selected)}, data),
+								load : function(response, ioArgs) {
+									if(response && response.r == 0) {
+										_this.clearSelection(true);
+										dojo.forEach(selected, function(entry, i) {
+											store.delItem(entry); 
+										});
+										store.save({onComplete: appudo.saveDone, onError: appudo.saveFailed});
+									}
+									appudo.blockItems(_this, false);
+									return response;
+								},
+								error : dojo.hitch(this, this._onError)
+							});
+						},							
+						askDeleteItem : function(call, target, node, data) {
+							var _this = this;
+							var sel = this.selTop();
+							if(sel.length == 0) 
+								return;
+							var root = node(sel[0]);
+							if(!target)
+								target = root.iconNode;
+							appudo.ask(nls.delItems, target, {onOk:function() {_this.delItem(call, data, sel)}}); 
+						
+						},
+						askUpload : function(target) {
+							var root = this.insPnt();
+							if(root.node) {
+								var model = this.model;
+								var store = model ? model.store : this.store;  
+								var node = root.node;
+								if(store.getValue(node.item, 't') != 0)
+								{
+									this.clearSelection();
+									root = this.insPnt();
+									node = root.node;
+								}
+								target = node.iconNode;
+								dojo.window.scrollIntoView(node.iconNode);
+								appudo.ask(nls.upFile, target, {before:appudo.askAddUpload(this, store.getValue(node.item, 'id'))});						
+							}
+						}
+					}
+					
+					var grid = 
+					{ 
+						_dndTarget:null,
+						dndTarget:false,
+						noDataMessage:nls.gridEmpty,
+					    createManagers : function() {
+					    	this.inherited(arguments);
+					    	this.focus.focusClass = '';
+					    },
+					    onStyleRow : function(inRow) {
+							this.styleRowState(inRow);
+					    	inRow.customClasses += (inRow.odd?' dojoxGridRowOdd':'') + (inRow.selected?' dojoxGridRowSelected':'');
+							this.focus.styleRow(inRow);
+							this.edit.styleRow(inRow);
+					    },
+					    onCellContextMenu : function(e) {
+					    	if(e.rowNode) {
+						    	var _this = this;
+						    	var item = this.getItem(e.rowIndex);
+				  				this.menu.isOpen = true;
+								this.selection.select(e.rowIndex);
+								gridMenu.grid = this;
+								gridMenu.data = item;
+							} 
+						},
+						onCellDblClick: function(e)
+						{
+							if(e.rowNode){
+								var item = this.getItem(e.rowIndex);
+								var call = this.ed ? this.ed[e.cellIndex] : null;
+								var m = this.treeModel;
+								var s = m ? m.store : this.store;
+								var n = {};
+								var c = this.getCell(e.cellIndex)
+								dojo.forEach(s.getAttributes(item), function(attr) {
+									n[attr] = s.getValue(item, attr);
+								});
+								if(this.treeModel && n.p === undefined)
+									return;
+								if(call)
+									this.askEdit(dojo.mixin({x:e.clientX,y:e.clientY},dojo.hitch(this, call)(s, item, n)), c.name);
+							}
+						},
+				        askEdit : function(d, cname){ 
+				        	if(!appudo.hasValues(d, ['t', 'c', 'value', 'field', 'x', 'y', 'post', 'onOk']))
+				        		return;
+				        	var _this = this;
+				        	var b;
+				        	if(d.t == 0) 
+				        		b = appudo.askAddText(d.value);
+				        	if(d.t == 1) 
+				        		b = appudo.askAddCheck(d.value);
+				        	if(d.t == 3) 
+				        		b = appudo.askAddText(d.value, false, "", 'must be positive number or empty');
+							appudo.ask(nls.updC + ' ' + cname, null, {
+							before:b, x:d.x, y:d.y,
+							onOk:function(v, data) {
+								var x = {};
+								if(dojo.isArray(v.value)) {
+									x[d.field] = v.value.length == 0 ? 0 : v.value ? 1 : 0;
+									if(x[d.field] == (d.value ? 1 : 0))	
+										return;
+								} else {
+									if(d.t == 1 && Boolean(v.value) == Boolean(d.value))
+										return;
+									x[d.field] = v.value;	
+								}
+								if(v.value == d.value)
+									return;							
+					        	dojo.xhrPost({
+                                                                        url : '/edit/3',
+									handleAs: 'json',							
+									content:dojo.mixin({c:d.c},dojo.mixin(d.post, x)),
+									load : function(response, ioArgs) {
+										if(response && response.r == 0) {
+											d.onOk(v, data);
+										} else {
+											_this.onError();
+										}
+										return response;
+									},
+									error : dojo.hitch(_this, _this.onError)
+								});
+							}}); 
+				        }, 
+				        onOk : function() {	
+				        	
+				        }, 
+				        onError : function() {	
+				        	
+				        }, 
+						sort : function() {	
+			    			this.clearSelection();
+					    	this.inherited(arguments);
+						},
+						selTop : function() {	
+							var selection = [];
+							var select = this.selection.getSelected();
+							var _this = this;
+							var store = this.store;
+							if(this.treeModel) {
+								dojo.forEach(select, function(entry, i) {
+									if(store.getValue(entry, 'p') !== undefined)
+										selection.push(entry);
+								});
+							} else {
+								selection = select;
+							}
+							return selection;
+						},
+						defP : function() {
+							return '';
+						},
+						getItemById : function(id) {
+							return null;
+						},
+						insPnt : function(type) {
+							var sel = this.selection.getSelected();
+							var result = {};
+							var item;
+							var model = this.treeModel;
+							var store = model ? model.store : this.store;  
+							if( sel.length!= 0) {
+								item = sel[0];
+								var p = store.getValue(item, 'p');
+								var s
+								if(type !== undefined && store.getValue(item, 't') != type) 
+									item = this.getItemById('o'+p);
+							}
+							if(item) 
+								result.nodeId = model && model.pId ? store.getValue(item, model.pId) : store.getIdentity(item);
+							else
+								result.nodeId = this.defP();
+							result.pInfo = {parent:item};
+							return result;
+						},
+						add : function(call, parent, name) { 
+							var post = {l:name};
+							if(parent !== undefined)
+								post = dojo.mixin({m:parent}, post);
+							this.addItem(call, post, {l:name, p:null});
+						},
+						addData : function(call, parent, name, data) {
+							var post = {l:name};
+							if(parent !== undefined)
+								post = dojo.mixin({m:parent}, post);
+							post = dojo.mixin(post, data);
+							if(data.noname !== undefined)
+								delete post.l;
+							var ins = data.p !== undefined ? {nodeId:data.p} : null;
+							if(ins)
+								delete post.p;
+							this.addItem(call, post, dojo.mixin({l:name},data),ins);
+						},
+						addSubData : function(call, parent, name, data, sub) {
+							var ins = this.insPnt();
+							if(this.treeModel && ins.nodeId == '')
+								return;
+							var post = {v:ins.nodeId, l:name};
+							if(parent !== undefined)
+								post = dojo.mixin({m:parent}, post);
+							post = dojo.mixin(post, data);
+							if(data.noname !== undefined)
+								delete post.l;
+							delete data.noname;
+							delete post.noname;
+							this.addItem(call, post, dojo.mixin({l:name, p:ins.nodeId, s:sub},data), ins);
+						},
+						addSub : function(call, parent, name, sub) {
+							var ins = this.insPnt();
+							if(this.treeModel && ins.nodeId == '')
+								return;
+							var post = {v:ins.nodeId, l:name};
+							if(parent !== undefined)
+								post = dojo.mixin({m:parent}, post);
+							this.addItem(call, post,{l:name, p:ins.nodeId, s:sub}, ins);
+						},
+						ins : function(args, insPnt) {
+							args.p = insPnt.nodeId;
+							var item = this.store.newItem(args, insPnt.pInfo); 
+							this.store.save({onComplete: appudo.saveDone, onError: appudo.saveFailed});
+						},
+						clearSelection : function() {
+							this.selection.select(-1);
+						},
+						askDelete : function(call, target) { 
+                                                        var _this = this;
+							if(!call)
+                                                            call = this.delCall;
+
+							this.askDeleteItem(call, target, function(node){
+								var row = _this.getRowNode(_this.getItemIndex(node));
+								var n = dojo.query('.appudoIcon', row)[0];
+								if(!n)
+									n = dojo.query('.dojoxGridCell', row)[0];
+								return {iconNode:n};
+                                                        }, this.delData);
+						},
+					    postCreate : function(args, frag) {	
+					    	if(this.onInit)
+					    		dojo.hitch(this, this.onInit)();
+					    	this.inherited(arguments);
+					    	this.menu = gridMenu;
+						    this.menu.bindDomNode(this.domNode);
+						    appudo.on(dijit.getEnclosingWidget(this.domNode.parentNode), 'blur', this, function() {
+					      		if(!appudo.modal && !this.menu.isOpen)
+					    			this.clearSelection();
+							});
+					    },
+					    addDrop: function(tree, node, target, coords){
+						},
+						addDropError: function(tree, type, num, target){
+						},
+						postrender: function(){
+					    	this.inherited(arguments);
+							if(this.focus.focusView && this.focus.focusView instanceof dojox.grid._RowSelector)
+								dojo.addClass(this.focus.focusView.scrollboxNode, 'Selector');
+						},
+						createView: function(inClass, idx){
+					    	var v = this.inherited(arguments);
+					    	var grid = this;
+					    	if(this.dndTarget){
+								if(this._dndTarget){
+									this._dndTarget.destroy();
+									delete this._dndTarget;
+								}
+								this._dndTarget = new appudo.dndFileTarget(this.viewsNode.firstChild,{
+									destroy: dojo.hitch(this, function(){
+										dojo.dnd.Source.prototype.destroy.call(this._dndTarget);
+									}),
+									onDropExternal: function(source, nodes, copy){
+										var dnode = nodes[0];
+										var t = source.getItem(dnode.id);
+										var tree = source.tree; 
+										var node = dijit.getEnclosingWidget(dnode);
+										var m = tree.model;
+										var s = m.store;
+										var type = s.getValue(node.item, 't');
+										var tnode = this.targetRowIdx == -1 ? null : grid.getItem(this.targetRowIdx);
+										var inP = !grid.treeModel || tnode != null;
+										var item = node.item;
+										if(grid.treeModel)
+											grid.selection.select(this.targetRowIdx);
+										s = grid.store;
+										var tn = {};
+										if(tnode) {
+											dojo.forEach(s.getAttributes(tnode), function(attr) {
+												tn[attr] = s.getValue(tnode, attr);
+											});
+										}
+										if(nodes.length != 1 || type != 1 || !inP){
+											dojo.hitch(grid, grid.addDropError)(tree, type, nodes.length, tn);
+											return;
+										}										
+										dojo.hitch(grid, grid.addDrop)(tree, node, tn, this.targetCoords);
+									},	
+									onMouseUp: function(e){
+										if(this.isDragging){
+											var node = dijit.getEnclosingWidget(e.target);
+											v.doContentEvent(e);
+											this.targetRowIdx = e.rowIndex === undefined ? -1 : e.rowIndex ;
+											this.targetCoords = {x:e.pageX, y:e.pageY};
+										}
+										dojo.dnd.Source.prototype.onMouseUp.call(this._dndTarget, e);
+									},
+								});
+					    	}
+							return v;
+						}
+					}
+					dojox.grid._RowSelector.extend({
+						doStyleRowNode: function(inRowIndex, inRowNode){		
+							var n = [ "dojoxGridRowbar dojoxGridNonNormalizedCell" ];
+							inRowNode.className = n.join(" ");
+						}
+					});
+					appudo.Grid = declare(dojox.grid.DataGrid);
+					appudo.TreeGrid = declare(dojox.grid.LazyTreeGrid);
+					dojo.mixin(grid, ctrl);
+					appudo.Grid.extend(grid);
+					appudo.Grid.extend({
+						_onNew: function(item, parentInfo){
+							var set = true;  
+							var cq = this.query;
+							var v;
+							for(var k in cq){
+								v = cq[k];
+								if(v == '*')
+									set &= this.store.getValueDeleted(item, k);
+								else
+									set &= this.store.getValueDeleted(item, k) == v;
+							}
+							if(!set)
+								return;
+						    this.inherited(arguments);
+						}
+					});
+					appudo.TreeGrid.extend(grid);
+					dojox.grid._LazyTreeGridCache.extend({
+						getSiblingIndex: function(rowIndex, treePath){
+							if(!treePath)
+								return 1;
+							var i = rowIndex - 1, indexCount = 0, tp;
+							for(; i >=0; i--){
+								tp = this.items[i] ? this.items[i].treePath : [];
+								if(tp.join('/') === treePath.join('/')){
+									indexCount++;
+								}else if(tp.length < treePath.length){
+									break;
+								}
+							}
+							return indexCount;
+					}});
+					appudo.TreeGrid.extend({
+						_oldQry:null,
+						_in:false,
+						_openState:null,
+						getItemById : function(id) {
+							var it = this._by_idty[id];
+							return it ? it.item : null;
+						},
+						goInto : function(item) {
+							var model = this.treeModel;
+							var store = model.store;
+							var dom = this.domNode;
+							var bar = dijit.getEnclosingWidget(dom.parentNode).getChildren()[0];
+							var node = dojo.create('div', {style:{display:'inline-block'}}, bar.domNode, 'first');
+							dojo.place(this.fmt[0](store.getValue(item, 'l'), 0, 0), node);
+							dojo.place('<span style="width:2px;display:inline-block">&nbsp;</span>', node);
+							var _this = this;
+							this.intoButton = new appudo.IconButton(
+							{
+							    iconClass:'iOut',
+								title:nls.goOut,
+								onClick:function() {_this.goOut.call(_this)}
+							},
+							dojo.create('div', null, node));	
+							this._in = true;
+							this.intoNode = node;	
+							this.structure[0].formatter = this.fmt[1];
+							this.set('structure', this.structure);
+							this._oldQry = model.query; 
+							this.setQuery(dojo.mixin({p:store.getValue(item, model.pId)}, model.cquery));
+							this.refresh();
+							var parent = dijit.getEnclosingWidget(dom.parentNode);
+							parent.resize();
+						},
+						goOut : function() {
+							var dom = this.domNode;	
+							this.intoButton.destroyRecursive();
+							this._in = false;
+							dojo.destroy(this.intoNode);
+							this.structure[0].formatter = this.fmt[0];
+							this.set('structure', this.structure);
+							this.setQuery(this._oldQry);
+							this.refresh();
+							this.setOpen();
+							var parent = dijit.getEnclosingWidget(dom.parentNode);
+							parent.resize();
+						},	
+						expandoFetch: function(rowIndex, open){
+							var items = this._by_idx;
+							var itemId = items[rowIndex].idty;
+					    	var state = this._openState || {};
+					    	if(open)
+					    		state[itemId] = true;
+					    	else
+					    		delete state[itemId];		
+					    	this._openState = state;
+					    	this.inherited(arguments);		
+							
+						},
+						setOpen: function() {
+							if(this._loading) {
+								setTimeout(dojo.hitch(this, setOpen), 200);
+								return;
+							}
+							var items = this._by_idx;
+					    	var tc = this._treeCache;
+					    	var tci = tc.items;
+					    	var i = 0, len = items.length;
+					    	var state = this._openState;
+					    	if(!state || !tci || tci.length == 0)
+					    		return;
+					    	var exp = [];
+							for(; i < len; i++) {	
+								var it = items[i];
+								if(it && state[it.idty]) {
+									var rowNode = this.views.views[this.views.views.length - 1].getRowNode(i);
+									if(rowNode){
+										var e = dijit.findWidgets(rowNode)[0];
+										if(e)
+											exp.push(e);
+									}									
+								}
+							}
+							i = 0;len = exp.length;
+							for(; i < len; i++) 
+								exp[i].setOpen(true);
+						},	
+						_onFetchComplete: function(items, request){
+					    	this.inherited(arguments);
+							if(!this._loading && this._reqQueueLen === 0) 
+						    	this.setOpen();							
+						},
+						_onNew: function(item, parentInfo){
+							var p = this.store.getValue(item, 'p');
+							var set = true;  
+							var cq = this.treeModel.cquery;
+							if(p !== undefined) {
+								for(var k in cq)
+									set &= this.store.getValueDeleted(item, k) == cq[k];
+								if(!set)
+									return;
+							}
+							var addingChild = p !== undefined;
+							var items = this._treeCache.items, byIdx = this._by_idx;							
+							if(!addingChild){
+								items.push({opened: false, treePath: []});
+								this._size += 1;
+								this.inherited(arguments);
+							}else{
+								var parentIdty = 'o'+p,
+									rowIndex = -1, i = 0;
+								for(; i < byIdx.length; i++){
+									if(parentIdty === byIdx[i].idty){
+										var mask = this.treeModel.cMask;
+										if(mask) {											
+											var c = this.store.getValue(byIdx[i].item, 'c') || 0;
+											if((c & mask) == 0) 
+												this.store.setValue(byIdx[i].item, 'c', (c + mask));											
+										}
+										rowIndex = i;
+										break;
+									}
+								}
+								
+								if(rowIndex >= 0){
+									if(items[rowIndex] && items[rowIndex].opened){
+										var parentTreePath = items[rowIndex].treePath, pos = rowIndex + 1;
+										for(; pos < items.length; pos++){
+											if(items[pos].treePath.length <= parentTreePath.length){
+												break;
+											}
+										}
+										var treePath = parentTreePath.slice();
+										treePath.push(parentIdty);
+										this._treeCache.items.splice(pos, 0, {opened: false, treePath: treePath});
+										// update grid._by_idx
+										var idty = this.store.getIdentity(item);
+										this._by_idty[idty] = { idty: idty, item: item };
+										byIdx.splice(pos, 0, this._by_idty[idty]);
+										// update grid
+										this._size += 1;
+										this.updateRowCount(this._size);
+										this._updateRenderedRows(pos);
+									}else{
+										this.updateRow(rowIndex);
+									}
+								}
+							}
+						},
+						_onDelete: function(item){
+							var p = this.store.getValueDeleted(item, 'p');
+							if(p !== undefined) {
+								var set = true;  
+								var cq = this.treeModel.cquery;
+								for(var k in cq)
+									set &= this.store.getValueDeleted(item, k) == cq[k];
+								if(!set)
+									return; 
+							}
+							var pitem;
+							var parentIdty = 'o'+p,
+							i = 0, pIndex = -1,rowIndex = -1, idty = this.store.getIdentity(item);
+							for(; i < this._by_idx.length; i++){
+								var idt = this._by_idx[i].idty;
+								if(parentIdty === idt){ 
+									pitem = this._by_idx[i].item;
+									pIndex = i;
+								}
+								if(idty === idt){
+									rowIndex = i;
+									break;
+								}
+							}
+							var mask = this.treeModel.cMask;
+							var fChild = rowIndex - pIndex > 1;
+							i = rowIndex+1;
+							if(!fChild && i < this._by_idx.length && this.store.getValue(this._by_idx[i].item, 'p') == p)
+								fChild = true;
+							if(mask && !fChild){
+								var c = this.store.getValue(pitem, 'c') || 0;
+								if((c & mask) != 0)
+									this.store.setValue(pitem, 'c', (c - mask));
+								this.updateRow(pIndex); 
+								
+							}
+							if(rowIndex >= 0){
+								var items = this._treeCache.items, treePath = items[rowIndex] ? items[rowIndex].treePath : [], tp, count = 1;
+								i = rowIndex + 1;
+								for(; i < this._size; i++, count++){
+									tp = items[i] ? items[i].treePath : [];
+									if(items[i].treePath.length <= treePath.length){
+										break;
+									}
+								}
+								items.splice(rowIndex, count);
+								this._onCleanupExpandoCache(idty);
+								this._by_idx.splice(rowIndex, count);
+								this._size -= count;
+								this.updateRowCount(this._size);
+								this._updateRenderedRows(rowIndex);
+							}
+						}
+					});
+					dojox.grid._Scroller.extend({
+						measurePage: function(inPageIndex){
+							if(this.grid.rowHeight){
+								var height = this.grid.rowHeight + 1;
+								return ((inPageIndex + 1) * this.rowsPerPage > this.rowCount ?
+									this.rowCount - inPageIndex * this.rowsPerPage :
+									this.rowsPerPage-1) * height;
+									 
+							}
+							var n = this.getDefaultPageNode(inPageIndex);
+							return (n && n.innerHTML) ? n.offsetHeight : undefined;
+						}
+					});
+
+					dijit.Menu.extend({
+					    startup: function() {	
+					    	this.inherited(arguments);
+					    	if(this.ctx)
+					    		this.ctx.init();
+					    }
+					});				
+					
+					dijit.form.ValidationTextBox.extend({
+						invalidMessage: nls.invalid,
+						missingMessage: nls.required
+					});
+					appudo.Select = declare(dijit.form.Select,
+					{
+				        style: { width: '20em', margin:'0.5em 0 0.2em 0' }
+					});
+					appudo.ValidationTextBox = declare(dijit.form.ValidationTextBox,
+					{
+				        style: { width: '20em',margin:'0.5em 0 0.2em 0','padding-top':'0.2em' }
+					});
+					appudo.TextArea = declare(dijit.form.SimpleTextarea,
+					{ 
+						style: { width: '20em',margin:'0.5em 0 0.2em 0','padding-top':'0.2em'},
+						constructor : function() {
+							if(!arguments[0].rows)
+								arguments[0].rows=4;
+					    	this.inherited(arguments);
+					    }
+					});
+					appudo.ValidationTextArea = declare([dijit.form.ValidationTextBox,dijit.form.SimpleTextarea],
+					{ 
+						style: { width: '20em',margin:'0.5em 0 0.2em 0','padding-top':'0.2em'},
+						rows:5,
+						required:true,
+  						isValid: function() {
+  							this.inherited(arguments);
+  							return this.containerNode.value.length > 0;
+  						}
+					});
+					appudo.TemplateContent = declare(dijit.layout.BorderContainer, 
+					{
+						_stringRepl:dijit._TemplatedMixin.prototype._stringRepl
+					});
+					appudo.AddDropDown = declare(dijit.form.DropDownButton,
+					{
+						iconClass:'iAdd',
+						constructor : function() {
+							arguments[0].showLabel=false;
+					    	this.inherited(arguments);
+					    },
+					    setIconClass: function(cls) {	
+					        if(this.iconClass) 
+					            dojo.removeClass(this.iconNode, this.iconClass);	
+	
+					        if(cls) {
+					        	this.iconClass = cls;	
+					            dojo.addClass(this.iconNode, cls);	
+					        }
+				    	}
+					});				
+					appudo.IconButton = declare(dijit.form.Button,
+					{
+						constructor : function() {
+							arguments[0].showLabel=false;
+					    	this.inherited(arguments);
+					    },
+						startup : function() {
+					    	this.inherited(arguments);
+					    	if(this.disableItem)
+					    		appudo.addDisable(this.disableItem, this);
+					    }	
+					});		
+					var cont = {
+						liveSplitters:false,
+						gutters:false,
+					};
+					var lazy = {
+						stopParser:true,
+						_noScript:true,
+						_parsed:false,
+						parseOnLoad:false,
+						buildRendering : function() {
+					    	this.inherited(arguments);
+					    	this.node = dojo.place('<div class="Over" style="padding:6px;"><span class="dijitContentPaneLoading" >'+nls.load+'</span></div>', this.domNode, 'first');
+			        		this.__startup = this.startup;
+							this.__layout = this.layout;
+							this.layout = this.startup = function(){ };
+						},
+						onHide : function() {
+							if(!this.node)
+								this.node = dojo.place('<div class="Over" style="padding:6px;"><span class="dijitContentPaneLoading" >'+nls.load+'</span></div>', this.domNode, 'first');
+						},
+						onShow : function() {
+							var _this = this;
+							if(!this._parsed) {
+								this._parsed = true;
+								this._started = false;
+								var parent = this.domNode;
+								dojo.parser.parse(parent, { noStart:true });
+								this.startup = this.__startup;
+								this.layout = this.__layout;
+								this.startup();
+							}
+							setTimeout(function() {
+								if(_this.node) {
+									dojo.destroy(_this.node);
+								}
+							}, 0); 
+						}
+					};
+					appudo.Container = declare(dijit.layout.BorderContainer);	
+					appudo.LazyCont = declare(dijit.layout.BorderContainer);
+					appudo.LazyPane = declare(dijit.layout.ContentPane);
+					appudo.Container.extend(cont);
+					appudo.LazyCont.extend(cont);
+					appudo.LazyCont.extend(lazy);
+					appudo.LazyPane.extend(lazy);
+					appudo.Dialog = declare(dijit.Dialog,
+					{
+						ctx:{},
+						iconCls:null,
+						postCreate : function() {
+					    	this.inherited(arguments);
+					    	this.autofocus = this.ctx.autofocus!==undefined ? this.ctx.autofocus : true;
+				    		this.setTitle(this.ctx.title);
+				    		this.setICls(this.ctx.icls); 
+				    	},
+					    setTitle : function(t) { 
+				    		this.set('title', t);
+					    },
+					    setICls : function(cls) {
+					    	var title = this.titleNode;
+							if(this.iconCls)
+					    		dojo.removeClass(title, this.iconCls);
+					    	if(!cls) {
+					    		dojo.style(title, null);
+						    } else {
+					    		dojo.style(title, 'padding', '1px 0 0 20px');
+								dojo.addClass(title, cls); 
+								this.iconCls = cls;
+							}
+					    },
+						show : function(args) {
+					    	this.inherited(arguments);
+							this.openArgs = args;
+					    	appudo.modal = true;
+					    	var s = this.ctx.onShow;
+					    	if(s)
+					    		s(this, args);
+					    },
+						hide : function() {
+					    	this.inherited(arguments);
+					    	appudo.modal = false;
+					    }
+					});			
+				},
+				initCtx : function(widget, ctx) {
+					if(!ctx)
+						ctx = {};
+					switch(widget) {
+					case 'mainbar':
+						ctx.logout = function() {alert('1')};
+						ctx.shutdown = function() {appudo.postPlain('3', 'c=7', null)};
+						ctx.restart = function() {alert('1')};
+						break;
+					case 'gridMenu':
+						ctx.init = function() {
+							dojo.connect(gridMenu, '_openMyself', gridMenu, function(e) {
+				  				var grid = this.grid;
+				  				var item = this.data;
+								this.data = null;
+								this.lastData = item;
+								if(item) {
+					  				var model = grid.treeModel;
+					  				appudo.showMenuItem(gridMenu.into, !model || model.store.getValue(item, 'p') !== undefined);
+				  				} else {
+									dijit.popup.close(this);
+				  				}
+						 	});
+							appudo.on(gridMenu, 'close', gridMenu, function() {
+								this.isOpen = false;
+						 	});
+						};
+						ctx.into = function() {gridMenu.grid.goInto(gridMenu.lastData)};
+						ctx.del = function() {gridMenu.grid.askDelete()};
+						break;
+					case 'accounts':	
+						ctx.type = appudo.gridFmt('iUser');
+						ctx.add = function(e) {appudo.askAdd(e.target, masNls.nsett, function(v) {ctx.grid.addData('E', null, v.value,{d:''})})};
+						break;	
+					case 'urlBar':									
+						ctx.fmt = appudo.treeFmt('iUser', 'iCon');
+						ctx.type = ctx.fmt[0];
+						ctx.init = gridInit('urlModel', 'accStore', 'urlStore');
+						break;
+					case 'askDlg':
+						ctx.blur = function(){if(!ctx.preventClose) dijit.popup.close(askDlg); ctx.preventClose = false};
+						break;
+					}
+					return ctx;
+				},
+				
+				ask : function(text, target, data) {
+					var form = dijit.byNode(dojo.query('form', askDlg.domNode)[0]);
+					var btn = dojo.query('.dBtn', askDlg.domNode)[0];
+					if(data.nobtn)					
+						dojo.style(btn, 'display', 'none');	
+					else
+						dojo.style(btn, 'display', 'block');	
+					var cnt = dojo.query('.dCnt', askDlg.domNode)[0];
+					if(cnt.innerHTML != '') {
+						dojo.forEach(dijit.findWidgets(cnt), function(w) {
+						    w.destroyRecursive();
+						}); 
+						cnt.innerHTML = '';
+					}
+					if(data.before)
+						data.before(cnt, data);			
+					var submit = appudo.on(form, 'submit', this, function(event) {
+						if(data.onOk)
+						{
+							event.preventDefault();            
+							if(!form.validate()) 
+								return;	
+				        	if(data.onOk)
+				        		data.onOk(form.get('value'), data);
+				        }
+						dijit.popup.close(askDlg); 
+			        }); 
+					dojo.query('.dLabel', askDlg.domNode)[0].innerHTML = text;
+					appudo.modal = true;
+					var d = {popup:askDlg, onClose:function(event) {
+			        	appudo.modal = false;
+						submit.remove();
+						dijit.focus(target); }};
+					if(target) {
+						d.around = target;
+					} else 
+					if(data.x !== undefined && data.y !== undefined) {
+						d.x = data.x
+						d.y = data.y
+					}
+			        dijit.popup.open(d);
+			       	askDlg.focus();	
+				},
+				
+				askAddText : function(txt, nreq, reg, emsg){ 
+					return function(cnt, data) {
+		        		var node = dojo.create('div', null, cnt);   
+		        		var d = {
+						    type:'text', 
+						    name:'value', 
+						    style:'width:100%',
+						    value:txt,
+						    required: !nreq,
+						};
+						if(reg)
+						   d.regExp = reg;
+						if(emsg)
+						   d.invalidMessage = emsg;
+			        	new dijit.form.ValidationTextBox(d, node);
+		        	};
+		        }, 	
+				
+				askAddSelect : function(store){ 
+					return function(cnt, data) {
+		        		var node = dojo.create('div', null, cnt);    
+			        	new appudo.FilteringSelect(
+						  {
+						    type:'text', 
+						    name:'value', 
+						    style:'width:100%',    
+						    store: store
+						  },
+						node);
+		        	};
+		        }, 	
+		        
+				askAddCheck : function(value, nreq){ 
+					return function(cnt, data) {
+		        		var node = dojo.create('div', {innerHTML:'<label>'+nls.check+'</label>'}, cnt);    
+		        		node = dojo.create('div', null, node);  
+			        	new dijit.form.CheckBox(
+						  {
+						    name:'value',
+						    checked:value,
+						    label:'asdasdasda'
+						  },
+						node);
+		        	};
+		        }, 	
+		        	        
+				saveDone : function() {
+				},
+				
+				saveFailed : function() {
+				},
+				
+				addDisable : function(widget, item) {
+					if(!widget._disableItems)
+						widget._disableItems = [];
+					widget._disableItems.push(item);
+				},
+				
+				blockItems : function(widget, block) {
+					if(!widget || !widget._disableItems)
+						return;
+					if(block === undefined)
+						block = true;
+
+					dojo.forEach(widget._disableItems, function(entry, i) {
+							entry.set('disabled', block);
+					});
+				}
+			}
+    	});
+		
+	
+	</script>
+</head>
+<body class="claro" id="container">
+	<ul data-dojo-type="dijit.Menu" data-dojo-id="gridMenu" data-dojo-props="style:'display:none;', ctx:appudo.initCtx('gridMenu')">
+        <li data-dojo-id="gridMenu.into" data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:gridMenu.ctx.into, iconClass:'iInt', label:nls.goInto"></li>
+        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:gridMenu.ctx.del, iconClass:'iDel', label:nls.del"></li>		
+	</ul>	
+	<div data-dojo-type="dijit.TooltipDialog" data-dojo-id="askDlg" data-dojo-props="style:'display:none;outline: none;', ctx:appudo.initCtx('askDlg'), onBlur:function(){askDlg.ctx.blur()}">
+		<label class="dLabel" style="display:block;margin-bottom:6px"></label>
+		<div data-dojo-type="dijit.form.Form"> 
+			<div class="dCnt"></div>
+			<div class="dBtn" style="text-align:right;margin-top:6px;width:100%">
+				<button data-dojo-type="dijit.form.Button" data-dojo-props="onClick:function(e){askDlg.ctx.blur()}, label:nls.n"></button>			
+				<button data-dojo-type="dijit.form.Button" data-dojo-props="type:'submit', label:nls.y"></button>	
+			</div>
+		</div>
+	</div>               
+	<div id="loader"><div id="loaderInner">Loading appudo ... </div></div>
+	<div id="main" data-dojo-type="appudo.Container" data-dojo-props="design:'sidebar'">	
+		<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane',region:'top'">
+			<div style="margin:5px 0 5px 0;font-size:1.3em;float:left">Appudo Server Administration</div>
+			<div id="mainbar" data-dojo-id="mainbar" data-dojo-type="dijit.MenuBar" data-dojo-props="style:'float:right',region:'top', ctx:appudo.initCtx('mainbar')"> 
+        		<div data-dojo-type="dijit.PopupMenuBarItem" data-dojo-props="label:'Control'">
+		        	<div data-dojo-type="dijit.Menu">
+        				<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:mainbar.ctx.shutdown,label:'Shutdown'"></div> 
+        				<div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:mainbar.ctx.restart,label:'Restart'"></div> 
+		        	</div>
+		        </div>    
+        		<div data-dojo-type="dijit.MenuBarItem" data-dojo-props="onClick:mainbar.ctx.logout,label:nls.logout"></div> 		
+   	 		</div>   
+		</div>	
+		<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane',region:'top', splitter:true">	
+		    <div data-dojo-type="dijit.layout.TabContainer" data-dojo-props="style:'height:180px'">
+		        <div data-dojo-id="state" data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Status (5 Seconds Refresh)'">
+		        	<div style="float: left;position: relative;left: 50%">
+			        	<div class="info">
+				        	<div><label>HTTP Requests</label><br/><span></span></div>
+				        	<div><label>SSL Requests</label><br/><span></span></div>
+				        	<div><label>Request Timeouts</label><br/><span></span></div>
+				        	<div><label>Killed Processes</label><br/><span></span></div>
+				        	<div><label>Killed Requests</label><br/><span></span></div>
+				        	<div><label>Transfer In</label><br/><span></span></div>
+				        	<div><label>Transfer Out</label><br/><span></span></div>
+				        	<div><label>CPU Time</label><br/><span></span></div>
+				        	<div><label>Total CPU Usage</label><br/><span></span></div>
+				        	<div><label>Total RAM Usage</label><br/><span></span></div>	
+			        	</div> 
+		        	</div>      	
+		        </div>
+		     </div>
+		</div>				
+		<div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane',region:'center'">	
+		    <div data-dojo-type="dijit.layout.TabContainer">
+		        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Accounts'">
+		            <div data-dojo-id="accounts" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:appudo.initCtx('accounts')">
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:accounts.ctx.add, iconClass:'iUserAdd',label:''"></div> 	
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:accounts.ctx.del, iconClass:'iDel',label:''"></div>
+	    			</div> 
+	     			<div data-dojo-id="accounts.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="store:stores.accStore,
+                                            clientSort:true, delCall:0, delData:{z:1}, structure: [
+								{name: 'name', field: 'l', width:'100%', formatter:accounts.ctx.type},
+								{name: 'password', value: '******', width:'100%'},
+								{name: 'mail', field: 'm', width:'100%'},
+								{name: 'master', field: 's', width:'100%'}
+							]">
+	     			</div>	
+		        </div>
+		        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Urls'">
+		            <div data-dojo-id="urlBar" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:appudo.initCtx('urlBar')">
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iConAdd',label:''"></div> 	
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iDel',label:''"></div>
+	    			</div> 
+	     			<div data-dojo-type="appudo.TreeGrid" data-dojo-props="onInit:urlBar.ctx.init, fmt:urlBar.ctx.fmt,
+	   	     			   	    clientSort:true, delCall:5, structure: [
+								{name: 'url', field: 'l', width:'100%', formatter:urlBar.ctx.type}
+							]">
+	     			</div>	
+		        </div>
+		        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Settings'">
+		            <div data-dojo-id="views" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:null">
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iViewAdd',label:''"></div> 	
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iDel',label:''"></div>
+	    			</div> 
+	     			<div data-dojo-type="appudo.Grid" data-dojo-props="
+	     			   	    clientSort:true, delCall:5, structure: [
+								{name: 'fg', field: 'l', width:'100%'}
+							]">
+	     			</div>	
+		        </div>
+		        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Errors'">
+		            <div data-dojo-id="views" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:null">
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iViewAdd',label:''"></div> 	
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iDel',label:''"></div>
+	    			</div> 
+	     			<div data-dojo-type="appudo.Grid" data-dojo-props="
+	     			   	    clientSort:true, delCall:5, structure: [
+								{name: 'fg', field: 'l', width:'100%'}
+							]">
+	     			</div>	
+		        </div>
+		        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:'Statistics'">
+		            <div data-dojo-id="views" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:null">
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iViewAdd',label:''"></div> 	
+	    					<div data-dojo-type="appudo.IconButton" data-dojo-props="onClick:function(){alert(1)}, iconClass:'iDel',label:''"></div>
+	    			</div> 
+	     			<div data-dojo-type="appudo.Grid" data-dojo-props="
+	     			   	    clientSort:true, delCall:5, structure: [
+								{name: 'fg', field: 'l', width:'100%'}
+							]">
+	     			</div>	
+		        </div>
+		     </div>
+		 </div>
+	</div>
+</body>
+</html>

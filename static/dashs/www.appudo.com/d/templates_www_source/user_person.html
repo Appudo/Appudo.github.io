@@ -1,0 +1,71 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        base:null,
+        master:null,
+        rstFrm : function(frm) {
+            this.rstFrmErr(frm);
+            frm[0].reset();
+        },
+        rstFrmErr : function(frm) {
+            // TODO remove error messages
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm.serializeJSON();
+            _this.doSubmit.call(_this, data);
+        },
+        errSubmit : function(data) {
+	        // todo submit ERROR   
+        },	
+        finSubmit : function() {
+		    this.rstFrm($('#delForm'));
+        },
+        doStage1 : function(pdata, rdata) {   
+            var _this = this;
+            var d = '{"em":' + JSON.stringify(pdata.em) + ',"tk":' + JSON.stringify(rdata.t) + '}';
+            postCreds(userBase('/admin/', rdata.n), {data:'{"cmd":4,"data":' + JSON.stringify(d) + '}'}, function(data) {
+                if(data.r == 0) {
+                    _this.finSubmit();
+                }
+            });
+        },
+        doSubmit : function(pdata) {
+            var _this = this;
+	        post(masterBase('/admin/'), {data:'{"cmd":4,"data":' + JSON.stringify(pdata.em) + '}'}, function(data) {
+                if(data.r == 0) {
+                    _this.doStage1(pdata, data);
+                }
+            });
+        },
+        run : function() {
+            var _this = this; 
+            var frm = $('#delForm');
+            var a = window.location.host.split('.');
+            a = a.splice(a.length - 2);
+            this.base = '.' + a.join('.');
+            this.master = 'mtr' + this.base;
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+                _this.validateFrm.call(_this, frm);
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <h3>{{info.head}}</h3>
+        <div>
+            <form id="delForm">
+                <span>Remove user</span>
+                <input name="em" type="email">
+                <input type="submit" value="Delete">
+            </form>
+        </div>
+        <div>
+            <a class="spf-link" href="/master_nodes">Master List</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,2523 @@
+<!DOCTYPE html>
+<html class="no-js"> 
+<head>
+    <!--[if IE]><script></script><![endif]-->
+    <meta charset="utf-8">
+    <title>APPUDO</title>
+    <meta name="description" content="APPUDO">
+    <meta name="author" content="contact@appudo.com">
+    <meta name="viewport" content="width=1335">
+    <link rel="alternate" hreflang="de-de" href="https://de-de.appudo.com/"/>
+    <link rel="alternate" hreflang="x-default" href="https://www.appudo.com/"/>
+ 
+    <!-- Favicons
+    <link rel="shortcut icon" href="favicon.png" >
+    -->
+    <script>
+        var lang;
+        var slang;
+        var loginCtx = {};
+        var mainCtx = {};
+        var moduleCtx = {};
+        var fixModule = {};
+        var empty = {};
+        var i18nCtx = {};
+        var numI18n = 0;
+        var modalCount = 0;
+        var hasLoad = 0;
+        var pending = false;
+        var currentModule;
+        var tabs;
+        var base = null;
+        var loginFrame = {"foot":"<style name=\"stl_login_frame\"></style>","body": {"minit":"<script>minit('login_frame',['header','menu','footer'], {srefs:['header','footer'],sid:'stl_login_frame'});<\/script>","misc":"<script>moduleCtx['login_frame']=function(){\n    return {\n        noI18nLoad:true,\n        preI18n : function(o, m) {\n            o.login = i18nCtx['landing'].login;\n            o.ft = i18nCtx['landing'].ft;\n        },\n        run : function() {\n            var frm = $('#loginFrm');\n            var api = $('.btm .api');\n            api.attr('href', apiRef());\n            frm.submit(function(e) {\n                e.preventDefault();\n                var data = frm.serializeJSON();\n                frm[0].reset();\n                doLogin(data);\n            });\n        }\n    }\n}();<\/script>","header":"<div class=\"hdr flhdr\"><\/div><div class=\"lhdr\"><div class=\"linner\"><div id=\"logo\" class=\"logobg\" onclick=\"toMain();\"><\/div><div id=\"login\" class=\"lgn\"><form id=\"loginFrm\" action=\"none\" class=\"frm\"><div><label>{{login.em}}<\/label><input name=\"email\" id=\"email\" type=\"text\" required=\"\"><\/div><div><label>{{login.pw}}<a class=\"spf-link\" href=\"/confirm\" id=\"lst\" tabindex=\"-1\">({{login.lst}})<\/a><\/label><input name=\"password\" id=\"password\" type=\"password\" required=\"\"><input type=\"submit\" name=\"doLn\" value=\"{{login.sub}}\"><\/div><\/form><\/div><div style=\"clear:both;\"><\/div><\/div><\/div>","menu":"","footer":"<div class=\"fbg\"><\/div><div class=\"fcontent\"><div class=\"linner\"><div class=\"lang\"><a class=\"lsel\" href=\"javascript:setLang('www')\">{{ft.en}}<\/a><a href=\"javascript:setLang('de-de')\">{{ft.de}}<\/a><\/div><div class=\"hline\" style=\"display:block;margin:20px auto;background:#ddd\"><\/div><div class=\"btm\"><a class=\"spf-link\" href=\"/legal\">{{ft.legal}}<\/a><a class=\"spf-link\" href=\"/doc/\">{{ft.doc}}<\/a><a class=\"api\" target=\"_blank\" href=\"\">APPUDO APIs<\/a><a target=\"_blank\" href=\"https://www.github.com/Appudo\">Github<\/a><a class=\"spf-link\" href=\"/about\">{{ft.abt}}<\/a><\/div><\/div><\/div>"}};
+        var logoutFrame = {"foot":"<style name=\"stl_entry_frame\">\n    body, #main {\n        background-color:#f2f2f2;\n    }\n    .lout {\n        float:right;\n        margin:3px 0 0;\n        margin-right: calc(100% - 100vw + 100px);\n    }\n    .ln {\n        display:inline-block;\n        margin: 5px 5px;\n        color: #fff;\n        background-color: #396dc5;\n        min-width: 5em;\n        padding: 0 5px 2px 5px;\n        border-radius:5px;\n    }\n    .lg {\n        display:inline-block;\n        height:35px;\n        background-size:147px;\n        background-position-y:7px;\n        margin-left:100px;\n    }\n    .einner {    \n        max-width:1920px;\n    }\n    #content {\n        margin: 1px 0 0 200px;\n    }\n    #content .linner {\n        padding:0 40px;\n        border: 1px solid #c7c7c7;\n        border-radius: 7px;\n        background-color:#fff;\n    }\n    #menu {\n        background-color:#f2f2f2;\n    }\n    #menu .minner {    \n        margin: 20px -20px 0 20px;\n    }\n    #main {\n        padding-top:40px;\n        min-height:calc(100vh - 40px);\n    }\n</style>","body": {"minit":"<script>minit('entry_frame',['header','menu','footer'], {srefs:['footer'],sid:'stl_entry_frame'});<\/script>","misc":"<script>moduleCtx['entry_frame']=function(){\n    return {\n        noI18nLoad:true,\n        preI18n : function(o) {\n            o.login = {m:mainCtx.linfo.m};\n            o.entry = i18nCtx['landing'].entry;\n            o.mnu = i18nCtx['landing'].mnu;\n        },\n        run : function() {\n            $('#lout').click(function() {\n                logout();\n            });\n            \n            clearMainMenu();\n            $('.minner .spf-link').each(function(idx, e) {\n                addMainMenu(e);\n            });\n            loadMainMenu();\n        }\n    }\n}();<\/script>","header":"<div class=\"ohdr\" style=\"min-height:40px;\"><div class=\"hdr flhdr\" style=\"z-index:-1\"><\/div><div class=\"einner\"><div class=\"logobg lg\"><\/div><div class=\"frm lout\"><span class=\"ln\">{{login.m}}<\/span><input id=\"lout\" type=\"button\" value=\"{{entry.out}}\"><\/div><\/div><\/div>","menu":"<div class=\"minner mMenu\"><ol><li><ol><li><a class=\"spf-link\" href=\"/overview\">{{mnu.ovw}}<\/a><\/li><\/ol><\/li><li><ol><li><a class=\"spf-link\" href=\"/user_person\">{{mnu.pers}}<\/a><\/li><li class=\"hide\"><a class=\"spf-link\" href=\"/user_pay\">{{mnu.pay}}<\/a><\/li><li class=\"hide\"><a class=\"spf-link\" href=\"/user_plans\">{{mnu.plan}}<\/a><\/li><li class=\"hide\"><a class=\"spf-link\" href=\"/user_bills\">{{mnu.bill}}<\/a><\/li><\/ol><\/li><li><ol><li><a class=\"spf-link\" href=\"/dash_nodes\">{{mnu.node}}<\/a><\/li><li><a class=\"spf-link\" href=\"/dashs\">{{mnu.dash}}<\/a><\/li><li><a class=\"spf-link\" href=\"/dash_domains\">{{mnu.dmn}}<\/a><\/li><li><a class=\"spf-link\" href=\"/dash_certs\">{{mnu.crt}}<\/a><\/li><li><a class=\"spf-link\" href=\"/dash_mails\">{{mnu.mail}}<\/a><\/li><li class=\"hide\"><a class=\"spf-link\" href=\"/monitor\">{{mnu.mtr}}<\/a><\/li><\/ol><\/li><li class=\"hide\"><ol><li><a class=\"spf-link\" href=\"/user_packages\">{{mnu.pkg}}<\/a><\/li><li><a class=\"spf-link\" href=\"/package_upload\">{{mnu.upl}}<\/a><\/li><li><a class=\"spf-link\" href=\"/package_presets\">{{mnu.prst}}<\/a><\/li><\/ol><\/li><li class=\"master\"><ol><li><a class=\"spf-link\" href=\"/master_nodes\">{{mnu.mnodes}}<\/a><\/li><\/ol><\/li><\/ol><\/div>","footer":""}};
+        var pendingI18n;      
+        var langMap = {'en-gb':1, 'de-de':2};
+        var langArr;
+        var loginID = -1;
+        var hdrHeight = 0;
+        var _spfNav = '?spf=navigate';
+        var _fixLast = null;
+        var latestVersion = '1.3.2';
+        var latestVersionFull = '1.3.2 (13.8.2018, 07:34:53)';
+        
+        function nop() {
+            window.location.href = '/noiesupport/';
+        }
+        
+        function apiRef() {
+            return '/pub/api/docs_' + latestVersion + '/index.html';
+        }
+        
+        function fullVersion() {
+            return latestVersionFull;
+        }
+        
+        
+        function langID(ln) {
+            return langMap[ln || lang] || 1;
+        }
+        
+        function dolog(v) {
+            $('#tlog').html($('#tlog').html() + '<br>' + v);
+        }
+        
+        function langInit() {
+            langArr = $.keys(langMap);
+            var l = window.location.host.split('.')[0];
+            var langID = langMap[l] || 1
+            lang = langArr[langID - 1]
+            slang = langID == 1 ? 'www' : lang;
+            if(l != slang) {
+                setLang(slang);
+            }
+            dolog('lang:' + slang);
+        } 
+        
+        function langInitFoot() {
+            var links = $('.lang a');
+            links.removeClass('lsel');
+            links.each(function(idx, n){
+                if($(n).attr('href').indexOf(slang) != -1) {
+                    $(n).addClass('lsel');
+                }
+            });
+        }
+        
+        function setLang(ln) {
+            var l = window.location;
+            var u = userBase(l.pathname, ln) + l.search + l.hash;
+            window.location.href = u;
+        }
+        
+        function masterBase(uri) {
+            return 'https://mtr' + this.base + uri;
+        }
+        
+        function userBaseRaw(schema, uri, n) {
+            if(n || mainCtx.linfo)
+                return schema + (n || mainCtx.linfo.n) + this.base + uri;
+            return '';
+        }
+        
+        function userBase(uri, n) {
+            return userBaseRaw('https://', uri, n);
+        }
+        
+        function InitBase() {
+            var a = window.location.host.split('.');
+            a = a.splice(a.length - 2);
+            base = '.' + a.join('.');
+        }
+        
+        function LoadCSS(src, after) {
+            _get(src, function(data) {
+                $('<style rel="stylesheet" type="text/css">' + data + '</style>').appendTo($('head'));
+                if(after)
+                    after();
+            });
+        }
+        
+        function InitScript(src) {
+            var data = $('#' + src).text();
+            $('<script type="text/javascript">' + data + '<\/script>').appendTo($('head'));
+        }
+        
+        function getScripts(src, after) {
+            var r = {i:0};
+            for(var i = 0; i < src.length; i++) {
+                getScript(src[i], function() {
+                    if(++r.i == src.length)
+                        after();
+                });
+            }
+        }
+        
+        function getScript(src, cb) {
+            var e, f, h;
+            f = true;
+            e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.src = '/' + src;
+            h = document.getElementsByTagName('head')[0];
+            e.onreadystatechange = e.onload = function() {
+                if(f && (!this.readyState || this.readyState == 'complete')) {
+                    f = false;
+                    cb();
+                }
+            };
+            h.appendChild(e);
+        }
+        
+        function mCall(module, name, args) {
+            var m = moduleCtx[module];
+            if(args)
+                m[name].apply(m, args);
+            else
+                m[name].call(m);
+        }
+        
+        function fetchI18n(module, base, after) {
+            var sn = '_i18n_' + module;
+            var s = $('.'+sn);
+            var b = base ? base + '/' : ''
+            if(s.length == 0) {
+                _get('/pub/i18n/' + b  + lang + '/' + moduleBase(module)  + '.js', function(data) {
+                    currentModule = module;
+                    var e = document.createElement('script');
+                    e.type = 'text/javascript';
+                    e.text = data;
+                    $(e).addClass(sn);
+                    $('body').append(e);
+                    after();
+                }, 'text');
+            } else {
+                after();
+            }
+        }
+        
+        function waitForLast(task) {
+            var o = pendingI18n;
+            var n = $.Deferred();
+            pendingI18n = n;
+            var fkt = function() { 
+                o.done(function() {
+                    if(pendingI18n === n) {
+                        var k = $.keys(fixModule);
+                        if(k.length == 0) {
+                            task(); 
+                        } else {
+                            if(!_fixLast) {
+                                _fixLast = $.Deferred();
+                                _fixLast.done(function() {
+                                    waitForLast(task);
+                                });
+                            }
+                        }
+                    } else {
+                        waitForLast(task);
+                    }
+                    n.resolve();
+                }); 
+            };
+            fkt();
+        }
+        
+        function waitFor(task, ret) {
+            var o = pendingI18n;
+            var n = $.Deferred();
+            pendingI18n = n;
+            var fkt = function() { o.done(function() {task(); n.resolve()}); };
+            if(ret) {
+                return fkt;
+            } else {
+                fkt();
+            }
+        }
+        
+        function addI18n(d) {
+            if(++numI18n == 16)
+            {
+                for(var prop in i18nCtx) {
+                    if(!i18nCtx.hasOwnProperty(prop) || prop == 'landing') 
+                        continue;
+                    var sn = '._i18n_' + prop;
+                    $(sn).remove();
+                }
+                numI18n = 0;
+                var landing = i18nCtx['landing'];
+                i18nCtx = {landing:landing};
+            }
+            i18nCtx[currentModule] = d;
+        }
+        
+        function loadI18n(module, i18n, base, after) {
+            var next = function() {
+                if(after)
+                    after();
+            }
+            if(i18n.length != 0) {
+                var m = moduleCtx[module];
+                var templ = function() {
+                    var p = m ? m.preI18n : null;
+                    if(p)
+                    {
+                        var k =  i18nCtx[module];
+                        var n = k || {};
+                        p(n, module);
+                        if(!k)
+                            i18nCtx[module] = n;
+                    }
+                    $.each(i18n, function(i, n) {
+                        var node = $('#'+n)[0];
+                        if(node) {
+                            var source = node.innerHTML;
+                            var tmpl = Hogan.compile(source);
+                            var result = tmpl.render(i18nCtx[module]);
+                            node.innerHTML = result;
+                        }
+                    });
+                    next();
+                };
+                var load = !m || !m.noI18nLoad;
+                if(load) {
+                    fetchI18n(module, base, waitFor(templ, true));
+                } else {
+                    waitFor(templ);
+                }
+            } else {
+                waitFor(next);
+            }
+        }
+        
+        function delStyle(name, module) {
+            if(fixModule[module] == undefined) { 
+                spf.style.unload(name);
+            }
+        }
+        
+        function minit(module, i18n, options, after) {
+            dolog(module);
+            $.each(i18n, function(i, n) {
+                $('#'+n).css('display', 'none');
+            });
+            
+            fixModule[module] = function(oI18n, afterFix) {
+                var o = options || empty;
+                $.each(o.ideps || empty, function(i, n) {
+                    loadI18n(n, i18n, o.i18nBase, function() {
+                        
+                    });
+                });
+                loadI18n(module, i18n, o.i18nBase, function() {
+                    var mctx = moduleCtx[module] || empty;
+                    onLoadComplete(module, oI18n || i18n, mctx.nosel);
+                    delete fixModule[module];
+                    var refs = o.srefs || empty;
+                    var num = {i:refs.length};
+                    $.each(refs, function(i, n) {
+                        $('<iframe />', {
+                            src:'about:blank',
+                            style:'display:none',
+                            load: function(){
+                                this.contentWindow.onunload = function() {
+                                    if(--num.i == 0) {
+                                        $.each(o.ideps || empty, function(i, n) {
+                                            var dctx = moduleCtx[n] || empty;
+                                            if(dctx.dep_unload)
+                                                dctx.dep_unload();
+                                        });
+                                        if(mctx.unload)
+                                            mctx.unload(); 
+                                        delStyle(options.sid, module); 
+                                        onUnload(module);
+                                    }
+                                };
+                            }
+                        }).appendTo('#'+n);
+                    });
+                    if(afterFix)
+                        afterFix();
+                        
+                    if(after)
+                        after();
+                        
+                    if(_fixLast) {
+                        var fl = _fixLast;
+                        _fixLast = null;
+                        fl.resolve();
+                    }
+                });
+            }
+        }
+        
+        function path() { 
+            var l = window.location.pathname;
+            l = l.split('&')[0];
+            l = l.substr(1);
+            return l;
+        }
+        
+        function onUnload(module) {
+            if(fixModule[module] == undefined) { 
+                delete moduleCtx[module];           
+            }
+        }
+        
+        function onLoadComplete(module, i18n, nosel) {
+            dolog('onLoadComplete: ' + module);
+            if(!nosel) {
+                setActive(module);
+            }
+            if(moduleCtx[module]) {
+                moduleCtx[module].i18n = i18nCtx[module];
+                moduleCtx[module]._module = module;
+                if(moduleCtx[module].run) {
+                    moduleCtx[module].run();
+                }
+            }
+            $.each(i18n, function(i, n) {
+                $('#'+n).css('display', '');
+            });
+        }
+        
+        function setActive(entry) {
+            entry = '/' + entry;
+            $('a.sel').removeClass('sel');
+            $('a[href^="' + entry + '"]').each(function(idx, e) {
+                var href = $(e);
+                var uri = href.attr('href').split('?')[0];
+                if(uri == entry)
+                    href.addClass('sel');
+            });
+        }
+        
+        function preInit() {
+            if(location.protocol !== 'https:') {
+                window.location = location.href.replace('http:', 'https:')
+                return;
+            }
+            if (typeof String.prototype.startsWith != 'function') {
+                String.prototype.startsWith = function (str) {
+                    return this.slice(0, str.length) == str;
+                };
+            }
+            try {
+                getScripts(["pub/js/spf.js", "pub/js/hogan.js", "pub/js/jquery.min.js"], Init);
+            } catch(e) {
+                dolog(e);
+                dolog(e.lineNumber);
+            }
+        }
+        
+        function _xhr(type, url, data, after, dataType, xhr) {
+            return $.ajax({
+              type: type,
+              url: url,
+              data: data,
+              success: after,
+              error: function(e) { dolog('ajax fail'); dolog(JSON.stringify(e)); after({r:-1}); },
+              dataType: dataType,
+              crossDomain: true, 
+              xhrFields: xhr
+            });
+        }
+        
+        function _get(url, after, dataType) {
+            var check = function(v) {
+                hideLoad();
+                after(v);
+            }
+            showLoad();
+            return _xhr("GET", url, undefined, check, dataType)
+        }
+        
+        function get(url, after, dataType) {
+            var check = function(v) {
+                hideLoad();
+                var data = validateRes(v);
+                if(data)
+                    after(data);
+            }
+            showLoad();
+            return _xhr("GET", url, undefined, check, dataType)
+        }
+        
+        function _postCredsRaw(url, data, after, dataType) {
+            var check = function(v) {
+                hideLoad();
+                after(v);
+            }
+            showLoad();
+            return _xhr("POST", url, data, check, dataType, { withCredentials: true });
+        }
+        
+        function _postCreds(url, data, after, dataType, nologinCheck) {
+            var check = function(v) {
+                hideLoad();
+                var data = validateRes(v, nologinCheck);
+                if(data)
+                    after(data);
+            }
+            showLoad();
+            return _xhr("POST", url, data, check, dataType, { withCredentials: true });
+        }
+        
+        function postCreds(url, data, after, dataType) {
+            return _postCreds(url, data, after, dataType);
+        }
+        
+        function postCredsCross(din, url, data, after, dataType, _defer) {
+            var r = _defer || $.Deferred();
+            var check = function(v) {
+                hideLoad();
+                var res = validateRes(v, true);
+                if(res.r != 0 && res.l) {
+                    postCredsCross(din, url, data, after, dataType, r); 
+                    return;
+                }
+                r.resolve();
+                after(res);
+            }
+            crossLogin(din.id, function(d) {
+                if(d) {
+                    din.tk = data.tk = d.tk;
+                    showLoad();
+                    _xhr("POST", url, data, check, dataType, { withCredentials: true });
+                } else {
+                    after({r:-1});
+                    r.reject();
+                }
+            }, _defer);
+            return r;
+        }
+        
+        function _post(url, data, after, dataType, nologinCheck) {
+            var check = function(v) {
+                hideLoad();
+                var data = validateRes(v, nologinCheck);
+                if(data)
+                    after(data);
+            }
+            showLoad();
+            return _xhr("POST", url, data, check, dataType);
+        }
+        
+        function post(url, data, after, dataType) {
+            return _post(url, data, after, dataType);
+        }
+        
+        function hdrFix() {
+            var h = $('.ohdr');
+            var m = $('#main');
+            var n = $('.mMenu');
+            
+            if(h.length) {
+                m.css('padding-top', h.height());
+                n.css('top', h.height() + 1);
+            } else {
+                m.css('padding-top', '');
+                n.css('top', '');
+            }
+        }
+        
+        function onResize() {
+            var h = $('html');
+            h.removeClass('small_m');
+            h.removeClass('small');
+            var w = $(window);
+            var b = $('body');
+            var s = w.height();
+            var m = $('#menu');
+            var hdr = $('.flhdr');
+            var sw = h.get(0).scrollWidth;
+            var p;
+            var sb;
+            if(m[0]) {
+                var mh = m.height();
+                if(mh == 0) {
+                    var nm = $(m.children()[0]);
+                    if(nm.length) {
+                        m = nm;
+                        mh = m.height();
+                    }
+                }
+                p = m.offset().top + mh;
+                sb = h.innerWidth() != sw;
+                if(s < p || sb) {
+                    h.addClass('small_m');
+                }
+                if(sb) {
+                    h.addClass('small');
+                }
+            } 
+            placeFrmError();
+            hdrFix();
+           // hdr.css('padding-right', (sw - bd) + 'px');
+        }
+        
+        function parseSearch(str) {
+            if(!str)
+                str = window.location.search;
+            var a = str.replace(/=/g,'":"').split(/[\?,&]+/);
+            if(a[0] == "") {
+                a.shift();
+            }
+            try {
+                for (var i in a) {
+                    a[i] = decodeURIComponent(a[i]);
+                }
+                return JSON.parse('{"'+ a.join('","')+'"}');
+            } catch(e) {
+                return {};
+            }
+        }
+            
+        var _mainMenu = {};
+        
+        function unloadMainMenu() {  
+            var o = _mainMenu;
+            for(var prop in o) {
+                if(!o.hasOwnProperty(prop)) 
+                    continue;
+                localStorage.removeItem(mainMenuKey(prop));
+            }
+            clearMainMenu();
+        }
+        
+        function clearMainMenu() {
+            _mainMenu = {}; 
+        }
+            
+        function addMainMenu(e) {
+            var key = $(e).attr('href');
+            _mainMenu[key] = $(e);
+        }
+        
+        function mainMenuKey(n) {
+            return "mainMenu_" + n;
+        }
+        
+        function loadMainMenu() {
+            var o = _mainMenu;
+            for(var prop in o) {
+                if(!o.hasOwnProperty(prop)) 
+                    continue;
+                var r = localStorage.getItem(mainMenuKey(prop));
+                if(r) {
+                    var e = _mainMenu[prop];
+                    e.attr('href', prop + r);
+                }
+            }
+        }
+        
+        function putSearchMenu(o) { 
+            var r = putSearch(o);
+            var pn = window.location.pathname;
+            var e = _mainMenu[pn];
+            e.attr('href', pn + r);
+            localStorage.setItem(mainMenuKey(pn), r);
+        }
+        
+        function hreplaceState(a, b, c) {
+            if(history.replaceState)
+                history.replaceState(a, b, c);
+        }
+        
+        function hpushState(a, b, c) {
+            if(history.pushState)
+                history.pushState(a, b, c);
+        }
+        
+        function putSearch(o) {
+            var first = true;
+            var sep = '?';
+            var r = "";
+            for(var prop in o) {
+                if(!o.hasOwnProperty(prop)) 
+                    continue;
+                r += sep + prop + '=' + o[prop]; 
+                if(first) {
+                    first = false;
+                    sep = '&';
+                }
+            }
+            var out = window.location.protocol + "//" + window.location.host + window.location.pathname + r;
+            hpushState({ path: out }, document.title, out);
+            return r;
+        }
+        
+        function needLogin(entry, p) {
+            return entry.search('_validate') == -1 &&
+                   entry.search('password_reset') == -1 &&
+                   entry != 'login' &&
+                   entry != 'legal' &&
+                   entry != 'about' &&
+                   entry != 'confirm' &&
+                   entry != 'contact' &&
+                   !p.startsWith('/doc/');
+        }
+        
+        function fixHreflang() {
+            var l = window.location;
+            $("[hreflang]").each(function(idx, e) {
+                var h = e.href.slice(0, -1);
+                e.href = h + l.pathname + l.search + l.hash;
+            });
+        }
+        
+        function moduleFromPath(p) {
+            var e = p.split('/');
+            if(e[e.length-1] == '')
+                e.pop();
+            if(e[0] == '')
+                e.shift();
+            return e.join('+');
+        }  
+        
+        function moduleBase(m) {
+            var e = m.split('+');
+            return e[e.length-1];
+        }
+            
+        function Init() { 
+            dolog('next');
+            try {
+            $.support.cors = true;
+            InitBase();
+            InitScript('TAB');
+            InitScript('JSON');
+            langInit();
+            fixHreflang(); 
+            animFindAnimEvent();
+            animFindTransEvent();
+            pendingI18n = $.Deferred();
+            pendingI18n.resolve();
+            LoadCSS('/pub/css/main.css', waitFor(function(){
+            }, true));
+            LoadCSS('https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700)');
+            var entry = path();
+            var search  = window.location.search;
+            var hash  = window.location.hash;
+            $(window).on("spfrequest", function(){
+                showLoad();
+                $('#content').css('display', 'none');
+                spf.style.unload('mstl');
+            });
+            $(window).on("spfdone", function(e){
+                hideLoad();
+                var u = e.originalEvent.detail;
+                var e = document.createElement('a');
+                e.href = u.url;
+                u = moduleFromPath(e.pathname);
+                if(u == 'doc')
+                    u ='doc+doc';
+                waitFor(function(){
+                    var after = function() {
+                        afterLoad();
+                        onResize();
+                    }
+                    if(fixModule[u])
+                        fixModule[u](null, after);
+                    else
+                        after();
+                });
+            });
+            $(window).resize(onResize);
+            spf.init({'cache-unified':true});
+            var hasEntry = (entry != '');
+            var after = function(login) {
+                // TODO if we have an err then do not navigate
+                var i18n = ['header','footer','menu', 'login'];
+                var waiter = null;
+                if(hasEntry) {
+                    waiter = waitFor(function(){
+                        
+                    }, true);
+                } else {
+                    i18n.push('content');
+                }
+                $('.load').css('display', 'none');
+                var e = 'landing' // TODO use entry if login is succesful
+                minit(e, ['menu', 'content', 'login', 'theDialog', 'footer'], [], function() {
+                    if(hasEntry) {
+                        waiter = waitFor(function(){
+                            
+                        }, true);
+                        spf.navigate('/' + entry + search + hash, {onDone:waiter});
+                        setActive(entry);
+                    }
+                });
+                fixModule['landing'](i18n);
+                
+                if(login) {
+                    toLogin(hasEntry);
+                } else {
+                    toLogout();
+                }
+                if(waiter)
+                    waiter();
+                waitForLast(afterRender);
+            }
+                
+            tryLogin(hasEntry, entry, after);
+            } catch(e) {
+                dolog(e);
+                dolog(e.lineNumber);
+            }
+        }
+        
+        // TODO remove when doc is ready
+        function fixDoc() {
+            if($('html').hasClass('in_doc')) {
+                $('.doc .dinfo').text(i18nCtx['landing'].doc.info);
+            }
+        }
+        
+        function afterLoad() {
+            fixDoc();
+        }
+        
+        function afterRender() {
+            var regFrm = $('#regFrm');
+            if(regFrm.length != 0) {
+                handleError(regFrm, doRegister, ':', function() {
+                    var data = regFrm[0]._sdata || regFrm.serializeJSON();
+                    
+                    regFrm[0]._sdata = data;
+                    if(data.npw !== data.pwr) {
+                        var npw = i18nCtx['landing'].reg.pwr;
+                        var perr = i18nCtx['landing'].reg.pwm;
+                        return [{i:$('#pwr'),l:npw,m:perr}];
+                    }
+                    return null;
+                });
+            }
+            
+            $('.work').css('display', '');
+            $('.holder').css('display', '');
+            $('.load').css('display', 'none');
+            
+            goCode(1, true);
+            fboxInit();
+            iboxInit();
+            langInitFoot();
+            codeTabInit();
+            
+            $('#dialogClose').click(function() {
+                dialogHide();
+            });
+            
+            setTimeout(function(){
+                onResize();
+            }, 200);
+            
+            var l = location ? location : window.location;
+            if(l.hash != "") {
+                var h = l.hash;
+                l.hash = '';
+                l.hash = h;
+            }
+        }
+        
+        function badLogin() {
+            localStorage.removeItem("userMail");
+            spf.navigate('/');
+        }
+        
+        function tryLogin(hasEntry, entry, after) {
+            var m = localStorage.getItem("userMail");
+            var unode = localStorage.getItem('userNode[' + m + ']');
+            var last = parseInt(localStorage.getItem('lastLogin'));
+            var current = (new Date()).getTime() / 1000;
+            var p = window.location.pathname;
+            console.log('tryLogin::lastLogin', last, current, current - last, current - last < 3*60*1000);
+            var av = false;
+            if(!hasEntry || (unode && current - last < 3*60*1000)) {
+                var mtr = parseInt(localStorage.getItem("userMaster")) != 0;
+                mainCtx.linfo = {m:m,n:unode,mtr:mtr};
+                av = unode !== null;
+            } else {
+                if(needLogin(entry, p)) {
+                    badLogin();
+                    return;
+                }
+            }
+            
+            if(p.startsWith('/doc/')) {
+                requireModule('/doc/doc');
+            }
+            
+            after(av);
+            
+            hreplaceState({success:true}, 'APPUDO', "/");
+        }
+        
+        function loadContent(module, cnt, unload, afterLoad, afterUnload) {
+            if(moduleCtx[module])
+                return false;
+            showLoad();
+            res = function() {  
+                hideLoad();
+                var ul = null;
+                if(unload && moduleCtx[module]) {
+                    ul = moduleCtx[module][unload] = function(active) {
+                        if(cnt.body) {
+                            var body = cnt.body;
+                            for(var prop in body) {
+                                if(!body.hasOwnProperty(prop) || prop == 'minit' || prop == 'misc') 
+                                    continue;
+                                $('#'+prop).html('');
+                            }
+                        }
+                        if(cnt.head) {
+                            var items = $(cnt.head)
+                            items.each(function(idx, e) {
+                                var name = $(e).attr('name');
+                                if(name) {
+                                    $('[name=' + name + ']').remove();
+                                }
+                            });
+                        }
+                        
+                        if(afterUnload)
+                            afterUnload(active);
+                    }
+                }
+                fixModule[module](null, function() {
+                    if(afterLoad)
+                        afterLoad(ul);
+                });
+            };
+            var waiter = null;
+            if(!afterLoad) {
+                waiter = waitFor(res, true);
+            }
+            spf.process(cnt, function() {
+                if(waiter) {
+                    waiter();
+                } else {
+                    res();
+                }
+            });
+            return true;
+        }
+        
+        function loginPing() {
+            if(loginID == -1) {
+                loginID = setInterval(function() {
+            console.log('tryLogin::lastLogin', (new Date()).getTime() / 1000);
+                    localStorage.setItem("lastLogin", (new Date()).getTime() / 1000);
+                    postCreds(userBase('/admin/'), {data:JSON.stringify({cmd:15})}, function(res) {
+                    });
+                }, 3*60*1000);
+            }
+        }
+        
+        function toLogin(hasEntry) {
+            var _this = this;
+            if(moduleCtx['entry_frame'])
+                return;
+                
+            var waiter = waitFor(function() {
+                $('body').addClass('in_login');
+                fixModule['entry_frame'](null, function() {
+                    $(document).attr('title', 'APPUDO Hub');
+                    _this.hdrHeight = $('.ohdr').outerHeight(true);
+                    updateMaster();
+                    
+                    if(!hasEntry){
+                        spf.navigate('/overview', {onDone:waitFor(function(){
+                            fixModule['overview']();
+                            onResize();
+                            hreplaceState({success:true}, 'APPUDO', '/');
+                        }, true)});
+                    }
+                });
+            }, true);
+            
+            spf.process(logoutFrame, function() {
+                waiter();
+            });
+            
+            $('#msg').css('display', 'none');
+            $('#loginFrm').css('display', 'none');
+            
+            var base = userBase('/admin/');
+            loginPing();
+        }
+        
+        function toLogout(after) {
+            unloadMainMenu();
+            spf.style.unload('lout');
+            localStorage.removeItem('userMail');
+            delete mainCtx.linfo;
+            
+            var waiter = waitFor(function() {
+                $(document).attr('title', 'APPUDO');
+                $('body').removeClass('in_login');
+                if(fixModule['login_frame'])
+                    fixModule['login_frame']();
+                delete fixModule['login_frame'];
+                updateMaster();
+                if(after)
+                    after();
+                onResize();
+            }, true);
+            spf.process(loginFrame, function() {
+                waiter();
+            });
+            
+            if(loginID != -1) {
+                clearInterval(loginID);
+                loginID = -1;
+            }
+        }
+        
+        function toMain() {
+            spf.navigate('/');
+        }
+        
+        function rOk(data) {
+            return data.r == 0;
+        }
+        
+        function rEProt(data) {
+            return data.r < 0;
+        }
+        
+        function getUserNode(email, after) {
+            var n = localStorage.getItem('userNode[' + email + ']');
+            if(n) {
+                after({r:0,n:n});
+            } else {
+                _post(masterBase('/admin/'), {data:'{"cmd":3,"data":' + JSON.stringify(email) + '}'}, after, undefined, true);
+            }
+        }
+        
+        function doLogin(data, params) {
+            console.log('tryLogin::doLogin', (new Date()).getTime() / 1000);
+            localStorage.setItem("lastLogin", (new Date()).getTime() / 1000);
+            getUserNode(data.email, function(rdata) {
+                if(rdata && rdata.r == 0) { 
+                    var d = '{"em":' + JSON.stringify(data.email) + ',"pw":' + JSON.stringify(data.password) + '}';
+                    _postCreds(userBase('/admin/', rdata.n), {data:'{"cmd":1,"data":' + JSON.stringify(d) + '}'}, function(d) {
+                        if(d && d.r == 0) {
+                            var linfo = {m:data.email,n:rdata.n,mtr:parseInt(d.m) != 0}; 
+                            
+                            var setItems = function() {
+                                try {
+                                    localStorage.setItem('userMail', linfo.m);
+                                    localStorage.setItem('userNode[' + linfo.m + ']', linfo.n);
+                                    localStorage.setItem('userMaster', d.m);
+                                } catch(err) {
+                                    localStorage.clear();
+                                    return false;
+                                }
+                                return true;
+                            }
+                            
+                            if(!setItems() && !setItems()) {
+                                // TODO local stotage error
+                            } else {
+                                mainCtx.linfo = linfo;
+                                toLogin();
+                                hreplaceState({success:true}, 'APPUDO', '/');
+                            }
+                            
+                        } else {
+                            spf.navigate('/login'+(params||''));
+                        }
+                    }, undefined, true);
+                } else {
+                    spf.navigate('/login'+(params||''));
+                }
+            });
+        }   
+        
+        function adminRegister(email, invite, after) {
+            var d = {n:email,i:invite};
+            post(masterBase('/admin/'), {data:'{"cmd":2,"data":' + JSON.stringify(JSON.stringify(d)) + '}'}, after);
+        }
+        
+        function doRegister() {
+            var i18n = i18nCtx['landing'].reg;
+            var frm = $('#regFrm');
+            var data = frm[0]._sdata || frm.serializeJSON();
+            var err = function() {
+                modalError(i18n.err);
+            }
+            
+            adminRegister(data.nem, data.inv, function(rdata) {
+                if(rdata && rdata.r == 0) { 
+                    var d = {em:data.nem,pw:data.npw,tk:rdata.t,lID:langID()}
+                    post(userBase('/admin/', rdata.n), {data:'{"cmd":0,"data":' + JSON.stringify(JSON.stringify(d)) + '}'}, function(data) {
+                        if(data.r == 0) {
+                            window.location.href = '/login?reg=1'
+                        } else {
+                            err();
+                        }
+                    });
+                } else {
+                    err();
+                }
+            });
+        }
+       
+        var pendingLoad = false;
+        var loadActive = false;
+       
+        function showLoad() {
+            hasLoad++;
+            if(loadActive || pendingLoad)
+                return;
+            pendingLoad = true;
+            setTimeout(function() {
+                if(!pendingLoad)
+                    return;
+                loadActive = true;
+                //console.log('showLoad');
+                disableMain();
+                pendingLoad = false;
+                var load = $('#theLoad');
+                load.css('display', '');
+            }, 50);
+        }
+        
+        function hideLoad() {
+            --hasLoad;
+            var load = $('#theLoad');
+            if(hasLoad == 0) {
+                var obj = {};
+                obj.hide = function(close) {
+                    if(close) {
+                        //console.log('hideLoad');
+                        if(hasLoad == 0 && loadActive) {
+                            loadActive = false;
+                            load.css('display', 'none');
+                            enableMain();  
+                        }
+                    } else {
+                        setTimeout(function() {obj.hide(true)}, 200);
+                    }
+                }
+                obj.hide();
+            }
+        }
+       
+        function validateRes(res, nl) {
+            var data = null;
+            try {
+                data = JSON.parse(res);
+                if(!data)
+                    return {r:-1};
+            } catch(e) {
+                return {r:-2};
+            }
+            if(!nl && data.l) {
+                badLogin();
+                return {r:-3};
+            }
+            return data;
+        }
+        
+        function _crossLogin(id, _after, invalid, keep) {
+            var after = function(d, end) {
+                if(!d) {
+                    var cerr = i18nCtx['landing'].dlg.cerr;
+                    modalError(cerr);
+                }
+                _after(d, end);
+            }
+            if(invalid) {
+                delete loginCtx[id];
+            }
+            
+            var getKeep = function() {
+                var iid = setInterval(function() {
+                    postCreds(userBase('/server/', loginCtx[id].name), {data:'{"cmd":16}',tk:loginCtx[id].tk}, function(res) {
+                        
+                    });
+                }, 2*60*1000);
+                return function() {
+                    clearInterval(iid);
+                }
+            }
+            
+            if(loginCtx[id]) {
+                if(keep) {
+                    _postCreds(userBase('/server/', loginCtx[id].name), {data:'{"cmd":16}',tk:loginCtx[id].tk}, function(data) {
+                        if(data.r == 0) {
+                            after(loginCtx[id], getKeep());
+                        } else {
+                            if(data.l) {
+                                _crossLogin(id, _after, true, keep);
+                            } else {
+                                after({r:-1});
+                            }
+                        }
+                    }, undefined, true);
+                } else {
+                    after(loginCtx[id]);
+                }
+                return;
+            }
+            /* create ticket */
+            _postCredsRaw(userBase('/ticket/'), {data:'{"cmd":0,"tn":' + id + '}'}, function(res) {
+                var o = undefined;
+                var name = null;
+                var tk;
+                try {
+                    r = JSON.parse(res); 
+                    if(r.r == 0) {
+                        name = r.n;
+                        tk = r.tk;
+                    }
+                } catch(e) {
+                    
+                }
+                
+                if(name) {
+                    /* add login */
+                    _postCredsRaw(userBase('/server/', name), {data:'{"cmd":11}',tk:tk}, function(res) {
+                        try {
+                            r = JSON.parse(res); 
+                            if(r.r == 0) {
+                                o = {id:id,tk:r.tk,name:name};
+                                loginCtx[id] = o;
+                            }
+                        } catch(e) {
+                        }
+                        after(o, keep ? getKeep() : undefined);
+                    });
+                } else {
+                    after(o);
+                }
+            });
+        }
+        
+        function crossLoginKeep(id, _after, invalid) {
+            _crossLogin(id, _after, invalid, true);
+        }
+        
+        function crossLogin(id, _after, invalid) {
+            _crossLogin(id, _after, invalid, false);
+        }
+        
+        function crossLogout(id) {
+            delete loginCtx[id];
+            /* TODO remove login */
+        }
+        
+        function crossLogoutAll() {
+            for(var prop in loginCtx) {
+                if(!loginCtx.hasOwnProperty(prop)) 
+                    continue;
+                crossLogout(prop);
+            }
+        }
+        
+        function logout() {
+            _postCredsRaw(userBase('/admin/'), {data:'{"cmd":2}'}, function(res) {
+                var login = $('#theLogin');
+                login.css('display', '');
+                login.focus();
+                toLogout(function() {
+                    hreplaceState({success:true}, 'APPUDO', '/');
+                    spf.navigate('/logout');
+                });
+            });
+            
+            crossLogoutAll();
+            unloadMainMenu();
+        }
+        
+        function disableMain() {
+            if(modalCount == 0) {
+                tabs = [];
+                $('body').css('overflow', 'hidden');
+                $('#main').find(':tabbable').each(function(idx, e) {
+                    tabs.push({idx:e.tabIndex,e:e});
+                    e.tabIndex = -1;
+                });
+            }
+            modalCount++;
+        }
+        
+        function enableMain() {
+            if(--modalCount == 0) {
+                $(tabs).each(function(idx, e) {
+                    e.e.tabIndex = e.idx;
+                })
+                $('body').css('overflow', 'none');
+            }
+        }
+        
+        function scroll_to_x(parent, child, after, lmargin) {
+            var p = parent[0];
+            var br = p.getBoundingClientRect();
+            var left = parseInt(br.left);
+            var right = parseInt(br.right);
+            br = child[0].getBoundingClientRect();
+            var cleft = parseInt(br.left) - (lmargin || 0);
+            var cright = parseInt(br.right);
+        
+            var y = 0;
+            if(cleft < left) {
+                y = -(left - cleft);
+            } else 
+            if(cright > right) {
+                y = cright - right;
+            }
+            if(y != 0) {
+                var v = parent.scrollLeft() + y;
+                if(after) {
+                    parent.animate( { scrollLeft:v }, 600, 'swing', after);
+                } else { 
+                    parent.scrollLeft(v);
+                }
+            } else {
+                if(after) 
+                    after();
+            }
+        }
+        
+        function scroll_to_y(parent, child, after, lmargin) {
+            var p = parent[0];
+            var br = p.getBoundingClientRect();
+            var top = parseInt(br.top);
+            var bottom = parseInt(br.bottom);
+            br = child[0].getBoundingClientRect();
+            var ctop = parseInt(br.top) - (lmargin || 0);
+            var cbottom = parseInt(br.bottom);
+        
+            var y = 0;
+            if(ctop >  top) {
+                y = -(top - ctop);
+            }
+            if(y != 0) {
+                var v = parent.scrollTop() + y;
+                if(after) {
+                    parent.animate( { scrollTop:v }, 600, 'swing', after);
+                } else { 
+                    window. scrollBy(0, v);
+                }
+            } else {
+                if(after) 
+                    after();
+            }
+        }
+    
+        var _iboxPos;
+        var _ibox;
+        var _iboxSel = -1;
+        var _iboxRdy = true;
+        var _iboxInit = false;
+        
+        function iboxInit() {
+            if(!_iboxPos) {
+                _iboxPos = [];
+                var num = 5;
+                _ibox = $('.infoFrm .fbox');
+                if(_ibox.length == 0)
+                    return;
+                for(var i = 0; i < num; i++) {
+                    _iboxPos[i] = $('.infoFrm .fbox_item' + i);
+                }
+                iboxScroll(2, true);
+                _iboxInit = true;
+            }
+        }
+        
+        function iboxScroll(idx, noanim, first) {
+            if(_iboxRdy) {
+                _iboxRdy = false;
+                if(_iboxSel != -1) {
+                    $('.infoFrm .tabsel' + _iboxSel).removeClass('msel');
+                } 
+                if(_iboxInit)
+                {
+                    // workaround needed for Safari :(
+                    _iboxInit = false;
+                    var pl = parseInt(_iboxPos[0].css('margin-left').slice(0, -2));
+                    _iboxPos[0].css('margin-left', '0'); 
+                    _ibox.scrollLeft(_ibox.scrollLeft() - pl);
+                }
+                _iboxSel = idx;
+                $('.infoFrm .tabsel' + _iboxSel).addClass('msel');
+                if(noanim) {
+                    scroll_to_x(_ibox, _iboxPos[idx]);
+                    _iboxRdy = true;
+                } else {
+                    scroll_to_x(_ibox, _iboxPos[idx], function() {
+                        _iboxRdy = true;
+                    });
+                }
+            }
+        }
+        
+        var _fboxPos;
+        var _fbox;
+        var _fboxInt = -1;
+        var _fboxRdy = true;
+        
+        function fboxInit() {
+            if(!_fboxPos) {
+                _fboxPos = [];
+                var num = 3;
+                _fbox = $('.ldn .fbox');
+                if(_fbox.length == 0)
+                    return;
+                _fbox.scrollLeft(0);
+                for(var i = 0; i < num; i++) {
+                    _fboxPos.push($('.ldn .fbox_item' + i));
+                }
+                _fbox.click(function() {
+                    fboxScroll((_fbox._theIdx + 1) % num);
+                });
+                _fbox._theIdx = 0;
+                fboxAuto(num);
+            }
+        }
+        
+        function fboxScroll(idx, auto) {
+            if(_fboxRdy) {
+                _fbox._theIdx = idx;
+                _fboxRdy = false;
+                if(!auto) {
+                    clearInterval(_fboxInt);
+                    _fboxInt = -1;
+                }
+                scroll_to_x(_fbox, _fboxPos[idx], function() {
+                    _fboxRdy = true;
+                }, idx == 0 ? 8 : 0);
+            }
+        }
+        
+        function fboxAuto(num) {
+            var ctx = {i:0};
+            _fboxInt = setInterval(function() {
+                ctx.i++;
+                var idx = (ctx.i % num);
+                fboxScroll(idx, true);
+            }, 10000);
+        }
+        
+        function handleError(frm, after, sep, custom) {
+            var _frm = frm[0];
+    	    var eBox = $('#frmError');
+            
+            frm.change(function(e) {
+                setTimeout(function() {
+                    if(eBox[0]._current == frm) {
+                        _frm._sdata = null;
+                        if(_frm.checkValidity()) {
+                            if(custom) {
+                                var rr = [];
+                    	        rr.s = sep;
+                                formError(frm, rr, custom);
+                            } else {
+                                removeErrors();
+                            }
+                        }
+                    }
+                }, 1000);
+            });
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+                removeErrors();
+                var rr = [];
+    	        rr.s = sep;
+                var er = custom ? formError(frm, rr, custom) : 0;
+                if(!er) {
+                    _frm._sdata = null;
+                    after();
+                }
+            });
+            
+            $('<iframe />', {
+                src:'about:blank',
+                style:'display:none',
+                load: function(){
+                    this.contentWindow.onunload = function() {
+                        if(eBox[0]._current == frm) {
+                            removeErrors();
+                        }
+                    };
+                }
+            }).appendTo(frm);
+            
+            _frm.addEventListener('invalid', function(e) {
+    	        e.preventDefault();
+                if(_frm._ehandled) {
+                    _frm._ehandled--;
+                    return;
+                }
+                _frm._ehandled = 0;
+    	        var inv = frm.find(':invalid');
+                var errs = [];
+    	        $.each(inv, function(i, n) {
+    	            var input = $('#' + n.id);
+    	            var label = $('label[for=' + n.id + ']');
+    	            var ltxt = label.length == 0 ? input.attr('placeholder') : label.text();
+                    var msg = n.validationMessage || 'Invalid value.';
+    	            errs.push({i:input,l:ltxt,m:msg});
+    	        });
+    	        _frm._ehandled = inv.length - 1;
+    	        errs.s = sep;
+    	        formError(frm, errs, custom);
+            },true);
+        }
+        
+        function placeFrmError(frm) {
+    	    var out = $('#frmError');
+            var place = out[0]._place;
+    	    if(place)
+    	        place();
+        }
+        
+        function formError(frm, errs, custom) {   
+            var ferr = i18nCtx['landing'].dlg.ferr;
+            var abrt = i18nCtx['landing'].dlg.cls;
+            var _frm = frm[0];
+    	    var out = $('#frmError');
+    	    var sep = errs.s || '';
+            out.html('');
+            
+            if(out[0]._current == frm) {
+                removeErrors();
+            }
+            
+            if(custom) {
+                var c = custom();
+                if(c) {
+                    errs = errs.concat(c);
+                    errs.s = sep;
+                }
+            }
+            if(errs.length) {
+            
+                var item = $('<h2/>',{'style':'margin-left:1.3em;'}).appendTo(out);
+                item.text(ferr);
+                
+                var list = $('<ol/>').appendTo(out);
+                    
+                _frm._invalids = [];    
+                for(var i = 0; i < errs.length; i++) {
+                    var e = errs[i];
+                    var input = e.i;
+                    item = $('<li/>').appendTo(list);
+                    var s = $('<span/>',{'style':'font-weight:bold;margin-right:5px;'}).appendTo(item);
+                    s.text(e.l + sep);
+                    s = $('<span/>').appendTo(item);
+                    s.text( e.m);
+                    input.addClass('invalid');
+                    _frm._invalids.push(input);
+                }
+                
+                _frm._sdata = null;
+            
+                var d = $('<div/>',{'style':'text-align:center;'}).appendTo(out);
+                var btn = $('<input type="button" value="' + abrt + '"/>',{'style':'float:right;'}).appendTo(d);
+                btn.click(function() {
+                    removeErrors();
+                });
+                
+        	    out[0]._current = frm;
+        	    
+        	    var place = function() { 
+            	    var o = frm.position();
+            	    var l = o.left - (out.outerWidth(true) * 1.05);
+                    var w = frm.outerWidth(true);
+            	    if(l < 0) {
+            	        l += w;
+            	    }
+            	    
+            	    if(errs.length) {
+            	        var t = errs[0].i;
+                        var o2 = out.position();
+                        var left = t.position().left < o.left + (frm.outerWidth(true) / 2);
+                        if(o.left < o2.left + out.outerWidth(true) && !left)
+                    	    l -= w / 2;
+            	    }
+            	    
+            	    out.css('left', l);
+            	    out.css('top', o.top);
+            	    out.css('display', 'block');
+        	    }
+                
+        	    out[0]._place = place;
+        	    place();
+            }
+    	    
+    	    return errs.length;
+        }
+        
+        function removeErrors() {
+    	    var errs = $('#frmError');
+    	    var frm = errs[0]._current;
+    	    errs.css('display', 'none');
+    	    errs[0]._current = null;
+    	    errs[0]._place = null;
+    	    
+    	    if(frm) {
+                var _frm = frm[0];
+                var inv = _frm._invalids;
+                if(inv) {
+                    for(var i = 0; i < inv.length; i++) {
+                        var e = inv[i];
+                        e.removeClass('invalid');
+                    }
+                }
+    	    }
+        }
+        
+        function modalError(msg) {
+            var head = i18nCtx['landing'].dlg.err;
+            dialogShow(head, msg, 1, function() {
+               dialogHide(); 
+            });
+        }
+        
+        function modalInfo(msg) {
+            var head = i18nCtx['landing'].dlg.inf;
+            dialogShow(head, msg, 1, function() {
+               dialogHide(); 
+            });
+        }
+        
+        function dialogShow(head, msg, buttons, okF, timeout) {
+            $('#dialogHead').text(head);
+            $('#dialogData').text(msg);
+            var close = $('#dialogClose');
+            var ok = $('#dialogOk');
+            
+            ok.off('click');
+            ok.on('click', function() {
+                if(okF) 
+                    okF();
+            });
+            
+            close.css('display', buttons == 1 ? 'none' : 'block');
+            
+            $('#theDialog').css('display', 'block');
+            setModal();
+        }
+        
+        function dialogHide() {
+            $('#theDialog').css('display', 'none');
+            unsetModal();
+        }
+        
+        function setModal() {
+            $('#theBlur').addClass('blur');
+            disableMain();
+        }
+        
+        function unsetModal() {
+            $('#theBlur').removeClass('blur');
+            enableMain();
+        }
+        
+        function updateMaster() {
+            var b = $('body');
+            if(isMaster()) {
+                b.addClass('with_master');
+                b.removeClass('no_master');
+            } else {
+                b.removeClass('with_master');
+                b.addClass('no_master');
+            }
+        }
+        
+        function isMaster() {
+            return mainCtx.linfo && mainCtx.linfo.mtr;
+        }
+        
+        function hasLogin() {
+            return mainCtx.linfo;
+        }
+        
+        _nodeByDashID = {}
+        
+        function getNodeByDashID(did, after) {
+            if(_nodeByDashID[did]) {
+                after(_nodeByDashID[did]);
+            } else {
+                postCreds(userBase('/admin/'), {data:JSON.stringify({cmd:31, data:JSON.stringify(did)})}, function(res) {
+                    var r = {}
+                    if(rOk(res)) {
+                        r = {id:res.id,name:res.n};
+                        _nodeByDashID[did] = r;
+                    }
+                    after(r);
+                });
+            }
+        }
+        
+        function resetNodeByDashID() {
+            _nodeByDashID = {}
+        }
+        
+        function clearModule(m) {
+            delete moduleCtx[m];
+        }
+        
+        function requireModule(p, after) {
+            var m = moduleFromPath(p);
+            if(!moduleCtx[m]) {
+                var waiter = waitFor(function() { }, true);
+                _get(p + _spfNav, function(data) {
+                    try {
+                        if(!loadContent(m, JSON.parse(data), undefined, after ? after : undefined) && adter)
+                            after();
+                    } catch(e) {
+                        if(after)
+                            after();
+                    }
+                    waiter();
+                }, 'text');
+            } else {
+                if(after)
+                    after();
+            }
+        }
+        
+        function localStorageInit() {
+            
+        }
+        
+        function localStorageSet(k, v) {
+            
+        }
+        
+        function localStorageGet(k, after) {
+            
+        }
+        
+        function localStorageRemove(k) {
+            
+        }
+        
+        function animFindAnimEvent() {
+            var e = document.createElement('elem');
+            var items = ['animation', 'OAnimation', 'MozAnimation', 'WebkitAnimation'];
+            var res = ['animationend', 'oAnimationEnd', 'animationend', 'webkitAnimationEnd'];
+            
+            $.each(items, function(i, n) {
+                if (e.style[n] !== undefined){
+                    _animEventAnim = res[i];
+                }
+            });
+        }
+        
+        function animFindTransEvent() {
+            var e = document.createElement('elem');
+            var items = ['transition', 'OTransition', 'MozTransition', 'WebkitTransition'];
+            var res = ['transitionend', 'oAnimationEnd', 'transitionend', 'webkitTransitionEnd'];
+            
+            $.each(items, function(i, n) {
+                if (e.style[n] !== undefined){
+                    _animEventTrans = res[i];
+                }
+            });
+        }
+        
+        var _animEventAnim;
+        var _animEventTrans;
+
+        function animAddStyle(o, item, name, first) {
+            var prefix = ['-o-', '-moz-', '-ms-', '-webkit-', ''];
+            var anim = item.anim;
+            var txt = '';
+            var k;
+            
+            if(!anim)
+                return null;
+            
+            var step = 100 / anim.length;
+            var func = item.func || 'ease-out';
+            var time = item.time || 0.001;
+            var fill = item.fill || 'forwards';
+            var last_origin_x = o.last_origin_x || 0;
+            var last_origin_y = o.last_origin_y || 0;
+            var last_scale = o.last_scale || 1;
+            
+            for(k = 0; k < prefix.length; k++) {
+                last_origin_x = o.last_origin_x || 0;
+                last_origin_y = o.last_origin_y || 0;
+                last_scale = o.last_scale || 1;
+                txt += '\n@' + prefix[k] + 'keyframes ' + name + '-zoom {';
+                for(var j = 1; j < anim.length + 1; j++) {
+                    var a = anim[j-1];
+                    if(!first) {
+                        txt += '0% {';
+                        txt += prefix[k] + 'transform-origin:' + last_origin_x + 'px ' + last_origin_y + 'px;';
+                        txt += prefix[k] + 'transform:scale(' + last_scale + ');';
+                        txt += '}';
+                    }
+                    txt += (j * step) + '% {';
+                    if(a.origin_x != undefined && a.origin_y != undefined) {
+                        txt += prefix[k] + 'transform-origin:' + a.origin_x + 'px ' + a.origin_y + 'px;';
+                        last_origin_x = a.origin_x;
+                        last_origin_y = a.origin_y;
+                    }
+                    if(a.scale != undefined) {
+                        txt += prefix[k] + 'transform:scale(' + a.scale + ');';
+                        last_scale = a.scale;
+                    }
+                    txt += '}';
+                }
+                txt += '}';
+            }
+            
+            
+            o.last_origin_x = last_origin_x;
+            o.last_origin_y = last_origin_y;
+            o.last_scale = last_scale;
+            
+            txt += '\n.' + name + ' {'
+            
+            for(k = 0; k < prefix.length; k++) {
+                txt += prefix[k] + 'animation-name:' + name + '-zoom;';
+                txt += prefix[k] + 'animation-fill-mode:' + fill + ';';
+                txt += prefix[k] + 'animation-timing-function:' + func + ';';
+                txt += prefix[k] + 'animation-duration:' + time + 's;';
+            }
+            
+            txt += '}';
+            var s = $('<style>');
+            s.text(txt);
+            s.appendTo('head');
+            return s;
+        }
+        
+        function animText(o, frm, item, after) {
+            if(item.text) {
+                var d = o.last_text || $('<div></div>').insertAfter(frm);
+                if(typeof item.text == 'string')
+                    d.text(item.text);
+                d.addClass('browsertxt');
+                d.css('top', item.text_y + 'px');
+                d.css('left', item.text_x + 'px');
+                delete o.last_text;
+                
+                var out = function() { 
+                    d.removeClass('fadeIn');
+                    setTimeout(function() {
+                        if(!item.text_noout) {
+                            d.addClass('fadeOut');
+                            d.one(_animEventAnim, function() {
+                                d.remove();
+                                after();
+                            });
+                        } else {
+                            o.last_text = d;
+                            after();
+                        }
+                    }, item.text_time || 500);
+                }
+                
+                if(!item.text_noin) {
+                    d.addClass('fadeIn');             
+                    d.one(_animEventAnim, function() {
+                        out();
+                    });
+                } else {
+                    out();
+                }
+            } else {
+                after();
+            }
+        }
+        
+        function animClick(ptr, item, after) {
+            if(item.clk_x && item.clk_y) {
+                ptr.css('top', item.clk_y + 'px');
+                ptr.css('left', item.clk_x + 'px');
+                ptr.addClass('notrans');
+                ptr.removeClass('notrans');
+                ptr.addClass('click');
+                ptr.one(_animEventTrans, function() {
+                    setTimeout(function() {
+                        ptr.removeClass('click');
+                        after();
+                    }, 1);
+                });
+            } else {
+                after();
+            }
+        }
+        
+        function animClear(o, frm, num) {
+            if(o.styles) {
+                if(!num)
+                    num = o.styles.length;
+                while(num) {
+                    num--;
+                    var n = o.styles.shift();
+                    frm.removeClass(n.name);
+                    n.remove();
+                }
+            }
+        }
+        
+        function animStep(o, frm, ptr, btn, items, idx) {
+            var item = items[idx];
+            var nm = frm.attr('id') + '_anim_' + idx;
+            var st = animAddStyle(o, item, nm, idx == 0);
+            idx++;
+            var anim = function(e) {
+                var after = function() {
+                    if(item.bg) {
+                        var bg1 = o.bg1;
+                        var bg2 = o.bg2;
+                        var n = o.bgs[item.bg].clone();
+                        if(!item.no_bg_anim) {
+                            bg2.replaceWith(n);
+                            o.bg2 = bg2 = n;
+                            bg1.css('opacity', '0');
+                            bg1.one(_animEventTrans, function() {
+                                n = o.bgs[item.bg].clone();
+                                bg1.replaceWith(n);
+                                o.bg1 = bg1 = n;
+                                bg1.css('opacity', '1');
+                            });
+                        } else {
+                            bg1.replaceWith(n);
+                            o.bg1 = bg1 = n;
+                        }
+                    }
+                    
+                    if(idx < items.length) {
+                        animStep(o, frm, ptr, btn, items, idx);
+                    } else {
+                        btn.css('display', 'block');
+                        animClear(o, frm);
+                        frm.css('background-image', 'url("' + o.bg1.attr('src')  + '")');
+                        o.bg1.remove();
+                        o.bg2.remove();
+                    }
+                }
+                
+                animClick(ptr, item, function() {
+                    animText(o, frm, item, after);
+                });
+            }
+            if(st) {
+                frm.addClass(nm);
+                st.name = nm;
+                if(!o.styles)
+                    o.styles = [];
+                o.styles.push(st);
+                if(o.styles.length > 4) {
+                    animClear(o, frm, o.styles.length - 4);
+                }
+                frm.one(_animEventAnim, anim);
+            } else {
+                anim();
+            }
+        }
+        
+        function animPreload(bgs, after) {
+            var num = bgs.length;
+            var res = {};
+            
+            if(num != 0)
+                showLoad()
+            
+            for(var i = 0; i < bgs.length; i++) {
+                (function (img, src) {
+                    var next = function () {  
+                        var r = $(img);
+                        r.addClass('tabinner');
+                        r.addClass('tabbg');
+                        res[src] = r;
+                        if (--num == 0) {
+                            hideLoad();
+                            after(res);
+                        }
+                    };
+                    img.onload = next;
+                    img.onerror = next;
+                    img.onabort = next;
+                    img.src = src;
+                } (new Image(), bgs[i]));
+            }
+        }
+        
+        function animRun(items, frm, ptr, btn) {
+            btn.css('display', 'none');
+            var o = {};
+            var bgs = [];
+            for(var i = 0; i < items.length; i++) {
+                var bg = items[i].bg;
+                if(bg) {
+                    bgs.push(bg);
+                }
+            }
+            
+            animPreload(bgs, function(res) {
+                o.bgs = res;
+                
+                var bg2 = $('<div></div>').appendTo(frm);
+                bg2.addClass('tabinner');
+                bg2.addClass('tabbg');
+                
+                var bg1 = $('<div></div>').appendTo(frm);
+                bg1.addClass('tabinner');
+                bg1.addClass('tabbg');
+                
+                o.bg1 = bg1;
+                o.bg2 = bg2;
+                
+                animStep(o, frm, ptr, btn, items, 0);
+            });
+        }
+        
+        function playCreat() {
+            var i18n = i18nCtx['landing'].play;
+            var frm = $('#playCreat');
+            var p = frm.parent();
+            var ptr = p.find('.mpointer');
+            var btn = p.find('.playbtn');
+            var items = [{time:0,no_bg_anim:1,bg:'/pub/img/create1.jpg',anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {time:1,anim:[{scale:1.2,origin_x:0,origin_y:0}]},
+                         {text_time:2000,text:i18n.crt1, text_x:490, text_y:30},
+                         {text_time:300,text:i18n.crt2, text_x:360, text_y:110, text_noout:1},
+                         {text_time:700,text:1, text_x:360, text_y:110, text_noin:1, text_noout:1, clk_x:310, clk_y:110},
+                         {text_time:2000,text:1, text_x:360, text_y:110, text_noin:1, clk_x:535, clk_y:220},
+                         {bg:'/pub/img/create2.jpg',anim:[{scale:1.2,origin_x:0,origin_y:0}]},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {text_time:3000,text:i18n.crt3, text_x:360, text_y:110, time:1,anim:[{scale:1.3,origin_x:1200,origin_y:400}]},
+                         {time:5,anim:[{scale:1.3,origin_x:1200,origin_y:2500}]},
+                         {time:2,anim:[{scale:1.2,origin_x:0,origin_y:0}]},
+                         {text_time:300,text:i18n.crt4, text_x:170, text_y:160, text_noout:1},
+                         {text_time:700,text:1, text_x:170, text_y:160, text_noin:1, text_noout:1, clk_x:222, clk_y:110},
+                         {text_time:2000,text:1, text_x:170, text_y:160, text_noin:1, clk_x:250, clk_y:250},
+                         {time:2,anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {text_time:8000,text:i18n.crt5, text_x:270, text_y:120},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]}];
+            animRun(items, frm, ptr, btn);
+        }
+        
+        function playPkg() {
+            var i18n = i18nCtx['landing'].play;
+            var frm = $('#playPkg');
+            var p = frm.parent();
+            var ptr = p.find('.mpointer');
+            var btn = p.find('.playbtn');
+            var items = [{time:0,no_bg_anim:1,bg:'/pub/img/pkg1.jpg',anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {time:1,anim:[{scale:1.2,origin_x:0,origin_y:0}]}, 
+                         {text_time:300,text:i18n.pkg1, text_x:300, text_y:120, text_noout:1},
+                         {text_time:700,text:1, text_x:300, text_y:120, text_noin:1, text_noout:1, clk_x:560, clk_y:75},
+                         {text_time:1500,text:1, text_x:300, text_y:120, text_noin:1, clk_x:560, clk_y:110},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {time:2,anim:[{scale:1.2,origin_x:0,origin_y:4700}]},
+                         {text_time:10000,text:i18n.pkg2, text_x:25, text_y:75},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]}];
+            animRun(items, frm, ptr, btn);
+        }
+        
+        function playDpl() {
+            var i18n = i18nCtx['landing'].play;
+            var frm = $('#playDpl');
+            var p = frm.parent();
+            var ptr = p.find('.mpointer');
+            var btn = p.find('.playbtn');
+            var items = [{time:0,no_bg_anim:1,bg:'/pub/img/hub1.jpg',anim:[{scale:0.8,origin_x:0,origin_y:0}]},
+                         {time:1,anim:[{scale:1.2,origin_x:0,origin_y:0}]},
+                         {text_time:2000,text:i18n.dpl1, text_x:300, text_y:80},
+                         {time:1,anim:[{scale:0.8,origin_x:-1000,origin_y:-500}]},   
+                         {text_time:300,text:i18n.dpl2, text_x:200, text_y:40, text_noout:1},
+                         {text_time:700,text:1, text_x:200, text_y:40, text_noin:1, text_noout:1, clk_x:60, clk_y:55},
+                         {text_time:2500,text:1, text_x:200, text_y:40, text_noin:1, clk_x:380, clk_y:180},
+                         {bg:'/pub/img/hub3.jpg',anim:[{scale:0.8,origin_x:-1000,origin_y:-500}]},
+                         {time:1,anim:[{scale:0.8,origin_x:-2000,origin_y:-650}]},
+                         {text_time:300,text:i18n.dpl3, text_x:500, text_y:40, text_noout:1},
+                         {text_time:3700,text:1, text_x:500, text_y:40, text_noin:1, clk_x:705, clk_y:305},
+                         {time:2,anim:[{scale:0.8,origin_x:-2000,origin_y:-650}]},
+                         {time:5,anim:[{scale:0.8,origin_x:-2000,origin_y:-3800}]},
+                         {time:1,anim:[{scale:0.8,origin_x:0,origin_y:0}]}];
+            animRun(items, frm, ptr, btn);
+        }
+        
+        function goCode(idx, init) {
+            var c = $('.tabcode');
+            var m = $('.codemenu');
+            var w = $('.cmwhite');
+            var a = $('.taba');
+            if(c.length != 0) {
+                var item = $(c.children()[idx]);
+                var mitem = $(m.children()[idx]);
+                c.scrollTop(0);
+                c.scrollTop(item.position().top);
+                a.removeClass('taba');
+                a.addClass('tabb');
+                mitem.removeClass('tabb');
+                mitem.addClass('taba');
+                var fix = function() {
+                    w.css('display','none');  
+                    w.css('left', mitem.position().left + 'px');  
+                    w.css('width', (mitem.width() - 5) + 'px');
+                    w.css('display','inline-block'); 
+                }
+                if(init) {
+                    setTimeout(function() {
+                        fix();
+                        setTimeout(function() {
+                            fix();
+                        }, 500);
+                    });
+                } else {
+                    fix();
+                }
+            }
+        }
+        
+        function codeTabInit() {
+            var tab = $('.tabbox');
+            var w = tab.innerWidth();
+            $('.tabrun .codeinfo').each(function(idx, n) {
+                var a = $(n);
+                var s = a.find('span');
+                var x = a.position().left;
+                s.css('width', (w - x - a.outerWidth(true) - 80) + 'px');
+            });
+        }
+        
+        function lightBoxInit(o, items) {
+            o.current = 1;
+            o.max = items.length;
+            o.txt = [];
+            var p = $('#' + o.id);
+            var r = $('<div>');
+            var k = $('<div>');
+            var j = $('<div>');
+            var c = $('<span>');
+            r.appendTo(p);
+            k.appendTo(p);
+            c.appendTo(k);
+            j.appendTo(k);
+            r.addClass('row');
+            k.addClass('lmodal');
+            j.addClass('content');
+            var m = $('<div>');
+            m.addClass('inner');
+            m.appendTo(j);
+            j = m;
+            c.addClass('close pointer');
+            c.html('&times;');
+            c.click(function() {
+                lightBoxClose(o);
+            });
+            
+            m = $('<div>');
+            m.addClass('back');
+            m.appendTo(k);
+            
+            m = $('<div>');
+            m.addClass('numbering pointer');
+            m.appendTo(k);
+            m.click(function() {
+                lightBoxList(o);
+            });
+        
+            m = $('<div>');
+            m.addClass('prev');
+            m.html('&#10094;');
+            m.appendTo(k);
+            m.click(function() {
+                lightBoxNext(o, -1);
+            });
+            
+            m = $('<div>');
+            m.addClass('next');
+            m.html('&#10095;');
+            m.appendTo(k);
+            m.click(function() {
+                lightBoxNext(o, 1);
+            });
+            
+            $(items).each(function(idx, n) {
+                o.txt[idx] = items[idx].t;
+                i = $('<div>');
+                i.appendTo(r);
+                i.addClass('column');
+                m = $('<img>');
+                m.appendTo(i);
+                m.attr('src', n.s);
+                m.addClass('pointer');
+                m.click(function() {
+                    lightBoxOpen(o);
+                    lightBoxSet(o, idx + 1);
+                });
+                
+                i = $('<div>');
+                i.appendTo(j);
+                i.addClass('item');
+                m = $('<img>');
+                m.appendTo(i);
+                m.attr('src', n.s);
+                m.click(function() {
+                    lightBoxNext(o, 1);
+                });
+            });  
+            
+            m = $('<div>');
+            m.addClass('txt');
+            m.appendTo(k);
+        }
+        
+        function lightBoxList(o) {
+            if(!o.list) {
+                o.list = 1;
+                var p = $('#' + o.id);
+                var i = p.find('.inner');
+                var t = p.find('.txt');
+                var r = p.find('.row');
+                var c = p.find('.content');
+                r.detach();
+                r.appendTo(c);
+                i.css('display', 'none');
+                t.css('display', 'none');
+            }
+        }
+        
+        function lightBoxListClose(o) {
+            if(o.list) {
+                o.list = 0;
+                var p = $('#' + o.id);
+                var i = p.find('.inner');
+                var t = p.find('.txt');
+                var r = p.find('.row');
+                r.detach();
+                r.appendTo(p);
+                i.css('display', 'block');
+                t.css('display', 'block');
+            }
+        }
+        
+        function lightBoxOpen(o) {
+            lightBoxShow(o);
+            $('#' + o.id + ' .lmodal').css('display', 'block');
+            $('body').css('overflow', 'hidden');
+        }
+        
+        function lightBoxClose(o) {
+            $('#' + o.id + ' .lmodal').css('display', 'none');
+            $('body').css('overflow', 'auto');
+            lightBoxListClose(o);
+        }
+        
+        function lightBoxNext(o, n) {
+            o.current += n;
+            lightBoxShow(o);
+        }
+        
+        function lightBoxSet(o, n) {
+            o.current = n;
+            lightBoxShow(o);
+        }
+        
+        function lightBoxShow(o) {
+            lightBoxListClose(o);
+            var i18n = i18nCtx['landing'].lb;
+            var p = $('#' + o.id);
+            var items = p.find(".item");
+            var sitems = p.find(".small");
+            var txt = p.find(".txt");
+            var nr = p.find(".numbering");
+            var n = o.current;
+            o.current = n = n > items.length ? 1 : (n < 1 ? items.length : n);
+            items.each(function(idx, n) {
+                $(n).css('display', 'none');
+            });
+            sitems.each(function(idx, n) {
+                $(n).removeClass('active');
+            });
+            
+            $(items[n - 1]).css('display', 'block');
+            $(sitems[n - 1]).addClass('active');
+            txt.html(o.txt[n - 1]);
+            nr.html(n + ' / ' + o.max + ' - ' + i18n.ov);
+        }
+    </script>
+</head>
+<!--[if lt IE 7 ]> <body onload="nop();"> <![endif]-->
+<!--[if IE 7 ]> <body onload="nop();"> <![endif]-->
+<!--[if IE 8 ]> <body onload="nop();"> <![endif]-->
+<!--[if IE 9 ]> <body onload="nop();"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <body onload="preInit();"> <!--<![endif]-->
+    <script id="minit"></script>
+    <div id="theBlur">
+        <div id="other"></div>
+        <div id="cookies" style="display:none;">Cookies</div>
+        <div style="display:none;" id="header">
+        </div>
+        <div id="main">
+            <div style="display:none;" class="work"></div>
+            <div style="display:none;" class="holder">
+                <div id="menu">
+                </div>
+                <div id="content">
+                    <div class="linner">
+                        <div style="text-align:center;">
+                            <h1 style="margin:0 0 20px 0;padding:0 20px 0 20px;text-align:left;line-height:40px;"><span>{{inf.appp}}</span><span style="display:inline-block;margin-left:40px;">&#8212; {{inf.appp2}}</span></h1>
+                            <div class="infoFrm">
+                                <div class="tabbox">
+                                    <div class="tabcnt fbox">
+                                        <div class="fbox_item0" style="margin-left:calc(-200% - 83px);">
+                                            <div class="tabmore"><a target="_blank" href="/doc/node_install">{{tab.more}}</a></div>
+                                            <div class="bash edge">
+                                                <div style="margin:10px 0 10px 0;">{{tab.einst}}</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span>echo "deb https://apt.appudo.com/debian/ stretch main" >> /etc/apt/sources.list</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span>wget -O - -q https://apt.appudo.com/apt.appudo.com.gpg.key | apt-key add -</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span>apt-get update</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span>apt-get install appudo</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span>service appudo start</div>
+                                                <div><span class="bashhdr"><span class="bashname"></span>:<span class="bashtild"></span>#</span><span class="bcursor"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="fbox_item1">
+                                            <div class="tabmore"><a target="_blank" href="/doc/first_steps">{{tab.more}}</a></div>
+                                            <div class="tabinner">
+                                                <a class="playbtn" href="javascript:playCreat();"></a>
+                                                <div id="playCreat" class="tabbrowser" style="background-image:url('/pub/img/create1.jpg');">
+                                                </div>    
+                                                <div class="edge"></div>
+                                                <div class="mpointer"></div>
+                                            </div>
+                                        </div>
+                                        <div class="fbox_item2">
+                                            <div class="tabmore"><a target="_blank" href="/doc/examples_appudo">{{tab.more}}</a></div> 
+                                            <div class="tabinner">
+                                                <div class="tabrun" style="background-image:url('/pub/img/run4.jpg');">
+                                                    <a href="#" class="codeinfo" style="left:400px;top:40px;width:92px;height:30px;"><div  style="position:absolute;width:92px;height:30px;opacity:0.2;background:#f16e61"></div><span>{{ctab.prev}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:206px;top:40px;width:92px;height:30px;"><span>{{ctab.data}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:109px;top:40px;width:92px;height:30px;"><span>{{ctab.view}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:10px;top:40px;width:92px;height:30px;"><span>{{ctab.sett}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:123px;top:78px;width:227px;height:26px;"><span>{{ctab.mark}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:356px;top:80px;width:26px;height:24px;"><span>{{ctab.madd}}</span></a>
+                                                    <a href="#" class="codeinfo" style="left:391px;top:80px;width:38px;height:24px;"><span>{{ctab.tmpl}}</span></a>
+                                                    <div class="cmwhite"></div>
+                                                    <div class="codemenu">
+                                                        <a class="tabb" href="javascript:goCode(0);">my_wsecho_run</a>
+                                                        <a class="taba" href="javascript:goCode(1);">my_page_run</a>
+                                                        <a class="tabb" href="javascript:goCode(2);">my_timed_run</a>
+                                                    </div>
+                                                    <div class="tabcode" style="position:absolute;top:114px;left:8px;right:0;bottom:0;background:#eee;overflow:hidden">
+                                                        <div class="prew"><p></p><span class="codek">import</span> libappudo
+<p></p><span class="codek">import</span> libappudo_run
+<p></p>
+<p></p><span class="codec">// {{ctab.ws}}</span>
+<p></p>
+<p></p><span class="codek">func</span> onMessage(ev : WebSocketEvent) {
+<p></p>    <span class="codek">if</span>(ev.isText) {
+<p></p>        _ = ws.send(txt:ev.data, ev.target)
+<p></p>    } <span class="codek">else</span> {
+<p></p>        _ = ws.send(bytes:ev.data, ev.target)
+<p></p>    }
+<p></p>}
+                                                        </div>
+                                                        
+                                                        <div class="prew"><p></p><span class="codek">import</span> libappudo
+<p></p><span class="codek">import</span> libappudo_run
+<p></p>
+<p></p><span class="codec">// {{ctab.page}}</span>
+<p></p>
+<p></p><span class="codek">func</span> main() {
+<p></p>    print(<span class="codet">"Hello World"</span>)
+<p></p>    printSub() <span class="codec">// {{ctab.psub}}</span>
+<p></p>}
+                                                        </div>
+                                                        
+                                                        <div class="prew"><p></p><span class="codek">import</span> libappudo
+<p></p><span class="codek">import</span> libappudo_run
+<p></p>
+<p></p><span class="codec">// {{ctab.time}}</span>
+<p></p>
+<p></p><span class="codek">func</span> onRun() {
+<p></p>    <span class="codec">// {{ctab.rmsg}}</span>
+<p></p>    <span class="codek">if var</span> f = <span class="codek">&lt;!</span>Dir.dev.open(<span class="codet">"ws_server"</span>, .O_APPUDO) {
+<p></p>        _ = <span class="codek">&lt;!</span>f.write(<span class="codet">"mymsg"</span>)  
+<p></p>    }
+<p></p>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="edge"></div>
+                                            </div>
+                                        </div>
+                                        <div class="fbox_item3">
+                                            <div class="tabmore"><a target="_blank" href="/doc/hub_package">{{tab.more}}</a></div>
+                                            <div class="tabinner">
+                                                <a class="playbtn" href="javascript:playPkg();"></a>
+                                                <div id="playPkg" class="tabbrowser" style="background-image:url('/pub/img/pkg1.jpg');">
+                                                </div>    
+                                                <div class="edge"></div>
+                                                <div class="mpointer"></div>
+                                            </div>
+                                        </div>
+                                        <div class="fbox_item4">
+                                            <div class="tabmore"><a target="_blank" href="/doc/hub">{{tab.more}}</a></div>
+                                            <div class="tabinner">
+                                                <a class="playbtn" href="javascript:playDpl();"></a>
+                                                <div id="playDpl" class="tabbrowser" style="background-image:url('/pub/img/hub1.jpg');">
+                                                </div>    
+                                                <div class="edge"></div>
+                                                <div class="mpointer"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tabmenu">
+                                <a class="tabsel0" href="javascript:iboxScroll(0);">
+                                {{inf.inst}}
+                                </a>
+                                <a class="tabsel1" href="javascript:iboxScroll(1);">
+                                {{inf.crt}}
+                                </a>
+                                <a class="tabsel2" href="javascript:iboxScroll(2);">
+                                {{inf.run}}
+                                </a>
+                                <a class="tabsel3" href="javascript:iboxScroll(3);">
+                                {{inf.pkg}}
+                                </a>
+                                <a class="tabsel4" href="javascript:iboxScroll(4);">
+                                {{inf.dpl}}
+                                </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div class="hline"></div>
+                        </div>
+                        <div class="ldn" style="float:left;width:500px;margin-top:50px;line-height:40px;font-style:italic;text-align:justify;">
+                            <div class="fbox" style="padding:5px;">
+                                <div class="fbox_item0">
+                                    <span class="bold">"{{info.apd00}}"</span>
+                                    <span>{{info.apd01}}</span>
+                                </div>
+                                <div class="fbox_item1">
+                                    <span class="bold">{{info.apd10}}</span>
+                                    <span>{{info.apd11}}</span>
+                                </div>
+                                <div class="fbox_item2">
+                                    <span class="bold">{{info.apd20}}</span>
+                                    <span>{{info.apd21}}</span>
+                                </div>
+                            </div>
+                            <ol class="fnav">
+                                <li><a href="javascript:fboxScroll(0);">1</a></li>
+                                <li><a href="javascript:fboxScroll(1);">2</a></li>
+                                <li><a href="javascript:fboxScroll(2);">3</a></li>
+                            </ol>
+                        </div>
+                        <div style="float:right;display:inline-block;">
+                            <h2 style="text-align:center;margin-bottom:10px;">{{info.creat}}</h2>
+                            <div class="frmBox">
+                                <form id="regFrm" action="reg" class="frm sfrm">
+                                    <label for="inv">{{reg.inv}}</label><input class="full" type="text" id="inv" name="inv" required>
+                                    <input style="display:none;" type="text" value="" name="_em">
+                                    <input style="display:none;" type="password" value="" name="_pw">
+                                    <label for="fnm">{{reg.nm}}</label>
+                                    <input style="float:left;" type="text" id="fnm" name="fnm" placeholder="{{reg.fnm}}" required>
+                                    <input style="float:right;" type="text" placeholder="{{reg.lnm}}" id="lnm" name="lnm" required>
+                                    <label for="nem" style="clear:both;padding-top:5px;">{{reg.em}}</label><input class="full" type="email" id="nem" name="nem" required>
+                                    <label for="npw">{{reg.pw}}</label><input class="full" type="password" id="npw" name="npw" required>
+                                    <label for="pwr">{{reg.pwr}}</label><input class="full" type="password" id="pwr" name="pwr" required>
+                                    <div>
+                                        <input type="submit" name="doRg" style="float:right;margin:10px 10px 5px 0" value="{{reg.sub}}">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div style="clear:both;"></div>
+                            <div class="hend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:none;clear:both;" id="footer">
+        </div>
+    </div>
+    <div hidden="true" id="JSON" style="display:none" class="prew">
+        /*!
+          SerializeJSON jQuery plugin.
+          https://github.com/marioizquierdo/jquery.serializeJSON
+          version 2.8.1 (Dec, 2016)
+        
+          Copyright (c) 2012, 2017 Mario Izquierdo
+          Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+          and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+        */
+        !function(a){if("function"==typeof define&&define.amd)define(["jquery"],a);else if("object"==typeof exports){var b=require("jquery");module.exports=a(b)}else a(window.jQuery||window.Zepto||window.$)}(function(a){"use strict";a.fn.serializeJSON=function(b){var c,d,e,f,g,h,i,j,k,l,m,n,o;return c=a.serializeJSON,d=this,e=c.setupOpts(b),f=d.serializeArray(),c.readCheckboxUncheckedValues(f,e,d),g={},a.each(f,function(a,b){h=b.name,i=b.value,k=c.extractTypeAndNameWithNoType(h),l=k.nameWithNoType,m=k.type,m||(m=c.attrFromInputWithName(d,h,"data-value-type")),c.validateType(h,m,e),"skip"!==m&&(n=c.splitInputNameIntoKeysArray(l),j=c.parseValue(i,h,m,e),o=!j&&c.shouldSkipFalsy(d,h,l,m,e),o||c.deepSet(g,n,j,e))}),g},a.serializeJSON={defaultOptions:{checkboxUncheckedValue:void 0,parseNumbers:!1,parseBooleans:!1,parseNulls:!1,parseAll:!1,parseWithFunction:null,skipFalsyValuesForTypes:[],skipFalsyValuesForFields:[],customTypes:{},defaultTypes:{string:function(a){return String(a)},number:function(a){return Number(a)},boolean:function(a){var b=["false","null","undefined","","0"];return b.indexOf(a)===-1},null:function(a){var b=["false","null","undefined","","0"];return b.indexOf(a)===-1?a:null},array:function(a){return JSON.parse(a)},object:function(a){return JSON.parse(a)},auto:function(b){return a.serializeJSON.parseValue(b,null,null,{parseNumbers:!0,parseBooleans:!0,parseNulls:!0})},skip:null},useIntKeysAsArrayIndex:!1},setupOpts:function(b){var c,d,e,f,g,h;h=a.serializeJSON,null==b&&(b={}),e=h.defaultOptions||{},d=["checkboxUncheckedValue","parseNumbers","parseBooleans","parseNulls","parseAll","parseWithFunction","skipFalsyValuesForTypes","skipFalsyValuesForFields","customTypes","defaultTypes","useIntKeysAsArrayIndex"];for(c in b)if(d.indexOf(c)===-1)throw new Error("serializeJSON ERROR: invalid option '"+c+"'. Please use one of "+d.join(", "));return f=function(a){return b[a]!==!1&&""!==b[a]&&(b[a]||e[a])},g=f("parseAll"),{checkboxUncheckedValue:f("checkboxUncheckedValue"),parseNumbers:g||f("parseNumbers"),parseBooleans:g||f("parseBooleans"),parseNulls:g||f("parseNulls"),parseWithFunction:f("parseWithFunction"),skipFalsyValuesForTypes:f("skipFalsyValuesForTypes"),skipFalsyValuesForFields:f("skipFalsyValuesForFields"),typeFunctions:a.extend({},f("defaultTypes"),f("customTypes")),useIntKeysAsArrayIndex:f("useIntKeysAsArrayIndex")}},parseValue:function(b,c,d,e){var f,g;return f=a.serializeJSON,g=b,e.typeFunctions&&d&&e.typeFunctions[d]?g=e.typeFunctions[d](b):e.parseNumbers&&f.isNumeric(b)?g=Number(b):!e.parseBooleans||"true"!==b&&"false"!==b?e.parseNulls&&"null"==b&&(g=null):g="true"===b,e.parseWithFunction&&!d&&(g=e.parseWithFunction(g,c)),g},isObject:function(a){return a===Object(a)},isUndefined:function(a){return void 0===a},isValidArrayIndex:function(a){return/^[0-9]+$/.test(String(a))},isNumeric:function(a){return a-parseFloat(a)>=0},optionKeys:function(a){if(Object.keys)return Object.keys(a);var b,c=[];for(b in a)c.push(b);return c},readCheckboxUncheckedValues:function(b,c,d){var e,f,g,h,i;null==c&&(c={}),i=a.serializeJSON,e="input[type=checkbox][name]:not(:checked):not([disabled])",f=d.find(e).add(d.filter(e)),f.each(function(d,e){if(g=a(e),h=g.attr("data-unchecked-value"),null==h&&(h=c.checkboxUncheckedValue),null!=h){if(e.name&&e.name.indexOf("[][")!==-1)throw new Error("serializeJSON ERROR: checkbox unchecked values are not supported on nested arrays of objects like '"+e.name+"'. See https://github.com/marioizquierdo/jquery.serializeJSON/issues/67");b.push({name:e.name,value:h})}})},extractTypeAndNameWithNoType:function(a){var b;return(b=a.match(/(.*):([^:]+)$/))?{nameWithNoType:b[1],type:b[2]}:{nameWithNoType:a,type:null}},shouldSkipFalsy:function(b,c,d,e,f){var g=a.serializeJSON,h=g.attrFromInputWithName(b,c,"data-skip-falsy");if(null!=h)return"false"!==h;var i=f.skipFalsyValuesForFields;if(i&&(i.indexOf(d)!==-1||i.indexOf(c)!==-1))return!0;var j=f.skipFalsyValuesForTypes;return null==e&&(e="string"),!(!j||j.indexOf(e)===-1)},attrFromInputWithName:function(a,b,c){var d,e,f;return d=b.replace(/(:|\.|\[|\]|\s)/g,"\\$1"),e='[name="'+d+'"]',f=a.find(e).add(a.filter(e)),f.attr(c)},validateType:function(b,c,d){var e,f;if(f=a.serializeJSON,e=f.optionKeys(d?d.typeFunctions:f.defaultOptions.defaultTypes),c&&e.indexOf(c)===-1)throw new Error("serializeJSON ERROR: Invalid type "+c+" found in input name '"+b+"', please use one of "+e.join(", "));return!0},splitInputNameIntoKeysArray:function(b){var c,d;return d=a.serializeJSON,c=b.split("["),c=a.map(c,function(a){return a.replace(/\]/g,"")}),""===c[0]&&c.shift(),c},deepSet:function(b,c,d,e){var f,g,h,i,j,k;if(null==e&&(e={}),k=a.serializeJSON,k.isUndefined(b))throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");if(!c||0===c.length)throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");f=c[0],1===c.length?""===f?b.push(d):b[f]=d:(g=c[1],""===f&&(i=b.length-1,j=b[i],f=k.isObject(j)&&(k.isUndefined(j[g])||c.length>2)?i:i+1),""===g?!k.isUndefined(b[f])&&a.isArray(b[f])||(b[f]=[]):e.useIntKeysAsArrayIndex&&k.isValidArrayIndex(g)?!k.isUndefined(b[f])&&a.isArray(b[f])||(b[f]=[]):!k.isUndefined(b[f])&&k.isObject(b[f])||(b[f]={}),h=c.slice(1),k.deepSet(b[f],h,d,e))}}});
+    </div>
+    <div hidden="true" id="TAB" style="display:none" class="prew">
+        /*!
+         * jQuery UI Core @VERSION
+         * http://jqueryui.com
+         *
+         * Copyright 2013 jQuery Foundation and other contributors
+         * Released under the MIT license.
+         * http://jquery.org/license
+         *
+         * http://api.jqueryui.com/category/ui-core/
+         */
+        (function($) {
+	function visible(element) {
+		return $.expr.filters.visible(element) && !$(element).parents().addBack().filter(function() {
+			return $.css(this, 'visibility') === 'hidden';
+		}).length;
+	}
+
+	function focusable(element, isTabIndexNotNaN) {
+		var map, mapName, img, nodeName = element.nodeName.toLowerCase();
+		if ('area' === nodeName) {
+			map = element.parentNode;
+			mapName = map.name;
+			if (!element.href || !mapName || map.nodeName.toLowerCase() !== 'map') {
+				return false;
+			}
+			img = $('img[usemap=#' + mapName + ']')[0];
+			return !!img && visible(img);
+		}
+		return (/input|select|textarea|button|object/.test(nodeName) ?
+			!element.disabled :
+			'a' === nodeName ?
+				element.href || isTabIndexNotNaN :
+				isTabIndexNotNaN) &&
+			// the element and all of its ancestors must be visible
+			visible(element);
+	}
+
+	$.extend($.expr[':'], {
+		focusable: function(element) {
+			return focusable(element, !isNaN($.attr(element, 'tabindex')));
+		},
+    	tabbable: function( element ) {
+    		var tabIndex = $.attr( element, "tabindex" ),
+    			isTabIndexNaN = isNaN( tabIndex );
+    		return ( isTabIndexNaN || tabIndex >= 0 ) && focusable( element, !isTabIndexNaN );
+    	}
+	});
+
+    $.extend({
+        keys: function(obj){
+            if(!Object.keys) {
+                var a = [];
+                $.each(obj, function(k){ a.push(k) });
+                return a;
+            } 
+            return Object.keys(obj)
+        }
+    })
+
+})(jQuery);
+    </div>
+    <div id="theLoad" class="modal" style="opacity:0;" tabindex="-1" role="dialog" aria-hidden="true">
+    </div>
+    <div id="theDialog" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="dlg">
+            <div class="ltop"><span id="dialogHead"></span></div><div>
+            <div id="dialogData" style="margin:10px 0 20px 0;"></div>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="frm btn" style="margin:0;">
+            <button type="button" id="dialogOk">{{dlg.ok}}</button>
+            <button type="button" id="dialogClose">{{dlg.abt}}</button>
+        </div>
+        </div>
+    </div>
+    <div id="frmError" class="rarrow frmBox frm" style="display:none;" tabindex="-1">
+    </div>
+    <div id="modalLayer">
+    </div>
+    <script id="misc"></script>
+    <div id="tlog" style="color:black;position:absolute;bottom:0px;display:none;">aaaaa</div>
+    <div class="load" style="position:absolute;top:0;left:0;padding:20px;font-size:30px;color:#25529c;font-family:arial;">loading APPUDO...</div>
+</body>
+</html>

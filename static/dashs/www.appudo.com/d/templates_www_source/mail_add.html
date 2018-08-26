@@ -1,0 +1,164 @@
+<style>
+    .box1 {
+        padding-bottom:0;
+    }
+</style>
+<script id="misc">
+    return {
+        nosel:true,
+        rstFrm : function(frm) {
+            this.rstFrmErr(frm);
+            frm[0].reset();
+        },
+        rstFrmErr : function(frm) {
+            /*  TODO remove error messages */
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm.serializeJSON();
+            _this.doSubmit.call(_this, data);
+        },	
+        errSubmit : function(data) {
+	        /*  todo submit ERROR   */
+        },	
+        finSubmit : function() {
+		    this.rstFrm($('#MailAddFrm'));
+        },
+        doSubmit : function(data) {
+            var _this = this;
+            $.post( '/server/', {data:JSON.stringify({cmd:9,data:JSON.stringify(data)})}, function(data) {
+                if(data.r == 0) {
+                    _this.finSubmit()
+                } else {
+                    /*  TODO error */
+                }
+            });
+        },
+        hide : function() {
+            this.onUnload(true);
+        },
+        dashClose : function(e) {
+            var _this = e.data.ctx;
+            if ($(e.target).closest("#dashSearch").length === 0 && e.target != $('#dashBtn')[0]) {
+                $(document).off('click', _this.dmnClose);
+                _this.showSearch('dash', true);
+            }
+        },
+        usrClose : function(e) {
+            var _this = e.data.ctx;
+            if ($(e.target).closest("#usrSearch").length === 0 && e.target != $('#usrBtn')[0]) {
+                $(document).off('click', _this.sslClose);
+                _this.showSearch('usr', true);
+            }
+        },
+        showSearch : function(ty, off) {
+            var s = $('#' + ty + 'Search');
+            
+            if(!s.hasClass('block')) {
+                s.toggleClass('block');
+                $(document).on('click', {ctx:this}, this[ty + 'Close']);
+                var b = $('#' + ty + 'Btn');
+                var bo = b.offset();
+                s.css('left', bo.left);
+                s.css('top', bo.top + b.outerHeight());
+                if(s.offset().left + s.outerWidth() > $(window).width()) {
+                    s.css('left', bo.left + b.outerWidth() - s.width());
+                }
+                $('#' + ty + 'Input').focus();
+            }
+            
+            if(off)
+                s.toggleClass('block');
+        },
+        filterSearch : function(ty) {
+            console.log('filter')
+            var input, filter, ul, li, a, i;
+            input = $('#' + ty + 'Input');
+            filter = input.val().toUpperCase();
+            div = $('#' + ty + 'Search');
+            a = div[0].getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        },
+        run : function() {
+            var _this = this; 
+            var frm = $('#MailAddFrm');
+            
+            $('#abrt').click(function(){_this.hide.call(_this);}); 
+            $('#dashBtn').click(function(e){_this.showSearch.call(_this, 'dash');});
+            $('#usrBtn').click(function(e){_this.showSearch.call(_this, 'usr');});
+            
+            handleError(frm, function() {
+                _this.validateFrm.call(_this, frm);
+            }, '');   
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="add_form">
+    <div id="dashSearch" class="searchContent">
+        <form onsubmit="return false;" class="frm">
+            <div>
+                <input type="text" placeholder="{{frm.dsrh}}" id="dashInput" class="search">
+                <button type="submit" id="dashSBtn">{{frm.srh}}</button>
+            </div>
+        </form>
+        <a href="#about">About</a><a href="#base">Base</a>
+        <a href="#blog">Blog</a><a href="#contact">Contact</a>
+        <a href="#custom">Custom</a><a href="#support">Support</a>
+        <a href="#tools">Tools</a>
+    </div>
+    <div id="usrSearch" class="searchContent">
+        <form onsubmit="return false;" class="frm">
+            <div>
+                <input type="text" placeholder="{{frm.usrh}}" id="usrInput" class="search">
+                <button type="submit" id="usrSBtn">{{frm.srh}}</button>
+            </div>
+        </form>
+        <a href="#about">About</a><a href="#base">Base</a>
+        <a href="#blog">Blog</a><a href="#contact">Contact</a>
+        <a href="#custom">Custom</a><a href="#support">Support</a>
+        <a href="#tools">Tools</a>
+    </div>
+    <div class="htop"><h1>{{info.add}}</h1></div>
+    <div class="frmBox">
+        <form id="MailAddFrm" class="frm min">
+            <div class="box1">  
+                <div class="searchFrame" style="float:right;">
+                    <button id="dashBtn" class="searchBtn" type="button">▼</button>
+                </div> 
+                <label style="clear:none;" for="td">{{frm.td}}*:</label><input type="text" id="td" name="td" style="width:16em;" pattern="[+-]?[0-9]{1,10}" required="">
+                <label for="un">{{frm.un}}*:</label>
+                <div class="searchFrame" style="float:right;">
+                    <button id="usrBtn" class="searchBtn" type="button">▼</button>
+                </div> 
+                <input type="text" id="un" name="un" style="width:16em;" required>
+                <label for="ma">{{frm.ma}}*:</label><input type="email" id="ma" name="ma" required>
+                <label for="ty">{{frm.ty}}:</label>
+                <select id="ty" name="ty">
+                    <option value="pln">plain</option>
+                </select>
+                <div style="clear:both;"></div>
+                <input type="text" id="o1" name="o1" style="display:none;">
+                <div style="clear:both;"></div>
+                <input type="text" id="o2" name="o2" style="display:none;">
+                <div style="clear:both;"></div>
+                <input type="text" id="o3" name="o3" style="display:none;">
+                <div style="clear:both;"></div>
+                <div>
+                    <input type="submit" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.sub}}">
+                    <input type="button" id="abrt" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.cls}}">
+                </div>
+            </div>
+        </form>
+        <div style="clear:both;"></div>
+    </div>
+</div>

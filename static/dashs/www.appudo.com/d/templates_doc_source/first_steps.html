@@ -1,0 +1,36 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        lbox:{},
+        run : function() {
+            var i18n = this.i18n.info;
+            this.lbox.id = 'theLBox';
+            lightBoxInit(this.lbox, [{s:'/pub/img/show1.jpg',t:i18n.shw1},
+                                     {s:'/pub/img/show2.jpg',t:i18n.shw2},
+                                     {s:'/pub/img/show3.jpg',t:i18n.shw3},
+                                     {s:'/pub/img/show4.jpg',t:i18n.shw4},
+                                     {s:'/pub/img/show5.jpg',t:i18n.shw5},
+                                     {s:'/pub/img/show6.jpg',t:i18n.shw6},
+                                     {s:'/pub/img/show7.jpg',t:i18n.shw7}]);
+        }
+    }
+</script>
+<div id="i18nBase">doc</div>
+<div class="i18n style" id="content">
+    <div class="ct doc">
+        <h1>{{info.head}}</h1>
+        <div class="dinfo"></div>
+        <br>
+        <span>{{info.show}}</span>
+        <br>
+        <br>
+        <p><a target="_blank" href="https://dl.appudo.com/showcase_noapple.appudo">https://dl.appudo.com/showcase_noapple.appudo</a> - <span>{{info.napple}}</span></p>
+        <br>
+        <p><a target="_blank" href="https://dl.appudo.com/showcase_apple.appudo">https://dl.appudo.com/showcase_apple.appudoo</a> - <span>{{info.apple}}</span></p>
+        <br>
+        <br>
+        <div class="lbox" id="theLBox"></div>
+        ###NAV###
+    </div>
+</div>

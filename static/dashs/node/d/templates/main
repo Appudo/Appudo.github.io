@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="no-js ie ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!-->
+<html class="no-js" lang="en"> 
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>APPUDO Node</title>
+    <meta name="description" content="APPUDO Node Dash">
+    <meta name="author" content="contact@appudo.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/pub/css/main.css">
+    <!-- Favicons
+    <link rel="shortcut icon" href="favicon.png" >
+    -->
+    <script>
+        var lang = 'en';
+        var mainCtx = {};
+        var moduleCtx = {};
+        var i18nCtx = {};
+        var numI18n = 0;
+        var toLoad = 0;
+        var modalCount = 0;
+        var hasLoad = 0;
+        var hasLogin = false;
+        var pending = false;
+        var currentModule;
+        var tabs;
+        var loginRun = null;
+        
+        function InitScript(src) {
+            var e = document.getElementById(src);
+            var h = document.getElementsByTagName('head')[0];
+            var txt = e.innerText;
+            e.remove();
+            e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.text = txt;
+            h.appendChild(e);
+        }
+        
+        function getScripts(src, after, begin) {
+            if(begin < src.length) {
+                getScript(src[begin], function() {
+                    getScripts(src, after, ++begin);
+                });
+            } else {
+                after();
+            }
+        }
+        
+        function getScript(src, cb) {
+            var e, f, h;
+            f = true;
+            e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.src = '/' + src;
+            h = document.getElementsByTagName('head')[0];
+            e.onreadystatechange = e.onload = function() {
+                if(f && (!this.readyState || this.readyState == 'complete')) {
+                    f = false;
+                    cb();
+                }
+            };
+            h.appendChild(e);
+        }
+        
+        function mCall(module, name, args) {
+            var m = moduleCtx[module];
+            if(args)
+                m[name].apply(m, args);
+            else
+                m[name].call(m);
+        }
+        
+        function addI18n(d) {
+            if(++numI18n == 16)
+            {
+                for(var prop in i18nCtx) {
+                    if(!i18nCtx.hasOwnProperty(prop)) 
+                        continue;
+                    spf.script.unload(prop);
+                }
+                numI18n = 0;
+                i18nCtx = {};
+            }
+            i18nCtx[currentModule] = d;
+        }
+        
+        function loadI18n(module, i18n, after) {
+            if(pending) {
+                setTimeout(function() {loadI18n(module, i18n, after);}, 0);
+            } else {
+                pending = true;
+                if(i18n.length != 0) {
+                    currentModule = module;
+                    spf.script.load('/pub/i18n/' + module + '.' + lang + '.js', module, function() {
+                        $.each(i18n, function(i, n) {
+                            var node = $('#'+n)[0];
+                            var source = node.innerHTML;
+                            var tmpl = Hogan.compile(source);
+                            var result = tmpl.render(i18nCtx[module]);
+                            node.innerHTML = result;
+                        });
+                        pending = false;
+                        if(after)
+                            after();
+                    });
+                } else {
+                    pending = false;
+                    if(after)
+                        after();
+                }
+            }
+        }
+        
+        function minit(module, i18n, path, after) {
+            $.each(i18n, function(i, n) {
+                $('#'+n).css('display', 'none');
+            });
+            fixModule = function(oI18n){
+                loadI18n(module, i18n, function() {
+                    onLoadComplete(module, oI18n || i18n);
+                    fixModule = null;
+                    if(after)
+                        after();
+                });
+            }
+        }
+        
+        function path() { 
+            var l = window.location.pathname;
+            l = l.split('&')[0];
+            l = l.substr(1);
+            return l;
+        }
+        
+        function onLoadComplete(module, i18n) {
+            $.each(i18n, function(i, n) {
+                $('#'+n).css('display', '');
+            });
+            if(toLoad && --toLoad == 0) {
+                $('#login_frm').submit(function(e) {
+                    e.preventDefault();
+                    doLogin();
+                });
+                
+                $('.holder').css('display', '');
+                
+                showLogin()
+            }
+            hideLoad();
+            setActive(module);
+            if(moduleCtx[module]) {
+                moduleCtx[module].i18n = i18nCtx[module];
+                moduleCtx[module]._module = module;
+                if(moduleCtx[module].run) {
+                    if(needLogin()) {
+                        loginRun = moduleCtx[module];
+                    } else {
+                        moduleCtx[module].run();
+                    }
+                }
+            }
+        }
+        
+        function setActive(entry) {
+            $('a.sel').removeClass('sel');
+            $('a[href$="' + entry + '"]').addClass('sel');
+        }
+        
+        function preInit() {
+            if(location.protocol !== 'https:') {
+                window.location = location.href.replace('http:', 'https:')
+                return;
+            }
+            getScripts(["pub/js/spf.js", "pub/js/hogan.js", "pub/js/jquery.min.js"], Init, 0);
+        }
+        
+        function Init() {  
+            InitScript('JSON');
+            InitScript('TAB');
+            var entry = path();
+            $(window).on("spfrequest", function(){
+                $('#content').css('display', 'none');
+                spf.style.unload('mstl');
+                showLoad();
+            });
+            $(window).on("spfdone", function(){
+                fixModule();
+            });
+            spf.init({'cache-unified':true});
+            var hasEntry = (entry != '');
+            var i18n = ['menu', 'login'];
+            if(!hasEntry) {
+                showLoad();
+                i18n.push('content');
+            }
+            toLoad = 1 + hasEntry;
+            spf.init({'cache-unified':true});
+            minit('main', ['menu', 'content', 'login'], [], function() {
+                if(hasEntry) {
+                    spf.navigate('/' + entry);
+                    setActive(entry);
+                }
+            });
+            fixModule(i18n);
+        }
+        
+        function doLogin() {
+            var frm = $('#login_frm');
+            var data = frm.serializeJSON();
+            frm[0].reset();
+            
+            showLoad();
+            $.post( "/server/", {data:'{"cmd":4, "data":' +  JSON.stringify(JSON.stringify(data)) + '}'}, function(res) {
+                hideLoad();
+                d = JSON.parse(res);
+                if(d.r == 0) {
+                    $('#msg').css('display', 'none');
+                    hideLogin();
+                    if(loginRun) {
+                        loginRun.run();
+                        loginRun = null;
+                    }
+                } else {
+                    $('#msg').css('display', '');
+                }
+            });
+        }   
+       
+        var pendingLoad = false;
+       
+        function hideLoad() {
+            var load = $('#theLoad');
+            if(pendingLoad) {
+                load.css('display', 'none');
+                pendingLoad = false;
+                return;
+            }
+            if(hasLoad && --hasLoad == 0) {
+                var obj = {};
+                obj.hide = function(close) {
+                    if(close) {
+                        load.css('display', 'none');
+                        enableMain();  
+                    } else {
+                        setTimeout(function() {obj.hide(true)}, 200);
+                    }
+                }
+                obj.hide();
+            }
+        }
+       
+        function validateRes(res) {
+            var data = null;
+            try {
+                data = JSON.parse(res);
+            } catch(e) {
+                return null;
+            }
+            if(data.l) {
+                logout();
+                spf.navigate('/' + path());
+                return null;
+            }
+            return data;
+        }
+        
+        function showLoad() {
+            if(pendingLoad)
+                return;
+            pendingLoad = true;
+            setTimeout(function() {
+                if(!pendingLoad)
+                    return;
+                hasLoad++;
+                disableMain();
+                pendingLoad = false;
+                var load = $('#theLoad');
+                load.css('display', '');
+            }, 50);
+        }
+        
+        function needLogin() {
+            document.cookie = 'uHash=f; path=/';
+            var res = document.cookie.indexOf('uHash=') != -1;
+            return res;
+        }
+        
+        function hideLogin() {
+            if(hasLogin) {
+                hasLogin = false;
+                $('#theLogin').css('display', 'none');
+                enableMain();
+            }
+        }
+        
+        function showLogin() {
+            if(needLogin()) {
+                var login = $('#theLogin');
+                login.css('display', '');
+                login.focus();
+                disableMain();
+                hasLogin = true;
+            }
+        }
+        
+        function logout() { 
+            showLoad();
+            $.post( "/server/", {data:'{"cmd":5}'}, function(res) {
+                var login = $('#theLogin');
+                login.css('display', '');
+                login.focus();
+                disableMain();
+                hasLogin = true;
+                hideLoad();
+            });
+        }
+        
+        function disableMain() {
+            if(modalCount == 0) {
+                tabs = [];
+                $('#main').css('overflow', 'hidden');
+                $('#main').find(':tabbable').each(function(idx, e) {
+                    tabs.push({idx:e.tabIndex,e:e});
+                    e.tabIndex = -1;
+                });
+            }
+            modalCount++;
+        }
+        
+        function enableMain() {
+            if(--modalCount == 0) {
+                $(tabs).each(function(idx, e) {
+                    e.e.tabIndex = e.idx;
+                })
+                $('#main').css('overflow', 'none');
+            }
+        }
+    </script>
+</head>
+<body onload="preInit();">
+    <script id="minit"></script>
+    <pre id="JSON" style="display:none">
+        /*!
+          SerializeJSON jQuery plugin.
+          https://github.com/marioizquierdo/jquery.serializeJSON
+          version 2.8.1 (Dec, 2016)
+        
+          Copyright (c) 2012, 2017 Mario Izquierdo
+          Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+          and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+        */
+        !function(a){if("function"==typeof define&&define.amd)define(["jquery"],a);else if("object"==typeof exports){var b=require("jquery");module.exports=a(b)}else a(window.jQuery||window.Zepto||window.$)}(function(a){"use strict";a.fn.serializeJSON=function(b){var c,d,e,f,g,h,i,j,k,l,m,n,o;return c=a.serializeJSON,d=this,e=c.setupOpts(b),f=d.serializeArray(),c.readCheckboxUncheckedValues(f,e,d),g={},a.each(f,function(a,b){h=b.name,i=b.value,k=c.extractTypeAndNameWithNoType(h),l=k.nameWithNoType,m=k.type,m||(m=c.attrFromInputWithName(d,h,"data-value-type")),c.validateType(h,m,e),"skip"!==m&&(n=c.splitInputNameIntoKeysArray(l),j=c.parseValue(i,h,m,e),o=!j&&c.shouldSkipFalsy(d,h,l,m,e),o||c.deepSet(g,n,j,e))}),g},a.serializeJSON={defaultOptions:{checkboxUncheckedValue:void 0,parseNumbers:!1,parseBooleans:!1,parseNulls:!1,parseAll:!1,parseWithFunction:null,skipFalsyValuesForTypes:[],skipFalsyValuesForFields:[],customTypes:{},defaultTypes:{string:function(a){return String(a)},number:function(a){return Number(a)},boolean:function(a){var b=["false","null","undefined","","0"];return b.indexOf(a)===-1},null:function(a){var b=["false","null","undefined","","0"];return b.indexOf(a)===-1?a:null},array:function(a){return JSON.parse(a)},object:function(a){return JSON.parse(a)},auto:function(b){return a.serializeJSON.parseValue(b,null,null,{parseNumbers:!0,parseBooleans:!0,parseNulls:!0})},skip:null},useIntKeysAsArrayIndex:!1},setupOpts:function(b){var c,d,e,f,g,h;h=a.serializeJSON,null==b&&(b={}),e=h.defaultOptions||{},d=["checkboxUncheckedValue","parseNumbers","parseBooleans","parseNulls","parseAll","parseWithFunction","skipFalsyValuesForTypes","skipFalsyValuesForFields","customTypes","defaultTypes","useIntKeysAsArrayIndex"];for(c in b)if(d.indexOf(c)===-1)throw new Error("serializeJSON ERROR: invalid option '"+c+"'. Please use one of "+d.join(", "));return f=function(a){return b[a]!==!1&&""!==b[a]&&(b[a]||e[a])},g=f("parseAll"),{checkboxUncheckedValue:f("checkboxUncheckedValue"),parseNumbers:g||f("parseNumbers"),parseBooleans:g||f("parseBooleans"),parseNulls:g||f("parseNulls"),parseWithFunction:f("parseWithFunction"),skipFalsyValuesForTypes:f("skipFalsyValuesForTypes"),skipFalsyValuesForFields:f("skipFalsyValuesForFields"),typeFunctions:a.extend({},f("defaultTypes"),f("customTypes")),useIntKeysAsArrayIndex:f("useIntKeysAsArrayIndex")}},parseValue:function(b,c,d,e){var f,g;return f=a.serializeJSON,g=b,e.typeFunctions&&d&&e.typeFunctions[d]?g=e.typeFunctions[d](b):e.parseNumbers&&f.isNumeric(b)?g=Number(b):!e.parseBooleans||"true"!==b&&"false"!==b?e.parseNulls&&"null"==b&&(g=null):g="true"===b,e.parseWithFunction&&!d&&(g=e.parseWithFunction(g,c)),g},isObject:function(a){return a===Object(a)},isUndefined:function(a){return void 0===a},isValidArrayIndex:function(a){return/^[0-9]+$/.test(String(a))},isNumeric:function(a){return a-parseFloat(a)>=0},optionKeys:function(a){if(Object.keys)return Object.keys(a);var b,c=[];for(b in a)c.push(b);return c},readCheckboxUncheckedValues:function(b,c,d){var e,f,g,h,i;null==c&&(c={}),i=a.serializeJSON,e="input[type=checkbox][name]:not(:checked):not([disabled])",f=d.find(e).add(d.filter(e)),f.each(function(d,e){if(g=a(e),h=g.attr("data-unchecked-value"),null==h&&(h=c.checkboxUncheckedValue),null!=h){if(e.name&&e.name.indexOf("[][")!==-1)throw new Error("serializeJSON ERROR: checkbox unchecked values are not supported on nested arrays of objects like '"+e.name+"'. See https://github.com/marioizquierdo/jquery.serializeJSON/issues/67");b.push({name:e.name,value:h})}})},extractTypeAndNameWithNoType:function(a){var b;return(b=a.match(/(.*):([^:]+)$/))?{nameWithNoType:b[1],type:b[2]}:{nameWithNoType:a,type:null}},shouldSkipFalsy:function(b,c,d,e,f){var g=a.serializeJSON,h=g.attrFromInputWithName(b,c,"data-skip-falsy");if(null!=h)return"false"!==h;var i=f.skipFalsyValuesForFields;if(i&&(i.indexOf(d)!==-1||i.indexOf(c)!==-1))return!0;var j=f.skipFalsyValuesForTypes;return null==e&&(e="string"),!(!j||j.indexOf(e)===-1)},attrFromInputWithName:function(a,b,c){var d,e,f;return d=b.replace(/(:|\.|\[|\]|\s)/g,"\\$1"),e='[name="'+d+'"]',f=a.find(e).add(a.filter(e)),f.attr(c)},validateType:function(b,c,d){var e,f;if(f=a.serializeJSON,e=f.optionKeys(d?d.typeFunctions:f.defaultOptions.defaultTypes),c&&e.indexOf(c)===-1)throw new Error("serializeJSON ERROR: Invalid type "+c+" found in input name '"+b+"', please use one of "+e.join(", "));return!0},splitInputNameIntoKeysArray:function(b){var c,d;return d=a.serializeJSON,c=b.split("["),c=a.map(c,function(a){return a.replace(/\]/g,"")}),""===c[0]&&c.shift(),c},deepSet:function(b,c,d,e){var f,g,h,i,j,k;if(null==e&&(e={}),k=a.serializeJSON,k.isUndefined(b))throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");if(!c||0===c.length)throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");f=c[0],1===c.length?""===f?b.push(d):b[f]=d:(g=c[1],""===f&&(i=b.length-1,j=b[i],f=k.isObject(j)&&(k.isUndefined(j[g])||c.length>2)?i:i+1),""===g?!k.isUndefined(b[f])&&a.isArray(b[f])||(b[f]=[]):e.useIntKeysAsArrayIndex&&k.isValidArrayIndex(g)?!k.isUndefined(b[f])&&a.isArray(b[f])||(b[f]=[]):!k.isUndefined(b[f])&&k.isObject(b[f])||(b[f]={}),h=c.slice(1),k.deepSet(b[f],h,d,e))}}});
+    </pre>
+    <pre id="TAB" style="display:none">
+        /*!
+         * jQuery UI Core @VERSION
+         * http://jqueryui.com
+         *
+         * Copyright 2013 jQuery Foundation and other contributors
+         * Released under the MIT license.
+         * http://jquery.org/license
+         *
+         * http://api.jqueryui.com/category/ui-core/
+         */
+        (function($) {
+	function visible(element) {
+		return $.expr.filters.visible(element) && !$(element).parents().addBack().filter(function() {
+			return $.css(this, 'visibility') === 'hidden';
+		}).length;
+	}
+
+	function focusable(element, isTabIndexNotNaN) {
+		var map, mapName, img, nodeName = element.nodeName.toLowerCase();
+		if ('area' === nodeName) {
+			map = element.parentNode;
+			mapName = map.name;
+			if (!element.href || !mapName || map.nodeName.toLowerCase() !== 'map') {
+				return false;
+			}
+			img = $('img[usemap=#' + mapName + ']')[0];
+			return !!img && visible(img);
+		}
+		return (/input|select|textarea|button|object/.test(nodeName) ?
+			!element.disabled :
+			'a' === nodeName ?
+				element.href || isTabIndexNotNaN :
+				isTabIndexNotNaN) &&
+			// the element and all of its ancestors must be visible
+			visible(element);
+	}
+
+	$.extend($.expr[':'], {
+		focusable: function(element) {
+			return focusable(element, !isNaN($.attr(element, 'tabindex')));
+		},
+    	tabbable: function( element ) {
+    		var tabIndex = $.attr( element, "tabindex" ),
+    			isTabIndexNaN = isNaN( tabIndex );
+    		return ( isTabIndexNaN || tabIndex >= 0 ) && focusable( element, !isTabIndexNaN );
+    	}
+	});
+})(jQuery);
+    </pre>
+    <div id="theLoad" class="modal" style="opacity:0;" tabindex="-1" role="dialog" aria-labelledby="loadModal" aria-hidden="true">
+    </div>
+    <div id="theLogin" class="modal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true" style="display: none;">
+		<div id="login" class="dlg">
+            <form id="login_frm" class="frm">
+	    		<div class="ltop">
+                    <span>{{login.txt}}</span>
+                </div>
+	    		<div id="msg" style="display:none;color:red;text-align:center;">{{login.fail}}</div>
+	    		<div>
+                    <label>{{login.name}}:</label>
+                    <input id="name" name="name" type="text" required>
+                    <label>{{login.pwd}}:</label>
+	    		    <input id="password" name="password" type="password" required>
+                </div>
+		        <div>
+                    <div>
+                        <button type="submit" style="float:right;margin-top:5px">{{login.sub}}</button>
+                    </div>
+		        </div>
+            </form>
+            <div style="clear:both;"></div>
+		</div>
+	</div>
+    <div id="other"></div>
+    <div id="main">
+        <div class="mholder">
+        <div style="display:none;" id="menu">
+            <div class='head'>
+              Appudo
+            </div>
+            <ul>
+              <li>
+                <a class="spf-link" href="/status">{{menu.sts}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/dash_upload">{{menu.upld}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/dash_remove">{{menu.rem}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/domain_add">{{menu.dmn}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/domain_remove">{{menu.drem}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/ssl_refresh">{{menu.ssl}}</a>
+              </li>
+              <li>
+                <a class="spf-link" href="/disable">{{menu.dbl}}</a>
+              </li>
+              <li>
+                <a href="javascript:logout();">{{menu.out}}</a>
+              </li>
+            </ul>
+        </div>
+        </div>
+        <div style="display:none;" class="holder">
+            <div id="content">
+                <h3>{{info.wlkm}}</h3>
+                <pre>{{info.rem}}</pre>
+            </div>
+        </div>
+    </div>
+    <script id="misc"></script>
+</body>
+</html>

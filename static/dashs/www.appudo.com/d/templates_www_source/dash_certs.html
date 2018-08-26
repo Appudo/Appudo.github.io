@@ -1,0 +1,633 @@
+<style>
+    #add_form {
+        width:100%;
+        text-align:center;
+    }
+    .tlist td:nth-child(1), .tlist th:nth-child(1) {
+        width:20%;
+    }
+    .tlist td:nth-child(2), .tlist th:nth-child(2) {
+        width:30%;
+    }
+    .tlist td:nth-child(3), .tlist th:nth-child(3) {
+        width:15%;
+    }
+    .tlist td:nth-child(4), .tlist th:nth-child(4) {
+        width:15%;
+    }
+    .tlist td:nth-child(5), .tlist th:nth-child(5) {
+        width:20%;
+    }
+</style>
+<script id="misc">
+    return {
+        certs:###{"file":"templates_www_source/cert_add"}###,
+        ipp:10,
+        max:0,
+        page:1,
+        order:null,
+        filter1:null,
+        filter2:null,
+        filter3:null,
+        filter4:null,
+        filter5:null,
+        selected:null,
+        hasAdd:false,
+        unloadAdd:null,
+        unload:function() {
+            if(this.hasAdd && this.unloadAdd)
+               this.unloadAdd();
+        },
+        showAdd : function(after) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            this._showAdd(function(unload) {
+                _this.unloadAdd = unload;
+                $('html, body').animate({
+                    scrollTop: $("#add_form").offset().top - hdrHeight - 10
+                }, 200);
+                
+                moduleCtx['cert_add'].onAdd = function(d, r) {
+                    _this.renderRow({id:r.id,n:r.nn,nm:r.n,nid:d.tn,d:d.dsc});
+                    modalInfo(i18n.aok);
+                }
+                
+                if(after)
+                    after();
+            });
+        },
+        _showAdd : function(after) {
+            var _this = this;
+            if(!this.hasAdd) {
+                this.hasAdd = true;
+                loadContent('cert_add', this.certs, 'onUnload', after, function(active) { 
+                    if(active) {
+                        var params = parseSearch();
+                        delete params.n;
+                        delete params.nid;
+                        putSearchMenu(params);
+                    }
+                    _this.hasAdd = false;
+                    $('html, body').animate({
+                        scrollTop: 0
+                    }, 200);
+                });
+            }
+        },     
+        renderPages : function() {
+            var i18n = this.i18n.menu;
+            var itemsPerPage = this.ipp;
+            var thePage = this.page;
+            var offset = (thePage-1)*itemsPerPage
+            var numItems = this.max + offset
+            var numPages = Math.floor(numItems / itemsPerPage) + (numItems % itemsPerPage != 0 ? 1 : 0)
+            var data = '<span>' + i18n.pg + ' (' + numPages + '):</span>';
+            var lnk = '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'setPage\',[\'';
+            
+            data += '<div class="pmi">';
+            if(thePage != 1) {
+                data += lnk + '1\'])">' + i18n.frt + '</a>';
+                data += lnk + (thePage - 1) + '\'])">' + i18n.prv + '</a>';
+            } else {
+                data += '<span class="dbl">' + i18n.frt + '</span>';
+                data += '<span class="dbl">' + i18n.prv + '</span>';
+            }
+            data += '</div>';
+            
+            var begin = thePage - 2
+            
+            if(begin <= 0) {
+                begin = 1
+            }
+            
+            let upper = begin + 5
+            
+            data += '<div class="pmi pmim">';
+            for(var i = begin; i < upper; i++) {
+                if(i > numPages) {
+                    break
+                }
+                
+                if(i != thePage) {
+                    data += lnk + i + '\'])">' + i + '</a>';
+                } else {
+                    data += '<span class="cur">' + thePage + '</span>';
+                }
+            }
+            data += '</div>';
+            
+            data += '<div class="pmi">';
+            if(thePage != numPages) {
+                data += lnk + (thePage + 1) + '\'])">' + i18n.nxt + '</a>';
+                data += lnk + numPages + '\'])">' + i18n.lst + '</a>';
+            } else {
+                data += '<span class="dbl">' + i18n.nxt + '</span>';
+                data += '<span class="dbl">' + i18n.lst + '</span>';
+            }
+            data += '</div>';
+            
+            $('.pmenu').html(data);
+        },
+        renderIPP : function() {
+            var _this = this;
+            var i18n = this.i18n.menu;
+            var info = this.i18n.info;
+            var num = [1, 10, 20, 30, 50, 100, 200];
+            $('#tmenu').text('');
+            var data = '<tr class="filter frm btnBox tfm"><td colspan="5" class="smenu">';
+                data += '<span>' + i18n.ipp + ':</span>'
+            for(var i = 0; i < num.length; i++) {
+                var n = num[i];
+                data += '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'setIPP\',[\'' + n + '\']);">' + n + '</a>';
+            }
+            data += '</td></tr>' +
+                       '<tr class="filter frm btnBox"><td colspan="5">' + 
+                       '<button type="button">' + info.cl + '</button></td></tr>';
+            var e = $('#tmenu').append(data);
+            var btns = e.find('button');
+            $(btns[0]).click(function(e){e.preventDefault();_this.renderMenu.call(_this);});
+        },
+        buildOrder : function(idx, o) {
+            if(!o || (o >> 1) - 1 != idx)
+                return '<a href="#"><span class="fbtn">&#9650;&#9660;</span></a>';
+            
+            return '<a href="#"><span class="fbtn">' + ((o & 1) == 0 ? '&#9650;' : '&#9660;') + '</span></a>';
+        },
+        renderOrder : function(obj) {
+            var _this = this;
+            var hrefs = $('#tmenu').find('a');
+            for(var i = 0; i < hrefs.length; i++) {
+                $(hrefs[i]).replaceWith(this.buildOrder(i, obj.o));
+            }
+            hrefs = $('#tmenu').find('a');
+            var v = [];
+            for(var i = 0; i < hrefs.length; i++) {
+                (function(i, o) {
+                    var n = (o >> 1) - 1 != i;
+                    var ov = (i + 1) << 1;
+                    if(!n) {
+                        if((o & 1))
+                            ov = 0;
+                        else
+                            ov |= 1;
+                    }
+                    $(hrefs[i]).click(function(e){
+                        e.preventDefault();
+                        obj.o = ov;
+                        _this.renderOrder(obj);
+                    });
+                })(i, obj.o);
+            }
+        },
+        renderFilter : function() {
+            var _this = this;
+            var i18n = this.i18n.menu;
+            var info = this.i18n.info;
+            $('#tmenu').text('');
+            var data = '<tr class="filter frm btnBox tfm"><td><input type="text" placeholder="' + info.n  + '..."><a/></td>' + 
+                       '<td><input type="text" placeholder="' + info.dsc  + '..."><a/></td>' + 
+                       '<td><input type="text" placeholder="' + info.r  + '..."><a/></td>' +
+                       '<td><input type="text" placeholder="' + info.e  + '..."><a/></td>' +
+                       '<td><input type="text" placeholder="' + info.nn  + '..."><a/></td></tr>' +
+                       '<tr class="filter frm btnBox"><td colspan="5">' +
+                       '<button type="submit">' + i18n.ftr + '</button>' + 
+                       '<button type="button">' + i18n.rst + '</button>' + 
+                       '<button type="button">' + info.cl + '</button></td></tr>';
+            var items = $('#tmenu').append(data);
+            var fobj = {o: this.order}
+            
+            this.renderOrder(fobj);
+            
+            var inputs = items.find('input');
+            var btns = items.find('button');
+            var hrefs = items.find('a');
+            
+            $(inputs[0]).val(this.filter1);
+            $(inputs[1]).val(this.filter2);
+            $(inputs[2]).val(this.filter3);
+            $(inputs[3]).val(this.filter4);
+            $(inputs[3]).val(this.filter5);
+            
+            $(btns[0]).click(function(e){e.preventDefault();_this.setFilter.call(_this, $(inputs[0]).val(), $(inputs[1]).val(), $(inputs[2]).val(), $(inputs[3]).val(), $(inputs[4]).val(), fobj.o + '')});
+            $(btns[1]).click(function(e){e.preventDefault();_this.resetFilter.call(_this);});
+            $(btns[2]).click(function(e){e.preventDefault();_this.renderMenu.call(_this);});
+        },
+        renderMenu : function() {
+            var _this = this;
+            var i18n = this.i18n.menu;
+            $('#tmenu').text('');
+            var data = '<tr ><td colspan="5"><a href="#">' + i18n.add + '</a> | <a href="#">' + i18n.fts + '</a> | <a href="#">' + i18n.ipp + ' (' + this.ipp + ')</a></td></tr>';
+            var items = $('#tmenu').append(data);
+            var btns = items.find('a');
+            $(btns[0]).click(function(e){e.preventDefault();_this.showAdd.call(_this);});
+            $(btns[1]).click(function(e){e.preventDefault();_this.renderFilter.call(_this);});
+            $(btns[2]).click(function(e){e.preventDefault();_this.renderIPP.call(_this);});
+        }, 
+        renderTable : function(data) {
+            $('#result').text('');
+            for(var i = 0; i < data.length; i++) {
+                if(data[i].e == undefined) {
+                    this.renderRow(data[i])
+                }
+            }
+            this.renderPages();
+        },
+        renderRenew : function(id) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            var item = $('#_item_' + id);
+            var idata = this.fromElem(item)
+            var data = '<tr><td colspan="5"><div style="margin-bottom:10px;">' +
+                        i18n.ren + 
+                       '</div><div class="frm btnBox"><button id="aabrt" type="button" style="margin-right:10px;">' + i18n.cl + '</button><button id="arem" type="button">' + i18n.ad + '</button></div></td></tr>';
+            this._selItem(id, data, true);
+            $('#aabrt').click(function(){_this.selItem.call(_this, idata.id, true);});
+            $('#arem').click(function(){_this.doRenew.call(_this, idata);});
+        },
+        renderRem : function(id) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            var item = $('#_item_' + id);
+            var idata = this.fromElem(item)
+            var data = '<tr><td colspan="5"><div style="margin-bottom:10px;">' +
+                        i18n.rrem + 
+                       '</div><div class="frm btnBox"><button id="aabrt" type="button" style="margin-right:10px;">' + i18n.cl + '</button><button id="arem" type="button">' + i18n.rm + '</button></div></td></tr>';
+            this._selItem(id, data, true);
+            $('#aabrt').click(function(){_this.selItem.call(_this, idata.id, true);});
+            $('#arem').click(function(){_this.doRemove.call(_this, idata);});
+        },
+        renderEdit : function(id) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            
+            var item = $('#_item_' + id);
+            var idata = this.fromElem(item);
+            var data = '<tr class="sel0 titem"><td>' + idata.n + '</td><td><textarea id="edtxt" class="edtxt">' + idata.d + '</textarea></td><td>' + idata.r + '</td><td>' + idata.x + '</td><td>' + idata.nn + '</td></tr><tr><tr><td colspan="5"><div style="margin-bottom:10px;">' +
+                        i18n.dsav + 
+                       '</div><div class="frm btnBox"><button id="aabrt" type="button" style="margin-right:10px;">' + i18n.cl + '</button><button id="sav" type="button">' + i18n.sav + '</button></div></td></tr>';
+            var r = this._selItem(id, data, true, item);
+            r.a.addClass('hide');
+            r.a.removeClass('sel0');
+            $(r.b[0]).removeClass('sel1');
+            r.b._remove = function() {
+                r.a.removeClass('hide');
+            };
+            
+            $('#aabrt').click(function(){_this.doSelItem.call(_this, idata, true);});
+            $('#sav').click(function(){idata.d = $('#edtxt').val(); _this.doSave.call(_this, idata, r.a);});
+        
+        },
+        setPage: function(p, passiv) {
+            var np = parseInt(p);
+            var o = this.getOpt({p:np-1});
+            this.doList(o);
+            if(!passiv) {
+                var params = parseSearch();
+                delete params.p;
+                if(np != 1) params.p = np;
+                putSearchMenu(params);
+            }
+        },
+        setIPP : function(ipp, passiv) {
+            var _this = this;
+            var n = parseInt(ipp);
+            if(!passiv) {
+                var params = parseSearch();
+                delete params.p;
+                delete params.i;
+                if(n != 10) params.i = n;
+                putSearchMenu(params);
+            }
+            this.doList(this.getOpt({i:n,p:0}), function() {
+                _this.renderMenu();
+            });
+        },
+        setFilter : function(f1, f2, f3, f4, f5, o, passiv) {
+            var _this = this;
+            var on = parseInt(o) || 0;
+            if(!passiv) {
+                var params = parseSearch();
+                delete params.f1;
+                delete params.f2;
+                delete params.f3;
+                delete params.f4;
+                delete params.f5;
+                delete params.o;
+                delete params.p;
+                if(f1) params.f1 = f1;
+                if(f2) params.f2 = f2;
+                if(f3) params.f3 = f3;
+                if(f4) params.f4 = f4;
+                if(f5) params.f5 = f5;
+                if(on != 0) params.o = on;
+                putSearchMenu(params);
+            }
+            this.doList(this.getOpt({f1:f1,f2:f2,f3:f3,f4:f4,f5:f5,o:on,p:0}), function() {
+            });
+        },
+        resetFilter : function(passiv) {
+            var _this = this;
+            if(!passiv) {
+                var params = parseSearch();
+                delete params.f1;
+                delete params.f2;
+                delete params.f3;
+                delete params.f4;
+                delete params.f5;
+                delete params.o;
+                putSearchMenu(params);
+            }
+            this.doList(this.getOpt({f1:"", f2:"", f3:"", f4:"", f5:"", o:0, p:0}), function() {
+                _this.renderFilter();
+            });
+        },
+        gotoShowDomains : function(id) {
+            var item = this.fromId(id);
+            spf.navigate('/dash_domains?cn=' + item.n);
+        },
+        getOpt : function(o) {
+            var r = {};
+            if(this.page != 1)
+                r.p = this.page - 1;
+            r.i = this.ipp || 10;
+            r.f1 = this.filter1 || "";
+            r.f2 = this.filter2 || "";
+            r.f3 = this.filter3 || "";
+            r.f4 = this.filter4 || "";
+            r.f5 = this.filter5 || "";
+            r.o = this.order || 0;
+            r = $.extend(r, o);
+            if(r.i  == 10) delete r.i;
+            if(r.p  == 0)  delete r.p;
+            if(r.f1 == "") delete r.f1;
+            if(r.f2 == "") delete r.f2;
+            if(r.f3 == "") delete r.f3;
+            if(r.f4 == "") delete r.f4;
+            if(r.f5 == "") delete r.f5;
+            if(r.o  == 0) delete r.o;
+            if(r.i === undefined && r.p === undefined && r.f1 === undefined && r.f2 === undefined && r.f3 === undefined && r.f4 === undefined && r.f5 === undefined && r.o === undefined)
+                return null;
+            return r;
+        },
+        copyName : function(id) {
+            var item = $('#_item_' + id)[0].firstChild;
+            var temp = $("<input>");
+            $("body").append(temp);
+            temp.val($(item).text()).select();
+            document.execCommand("copy");
+            temp.remove();
+        },
+        doSelItem : function(item, keep, passiv) {
+            var id = item.id;
+            var name = item.nm;
+            var i18n = this.i18n.info;
+            var data = '<tr><td colspan="5">' +
+                      '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'copyName\',[\'' + id + '\']);">' + i18n.cpy + '</a>' +
+                      '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'gotoShowDomains\',[\'' + id + '\']);">' + i18n.sd + '</a>' +
+                      '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'renderRenew\',[\'' + id + '\']);">' + i18n.ad + '</a>' +
+                      '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'renderEdit\',[\'' + id + '\']);">' + i18n.ed + '</a>' +
+                      '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'renderRem\',[\'' + id + '\']);">' + i18n.rm + '</a>' +
+                      '</td></tr>';
+            this._selItem(id, data, keep);
+            if(!passiv) {
+                var params = parseSearch();
+                delete params.s
+                if(this.selected) 
+                    params.s = id;
+                putSearchMenu(params);
+            }
+        },
+        selItem : function(id, keep, passiv) {
+            var e = this.fromId(id);
+            if(e)
+                this.doSelItem(e, keep, passiv);
+        },
+        _selItem : function(id, data, keep, _item) { 
+            var item = _item || $('#_item_' + id);
+            var selected = this.selected;
+            if(selected) {
+                selected.a.removeClass('sel0');
+                if(selected.b._remove)
+                    selected.b._remove();
+                selected.b.remove();
+                this.selected = null;
+                if(selected.a[0].id === item[0].id && !keep) 
+                    return;
+            } 
+            
+            var after = $(data).insertAfter(item);
+            item.addClass('sel0');
+            after.addClass('sel1');
+        	
+            this.selected = {a:item,b:after};
+            return this.selected;
+        },
+        fromId : function(id) { 
+            var e = $('#_item_' + id);
+            if(e.length != 0)
+                return this.fromElem(e);
+            return null;
+        },
+        fromElem : function(e) {
+            var r = {};
+            var c = e.children();
+            r.id = parseInt(e.attr('id').substr(6));
+            r.n = $(c[0]).text();
+            r.d = $(c[1]).text();
+            r.r = parseInt($(c[2]).attr('r'));
+            r.x = parseInt($(c[3]).attr('x'));
+            r.nn = $(c[4]).text();
+            r.nid = parseInt($(c[4]).attr('nid'));
+            return r;
+        },
+        buildRow : function(item) {
+            var data = '<tr id="_item_' + item.id + '" class="titem" onclick="javascript:mCall(' + '\'' + 
+            this._module + '\'' + ',\'selItem\',[\'' + item.id + '\']);"><td>' + 
+            item.n + '</td><td>' + item.d + '</td><td r="' + item.r + '">' + (item.r ? (new Date(item.r * 1000)).toLocaleDateString() : '-') + '</td><td x="' + item.x + '">' + (item.x && item.r ? (new Date((item.x + item.r) * 1000)).toLocaleDateString() : '-') + '</td><td nid="' + item.nid + '">' + item.nn + '</td></tr>';
+            return data;
+        },
+        renderRow : function(item, front) {
+            if(front)
+                $('#result').prepend(this.buildRow(item));
+            else
+                $('#result').append(this.buildRow(item));
+        },
+        renderRow : function(item) {
+            $('#result').append(this.buildRow(item));
+        },
+        replaceNode : function(item, elem) {
+            elem.replaceWith(this.buildRow(item));
+            this.selItem(item.id, item.n, true);
+        },
+        renderTableHdr : function() {
+            var i18n = this.i18n.info;
+            $('#thdr').html('<tr class="thdr"><th>' + i18n.n +
+                            '</th><th>' +  i18n.dsc +
+                            '</th><th>' +  i18n.r +
+                            '</th><th>' +  i18n.e + 
+                            '</th><th>' +  i18n.nn + '</th></tr>');
+        },
+        doList : function(o, after, p) {
+            var i18n = this.i18n.info;
+            var _this = this;
+            var params = p || parseSearch();
+            this.renderTableHdr();
+            this.page = 1;
+            this.ipp = 10;
+            this.filter1 = undefined;
+            this.filter2 = undefined;
+            this.filter3 = undefined;
+            this.filter4 = undefined;
+            this.filter5 = undefined;
+            this.order = undefined;
+            this.selected = undefined;
+            var d = {cmd:27};
+            if(o)
+            {
+                if(o.i)  this.ipp = o.i;
+                if(o.p)  this.page = o.p + 1;
+                if(o.f1) this.filter1 = o.f1;
+                if(o.f2) this.filter2 = o.f2;
+                if(o.f3) this.filter3 = o.f3;
+                if(o.f4) this.filter4 = o.f4;
+                if(o.f5) this.filter5 = o.f5;
+                if(o.o)  this.order = o.o;
+                if(o.p)
+                    o.p = o.p * this.ipp;
+                d.data = JSON.stringify(o);
+            }
+            postCreds(userBase('/admin/'), {data:JSON.stringify(d)}, function(data) {
+                if(data.r == 0) {
+                    _this.max = typeof data.m === 'number' ? data.m : 0;
+                    _this.renderTable(data.d);
+                    if(params.s) {
+                        _this.selItem(params.s, false, true);
+                    }
+                } else {
+                    modalError(i18n.dfail);
+                }
+                
+                if(after)
+                    after();
+            });
+        },
+        doSave : function(item, elem) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            postCreds(userBase('/admin/'), {data:'{"cmd":30, "data":' + JSON.stringify(JSON.stringify({id:item.id,d:item.d})) + '}'}, function(data) {
+                if(data.r == 0) {
+                    _this.replaceNode(item, elem);
+                    _this.selItem(item.id, true, true);
+                } else {
+                    modalError(i18n.sfail);
+                }
+            });
+            
+        },
+        doRemove : function(item) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            var id = item.id;
+            var nid = item.nid;
+            var node = item.n;
+            var name = item.nm;
+            /* cross remove from node with name */ 
+            //postCredsCross({id:nid}, userBase('/server/', node), {data:'{"cmd":3,"data":' + JSON.stringify(JSON.stringify({d:name,n:1})) + '}'}, function(data) {
+            //    if(data.r == 0 || data.r == 270532633) { /* ok or not exist */
+                    /* unregister with user dash */
+                    postCreds(userBase('/admin/'), {data:'{"cmd":29, "data":' + JSON.stringify(JSON.stringify(id)) + '}'}, function(data) {
+                        if(data.r == 0) {
+                            _this.selItem(id, false, false);
+                            $('#_item_' + id).remove();
+                        } else {
+                            modalError(i18n.rfail);
+                        }
+                    });
+            //    } else {
+            //        modalError(i18n.rfail);
+            //    }
+            //});
+        },
+        doRenew: function(item) {
+            var _this = this;
+            var i18n = this.i18n.info;
+            var id = item.id;
+            var nid = item.nid;
+            var node = item.n;
+            var name = item.nm;
+            /* cross remove from node with name */ 
+            //postCredsCross({id:nid}, userBase('/server/', node), {data:'{"cmd":3,"data":' + JSON.stringify(JSON.stringify({d:name,n:1})) + '}'}, function(data) {
+            //    if(data.r == 0 || data.r == 270532633) { /* ok or not exist */
+                    /* unregister with user dash */
+                    postCreds(userBase('/admin/'), {data:'{"cmd":99, "data":' + JSON.stringify(JSON.stringify(id)) + '}'}, function(data) {
+                        if(data.r == 0) {
+                            _this.selItem(id, false, false);
+                            $('#_item_' + id).remove();
+                        } else {
+                            modalError(i18n.rfail);
+                        }
+                    });
+            //    } else {
+            //        modalError(i18n.rfail);
+            //    }
+            //});
+        },
+        run : function() {
+            var _this = this;
+            var params = parseSearch();
+            
+              var o = {};
+            if(params.p)  o.p = parseInt(params.p) - 1;
+            if(params.i)  o.i = parseInt(params.i);
+            if(params.f1) o.f1 = params.f1;
+            if(params.f2) o.f2 = params.f2;
+            if(params.f3) o.f3 = params.f3;
+            if(params.f4) o.f4 = params.f4;
+            if(params.o)  o.o = parseInt(params.o);
+            
+            this.doList(o, function() {
+                if(params.n) {
+                    _this.showAdd(function() {
+                        $("#dn").val(params.n);
+                    });
+                }
+                if(_this.filter1 || _this.filter2 || _this.filter3 || _this.filter4 || _this.filter5 || _this.order != undefined)
+                    _this.renderFilter();
+                else
+                    _this.renderMenu();
+            }, params);
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <div id="add_form">
+        </div> 
+        <form onsubmit="return false;">
+            <table class="tlist thead" style="margin-top:20px;">
+                <thead class="full">
+                    <tr>
+                        <th><h1>{{info.head}}</h1></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead> 
+                <tbody id="tmenu">
+                </tbody>
+            </table>
+        </form>
+        <div class="pmenu"></div>
+        <form onsubmit="return false;">
+            <table class="tlist">
+                <thead id="thdr">
+                </thead>
+                <tbody id="result">
+                </tbody>
+            </table>
+        </form>
+        <div class="pmenu"></div>
+        <div style="clear:both;"></div>
+    </div>
+</div>

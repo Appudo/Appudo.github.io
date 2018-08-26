@@ -1,0 +1,124 @@
+{
+  "warnings": [
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocket.swift",
+      "line": 41,
+      "symbol": "ws.WSConFlags.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 19,
+      "symbol": "WebSocketEventType.TEXT_MESSAGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 20,
+      "symbol": "WebSocketEventType.BYTE_MESSAGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 21,
+      "symbol": "WebSocketEventType.CONTROL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 22,
+      "symbol": "WebSocketEventType.START",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 23,
+      "symbol": "WebSocketEventType.CONNECT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 24,
+      "symbol": "WebSocketEventType.DISCONNECT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 25,
+      "symbol": "WebSocketEventType.ERROR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 26,
+      "symbol": "WebSocketEventType.COMPLETE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 33,
+      "symbol": "WebSocketEvent.init(id:data:target:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 54,
+      "symbol": "WebSocketEvent.dataModeOn",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 58,
+      "symbol": "WebSocketEvent.dataModeOff",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 79,
+      "symbol": "WebSocketEvent.set(sdata:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 99,
+      "symbol": "WebSocketEvent.mask",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 108,
+      "symbol": "WebSocketEvent.set(mask:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 112,
+      "symbol": "WebSocketEvent._monitor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket/Sources/websocket/appudo/WebSocketEvent.swift",
+      "line": 121,
+      "symbol": "WebSocketEvent.set(_monitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/websocket"
+}

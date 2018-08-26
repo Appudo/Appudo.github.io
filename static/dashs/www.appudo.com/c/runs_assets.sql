@@ -1,0 +1,14 @@
+0	2	2	\N	\N	\N	templates_doc	tmpl_www	\N	f
+0	3	2	\N	\N	\N	templates_www	tmpl_base	\N	f
+0	4	3	\N	\N	\N	templates_store	tmpl_store	\N	f
+0	5	3	\N	\N	\N	templates_www	tmpl_www	\N	f
+0	6	5	\N	\N	\N	templates_www	tmpl_www	\N	f
+0	7	9	\N	\N	\N	templates_www	tmpl_www	\N	f
+9	1	2	\N	1	\N	spf	\N	\N	f
+9	2	3	\N	1	\N	spf	\N	\N	f
+9	3	7	\N	0	\N	msg	\N	\N	f
+9	4	7	\N	0	\N	hash	\N	\N	f
+9	5	7	\N	0	\N	mail	\N	\N	f
+9	6	7	\N	0	\N	comment	\N	\N	f
+9	7	8	\N	1	\N	v	\N	\N	f
+9	8	8	\N	1	\N	t	\N	\N	f

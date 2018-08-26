@@ -1,0 +1,102 @@
+<style>
+    .box1 {
+        padding-bottom:0;
+    }
+</style>
+<script id="misc">
+    return {
+        nosel:true,
+        rstFrm : function(frm) {
+            frm[0].reset();
+        },
+        validateFrm : function(frm) {
+            var _this = this;
+            var data = frm.serializeJSON();
+            _this.doSubmit.call(_this, data);
+        },	
+        finSubmit : function() {
+		    this.rstFrm($('#DmnAddFrm'));
+        },
+        doRegister : function(did, an, dn, after) {
+            getNodeByDashID(did, function(node) {
+                 postCredsCross({id:node.id}, userBase('/server/', node.name), {data:'{"cmd":9,"data":' + JSON.stringify(JSON.stringify({an:an,dn:dn,sn:''})) + '}'}, function(data) {
+                    if(data.r == 0 || data.r == 270532633) { /* ok or not exist */
+                        after();
+                    } else {
+                        modalError(info.afail);
+                    }
+                 });
+            });
+        },
+        doSubmit : function(fdt) {
+            var _this = this;
+            var info = this.i18n.info;
+            fdt.td = parseInt(fdt.td);
+            postCreds(userBase('/admin/'), {data:JSON.stringify({cmd:20,data:JSON.stringify(fdt)})}, function(data) {
+                if(data.r != 0) {
+                    modalError(info.afail);
+                } else {
+                    _this.doRegister(fdt.td, data.dn, fdt.dn, function() {
+                        _this.finSubmit();
+                        if(_this.onAdd) {
+                            _this.onAdd(fdt, data);
+                        }
+                    });
+                }
+            });
+            
+        },
+        hide : function() {
+            this.onUnload(true);
+        },
+        run : function() {
+            var _this = this; 
+            var frm = $('#DmnAddFrm');
+            
+            $('#abrt').click(function(){_this.hide.call(_this);});
+            
+            handleError(frm, function() {
+                _this.validateFrm.call(_this, frm);
+            }, '');   
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="add_form">
+    <div id="dashSearch" class="searchContent">
+        <form onsubmit="return false;" class="frm">
+            <div>
+                <input type="text" placeholder="{{frm.dsrh}}" id="dashInput" class="search">
+                <button type="submit" id="dashSBtn">{{frm.srh}}</button>
+            </div>
+        </form>
+        <a href="#about">About</a><a href="#base">Base</a>
+        <a href="#blog">Blog</a><a href="#contact">Contact</a>
+        <a href="#custom">Custom</a><a href="#support">Support</a>
+        <a href="#tools">Tools</a>
+    </div>
+    <div class="htop"><h1>{{dmn.head}}</h1></div>
+    <div class="frmBox">
+        <form id="DmnAddFrm" class="frm min">
+            <div class="box1">  
+                <div class="searchFrame" style="float:right;">
+                    <button id="dashBtn" class="searchBtn" type="button">▼</button>
+                </div> 
+                <label style="clear:none;" for="td">{{frm.td}}*:</label><input type="text" id="td" name="td" style="width:16em;" pattern="[+-]?[0-9]{1,10}" required="">
+                <label for="dn">{{frm.dn}}*:</label><input type="text" id="dn" name="dn" pattern="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$" required>
+                <div style="clear:both;"></div>
+                <label for="ds">{{frm.ds}}:</label>
+                <div style="clear:both;"></div>
+                <div style="margin:0 10px 0 10px;"><textarea id="ds" name="ds"></textarea></div>
+                <div>
+                    <input type="submit" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.sub}}">
+                    <input type="button" id="abrt" style="float:right;margin-top:10px;margin-right:10px" value="{{frm.cls}}">
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </form>
+    </div>
+</div>

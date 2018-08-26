@@ -1,0 +1,162 @@
+<style>
+    #menu, #content {
+        margin-top:0;
+        padding-bottom:30px;
+        padding-top:30px;
+    }
+    
+    .in_login #menu {
+        position: fixed; 
+    }
+    
+    .small_m #menu {
+        position: static;
+    }
+    
+    #menu { 
+        padding-right:15px;
+        width:375px;
+        float:left;
+        background:#fff !important;
+        min-height:calc(100vh - 60px);
+        border-right:1px solid #c7c7c7; 
+    }
+    #content {
+        border-left:1px solid #c7c7c7; 
+        margin-left: 390px;
+        min-height:calc(100vh - 60px);
+    }
+    #main {
+        min-height:100%;
+        background:#fff !important;
+    }
+    html {
+        background:#fff;
+    }
+    #menu .sel a {
+        text-decoration:underline;
+    } 
+    #menu a:focus {
+        outline: 0;
+    }
+</style>
+<script id="misc">
+    return {
+        unload_menu:{"menu":""},
+        is_sticky:false,
+        sticky:null,
+        unload:function() {
+            $('html').removeClass('need_work');
+            $('html').removeClass('in_doc');
+        },
+        dep_unload : function() {
+            var pn = window.location.pathname;
+            var p = pn.split('/');
+            this.removeSel();
+            if(p[p.length - 1] != '') {
+                this.setSticky(false);
+                this.setSticky(true);
+            }
+            if(!this.is_sticky)
+                this.renderMenu(false);
+                
+            if(!pn.startsWith("/doc/")) {
+                $('#menu').empty();
+            }
+        },
+        findLI : function(item, menu) {
+            var res;
+            while(item[0] != menu[0]) {
+                if(item.is('li'))
+                    res = item;
+                item = item.parent();
+            }
+            return res;
+        },
+        renderMenu : function(v) {
+            var i18n = this.i18n.menu;
+            var data = '<a href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'setSticky\',[false]);">< ' + i18n.back  + '</a>';
+            $('#doc_menu').html(v ? data : '');
+            
+            var ldata = '';
+            if(hasLogin()) {
+                ldata = '<a class="spf-link" href="/">< ' + i18n.bmenu  + '</a>';
+            }
+            $('#doc_back').html(ldata);
+            
+            onResize();
+        },
+        removeSel() {
+            if(this.sticky) {
+                var s = this.sticky;
+                this.sticky.removeClass('sel');
+                this.sticky = null;
+                return s;
+            }
+            return null;
+        },
+        setSticky : function(v, pn) {
+            var _this = this;
+            var s = this.removeSel();
+            if(this.is_sticky == v)
+                return;
+            pn = pn || window.location.pathname;
+            var menu = $('.dMenu');
+            var item = menu.find('a[href^="' + pn + '"]');
+            if(item.length == 0)
+                return;
+            var li = this.findLI(item, menu);
+            if(!li)
+                return;
+            this.is_sticky = v;
+            menu.find('> ol > li').each(function(idx, n) {
+                if(v && n == li[0]) {
+                    var p = item.parent();
+                    p.addClass('sel');
+                    _this.sticky = p;
+                } else {
+                    $(n).css('position', v ? 'absolute' : 'static');
+                    $(n).css('left', v ? '-99999px' : '0');
+                }
+            });
+            this.renderMenu(v);
+            if(!this.is_sticky && s) {
+               scroll_to_y($('body'), this.findLI(s, menu));
+            }
+        },
+        run : function() {
+            $('html').addClass('need_work');
+            $('html').addClass('in_doc');
+            var _this = this;
+            var pn = window.location.pathname;
+            var p = pn.split('/');
+            if(p[p.length - 1] == '') {
+                clearModule('about');
+                requireModule('/doc/about', function() {
+                }, true);
+            } else {
+                this.setSticky(true);
+            }
+            var menu = $('.dMenu');
+            menu.css('display', 'block');
+            var items = menu.find('a');
+            items.each(function(idx, n) {
+                var i = $(n);
+                i.on('click', function() {
+                    _this.setSticky(true, i.attr('href'));
+                });
+            });
+            if(!this.is_sticky)
+                this.renderMenu(false);
+        }
+    }
+</script>
+<div id="i18nBase">doc</div>
+<div class="i18n style" id="menu">
+    <div class="ct doc dMenu" style="display:none;">
+        <div id="doc_back"></div>
+        <h1>{{toc.doc}}</h1>
+        <div id="doc_menu"></div>
+        ###CONTENT###
+    </div>
+</div>

@@ -1,0 +1,12 @@
+{
+  "warnings": [
+    {
+      "file": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/cronjob/Sources/cronjob/appudo/CronJobEvent.swift",
+      "line": 19,
+      "symbol": "CronJobEvent.init(data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/neon/qtworkspace/appudo_runtime/Release.x86_64/docs_tmp/cronjob"
+}

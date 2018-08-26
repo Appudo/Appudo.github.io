@@ -1,0 +1,293 @@
+<div class="style">
+    <style name="mstl">
+        #result span, #header span {
+            display: table-cell;
+            width:120px;
+            border-right:1px solid black;
+            border-top:1px solid black;
+            margin:0;
+            padding:5px;
+            word-break: break-all;
+            white-space: initial;
+            height:100%;
+        }
+
+        #header span {
+            font-weight:bold;
+            padding-bottom:5px;
+            border-top:1px solid black;
+            border-bottom:1px solid black;
+        }
+
+        #header, #result {
+            display:inline-block;
+            border-left:1px solid black;
+            white-space: nowrap;
+        }
+
+        #result {
+            border-bottom:1px solid black;
+        }
+        #result li {
+            list-style-type:none;
+            float:left;
+            clear:both;
+        }
+        #result div {
+            float:right;
+            display:inline-block;
+            width:0px;
+            height:100%;
+            line-height:100%;
+            padding-top:8px;
+            padding-left:5px;
+            margin-right:-5px;
+        }
+        #result a {
+            font-family: symbols;
+            text-decoration: none;
+            color:inherit;
+            margin-right:10px;
+        }
+
+        #result .circle {
+            display: inline-block;
+            border-radius: 50%;
+            width: 13px;
+            height: 14px;
+            background-color: #223560;
+            text-align:center;
+            color: #e2e2e2;
+            font-size: 10px;
+            line-height: 15px;
+            vertical-align: top;
+            font-family: sans, 'Open Sans';
+            font-weight: bold;
+        }
+        .tip {
+            position:relative;
+        }
+        .tip p {
+            pointer-events:none;
+            position:absolute;
+            display: inline-block;
+            z-index: 2;
+            white-space: nowrap;
+            background: #ccc;
+            padding: 8px;
+            transition: opacity 0.5s ease-out;
+            opacity: 0;
+            border:0;
+            color:#223560;
+            font-size:16px;
+            font-family:sans, 'Open Sans';
+            bottom:30px;
+            left:20px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .tip:hover p {
+            opacity: 1;
+        }
+    </style>
+</div>
+<script id="misc">
+    return {
+        hasAsk:false,
+        lbl_txt:'',
+        head_txt:'',
+        domains:[],
+        renderFull : function() {
+            var data = this.domains;
+            $('#result').text('');
+            for(var i = 0; i < data.length; i++) {
+                this.renderDash(data[i])
+            }
+        },
+        renderDash : function(item) {
+            var i18n = i18nCtx[this._module].rem;
+            $('#result').append('<li><span>' + item.aid + '</span><span>' + item.host + '</span><span>' + item.id + '</span><span>' + item.cid + '</span></li><div>' +
+                                '<a class="tip" href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'ask\',[\'' + item.id + '\',\'' + item.aid + '\',\'' + item.host  + '\']);">&#xF057<p>' + i18n.head + '</p></a>' +
+                                '<a class="circle tip" href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'askDash\',[\'' + item.aid + '\']);">D<p>' + i18n.dn + '</p></a>' +
+                                '<a class="circle tip" href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'askCert\',[\'' + item.cid + '\']);">C<p>' + i18n.cn + '</p></a>' +
+                                '<a class="circle tip" href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'askPwd\',[\'' + item.aid + '\']);">P<p>' + i18n.pwd + '</p></a>' +
+                                '<a class="circle tip" href="javascript:mCall(' + '\'' + this._module + '\'' + ',\'askEdit\',[\'' + item.aid + '\']);">E<p>' + i18n.ed + '</p></a>' +
+                                '</div>');
+        },
+        listDomains : function() {
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:'{"cmd":1}'}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(!data) {
+                    return;
+                }
+                _this.domains = data;
+                _this.renderFull();
+            });
+        },
+        doRemove : function(id, aid, host) {
+            var _this = this;
+            showLoad();
+            var data = {an:aid,dn:host}
+            $.post( '/server/', {data:JSON.stringify({cmd:13,data:JSON.stringify(data)})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(!data) {
+                    return;
+                }
+                if(data.r == 0) {
+                    _this.domains = _this.domains.filter(function(obj) {
+                        return obj.id != id;
+                    });
+                    _this.renderFull();
+                    _this.hideAsk();
+                } else {
+                    // TODO error
+                    alert('error');
+                }
+            });
+        },
+        askDash : function(id) {
+            var i18n = i18nCtx[this._module].rem;
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:JSON.stringify({cmd:17,data:id})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(data.r == 0)
+                    _this._ask('', i18n.dn + ' DashID: ' + id, data.d, function(){_this.hideAsk.call(_this);}, true);
+            });
+        },
+        askPwd : function(id) {
+            console.log(id)
+            var i18n = i18nCtx[this._module].rem;
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:JSON.stringify({cmd:19,data:id})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(data.r == 0) {
+                    var frma = $('#frma');
+                    $('#frma').attr('style','width:100%;margin-top:10px;');
+                    frma.html('<input style="width:100%;" id="pwd" name="pwd" type="password" required>');
+                    _this._ask('', i18n.pwd + ' DashID: ' + id, i18n.pwf + ' "' + data.d.n + '" :', function(){
+                        showLoad();
+                        var v = $('#pwd').val();
+                        $.post( '/server/', {data:JSON.stringify({cmd:21,data:'{"id":'+id+',"pwd":' + JSON.stringify(v) + '}'})}, function(res) {
+                            hideLoad();
+                            data = validateRes(res);
+                            if(data.r == 0) {
+                                _this.hideAsk.call(_this);
+                            } else {
+                                // TODO error
+                            }
+                        });
+                    });
+                }
+            });
+        },
+        askEdit : function(id) {
+            var i18n = i18nCtx[this._module].rem;
+            var _this = this;
+            var frma = $('#frma');
+            frma.html('<input style="vertical-align:bottom;" id="ed" name="ed" type="checkbox">');
+            _this._ask('', i18n.ed + ' DashID: ' + id, i18n.edl, function(){
+                showLoad();
+                var v = $('#ed').is(':checked');
+                $.post( '/server/', {data:JSON.stringify({cmd:20,data:'{"id":'+id+',"ed":' + v + '}'})}, function(res) {
+                    hideLoad();
+                    data = validateRes(res);
+                    if(data.r == 0) {
+                        _this.hideAsk.call(_this);
+                    } else {
+                        // TODO error
+                    }
+                });
+            });
+        },
+        askCert : function(id) {
+            var i18n = i18nCtx[this._module].rem;
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:JSON.stringify({cmd:18,data:id})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(data.r == 0)
+                    _this._ask('', i18n.cn + ' CertID: ' + id, data.d, function(){_this.hideAsk.call(_this);}, true);
+            });
+        },
+        _ask : function(lbl, head, txt, f, noc) {
+            var _this = this;
+            var rem = $('#theRemove');
+            var val = $('#dval');
+            var tlbl = $('#dlbl');
+            var rej = $('#rej');
+            var dhead = $('#dhead');
+            var ok = $('#ok');
+            rej.css('display', 'inline-block');
+            if(noc) {
+                rej.css('display', 'none');
+            }
+            rem.css('display', '');
+            dhead.text(head);
+            tlbl.text(lbl);
+            val.text(txt);
+            disableMain();
+            ok.unbind('click');
+            ok.click(f);
+            this.hasAsk = true;
+            rem.focus();
+        },
+        ask : function(id, aid, host) {
+            var _this = this;
+            this._ask(this.lbl_txt, this.head_txt, host, function(){_this.doRemove.call(_this, id, aid, host);});
+        },
+        hideAsk : function() {
+            if(this.hasAsk) {
+                $('#frma').html('');
+                $('#frma').attr('style','display:inline-block;');
+                $('#theRemove').css('display', 'none');
+                this.hasAsk = false;
+                enableMain();
+            }
+        },
+        run : function() {
+            var _this = this;
+            this.lbl_txt = $('#dlbl').text();
+            this.head_txt = $('#dhead').text();
+            this.listDomains();
+            $('#rej').click(function(){_this.hideAsk.call(_this);});
+        }
+    }
+</script>
+<div class="i18n" id="other">
+    <div id="theRemove" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="disableModal" aria-hidden="true">
+        <div class="dlg">
+            <div class="ltop">
+                <span id="dhead">{{rem.rly}}</span>
+            </div>
+            <div style="margin-top:20px;">
+                <label id="dlbl" style="margin-right:5px;">{{rem.dsh}}</label><span id="dval"></span>
+                <div id="frma" style="display:inline-block;"></div>
+            </div>
+            <div class="frm btn">
+                <button type="button" name="ok" id="ok">{{rem.sub}}</button>
+                <span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="rej" id="rej">{{rem.rej}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="i18n" id="content">
+    <h3>{{rem.head}}</h3>
+    <pre>{{rem.txt}}</pre>
+    <div id="header"><span>DashID</span><span>Domain</span><span>DomainID</span><span>CertID</span></div>
+    <div>
+        <ul id="result">
+
+        </ul>
+    </div>
+</div>

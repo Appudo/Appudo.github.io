@@ -1,0 +1,283 @@
+ <!-- ###MAIN### START -->
+<!DOCTYPE html>
+    <!-- ###STYLE### START -->
+    <!-- ###STYLE### END -->
+    <style>
+        .inputT {
+            width:200px;
+        }
+        button{
+            width:120px;
+        }
+        p{
+            margin:0px;
+            font-size:0.8em;
+        }
+        .data{
+            width:400px;
+            height:100px; 
+            overflow-y: scroll;
+            border-width: 1px;
+            border-style: solid;
+            border-color: grey;
+            padding: 4px;
+            margin-bottom:20px;
+        }
+        .users{
+            width:110px;
+            height:270px; 
+            overflow-y: scroll;
+            border-width: 1px;
+            border-style: solid;
+            border-color: grey;
+            padding: 4px;
+        }
+        .field {
+            display:inline-block;
+            width: 80px;
+        }
+        .right {
+            float:right;
+            width: 70px;
+        }
+        
+        #theURI {
+            width:300px;
+        }
+    </style>
+    <script>
+    
+    var theURI;
+    var isSSL;
+    var theData;
+    var theName;
+    var theUsers;
+    var users = {}
+    function Init()
+    {
+        if(window.MozWebSocket)
+        {
+            window.WebSocket = window.MozWebSocket;
+        }
+        
+        var withSSL = window.location.protocol == "https:";
+        
+        isSSL = document.getElementById("isSSL");
+        isSSL.checked = withSSL;
+        isSSL.onclick = setSSL;
+        
+        theURI = document.getElementById("theURI");
+        
+        connectButton = document.getElementById("connect");
+        connectButton.onclick = doConnect;
+        
+        discButton = document.getElementById("disc");
+        discButton.onclick = doDisconnect;
+        
+        sendButton = document.getElementById("send");
+        sendButton.onclick = doSend;
+    
+        theData = document.getElementById("theData");
+        theName = document.getElementById("theName");
+        theUsers = document.getElementById("theUsers");
+    
+        clearButton = document.getElementById("clear");
+        clearButton.onclick = clearData;
+    
+        toggleState(false);
+        setSSL();
+        
+        theName.value = "MyName" + Math.floor((Math.random() * 10000) + 1);
+        
+        document.complete = true;
+    }
+    
+    function fixURI(uri)
+    {
+        return uri;
+    }
+
+    function setSSL()
+    {
+        var port = (window.location.port.toString() === "" ? "" : ":" + window.location.port)
+        if(theURI.value === "") {
+            var withSSL = window.location.protocol == "https:";
+            theURI.value = (withSSL ? "wss://" : "ws://") + window.location.hostname + port + '###WSCHAT_SERVER###';
+        }
+        
+        theURI.value = isSSL.checked ? theURI.value.replace("ws:", "wss:") :
+                                       theURI.value.replace("wss:", "ws:");
+    }
+  
+    function doConnect()
+    {
+        toggleState(true);
+        websocket = new WebSocket(fixURI(theURI.value) + '?' + theName.value);
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+    }
+  
+    function doSend()
+    {
+        writeData("OUT: " + theMessage.value);
+        websocket.send(theMessage.value);
+    }
+
+    function writeData(data)
+    {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = getSSL() + data;
+        theData.appendChild(pre);
+        
+        removeFront(60)
+    }
+    
+    function doDisconnect() 
+    {
+        websocket.close()
+    }
+    
+	function removeFront(len)
+	{
+        while(theData.childNodes.length > len)
+        {
+            theData.removeChild(theData.firstChild);
+        }
+        theData.scrollTop = theData.scrollHeight;
+	}
+	
+	function clearData()
+	{
+		while(theData.childNodes.length > 0)
+		{
+			theData.removeChild(theData.firstChild);
+		}
+	}
+  
+    function onOpen(evt)
+    {
+        writeData('CONNECTED');
+    }
+    
+    function onClose(evt)
+    {
+        writeData('DISCONNECTED');
+        theUsers.innerHTML = '';
+        users = {};
+        toggleState(false);
+    }
+    
+    function updateUsers() {
+        var users_view = [];
+        for(var n in users) { 
+            users_view.push(users[n]);
+        }
+        users_view.sort();
+        
+        theUsers.innerHTML = '';
+        for(var idx in users_view) {
+            var pre = document.createElement("p");
+            pre.style.wordWrap = "break-word";
+            pre.innerHTML = users_view[idx];
+            theUsers.appendChild(pre);
+        }
+    }
+    
+    
+    function onMessage(evt)
+    {
+        var d = evt.data;
+        if(d.charCodeAt(0) == 7) {
+            var c = d.split(",")
+            switch(d.charCodeAt(1)) {
+                case 97:   // add
+                    if(users[c[1]] === undefined) {
+                        writeData('<span style="color: green;">' + c[2] + ' entered the room.</span>')
+                    }
+                    users[c[1]] = c[2];
+                    updateUsers()
+                    break;
+                case 114:   // remove
+                    if(users[c[1]] !== undefined) {
+                        writeData('<span style="color: green;">' + users[c[1]] + ' left the room.</span>')
+                    }
+                    delete users[c[1]];
+                    updateUsers()
+                    break;
+                case 101:   // exists
+                    writeData('<span style="color: red;">' + theName.value + ' name already used.</span>')
+                    break;
+                case 102:   // full
+                    writeData('<span style="color: red;">room is full.</span>')
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            var cut = d.indexOf(",");
+            writeData('<span style="color: blue;">' + users[d.substring(0, cut)] + ': ' + d.substr(cut+1) + '</span>');
+        }
+    }
+
+    function onError(evt)
+    {
+        writeData('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+    }
+  
+    function toggleState(connected)
+    {
+        theURI.disabled = connected;
+        connectButton.disabled = connected;
+        discButton.disabled = !connected;
+        theMessage.disabled = !connected;
+        sendButton.disabled = !connected;
+        theName.disabled = connected;
+        isSSL.disabled = connected;
+    }
+	
+	
+	function getSSL()
+	{
+        return isSSL.checked ? '<span>&#9911;</span>' : ' ';
+	}
+    </script>
+    </head>
+    <body onLoad="Init();">
+        <div style="display:inline-block;width:500px">
+            <div class="right">
+                <div><label>Users:</label></div>
+                <div id="theUsers" class="users txtArea"></div>
+            </div>
+            <div>
+                <div>
+                    <label class="field">URI: </label><input type="text" id="theURI" size="32"/> 
+                    <br>
+                    <label class="field">Secure: </label><input type="checkbox" id="isSSL"/>
+                </div>
+                <br/>
+                <div id="theData" class="data txtArea"></div>
+                <div>
+                    <label class="field">Name:    </label><input type="text" id="theName" class="inputT" value="MyName"/>
+                    <div style="vertical-align:top;display:inline-block;">
+                        <button type="button" id="connect">Connect</button> 
+                        <br/>
+                        <button style="margin-top:5px;" type="button" id="disc">Disconnect</button>
+                    </div>
+                </div>
+                <br/>
+                <div>
+                    <label class="field">Message: </label><input type="text" id="theMessage" class="inputT" value="This is a test!"/>
+                    <div style="vertical-align:top;display:inline-block;">
+                        <button type="button" id="send">Send</button> 
+                        <br/>
+                        <button style="margin-top:5px;" type="button" id="clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<!-- ###MAIN### END -->

@@ -1,0 +1,51 @@
+{
+    "{{toc.about}}":"/doc/about",
+    "{{toc.intro}}":{
+        "{{toc.inst}}":"/doc/node_install",
+        "{{toc.ndash}}":"/doc/node_dash",
+        "{{toc.hub}}":"/doc/hub",
+        "{{toc.edit}}":"/doc/edit",
+        "{{toc.steps}}":"/doc/first_steps"
+    },
+    "{{toc.exmpl}}":{
+        "{{toc.exmpl_appudo}}":"/doc/examples_appudo",
+        "{{toc.exmpl_blog}}":"/doc/examples_blog",
+        "{{toc.exmpl_stream}}":"/doc/examples_stream",
+        "{{toc.exmpl_file}}":"/doc/examples_file"
+    },
+    "{{toc.apis}}":{
+        "{{toc.api_pdf}}":"/doc/api_pdf",
+        "{{toc.api_mail}}":"/doc/api_mail",
+        "{{toc.api_http}}":"/doc/api_http"
+    },
+    "{{toc.async}}":"/doc/async",
+    "{{toc.zones}}":"/doc/zones",
+    "{{toc.run}}":{
+        "{{toc.run_msg}}":"/doc/run_msg"
+    },
+    "{{toc.ws}}":{
+        "{{toc.ws_data}}":"/doc/ws_data",
+        "{{toc.ws_intercon}}":"/doc/ws_intercon",
+        "{{toc.ws_bc}}":"/doc/ws_bc"
+    },
+    "{{toc.page}}":{
+        "{{toc.page_tmpl}}":"/doc/page_tmpl",
+        "{{toc.page_skin}}":"/doc/page_skin",
+        "{{toc.nodmn}}":"/doc/nodomain",
+        "{{toc.esp}}":"/doc/entry_spaces",
+        "{{toc.statf}}":"/doc/static_files"
+    },
+    "{{toc.uperm}}":{
+        
+    },
+    "{{toc.datab}}":{
+        
+    },
+    "{{toc.proc_watch}}":{
+        "{{toc.proc_stats}}":"/doc/proc_stats",
+        "{{toc.proc_rotate}}":"/doc/proc_rotate"
+    },
+    "{{toc.bench}}":"/doc/benchmark",
+    "{{toc.faq}}":"/doc/faq",
+    "{{toc.open}}":"/doc/opensource"
+}

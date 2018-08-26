@@ -1,0 +1,123 @@
+<style>
+    body, #main {
+        background-color:#f2f2f2;
+    }
+    .lout {
+        float:right;
+        margin:3px 0 0;
+        margin-right: calc(100% - 100vw + 100px);
+    }
+    .ln {
+        display:inline-block;
+        margin: 5px 5px;
+        color: #fff;
+        background-color: #396dc5;
+        min-width: 5em;
+        padding: 0 5px 2px 5px;
+        border-radius:5px;
+    }
+    .lg {
+        display:inline-block;
+        height:35px;
+        background-size:147px;
+        background-position-y:7px;
+        margin-left:100px;
+    }
+    .einner {    
+        max-width:1920px;
+    }
+    #content {
+        margin: 1px 0 0 200px;
+    }
+    #content .linner {
+        padding:0 40px;
+        border: 1px solid #c7c7c7;
+        border-radius: 7px;
+        background-color:#fff;
+    }
+    #menu {
+        background-color:#f2f2f2;
+    }
+    #menu .minner {    
+        margin: 20px -20px 0 20px;
+    }
+    #main {
+        padding-top:40px;
+        min-height:calc(100vh - 40px);
+    }
+</style>
+<script id="misc">
+    return {
+        noI18nLoad:true,
+        preI18n : function(o) {
+            o.login = {m:mainCtx.linfo.m};
+            o.entry = i18nCtx['landing'].entry;
+            o.mnu = i18nCtx['landing'].mnu;
+        },
+        run : function() {
+            $('#lout').click(function() {
+                logout();
+            });
+            
+            clearMainMenu();
+            $('.minner .spf-link').each(function(idx, e) {
+                addMainMenu(e);
+            });
+            loadMainMenu();
+        }
+    }
+</script>
+<div class="i18n" id="header">
+    <div class="ohdr" style="min-height:40px;">
+        <div class="hdr flhdr" style="z-index:-1"></div>
+        <div class="einner">
+            <div class="logobg lg"></div>
+            <div class="frm lout">
+                <span class="ln">{{login.m}}</span><input id="lout" type="button" value="{{entry.out}}">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="i18n" id="menu">
+    <div class="minner mMenu">
+        <ol>
+            <li>
+                <ol>
+                    <li><a class="spf-link" href="/overview">{{mnu.ovw}}</a></li>
+                </ol>
+            </li>
+            <li>
+                <ol>
+                    <li><a class="spf-link" href="/user_person">{{mnu.pers}}</a></li>
+                    <li class="hide"><a class="spf-link" href="/user_pay">{{mnu.pay}}</a></li>
+                    <li class="hide"><a class="spf-link" href="/user_plans">{{mnu.plan}}</a></li>
+                    <li class="hide"><a class="spf-link" href="/user_bills">{{mnu.bill}}</a></li>
+                </ol>
+            </li>
+            <li>
+                <ol>
+                    <li><a class="spf-link" href="/dash_nodes">{{mnu.node}}</a></li>
+                    <li><a class="spf-link" href="/dashs">{{mnu.dash}}</a></li>
+                    <li><a class="spf-link" href="/dash_domains">{{mnu.dmn}}</a></li>
+                    <li><a class="spf-link" href="/dash_certs">{{mnu.crt}}</a></li>
+                    <li><a class="spf-link" href="/dash_mails">{{mnu.mail}}</a></li>
+                    <li class="hide"><a class="spf-link" href="/monitor">{{mnu.mtr}}</a></li>
+                </ol>
+            </li>
+            <li class="hide">
+                <ol>
+                    <li><a class="spf-link" href="/user_packages">{{mnu.pkg}}</a></li>
+                    <li><a class="spf-link" href="/package_upload">{{mnu.upl}}</a></li>
+                    <li><a class="spf-link" href="/package_presets">{{mnu.prst}}</a></li>
+                </ol>
+            </li>
+            <li class="master">
+                <ol>
+                    <li><a class="spf-link" href="/master_nodes">{{mnu.mnodes}}</a></li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="i18n style" id="footer">
+</div>

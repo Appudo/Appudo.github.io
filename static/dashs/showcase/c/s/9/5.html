@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="no-js ie ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+
+   <!--- Basic Page Needs
+   ================================================== -->
+   <meta charset="utf-8">
+	<title>Appudo Showcase</title>
+	<meta name="description" content="A playground with Appudo examples.">  
+	<meta name="author" content="www.appudo.com">
+
+   <!-- Mobile Specific Metas
+   ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+    ================================================== -->
+   <link rel="stylesheet" href="###$rdir###/css/default.css">
+   <link rel="stylesheet" href="###$rdir###/css/layout.css">
+   <link rel="stylesheet" href="###$rdir###/css/media-queries.css">
+   <link rel="stylesheet" href="###$rdir###/css/animate.css">
+   <link rel="stylesheet" href="###$rdir###/css/prettyPhoto.css">
+
+   <!-- Script
+   ================================================== -->
+	<script src="###$rdir###/js/modernizr.js"></script>
+
+   <!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="favicon.png" >
+	<style>
+	    #logOutHeader {
+	        background:none;
+	        z-index:9 !important;
+	    }
+	    
+	    #logOut {
+	        background:#fff;
+	        border-left: 1px solid #ddd;
+	        border-right: 1px solid #ddd;
+	        border-bottom: 1px solid #ddd;
+	        border-radius:4px;
+	        float:right;
+	        padding:5px;
+	        margin: 50px 50px 0 0;
+	        width:125px;
+	    }
+	    
+	    #logOut input {
+	        font: 14px/4px 'montserrat-bold', sans-serif;
+	        margin-bottom:0px;
+	    }
+	    .six p {
+	         text-align:justify; 
+	    }
+	</style>
+<script>
+    var frames = [];
+    var hasLogin = false;
+    
+    function register(e) {
+        frames.push(e)
+        registerLoad(e);
+    }
+    
+    function getDoc(frm) {
+        return frm.contentDocument || frm.contentWindow.document;
+    }
+    
+    function setSrc(item, path) {
+        var port = (window.location.port.toString() === "" ? "" : ":" + window.location.port)
+        item.src = "https://" + window.location.hostname + port + path;
+    }
+    
+    function getSSLUrl(path) {
+        var port = (window.location.port.toString() === "" ? "" : ":" + window.location.port)
+        return "https://" + window.location.hostname + port + path;
+    }
+    
+    function needLogout(v) {
+        $("#logOutHeader").css('display', v ? 'block' : 'none');
+        onNeedLogout(v)
+    }
+    
+    function doLogout() {
+        var xhr = new XMLHttpRequest();
+        var result;
+        xhr.open('POST', getSSLUrl('###PAGE_ADMIN_SERVER###'), true);
+        xhr.withCredentials = true;
+        xhr.onreadystatechange = function(e) {
+            if(this.readyState == 4 && this.status == 200) {
+                result = JSON.parse(this.responseText);
+            }
+        }
+        xhr.send('t=k');
+    }
+    
+    function Init() {
+        if(location.protocol !== 'https:') {
+		    window.location = location.href.replace('http:', 'https:')
+        }
+        var istream = $("#istream")[0];
+        istream.onload = function(e) {
+            var doc = istream.contentWindow.document;
+            doc.nostart = true;
+        }
+        istream.src='###PAGE_STREAM###';
+        
+        if(window.MozWebSocket)
+        {
+            window.WebSocket = window.MozWebSocket;
+        }
+        
+        var port = (window.location.port.toString() === "" ? "" : ":" + window.location.port)
+        var theURI = "wss://" + window.location.hostname + port + '###WSPUSH_SERVER###';
+
+        websocket = new WebSocket(fixURI(theURI));
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+        
+        $("#logoutButton").click(doLogout);
+        document.complete = true;
+    }   
+    
+    function doNeedLogout(frame, login) {
+        var doc = getDoc(frame);
+        if(!doc.complete) {
+            setTimeout(function() {
+                doNeedLogout(frame, login);
+            }, 100);
+        } else {
+            if(doc.onNeedLogout) {
+                doc.onNeedLogout(login);
+            }
+        }
+    }
+    
+    function onNeedLogout(login) {
+        hasLogin = login;
+        if(!document.complete) {
+            setTimeout(function() {
+                onNeedLogout(login);
+            }, 100);
+        } else {
+            for (f in frames) {
+                doNeedLogout(frames[f], login);
+            }
+        }
+    }
+    
+    function registerLoad(frame) {
+        var doc = getDoc(frame);
+        if(!doc.complete) {
+            setTimeout(function() {
+                registerLoad(frame);
+            }, 100);
+        } else {
+            frame.onload = function () {
+                doNeedLogout(this, hasLogin);
+            }
+        }
+    }
+    
+    function onLoginChange(login) {
+        hasLogin = login;
+        for (f in frames) {
+            var doc = getDoc(frames[f]);
+            if(doc.onLoginChange) {
+                doc.onLoginChange(login);
+            }
+        }
+    }
+    
+    function onUpdate(result) {
+        for (f in frames) {
+            var doc = getDoc(frames[f]);
+            if(doc.onUpdate) {
+                doc.onUpdate(result);
+            }
+        }
+    }
+    
+    function fixURI(uri)
+    {
+        return uri + (uri.indexOf("?") == -1 ? "?encoding=text" : "&encoding=text");
+    }
+    
+    function onOpen(evt)
+    {
+        //console.log('CONNECTED');
+    }
+    
+    function onClose(evt)
+    {
+        //console.log('DISCONNECTED');
+    }
+    
+    function onError(evt)
+    {
+        console.log('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+    }
+    
+    function onMessage(evt)
+    {
+        var d = evt.data;
+        if(d.charCodeAt(0) == 7) {
+            var c = d.substring(d.indexOf(',')+1)
+            switch(d.charCodeAt(1)) {
+                case 97:   // add
+                    result = JSON.parse(c);
+                    switch(result.t) {
+                        case 'login':
+                        case 'logout':
+                            onLoginChange(result.t == "login");
+                            break;
+                        default:
+                            onUpdate(result)
+                            break;
+                    }
+                    break;
+                case 114:   // remove
+                    break;
+                case 101:   // exists
+                    break;
+                case 102:   // full
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            var cut = d.indexOf(",");
+            console.log('<span style="color: blue;">' + users[d.substring(0, cut)] + ': ' + d.substr(cut+1) + '</span>');
+        }
+    }
+</script>
+</head>
+
+<body onLoad="Init();">
+
+   <div id="preloader">      
+      <div id="status">
+         <img src="###$rdir###/images/preloader.gif" height="64" width="64" alt="">
+      </div>
+   </div>
+
+   <!-- Header
+   ================================================== -->
+   <header style="z-index:90;">
+
+      <div class="logo" style="margin-top:8px;">
+         <a class="smoothscroll" href="#hero" style="color: #fff;font-size: 20px;font-weight:bold;">Appudo.</a>
+      </div>
+
+      <nav id="nav-wrap">         
+         
+         <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Show Menu</a>
+	      <a class="mobile-btn" href="#" title="Hide navigation">Hide Menu</a>         
+
+         <ul id="nav" class="nav"> 
+            <li><a class="smoothscroll" href="#info">Info</a></li>
+            <li><a class="smoothscroll" href="#admin">Admin</a></li>
+            <li><a class="smoothscroll" href="#blog">Blog</a></li>
+            <li><a class="smoothscroll" href="#chat">Chat</a></li>
+            <li><a class="smoothscroll" href="#download">Download</a></li>
+	        <li><a class="smoothscroll" href="#poll">Poll</a></li>
+            <li><a class="smoothscroll" href="#stream">Stream</a></li>
+           </ul> <!-- end #nav -->
+
+      </nav> <!-- end #nav-wrap -->
+
+      <ul class="header-social">
+         <li><a target="_blank" href="https://github.com/Appudo"><img style="margin-top:9px;max-width:35px;" src="###$rdir###/images/GitHub-Mark-Light-64px.png"/></a></li>
+      </ul>
+   </header> <!-- Header End -->
+      <header id="logOutHeader"><div id="logOut"><input type="button" id="logoutButton" value="Logout"></div></header>
+
+   <!-- Admin Section
+   ================================================== -->
+   <section id="admin">
+        <div class="row">
+            <div class="six" style="padding-top:50px;padding-right:100px;display:inline-block;">
+                <h3>User and Group based permissions.</h3>
+    
+                <p>The user management is based on the underlying operation system mechanisms.
+                   Each run is initally owned by and started with a user that can be changed with a login.
+                   The "page_admin_server" run makes use of this allowing to add and modify users.
+                   A user can be added to the custom "page_admin" group, being able to 
+                   manage restricted items of the page.
+                   As a member of the "files_restricted" goup a user is able to 
+                   access restricted files from the downloads.
+                   Permission checking on pages is only possible with a secure load.
+                   A login with a non secure page load will simply not work. 
+                </p>
+            </div>
+            <iframe onload="register(this)" src="###PAGE_ADMIN###" frameborder="0" align="center" style="align:center,overflow:hidden;min-height:460px;min-width:550px;"></iframe>
+        
+        </div>
+   </section> <!-- Admin Section End-->
+
+   <!-- Blog Section
+   ================================================== -->
+   <section id="blog">   
+   
+        <div class="row">
+            <iframe onload="register(this)" src="###PAGE_BLOG###" frameborder="0" align="center" style="align:center,overflow:hidden;min-height:470px;min-width:550px;"></iframe>
+ 
+            <div class="six" style="padding-top:50px;padding-left:100px;display:inline-block;">
+                <h3>Fast access with custom content caching.</h3>
+    
+                <p>Appudo not only supports the default http based caching mechanisms to optimize page speed.
+                   With the event based "onSetCache" and "onGetCache" functions, custom caching is just a matter of returing a file.
+                   The example blog uses pagination where each page is stored in the blog_cache directory.
+                   On initial startup of the run, the full cache is cleared and filled when a blog page is requested.</p>
+             </div>
+        </div>
+   </section> <!-- Blog end -->
+   
+   <!-- Chat
+   ================================================== -->
+   <section id="chat">
+      <div class="row">
+
+        <div class="six" style="padding-top:10px;padding-right:100px;max-width:580px;display:inline-block;">
+            <h3>One chat to reach them all.</h3>
+
+            <p>See how simple it is to create a communication platform with Appudo. 
+               This is just one example how to exchange messages between multiple endpoints. 
+               Take a look at the "websocket_chat" and "websocket_chat_server" runs with the editor.
+               This is also an example how skinning and inheritance of page runs can be used for 
+               different user experiences. The chat can be viewed as a standalone version with different styles. 
+               The embedded version uses the "websocket_chat_skin1" page run.</p>
+         </div>
+
+  
+            <div style="margin-top:-25px;width:600px;display:inline-block;" class="twelve flex-container">
+
+               <div class="flexslider">
+
+                  <ul class="slides">
+
+                     <li>     
+                        <iframe onload="register(this)" src="###PAGE_CHAT_SKIN###" frameborder="0" align="center" style="overflow:hidden;min-height:400px;min-width:620px;"></iframe>
+     
+                     </li> <!-- slide ends -->
+
+                     <li>     
+                        <iframe onload="register(this)" src="###PAGE_CHAT_SKIN###"  frameborder="0" align="center" style="overflow:hidden;min-height:400px;min-width:620px;"></iframe>
+     
+                     </li> <!-- slide ends -->
+
+                     <li>     
+                        <iframe onload="register(this)" src="###PAGE_CHAT_SKIN###"  frameborder="0" align="center" style="overflow:hidden;min-height:400px;min-width:620px;"></iframe>
+     
+                     </li> <!-- slide ends -->
+
+                     <li>     
+                        <iframe onload="register(this)" src="###PAGE_CHAT_SKIN###"  frameborder="0" align="center" style="overflow:hidden;min-height:400px;min-width:620px;"></iframe>
+     
+                     </li> <!-- slide ends -->
+
+                  </ul>
+
+               </div> <!-- div.flexslider ends -->
+
+            </div> <!-- div.flex-container ends -->
+    </div>
+   </section>  <!-- Chat Section End-->
+
+   <!-- Download
+   ================================================== -->
+   <section id="download">
+        <div class="row">
+            <iframe onload="register(this)" src="###PAGE_DOWNLOAD###" frameborder="0" align="center" style="align:center,overflow:hidden;min-height:420px;min-width:710px;"></iframe>
+        
+            <div class="six" style="padding-top:30px;max-width:480px;display:inline-block;">
+                <h3>File management with access rights.</h3>
+    
+                <p>With Appudo it is easy to create custom reusable resource views.
+                There are two custom groups "page_admin" and "files_restricted". 
+                Members of the admin group can add/remove/alter files and directories. 
+                Members of files_restricted can download restricted files while 
+                other users can only download public files.
+                As an admin member, login and drop local files to a directory to start an upload. 
+                Files are opened with a double click and can be drag moved to other directories.
+                Right clicking a file or directory opens a context menu. 
+                </p>
+             </div>
+        </div>
+   </section> <!-- Download End -->
+
+    <!-- Poll Section
+   ================================================== -->
+   <section id='poll'>   
+        <div class="row">
+             <div class="six" style="padding-right:100px;display:inline-block;">
+                <h3>Everyone loves cookies.</h3>
+    
+                <p>
+                    Here comes another example that shows how a simple voting system can be done with Appudo.
+                    Cookies are used to store a persistent state and prevent double voting. 
+                    It is also possible to work with the browser agent and remote address to do some more sophisticated user detection.
+                    But we leave the user tracking to the interested reader for now.
+                </p>
+             </div>
+            <iframe onload="register(this)" src="###PAGE_POLL###" frameborder="0" align="center" style="min-height:460px;min-width:550px;"></iframe>
+        
+        </div>  
+   </section> <!-- Poll end -->
+   
+   <!-- Stream
+   ================================================== -->
+   <section id="stream">
+      <div class="row">
+         <iframe onload="register(this)" id="istream" frameborder="0" align="center" style="align:center,overflow:hidden;min-height:400px;min-width:520px;"></iframe>
+        
+         <div class="six" style="padding-top:10px;padding-left:100px;display:inline-block;">
+            <h3>Custom Streaming solutions made easy.</h3>
+
+            <p>This example shows how to easily setup custom streaming soutions with Appudo. 
+               Just the page run "websocket_stream" and it's child wesocket listener run "websocket_stream_server" 
+               are necessary to make this work. Take a look at the editor to see how this can be 
+               done with only tiny code snippets. The video is loaded at a speed needed to 
+               watch it and jumping to different positions is possible without the need to reload already 
+               requested parts.
+            </p>
+         </div>
+      </div>
+      
+   </section>  <!-- Stream Section End-->
+
+   <!-- Info
+   ================================================== -->
+   <footer id="info">
+
+      <div class="row">         
+
+         <div class="six columns info">
+
+            <div class="footer-logo">
+               <a href="#" style="color: #fff;font-size: 30px;font-weight:bold;">Appudo.</a>
+            </div>
+
+            <p>This is a showcase featuring a small amount of what Appudo can offer. 
+               The focus is on the "page" and "websocket" runs which directly result in a browser based solution. 
+               Other runs like the machine to machine one are not shown here. 
+               For other APIs take a look at the unit tests.
+            </p>
+
+         </div>
+
+         <div class="six columns right-cols">
+
+            <div class="row" style="width:70%">
+
+               <div class="columns">
+                  <h3 class="address">Come Visit</h3>
+                  <ul>
+                    <li>
+                    <a target="_blank" href="https://github.com/Appudo">GitHub</a>
+                    </li>
+                    <li>
+                    <a target="_blank" href="../comm/e/index.html">EDIT</a>
+                    </li>
+                    <li>
+                    <a target="_blank" href="https://www.appudo.com/pub/docs_0.1.30/index.html">APIs</a>
+                    </li>
+                  </ul>
+               </div>
+
+               <div class="columns last">
+                  <h3 class="contact">Contact Us</h3>
+                  <ul>
+                    <li><a href="mailto:contact@appudo.com">contact@appudo.com</a></li>
+                  </ul>
+               </div>
+
+            </div> <!-- Nested Row End -->
+
+         </div>
+
+         <p class="copyright">&copy; 2017 Appduo | Design by <a title="Styleshout" href="http://www.styleshout.com/">Styleshout</a></p>
+
+         <div id="go-top">
+            <a class="smoothscroll" title="Back to Top" href="#admin"><i class="icon-up-open"></i></a>
+         </div>
+
+      </div> <!-- Row End -->
+
+   </footer> <!-- Info End-->
+
+
+   <!-- Java Script
+   ================================================== -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+   <script>window.jQuery || document.write('<script src="###$rdir###/js/jquery-1.10.2.min.js"><\/script>')</script>
+   <script type="text/javascript" src="###$rdir###/js/jquery-migrate-1.2.1.min.js"></script>
+
+   <script src="###$rdir###/js/jquery.flexslider.js"></script>
+   <script src="###$rdir###/js/waypoints.js"></script>
+   <script src="###$rdir###/js/jquery.fittext.js"></script>
+   <script src="###$rdir###/js/jquery.fitvids.js"></script>
+   <script src="###$rdir###/js/imagelightbox.js"></script>
+   <script src="###$rdir###/js/jquery.prettyPhoto.js"></script>   
+   <script src="###$rdir###/js/main.js"></script>
+</body>
+</html>

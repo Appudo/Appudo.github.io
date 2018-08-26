@@ -1,0 +1,173 @@
+{
+    history:{{[
+  {
+    "t": "templates_www/master_nodes",
+    "s": "templates_www_source/master_nodes.html"
+  },
+  {
+    "t": "templates_www/user_validate",
+    "s": "templates_www_source/user_validate.html"
+  },
+  {
+    "t": "templates_www/overview",
+    "s": "templates_www_source/overview.html"
+  },
+  {
+    "t": "templates_www/logout",
+    "s": "templates_www_source/logout.html"
+  },
+  {
+    "t": "templates_www/user_person",
+    "s": "templates_www_source/user_person.html"
+  },
+  {
+    "t": "templates_www/confirm",
+    "s": "templates_www_source/confirm.html"
+  },
+  {
+    "t": "templates_www/login",
+    "s": "templates_www_source/login.html"
+  },
+  {
+    "t": "templates_www/password_reset",
+    "s": "templates_www_source/password_reset.html"
+  },
+  {
+    "t": "templates_www/legal",
+    "s": "templates_www_source/legal.html"
+  },
+  {
+    "t": "templates_www/dashs",
+    "s": "templates_www_source/dashs.html"
+  },
+  {
+    "t": "templates_www/dash_nodes",
+    "s": "templates_www_source/dash_nodes.html"
+  },
+  {
+    "t": "templates_www/dash_mails",
+    "s": "templates_www_source/dash_mails.html"
+  },
+  {
+    "t": "templates_www/dash_domains",
+    "s": "templates_www_source/dash_domains.html"
+  },
+  {
+    "t": "templates_www/dash_certs",
+    "s": "templates_www_source/dash_certs.html"
+  },
+  {
+    "t": "templates_www/about",
+    "s": "templates_www_source/about.html"
+  },
+  {
+    "t": "templates_www/contact",
+    "s": "templates_www_source/contact.html"
+  }
+]}},
+    transform:function(intxt, inname, outname, result) {
+    
+        var cleanNode = function(n) {
+            var children = n.childNodes;
+            for(var i =0, l = children.length; i < l; i++) {
+                if(children[i] && 
+                   children[i].nodeType == 3 && 
+                   !/\S/.test(children[i].nodeValue)) {
+                    n.replaceChild(document.createTextNode(''), children[i]);
+                } else if(children[i]) {
+                    cleanNode(children[i]);
+                }
+            }
+        }
+        
+        var m = outname.split('/');
+        var p1 = '';
+        var p2 = '';
+        var i18n = [];
+        var stl = [];
+        var srefs = [];
+        m = m[m.length-1];
+        var node = dojo.create("div", {'style':'display:hidden;'});
+        var r = /###.*?###/gm;
+        var wait = [];
+        
+        var fixTxt = function(tin) {
+            var pos = 0;
+            var out = "";
+            if(wait.length == 0) {
+                return tin
+            }
+            for(var i = 0; i < wait.length; i++) {
+                var w = wait[i];
+                out += tin.slice(pos, w.index);
+                out += w.data;
+                pos = w.index + w.len + 6;
+            }
+            
+            out += tin.slice(pos);
+            return out;
+        }
+        
+        var dowait = function(idx, after) {
+            if(idx == wait.length) {
+                after();
+            } else {
+                wait[idx].w.then(function(data) {
+                    wait[idx].data = data;
+                    dowait(idx + 1, after);
+                });
+            }
+        }
+        
+        while((ma = r.exec(intxt)) != null) {
+            try {
+                var t = ma[0].slice(3, -3);
+                var d = JSON.parse(t);
+                wait.push({index:ma.index,len:t.length,w:appudo.postPlain('/edit/8/3/'+appudo.random(), 'f=' + d.file + '&i=0', function() {
+                })});
+            } catch(e) {
+            }
+        }
+        
+        dowait(0, function() {
+            intxt = fixTxt(intxt);
+            node.innerHTML = intxt;
+            dojo.forEach(node.children, function(n, idx){
+                if(n.tagName == 'STYLE') {
+                    stl.push(n);
+                    return;
+                }
+                if(dojo.hasClass(n, 'style')){
+                    srefs.push(n.id);
+                }
+                cleanNode(n);
+                var inner = n.innerHTML;
+                inner = appudo.jsonEscape(inner, 0, inner.length);
+                if(n.id == 'misc') {
+                    inner = '<script>moduleCtx[\'' + m + '\']=function(){' + inner + '}();</script>'
+                }
+                p2 += '"' + n.id + '":"' + inner + '",';
+                if(dojo.hasClass(n, 'i18n'))
+                    i18n.push(n.id);
+            });
+            node.remove();
+            p2 = p2.slice(0,-1);
+            p1 += '{';
+            if(stl.length != 0) {
+                p1 += '"foot":"<style name=\\\"stl_' + m + '\\\">'
+                dojo.forEach(stl, function(n, idx){
+                    cleanNode(n);
+                    var inner = n.innerHTML;
+                    inner = appudo.jsonEscape(inner, 0, inner.length);
+                    p1 += inner;
+                });
+                p1 += '</style>",';
+            }
+            p1 += '"body": {"minit":"<script>minit(\'' + m + '\',[\''+ i18n.join('\',\'') + '\'], {srefs:[\''+ srefs.join('\',\'') + '\'],sid:\'stl_' + m + '\'});</script>",';
+            p2 += '}}';
+            // TODO walk the top level items and create an spf template
+            // add hidden div, walk children, get ids, build the json, remove hidden div
+            result(p1 + p2);
+        });
+    }
+}

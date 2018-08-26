@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FileItem Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/FileItem" class="dashAnchor"></a>
+    <a title="FileItem Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        FileItem Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DataBlob.html">DataBlob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserAsync.html">UserAsync</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo17HTTPRequestStatusO">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:6Appudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SQLQryError.html">SQLQryError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;!(_:).html">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;?(_:_:).html">&lt;?(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions/&lt;?(_:_:).html">&lt;?(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:6Appudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/Blob.html">Blob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:6Appudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Account.html">Account</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Dir.html">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Domain.html">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MenuItem.html">MenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Page.html">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Role.html">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Setting.html">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:6Appudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserListItem.html">UserListItem</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:6Appudo10AsyncDelaya">AsyncDelay</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>FileItem</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FileItem</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/FileSeekable.html">FileSeekable</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/FileSendSource.html">FileSendSource</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>A single file or directory is modified with a FileItem.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4FlagV"></a>
+                    <a name="//apple_ref/swift/Struct/Flag" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4FlagV">Flag</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Flag contains the mode used to open a file or directory.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    open
+
+</div>
+
+                        <a href="../Structs/FileItem/Flag.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Flag</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV11RenameFlagsV"></a>
+                    <a name="//apple_ref/swift/Struct/RenameFlags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV11RenameFlagsV">RenameFlags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>RenameFlags contains the mode used to rename a file or directory.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    rename
+
+</div>
+
+                        <a href="../Structs/FileItem/RenameFlags.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">RenameFlags</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV11MKPathFlagsV"></a>
+                    <a name="//apple_ref/swift/Struct/MKPathFlags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV11MKPathFlagsV">MKPathFlags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>MKPathFlags contains the mode used to create a directory path.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    mkpath
+
+</div>
+
+                        <a href="../Structs/FileItem/MKPathFlags.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MKPathFlags</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4ModeV"></a>
+                    <a name="//apple_ref/swift/Struct/Mode" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4ModeV">Mode</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Mode contains the access rights of a file or directory for its user or group owner.</p>
+
+                        <a href="../Structs/FileItem/Mode.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Mode</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV10create_devAA10AsyncValueVyACSgGSi_SSAC4ModeVtFZ"></a>
+                    <a name="//apple_ref/swift/Method/create_dev(_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV10create_devAA10AsyncValueVyACSgGSi_SSAC4ModeVtFZ">create_dev(_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a run device file.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">create_dev</span><span class="p">(</span><span class="n">_</span> <span class="nv">treeId</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">name</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span> <span class="o">=</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="o">.</span><span class="kt">DEFAULT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">FileItem</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>treeId</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The tree id of the run.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name for the device file name.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The mode for the device file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6isRootSbv"></a>
+                    <a name="//apple_ref/swift/Property/isRoot" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6isRootSbv">isRoot</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the FileItem is a root directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isRoot</span> <span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6isOpenSbv"></a>
+                    <a name="//apple_ref/swift/Property/isOpen" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6isOpenSbv">isOpen</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the FileItem is an open file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isOpen</span> <span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4nameSSv"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4nameSSv">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the name of the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4pathSSv"></a>
+                    <a name="//apple_ref/swift/Property/path" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4pathSSv">path</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the full path of the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4statAA10AsyncValueVyAA0B4StatVSgGv"></a>
+                    <a name="//apple_ref/swift/Property/stat" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4statAA10AsyncValueVyAA0B4StatVSgGv">stat</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the FileStat holding information about the file or directory.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileStat
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">stat</span> <span class="p">:</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/FileStat.html">FileStat</a></span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV9stat_openAA10AsyncValueVyAA0B4StatVSgGv"></a>
+                    <a name="//apple_ref/swift/Property/stat_open" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV9stat_openAA10AsyncValueVyAA0B4StatVSgGv">stat_open</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the FileStat holding information about the open file or directory.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileStat
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">stat_open</span> <span class="p">:</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/FileStat.html">FileStat</a></span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4dataAA10AsyncValueVyAA4Blob_pSgGv"></a>
+                    <a name="//apple_ref/swift/Property/data" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4dataAA10AsyncValueVyAA4Blob_pSgGv">data</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the data of the file as FileBob.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileBob
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">data</span> <span class="p">:</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/Blob.html">Blob</a></span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV7getViewAA0bE0VSi_SitF"></a>
+                    <a name="//apple_ref/swift/Method/getView(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV7getViewAA0bE0VSi_SitF">getView(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a view of the file.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileView
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getView</span><span class="p">(</span><span class="n">_</span> <span class="nv">offset</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">size</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs.html#/s:6Appudo8FileViewV">FileView</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV7setModeAA10AsyncValueVySbGAC0E0V_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/setMode(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV7setModeAA10AsyncValueVySbGAC0E0V_SbtF">setMode(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the current access mode for the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setMode</span><span class="p">(</span><span class="n">_</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">nofollow</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new mode.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>nofollow</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>True to not follow symlinks.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA6UserIDV_AA05GroupI0VSbtF"></a>
+                    <a name="//apple_ref/swift/Method/setOwner(_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA6UserIDV_AA05GroupI0VSbtF">setOwner(_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the owning user and group for the file or directory.
+To change the owning user the current user must be either
+the owner of that user or a member of the master group.
+To change the owning group the current user must be a member of that group.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setOwner</span><span class="p">(</span><span class="n">_</span> <span class="nv">user</span> <span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">group</span> <span class="p">:</span> <span class="kt"><a href="../Structs/GroupID.html">GroupID</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">nofollow</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>user</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The user&rsquo;s id to set as the new owner.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>group</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The group&rsquo;s id to set as the new owner.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>nofollow</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>True to not follow symlinks.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA6UserIDVF"></a>
+                    <a name="//apple_ref/swift/Method/setOwner(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA6UserIDVF">setOwner(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the owning user for the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setOwner</span><span class="p">(</span><span class="n">_</span> <span class="nv">user</span> <span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>user</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The user&rsquo;s id to set as the new owner.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA7GroupIDVF"></a>
+                    <a name="//apple_ref/swift/Method/setOwner(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV8setOwnerAA10AsyncValueVySbGAA7GroupIDVF">setOwner(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the owning group for the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setOwner</span><span class="p">(</span><span class="n">_</span> <span class="nv">group</span> <span class="p">:</span> <span class="kt"><a href="../Structs/GroupID.html">GroupID</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>group</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The group&rsquo;s id to set as the new owner.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV7listDirAA10AsyncValueVyAA0bC4ListCSgGs5Int32VAC_ACtcSg_ALtF"></a>
+                    <a name="//apple_ref/swift/Method/listDir(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV7listDirAA10AsyncValueVyAA0bC4ListCSgGs5Int32VAC_ACtcSg_ALtF">listDir(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get a list for the contents of a directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">listDir</span><span class="p">(</span><span class="n">_</span> <span class="nv">order</span><span class="p">:(</span><span class="kt">Sorter</span><span class="p">?)</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">_</span> <span class="nv">chunkLimit</span><span class="p">:</span><span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt"><a href="../Classes/FileItemList.html">FileItemList</a></span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The sort function to order the list.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>chunkLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The chunk limit for the list.
+The list is created in chunks. Only the current chunk is held in memory and sorted.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV5closeyyF"></a>
+                    <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV5closeyyF">close()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Close the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV10AccessModeV"></a>
+                    <a name="//apple_ref/swift/Struct/AccessMode" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV10AccessModeV">AccessMode</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>AccessMode contains the access modes of a file or directory to use with access.</p>
+
+                        <a href="../Structs/FileItem/AccessMode.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AccessMode</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6accessAA10AsyncValueVySbGSS_AC10AccessModeV4modetF"></a>
+                    <a name="//apple_ref/swift/Method/access(_:mode:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6accessAA10AsyncValueVySbGSS_AC10AccessModeV4modetF">access(_:mode:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the file or directory exists and the current login user has ownership and rights for access.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">access</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">,</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/AccessMode.html">AccessMode</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">F_OK</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The access mode for the file or directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path of the file or directory to access.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4seekAA10AsyncValueVySiGSi_AA0B8SeekFlagVtF"></a>
+                    <a name="//apple_ref/swift/Method/seek(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4seekAA10AsyncValueVySiGSi_AA0B8SeekFlagVtF">seek(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set or get the current file position.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>FileSeekable</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">seek</span><span class="p">(</span><span class="n">_</span> <span class="nv">pos</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">flag</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileSeekFlag.html">FileSeekFlag</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncInt</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>pos</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new file position.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>flag</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The mode to access the file position.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4openAA10AsyncValueVySbGAC4FlagV_AC4ModeVtF"></a>
+                    <a name="//apple_ref/swift/Method/open(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4openAA10AsyncValueVySbGAC4FlagV_AC4ModeVtF">open(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Open the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">_</span> <span class="nv">flags</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Flag.html">Flag</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span> <span class="o">=</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="o">.</span><span class="kt">DEFAULT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>flags</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The flags used to open the file or directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The access mode to create a file or directory with.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4openAA10AsyncValueVyACSgGAA10StringData_p_AC4FlagVAC4ModeVSb9emptyPathtF"></a>
+                    <a name="//apple_ref/swift/Method/open(_:_:_:emptyPath:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4openAA10AsyncValueVyACSgGAA10StringData_p_AC4FlagVAC4ModeVSb9emptyPathtF">open(_:_:_:emptyPath:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Open a path relative to the directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">flags</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Flag.html">Flag</a></span> <span class="o">=</span> <span class="kt"><a href="../Structs/FileItem/Flag.html">Flag</a></span><span class="o">.</span><span class="kt">NONE</span><span class="p">,</span> <span class="n">_</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span> <span class="o">=</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="o">.</span><span class="kt">DEFAULT</span><span class="p">,</span> <span class="nv">emptyPath</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">FileItem</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to open. The path must not escape the root directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>flags</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The flags used to open the file or directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The access mode to create a file or directory with.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>emptyPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If for performance reasons set to true, the resulting FileItem has an empty path and can not be used as a base to other APIs.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6mkpathAA10AsyncValueVyACSgGAA10StringData_p_AC4ModeVAC11MKPathFlagsV5flagsSb9emptyPathtF"></a>
+                    <a name="//apple_ref/swift/Method/mkpath(_:_:flags:emptyPath:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6mkpathAA10AsyncValueVyACSgGAA10StringData_p_AC4ModeVAC11MKPathFlagsV5flagsSb9emptyPathtF">mkpath(_:_:flags:emptyPath:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create directories relative to the directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">mkpath</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">mode</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span> <span class="o">=</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span><span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="o">.</span><span class="kt">DEFAULT</span><span class="o">.</span><span class="n">rawValue</span> <span class="o">|</span> <span class="kt"><a href="../Structs/FileItem/Mode.html">Mode</a></span><span class="o">.</span><span class="kt">S_IXUSR</span><span class="o">.</span><span class="n">rawValue</span><span class="p">),</span> <span class="nv">flags</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/MKPathFlags.html">MKPathFlags</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">NONE</span><span class="p">,</span> <span class="nv">emptyPath</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">FileItem</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path for the new directories to create.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The access mode to create the directoies with.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>emptyPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If for performance reasons set to true, the resulting FileItem has an empty path and can not be used as a base to other APIs.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6renameAA10AsyncValueVySbGAA10StringData_p_ACSgAC11RenameFlagsV5flagstF"></a>
+                    <a name="//apple_ref/swift/Method/rename(_:_:flags:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6renameAA10AsyncValueVySbGAA10StringData_p_ACSgAC11RenameFlagsV5flagstF">rename(_:_:flags:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Rename the file or directory. The FileItem is updated with an empty path.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">rename</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">base</span><span class="p">:</span><span class="kt">FileItem</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">flags</span> <span class="p">:</span> <span class="kt"><a href="../Structs/FileItem/RenameFlags.html">RenameFlags</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">NONE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to rename to. The path must not escape the root or base directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>base</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The optional new base for the path to rename.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4linkAA10AsyncValueVySbGAA10StringData_p_ACSgSb4hardtF"></a>
+                    <a name="//apple_ref/swift/Method/link(_:_:hard:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4linkAA10AsyncValueVySbGAA10StringData_p_ACSgSb4hardtF">link(_:_:hard:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Link the file or directory to a new path.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">link</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">base</span><span class="p">:</span><span class="kt">FileItem</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">hard</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to link to. The path must not escape the root or base directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>base</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The optional new base for the path to link.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>hard</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The link type hard or sym link.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV9link_openAA10AsyncValueVySbGAA10StringData_p_ACSgSb4hardtF"></a>
+                    <a name="//apple_ref/swift/Method/link_open(_:_:hard:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV9link_openAA10AsyncValueVySbGAA10StringData_p_ACSgSb4hardtF">link_open(_:_:hard:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Link the file or directory to a new path.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">link_open</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">base</span><span class="p">:</span><span class="kt">FileItem</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">hard</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to link to. The path must not escape the root or base directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>base</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The optional new base for the path to link.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>hard</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The link type hard or sym link.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4copyAA10AsyncValueVySbGAA10StringData_p_ACSgtF"></a>
+                    <a name="//apple_ref/swift/Method/copy(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4copyAA10AsyncValueVySbGAA10StringData_p_ACSgtF">copy(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Copy the file to a new path.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">copy</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">,</span> <span class="n">_</span> <span class="nv">base</span><span class="p">:</span><span class="kt">FileItem</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The path to copy to. The path must not escape the root or base directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>base</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The optional new base for the path to copy.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6removeAA10AsyncValueVySbGAA10StringData_pSg_Sb5outertF"></a>
+                    <a name="//apple_ref/swift/Method/remove(_:outer:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6removeAA10AsyncValueVySbGAA10StringData_pSg_Sb5outertF">remove(_:outer:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove the file or directory.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">path</span> <span class="p">:</span> <span class="kt">StringData</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">outer</span><span class="p">:</span><span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>path</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The optional sub path of a directory. The path must not escape the root.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Set false to only remove the inner content of a directory.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV5writeAA10AsyncValueVySiGAA15DataWriteSource_p_S2itF"></a>
+                    <a name="//apple_ref/swift/Method/write(_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV5writeAA10AsyncValueVySiGAA15DataWriteSource_p_S2itF">write(_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Write data to the file.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>DataWriteSource</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">write</span><span class="p">(</span><span class="n">_</span> <span class="nv">source</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:6Appudo15DataWriteSourceP">DataWriteSource</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">outLimit</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="nv">outOffset</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncInt</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>source</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data source for the data to write.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The size limit of the data to write.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outOffset</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The offset in the file to write to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV6appendAA10AsyncValueVySbGAA15DataWriteSource_p_SitF"></a>
+                    <a name="//apple_ref/swift/Method/append(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV6appendAA10AsyncValueVySbGAA15DataWriteSource_p_SitF">append(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Append data to the file.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">append</span><span class="p">(</span><span class="n">_</span> <span class="nv">source</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:6Appudo15DataWriteSourceP">DataWriteSource</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">outLimit</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>source</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data source for the data to append.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>outLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The size limit of the data to append.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV4sendAA10AsyncValueVySiGAA0B8Seekable_p_S2itF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV4sendAA10AsyncValueVySiGAA0B8Seekable_p_S2itF">send(_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Zero copy data to a FileSeekable target.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>FileSeekable</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">target</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/FileSeekable.html">FileSeekable</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">in_limit</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="nv">in_offset</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncInt</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>target</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The FileSeekable to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>in</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>in</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV13truncate_openAA10AsyncValueVySbGSiF"></a>
+                    <a name="//apple_ref/swift/Method/truncate_open(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV13truncate_openAA10AsyncValueVySbGSiF">truncate_open(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Truncate the open file.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">truncate_open</span><span class="p">(</span><span class="n">_</span> <span class="nv">size</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>size</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new size for the file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV8truncateAA10AsyncValueVySbGSiF"></a>
+                    <a name="//apple_ref/swift/Method/truncate(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV8truncateAA10AsyncValueVySbGSiF">truncate(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Truncate the file.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">truncate</span><span class="p">(</span><span class="n">_</span> <span class="nv">size</span> <span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>size</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new size for the file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV10readAsTextAA10AsyncValueVySSSgGSi_SitF"></a>
+                    <a name="//apple_ref/swift/Method/readAsText(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV10readAsTextAA10AsyncValueVySSSgGSi_SitF">readAsText(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read the file as String.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">readAsText</span><span class="p">(</span> <span class="n">_</span> <span class="nv">sizeLimit</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="nv">offset</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">String</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sizeLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The size limit to read from file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>offset</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The offset to start from.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV11readAsArrayAA10AsyncValueVys010ContiguousF0Vys5UInt8VGSgGSi_SitF"></a>
+                    <a name="//apple_ref/swift/Method/readAsArray(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV11readAsArrayAA10AsyncValueVys010ContiguousF0Vys5UInt8VGSgGSi_SitF">readAsArray(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Read the file as ContiguousArray.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">mutating</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">readAsArray</span><span class="p">(</span><span class="n">_</span> <span class="nv">sizeLimit</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_</span> <span class="nv">offset</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncValue.html">AsyncValue</a></span><span class="o">&lt;</span><span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">UInt8</span><span class="o">&gt;</span><span class="p">?</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sizeLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The size limit to read from file.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>offset</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The offset to start from.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2017-08-08)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

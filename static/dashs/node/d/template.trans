@@ -1,0 +1,73 @@
+{
+    history:{{[
+  {
+    "t": "templates/dash_upload",
+    "s": "templates_source/dash_upload.html"
+  },
+  {
+    "t": "templates/dash_remove",
+    "s": "templates_source/dash_remove.html"
+  },
+  {
+    "t": "templates/disable",
+    "s": "templates_source/disable.html"
+  },
+  {
+    "t": "templates/status",
+    "s": "templates_source/status.html"
+  },
+  {
+    "t": "templates/ssl_refresh",
+    "s": "templates_source/ssl_refresh.html"
+  },
+  {
+    "t": "templates/domain_add",
+    "s": "templates_source/domain_add.html"
+  },
+  {
+    "t": "templates/domain_remove",
+    "s": "templates_source/domain_remove.html"
+  }
+]}},
+    transform:function(intxt, inname, outname, result) {
+        var m = outname.split('/');
+        var p1 = '';
+        var p2 = '';
+        var i18n = [];
+        var stl = [];
+        m = m[m.length-1];
+        var node = dojo.create("div", {'style':'display:hidden;'});
+        node.innerHTML = intxt;
+        dojo.forEach(node.children, function(n, idx){
+            if(dojo.hasClass(n, 'style')) {
+                stl.push(n);
+                return;
+            }
+            var inner = n.innerHTML;
+            inner = appudo.jsonEscape(inner, 0, inner.length);
+            if(n.id == 'misc') {
+                inner = '<script>moduleCtx[\'' + m + '\']=function(){' + inner + '}();</script>'
+            }
+            p2 += '"' + n.id + '":"' + inner + '",';
+            if(dojo.hasClass(n, 'i18n'))
+                i18n.push(n.id);
+        });
+        node.remove();
+        p2 = p2.slice(0,-1);
+        p1 += '{';
+        if(stl.length != 0) {
+            p1 += '"head":"'
+            dojo.forEach(stl, function(n, idx){
+                var inner = n.innerHTML;
+                inner = appudo.jsonEscape(inner, 0, inner.length);
+                p1 += inner;
+            });
+            p1 += '",';
+        }
+        p1 += '"body": {"minit":"<script>minit(\'' + m + '\',[\''+ i18n.join('\',\'') + '\'], []);</script>",';
+        p2 += '}}';
+        // TODO walk the top level items and create an spf template
+        // add hidden div, walk children, get ids, build the json, remove hidden div
+        result(p1 + p2);
+    }
+}

@@ -1,0 +1,3932 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": null,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/Interface_Private67.swift",
+      "line": 12,
+      "symbol": "PrivateInterface",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Account32.swift",
+      "line": 20,
+      "symbol": "AccountID.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Account32.swift",
+      "line": 41,
+      "symbol": "AccountInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Account32.swift",
+      "line": 194,
+      "symbol": "Account.info",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 26,
+      "symbol": "Async._error",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 58,
+      "symbol": "Async.errorMsg",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 64,
+      "symbol": "Async.isReady",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 70,
+      "symbol": "Async.hasError",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 76,
+      "symbol": "Async.cancel()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 80,
+      "symbol": "Async.waitFor()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 84,
+      "symbol": "Async.errorValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 104,
+      "symbol": "AsyncValue.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 109,
+      "symbol": "AsyncValue.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 196,
+      "symbol": "<!(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 200,
+      "symbol": "<!(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async52.swift",
+      "line": 204,
+      "symbol": "<!(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/AsyncDelay54.swift",
+      "line": 12,
+      "symbol": "AsyncDelayData",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 14,
+      "symbol": "AsyncInternal",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 21,
+      "symbol": "AsyncInternal_Used()",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 25,
+      "symbol": "AsyncOnSuccess",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 130,
+      "symbol": "AsyncFactory",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 148,
+      "symbol": "AsyncBase",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 164,
+      "symbol": "Async.releaseArgs()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 171,
+      "symbol": "Async.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 175,
+      "symbol": "Async.rawArgPad",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 179,
+      "symbol": "Async.resetError()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 182,
+      "symbol": "Async.internalInt",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 191,
+      "symbol": "Async.internalValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 200,
+      "symbol": "Async.unpack",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 204,
+      "symbol": "Async.to()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 209,
+      "symbol": "AsyncData",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 215,
+      "symbol": "AsyncInstance",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 232,
+      "symbol": "_AsyncClass",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 261,
+      "symbol": "_AsyncStruct",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 282,
+      "symbol": "_AsyncInt",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 302,
+      "symbol": "_AsyncBool",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 333,
+      "symbol": "AsyncRaw",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 362,
+      "symbol": "AsyncReverse",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 368,
+      "symbol": "Bool._toAsync()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 374,
+      "symbol": "Int._toAsync()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 379,
+      "symbol": "AsyncVoid",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 389,
+      "symbol": "Optional._toAsync()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 395,
+      "symbol": "Optional._toAsync()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 400,
+      "symbol": "AsyncArg",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 414,
+      "symbol": "AsyncValue.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 423,
+      "symbol": "AsyncValue.to()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 430,
+      "symbol": "AsyncValue.store(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 434,
+      "symbol": "AsyncValue.arg(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 438,
+      "symbol": "AsyncValue.arg(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 442,
+      "symbol": "AsyncValue.pack(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 448,
+      "symbol": "AsyncValue.unpack",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 455,
+      "symbol": "AsyncValue.toAsync()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 459,
+      "symbol": "AsyncValue.resetError()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 463,
+      "symbol": "AsyncValue.internalValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 480,
+      "symbol": "AsyncValue.internalInt",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 497,
+      "symbol": "AsyncValue.rawError",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 506,
+      "symbol": "AsyncValue.to()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Async_Private49.swift",
+      "line": 510,
+      "symbol": "AsyncValue.rawValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Blob63.swift",
+      "line": 51,
+      "symbol": "DataBlob.getData(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Date60.swift",
+      "line": 25,
+      "symbol": "Date.timeSince1970",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Date60.swift",
+      "line": 29,
+      "symbol": "Date.since1970",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Date60.swift",
+      "line": 64,
+      "symbol": "Date.toLocal",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Date60.swift",
+      "line": 72,
+      "symbol": "Date.to1970",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 17,
+      "symbol": "AppudoError.None",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 18,
+      "symbol": "AppudoError.Unknown",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 19,
+      "symbol": "AppudoError.PERM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 20,
+      "symbol": "AppudoError.NOENT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 21,
+      "symbol": "AppudoError.SRCH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 22,
+      "symbol": "AppudoError.INTR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 23,
+      "symbol": "AppudoError.IO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 24,
+      "symbol": "AppudoError.NXIO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 25,
+      "symbol": "AppudoError.TOOBIG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 26,
+      "symbol": "AppudoError.NOEXEC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 27,
+      "symbol": "AppudoError.BADF",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 28,
+      "symbol": "AppudoError.CHILD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 29,
+      "symbol": "AppudoError.AGAIN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 30,
+      "symbol": "AppudoError.NOMEM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 31,
+      "symbol": "AppudoError.ACCES",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 32,
+      "symbol": "AppudoError.FAULT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 33,
+      "symbol": "AppudoError.NOTBLK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 34,
+      "symbol": "AppudoError.BUSY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 35,
+      "symbol": "AppudoError.EXIST",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 36,
+      "symbol": "AppudoError.XDEV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 37,
+      "symbol": "AppudoError.NODEV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 38,
+      "symbol": "AppudoError.NOTDIR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 39,
+      "symbol": "AppudoError.ISDIR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 40,
+      "symbol": "AppudoError.INVAL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 41,
+      "symbol": "AppudoError.NFILE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 42,
+      "symbol": "AppudoError.MFILE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 43,
+      "symbol": "AppudoError.NOTTY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 44,
+      "symbol": "AppudoError.TXTBSY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 45,
+      "symbol": "AppudoError.FBIG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 46,
+      "symbol": "AppudoError.NOSPC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 47,
+      "symbol": "AppudoError.SPIPE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 48,
+      "symbol": "AppudoError.ROFS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 49,
+      "symbol": "AppudoError.MLINK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 50,
+      "symbol": "AppudoError.PIPE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 51,
+      "symbol": "AppudoError.DOM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 52,
+      "symbol": "AppudoError.RANGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 53,
+      "symbol": "AppudoError.DEADLK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 54,
+      "symbol": "AppudoError.NAMETOOLONG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 55,
+      "symbol": "AppudoError.NOLCK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 56,
+      "symbol": "AppudoError.NOSYS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 57,
+      "symbol": "AppudoError.NOTEMPTY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 58,
+      "symbol": "AppudoError.LOOP",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 59,
+      "symbol": "AppudoError.NOMSG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 60,
+      "symbol": "AppudoError.IDRM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 61,
+      "symbol": "AppudoError.CHRNG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 62,
+      "symbol": "AppudoError.L2NSYNC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 63,
+      "symbol": "AppudoError.L3HLT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 64,
+      "symbol": "AppudoError.L3RST",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 65,
+      "symbol": "AppudoError.LNRNG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 66,
+      "symbol": "AppudoError.UNATCH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 67,
+      "symbol": "AppudoError.NOCSI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 68,
+      "symbol": "AppudoError.L2HLT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 69,
+      "symbol": "AppudoError.BADE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 70,
+      "symbol": "AppudoError.BADR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 71,
+      "symbol": "AppudoError.XFULL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 72,
+      "symbol": "AppudoError.NOANO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 73,
+      "symbol": "AppudoError.BADRQC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 74,
+      "symbol": "AppudoError.BADSLT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 75,
+      "symbol": "AppudoError.BFONT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 76,
+      "symbol": "AppudoError.NOSTR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 77,
+      "symbol": "AppudoError.NODATA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 78,
+      "symbol": "AppudoError.TIME",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 79,
+      "symbol": "AppudoError.NOSR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 80,
+      "symbol": "AppudoError.NONET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 81,
+      "symbol": "AppudoError.NOPKG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 82,
+      "symbol": "AppudoError.REMOTE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 83,
+      "symbol": "AppudoError.NOLINK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 84,
+      "symbol": "AppudoError.ADV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 85,
+      "symbol": "AppudoError.SRMNT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 86,
+      "symbol": "AppudoError.COMM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 87,
+      "symbol": "AppudoError.PROTO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 88,
+      "symbol": "AppudoError.MULTIHOP",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 89,
+      "symbol": "AppudoError.DOTDOT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 90,
+      "symbol": "AppudoError.BADMSG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 91,
+      "symbol": "AppudoError.OVERFLOW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 92,
+      "symbol": "AppudoError.NOTUNIQ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 93,
+      "symbol": "AppudoError.BADFD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 94,
+      "symbol": "AppudoError.REMCHG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 95,
+      "symbol": "AppudoError.LIBACC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 96,
+      "symbol": "AppudoError.LIBBAD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 97,
+      "symbol": "AppudoError.LIBSCN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 98,
+      "symbol": "AppudoError.LIBMAX",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 99,
+      "symbol": "AppudoError.LIBEXEC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 100,
+      "symbol": "AppudoError.ILSEQ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 101,
+      "symbol": "AppudoError.RESTART",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 102,
+      "symbol": "AppudoError.STRPIPE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 103,
+      "symbol": "AppudoError.USERS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 104,
+      "symbol": "AppudoError.NOTSOCK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 105,
+      "symbol": "AppudoError.DESTADDRREQ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 106,
+      "symbol": "AppudoError.MSGSIZE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 107,
+      "symbol": "AppudoError.PROTOTYPE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 108,
+      "symbol": "AppudoError.NOPROTOOPT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 109,
+      "symbol": "AppudoError.PROTONOSUPPORT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 110,
+      "symbol": "AppudoError.SOCKTNOSUPPORT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 111,
+      "symbol": "AppudoError.OPNOTSUPP",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 112,
+      "symbol": "AppudoError.PFNOSUPPORT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 113,
+      "symbol": "AppudoError.AFNOSUPPORT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 114,
+      "symbol": "AppudoError.ADDRINUSE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 115,
+      "symbol": "AppudoError.ADDRNOTAVAIL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 116,
+      "symbol": "AppudoError.NETDOWN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 117,
+      "symbol": "AppudoError.NETUNREACH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 118,
+      "symbol": "AppudoError.NETRESET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 119,
+      "symbol": "AppudoError.CONNABORTED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 120,
+      "symbol": "AppudoError.CONNRESET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 121,
+      "symbol": "AppudoError.NOBUFS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 122,
+      "symbol": "AppudoError.ISCONN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 123,
+      "symbol": "AppudoError.NOTCONN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 124,
+      "symbol": "AppudoError.SHUTDOWN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 125,
+      "symbol": "AppudoError.TOOMANYREFS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 126,
+      "symbol": "AppudoError.TIMEDOUT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 127,
+      "symbol": "AppudoError.CONNREFUSED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 128,
+      "symbol": "AppudoError.HOSTDOWN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 129,
+      "symbol": "AppudoError.HOSTUNREACH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 130,
+      "symbol": "AppudoError.ALREADY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 131,
+      "symbol": "AppudoError.INPROGRESS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 132,
+      "symbol": "AppudoError.STALE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 133,
+      "symbol": "AppudoError.UCLEAN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 134,
+      "symbol": "AppudoError.NOTNAM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 135,
+      "symbol": "AppudoError.NAVAIL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 136,
+      "symbol": "AppudoError.ISNAM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 137,
+      "symbol": "AppudoError.REMOTEIO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 138,
+      "symbol": "AppudoError.DQUOT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 139,
+      "symbol": "AppudoError.NOMEDIUM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 140,
+      "symbol": "AppudoError.MEDIUMTYPE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 141,
+      "symbol": "AppudoError.CANCELED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 142,
+      "symbol": "AppudoError.NOKEY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 143,
+      "symbol": "AppudoError.KEYEXPIRED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 144,
+      "symbol": "AppudoError.KEYREVOKED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 145,
+      "symbol": "AppudoError.KEYREJECTED",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 146,
+      "symbol": "AppudoError.OWNERDEAD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 147,
+      "symbol": "AppudoError.NOTRECOVERABLE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 148,
+      "symbol": "AppudoError.RFKILL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Error37.swift",
+      "line": 149,
+      "symbol": "AppudoError.HWPOISON",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/ErrorEvent55.swift",
+      "line": 18,
+      "symbol": "ErrorEventType.PAGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/ErrorEvent55.swift",
+      "line": 19,
+      "symbol": "ErrorEventType.WEBSOCKET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/ErrorEvent55.swift",
+      "line": 26,
+      "symbol": "ErrorEvent.init(id:data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Event28.swift",
+      "line": 12,
+      "symbol": "Event",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 55,
+      "symbol": "FileLockable.fileFd",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 94,
+      "symbol": "FileSeekable.fileFd",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 110,
+      "symbol": "DataWriteSource.getData(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 117,
+      "symbol": "FileSendSource.fileFd",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 170,
+      "symbol": "FileItemList.nextList(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 310,
+      "symbol": "FileItem.Flag.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 333,
+      "symbol": "FileItem.RenameFlags.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 354,
+      "symbol": "FileItem.MKPathFlags.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 370,
+      "symbol": "FileItem.Mode.DEFAULT",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 373,
+      "symbol": "FileItem.Mode.S4000",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 376,
+      "symbol": "FileItem.Mode.S2000",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 379,
+      "symbol": "FileItem.Mode.U1000",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 382,
+      "symbol": "FileItem.Mode.U0400",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 385,
+      "symbol": "FileItem.Mode.U0200",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 388,
+      "symbol": "FileItem.Mode.U0100",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 391,
+      "symbol": "FileItem.Mode.U0700",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 394,
+      "symbol": "FileItem.Mode.G0040",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 397,
+      "symbol": "FileItem.Mode.G0020",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 400,
+      "symbol": "FileItem.Mode.G0010",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 403,
+      "symbol": "FileItem.Mode.G0070",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 406,
+      "symbol": "FileItem.Mode.O0004",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 409,
+      "symbol": "FileItem.Mode.O0002",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 412,
+      "symbol": "FileItem.Mode.O0001",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 415,
+      "symbol": "FileItem.Mode.O0007",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 417,
+      "symbol": "FileItem.Mode.A0777",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 419,
+      "symbol": "FileItem.Mode.U0300",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 420,
+      "symbol": "FileItem.Mode.U0500",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 421,
+      "symbol": "FileItem.Mode.U0600",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 423,
+      "symbol": "FileItem.Mode.G0030",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 424,
+      "symbol": "FileItem.Mode.G0050",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 425,
+      "symbol": "FileItem.Mode.G0060",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 427,
+      "symbol": "FileItem.Mode.O0003",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 428,
+      "symbol": "FileItem.Mode.O0005",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 429,
+      "symbol": "FileItem.Mode.O0006",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 431,
+      "symbol": "FileItem.Mode.has(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 462,
+      "symbol": "FileItem.fileFd",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 505,
+      "symbol": "FileItem.name_data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 595,
+      "symbol": "FileItem.setMode(rawValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem42.swift",
+      "line": 650,
+      "symbol": "FileItem.back()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem_Private53.swift",
+      "line": 23,
+      "symbol": "FileViewInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem_Private53.swift",
+      "line": 41,
+      "symbol": "DataView",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem_Private53.swift",
+      "line": 56,
+      "symbol": "_FilePath",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FileItem_Private53.swift",
+      "line": 69,
+      "symbol": "_UTF8SerialFileReader",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/FrameBufferData_Private43.swift",
+      "line": 12,
+      "symbol": "FrameBufferData",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Group66.swift",
+      "line": 28,
+      "symbol": "GroupID.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 18,
+      "symbol": "HTTPRequestStatus.S_None",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 19,
+      "symbol": "HTTPRequestStatus.S_404",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 20,
+      "symbol": "HTTPRequestStatus.S_500",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 21,
+      "symbol": "HTTPRequestStatus.S_200",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 22,
+      "symbol": "HTTPRequestStatus.S_303",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestStatus39.swift",
+      "line": 23,
+      "symbol": "HTTPRequestStatus.S_304",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestType35.swift",
+      "line": 18,
+      "symbol": "HTTPRequestType.GET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestType35.swift",
+      "line": 19,
+      "symbol": "HTTPRequestType.POST",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestType35.swift",
+      "line": 20,
+      "symbol": "HTTPRequestType.DELETE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/HTTPRequestType35.swift",
+      "line": 21,
+      "symbol": "HTTPRequestType.PUT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/InetAddr45.swift",
+      "line": 14,
+      "symbol": "InetAddrType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/InetAddr45.swift",
+      "line": 20,
+      "symbol": "InetAddr",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 18,
+      "symbol": "Lang.AA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 19,
+      "symbol": "Lang.AB",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 20,
+      "symbol": "Lang.AE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 21,
+      "symbol": "Lang.AF",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 22,
+      "symbol": "Lang.AK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 23,
+      "symbol": "Lang.AM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 24,
+      "symbol": "Lang.AN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 25,
+      "symbol": "Lang.AR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 26,
+      "symbol": "Lang.AS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 27,
+      "symbol": "Lang.AV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 28,
+      "symbol": "Lang.AY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 29,
+      "symbol": "Lang.AZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 30,
+      "symbol": "Lang.BA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 31,
+      "symbol": "Lang.BE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 32,
+      "symbol": "Lang.BG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 33,
+      "symbol": "Lang.BH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 34,
+      "symbol": "Lang.BI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 35,
+      "symbol": "Lang.BM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 36,
+      "symbol": "Lang.BN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 37,
+      "symbol": "Lang.BO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 38,
+      "symbol": "Lang.BR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 39,
+      "symbol": "Lang.BS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 40,
+      "symbol": "Lang.CA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 41,
+      "symbol": "Lang.CE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 42,
+      "symbol": "Lang.CH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 43,
+      "symbol": "Lang.CO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 44,
+      "symbol": "Lang.CR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 45,
+      "symbol": "Lang.CS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 46,
+      "symbol": "Lang.CU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 47,
+      "symbol": "Lang.CV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 48,
+      "symbol": "Lang.CY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 49,
+      "symbol": "Lang.DA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 50,
+      "symbol": "Lang.DE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 51,
+      "symbol": "Lang.DV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 52,
+      "symbol": "Lang.DZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 53,
+      "symbol": "Lang.EE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 54,
+      "symbol": "Lang.EL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 55,
+      "symbol": "Lang.EN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 56,
+      "symbol": "Lang.EO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 57,
+      "symbol": "Lang.ES",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 58,
+      "symbol": "Lang.ET",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 59,
+      "symbol": "Lang.EU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 60,
+      "symbol": "Lang.FA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 61,
+      "symbol": "Lang.FF",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 62,
+      "symbol": "Lang.FI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 63,
+      "symbol": "Lang.FJ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 64,
+      "symbol": "Lang.FO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 65,
+      "symbol": "Lang.FR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 66,
+      "symbol": "Lang.FY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 67,
+      "symbol": "Lang.GA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 68,
+      "symbol": "Lang.GD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 69,
+      "symbol": "Lang.GL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 70,
+      "symbol": "Lang.GN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 71,
+      "symbol": "Lang.GU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 72,
+      "symbol": "Lang.GV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 73,
+      "symbol": "Lang.HA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 74,
+      "symbol": "Lang.HE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 75,
+      "symbol": "Lang.HI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 76,
+      "symbol": "Lang.HO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 77,
+      "symbol": "Lang.HR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 78,
+      "symbol": "Lang.HT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 79,
+      "symbol": "Lang.HU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 80,
+      "symbol": "Lang.HY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 81,
+      "symbol": "Lang.HZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 82,
+      "symbol": "Lang.IA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 83,
+      "symbol": "Lang.ID",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 84,
+      "symbol": "Lang.IE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 85,
+      "symbol": "Lang.IG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 86,
+      "symbol": "Lang.II",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 87,
+      "symbol": "Lang.IK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 88,
+      "symbol": "Lang.IN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 89,
+      "symbol": "Lang.IO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 90,
+      "symbol": "Lang.IS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 91,
+      "symbol": "Lang.IT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 92,
+      "symbol": "Lang.IU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 93,
+      "symbol": "Lang.IW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 94,
+      "symbol": "Lang.JA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 95,
+      "symbol": "Lang.JI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 96,
+      "symbol": "Lang.JV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 97,
+      "symbol": "Lang.JW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 98,
+      "symbol": "Lang.KA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 99,
+      "symbol": "Lang.KG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 100,
+      "symbol": "Lang.KI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 101,
+      "symbol": "Lang.KJ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 102,
+      "symbol": "Lang.KK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 103,
+      "symbol": "Lang.KL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 104,
+      "symbol": "Lang.KM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 105,
+      "symbol": "Lang.KN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 106,
+      "symbol": "Lang.KO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 107,
+      "symbol": "Lang.KR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 108,
+      "symbol": "Lang.KS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 109,
+      "symbol": "Lang.KU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 110,
+      "symbol": "Lang.KV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 111,
+      "symbol": "Lang.KW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 112,
+      "symbol": "Lang.KY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 113,
+      "symbol": "Lang.LA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 114,
+      "symbol": "Lang.LB",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 115,
+      "symbol": "Lang.LG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 116,
+      "symbol": "Lang.LI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 117,
+      "symbol": "Lang.LN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 118,
+      "symbol": "Lang.LO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 119,
+      "symbol": "Lang.LT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 120,
+      "symbol": "Lang.LU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 121,
+      "symbol": "Lang.LV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 122,
+      "symbol": "Lang.MG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 123,
+      "symbol": "Lang.MH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 124,
+      "symbol": "Lang.MI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 125,
+      "symbol": "Lang.MK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 126,
+      "symbol": "Lang.ML",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 127,
+      "symbol": "Lang.MN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 128,
+      "symbol": "Lang.MO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 129,
+      "symbol": "Lang.MR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 130,
+      "symbol": "Lang.MS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 131,
+      "symbol": "Lang.MT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 132,
+      "symbol": "Lang.MY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 133,
+      "symbol": "Lang.NA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 134,
+      "symbol": "Lang.NB",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 135,
+      "symbol": "Lang.ND",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 136,
+      "symbol": "Lang.NE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 137,
+      "symbol": "Lang.NG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 138,
+      "symbol": "Lang.NL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 139,
+      "symbol": "Lang.NN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 140,
+      "symbol": "Lang.NO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 141,
+      "symbol": "Lang.NR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 142,
+      "symbol": "Lang.NV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 143,
+      "symbol": "Lang.NY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 144,
+      "symbol": "Lang.OC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 145,
+      "symbol": "Lang.OJ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 146,
+      "symbol": "Lang.OM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 147,
+      "symbol": "Lang.OR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 148,
+      "symbol": "Lang.OS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 149,
+      "symbol": "Lang.PA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 150,
+      "symbol": "Lang.PI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 151,
+      "symbol": "Lang.PL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 152,
+      "symbol": "Lang.PS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 153,
+      "symbol": "Lang.PT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 154,
+      "symbol": "Lang.QU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 155,
+      "symbol": "Lang.RM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 156,
+      "symbol": "Lang.RN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 157,
+      "symbol": "Lang.RO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 158,
+      "symbol": "Lang.RU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 159,
+      "symbol": "Lang.RW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 160,
+      "symbol": "Lang.SA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 161,
+      "symbol": "Lang.SC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 162,
+      "symbol": "Lang.SD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 163,
+      "symbol": "Lang.SE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 164,
+      "symbol": "Lang.SG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 165,
+      "symbol": "Lang.SH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 166,
+      "symbol": "Lang.SI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 167,
+      "symbol": "Lang.SK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 168,
+      "symbol": "Lang.SL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 169,
+      "symbol": "Lang.SM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 170,
+      "symbol": "Lang.SN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 171,
+      "symbol": "Lang.SO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 172,
+      "symbol": "Lang.SQ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 173,
+      "symbol": "Lang.SR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 174,
+      "symbol": "Lang.SS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 175,
+      "symbol": "Lang.ST",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 176,
+      "symbol": "Lang.SU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 177,
+      "symbol": "Lang.SV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 178,
+      "symbol": "Lang.SW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 179,
+      "symbol": "Lang.TA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 180,
+      "symbol": "Lang.TE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 181,
+      "symbol": "Lang.TG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 182,
+      "symbol": "Lang.TH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 183,
+      "symbol": "Lang.TI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 184,
+      "symbol": "Lang.TK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 185,
+      "symbol": "Lang.TL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 186,
+      "symbol": "Lang.TN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 187,
+      "symbol": "Lang.TO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 188,
+      "symbol": "Lang.TR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 189,
+      "symbol": "Lang.TS",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 190,
+      "symbol": "Lang.TT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 191,
+      "symbol": "Lang.TW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 192,
+      "symbol": "Lang.TY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 193,
+      "symbol": "Lang.UG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 194,
+      "symbol": "Lang.UK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 195,
+      "symbol": "Lang.UR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 196,
+      "symbol": "Lang.UZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 197,
+      "symbol": "Lang.VE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 198,
+      "symbol": "Lang.VI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 199,
+      "symbol": "Lang.VO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 200,
+      "symbol": "Lang.WA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 201,
+      "symbol": "Lang.WO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 202,
+      "symbol": "Lang.XH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 203,
+      "symbol": "Lang.YI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 204,
+      "symbol": "Lang.YO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 205,
+      "symbol": "Lang.ZA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 206,
+      "symbol": "Lang.ZH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 207,
+      "symbol": "Lang.ZU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 208,
+      "symbol": "Lang.AR_AE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 209,
+      "symbol": "Lang.AR_BH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 210,
+      "symbol": "Lang.AR_DZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 211,
+      "symbol": "Lang.AR_EG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 212,
+      "symbol": "Lang.AR_IQ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 213,
+      "symbol": "Lang.AR_JO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 214,
+      "symbol": "Lang.AR_KW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 215,
+      "symbol": "Lang.AR_LB",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 216,
+      "symbol": "Lang.AR_LY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 217,
+      "symbol": "Lang.AR_MA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 218,
+      "symbol": "Lang.AR_OM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 219,
+      "symbol": "Lang.AR_QA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 220,
+      "symbol": "Lang.AR_SA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 221,
+      "symbol": "Lang.AR_SY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 222,
+      "symbol": "Lang.AR_TN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 223,
+      "symbol": "Lang.AR_YE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 224,
+      "symbol": "Lang.DE_AT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 225,
+      "symbol": "Lang.DE_CH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 226,
+      "symbol": "Lang.DE_LI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 227,
+      "symbol": "Lang.DE_LU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 228,
+      "symbol": "Lang.EN_AU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 229,
+      "symbol": "Lang.EN_BZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 230,
+      "symbol": "Lang.EN_CA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 231,
+      "symbol": "Lang.EN_GB",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 232,
+      "symbol": "Lang.EN_IE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 233,
+      "symbol": "Lang.EN_JM",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 234,
+      "symbol": "Lang.EN_NZ",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 235,
+      "symbol": "Lang.EN_TT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 236,
+      "symbol": "Lang.EN_US",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 237,
+      "symbol": "Lang.EN_ZA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 238,
+      "symbol": "Lang.ES_AR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 239,
+      "symbol": "Lang.ES_BO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 240,
+      "symbol": "Lang.ES_CL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 241,
+      "symbol": "Lang.ES_CO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 242,
+      "symbol": "Lang.ES_CR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 243,
+      "symbol": "Lang.ES_DO",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 244,
+      "symbol": "Lang.ES_EC",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 245,
+      "symbol": "Lang.ES_GT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 246,
+      "symbol": "Lang.ES_HN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 247,
+      "symbol": "Lang.ES_MX",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 248,
+      "symbol": "Lang.ES_NI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 249,
+      "symbol": "Lang.ES_PA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 250,
+      "symbol": "Lang.ES_PE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 251,
+      "symbol": "Lang.ES_PR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 252,
+      "symbol": "Lang.ES_PY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 253,
+      "symbol": "Lang.ES_SV",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 254,
+      "symbol": "Lang.ES_UY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 255,
+      "symbol": "Lang.ES_VE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 256,
+      "symbol": "Lang.FR_BE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 257,
+      "symbol": "Lang.FR_CA",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 258,
+      "symbol": "Lang.FR_CH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 259,
+      "symbol": "Lang.FR_LU",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 260,
+      "symbol": "Lang.IT_CH",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 261,
+      "symbol": "Lang.NL_BE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 262,
+      "symbol": "Lang.PT_BR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 263,
+      "symbol": "Lang.RO_MD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 264,
+      "symbol": "Lang.RU_MD",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 265,
+      "symbol": "Lang.SV_FI",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 266,
+      "symbol": "Lang.ZH_CN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 267,
+      "symbol": "Lang.ZH_HK",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 268,
+      "symbol": "Lang.ZH_SG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Lang31.swift",
+      "line": 269,
+      "symbol": "Lang.ZH_TW",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Link47.swift",
+      "line": 18,
+      "symbol": "LinkType.Page",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Link47.swift",
+      "line": 19,
+      "symbol": "LinkType.View",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Link47.swift",
+      "line": 20,
+      "symbol": "LinkType.File",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Link47.swift",
+      "line": 21,
+      "symbol": "LinkType.Url",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Link47.swift",
+      "line": 32,
+      "symbol": "Link.init(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/ManagedCharBuffer_Private38.swift",
+      "line": 12,
+      "symbol": "CharBufferData",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/ManagedCharBuffer_Private38.swift",
+      "line": 50,
+      "symbol": "ManagedCharBuffer",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/MenuItem_Private16.swift",
+      "line": 29,
+      "symbol": "_MenuData",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/MenuItem_Private16.swift",
+      "line": 48,
+      "symbol": "_MenuPath",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Package24.swift",
+      "line": 13,
+      "symbol": "Package",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Page_Private46.swift",
+      "line": 12,
+      "symbol": "_PagePathInfo",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/RunData_Private58.swift",
+      "line": 14,
+      "symbol": "_UploadHolder",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/RunData_Private58.swift",
+      "line": 21,
+      "symbol": "RunData",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/SQLQry56.swift",
+      "line": 18,
+      "symbol": "SQLQryError.NONE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/SQLQry56.swift",
+      "line": 19,
+      "symbol": "SQLQryError.PENDING",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/SQLQry56.swift",
+      "line": 20,
+      "symbol": "SQLQryError.EXT_MSG",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/SQLQry56.swift",
+      "line": 21,
+      "symbol": "SQLQryError.UNKNOWN",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Server48.swift",
+      "line": 12,
+      "symbol": "Server",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/Socket26.swift",
+      "line": 21,
+      "symbol": "Socket.init(v:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/StringData_Private64.swift",
+      "line": 12,
+      "symbol": "StringData",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/StringData_Private64.swift",
+      "line": 18,
+      "symbol": "String._info",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 19,
+      "symbol": "UserInfo.uid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 20,
+      "symbol": "UserInfo.gid",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 29,
+      "symbol": "UserID.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 509,
+      "symbol": "_UserListItem",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 531,
+      "symbol": "UserListItem.id",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 532,
+      "symbol": "UserListItem.name",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 533,
+      "symbol": "UserListItem.active",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 534,
+      "symbol": "UserListItem.init(_:_:_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 568,
+      "symbol": "UserList.startIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 569,
+      "symbol": "UserList.endIndex",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 571,
+      "symbol": "UserList.index(after:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/appudo/User34.swift",
+      "line": 579,
+      "symbol": "UserList.nextList(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/toplevel68.swift",
+      "line": 14,
+      "symbol": "fromUTF8_check(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/toplevel68.swift",
+      "line": 23,
+      "symbol": "fromUTF8_nocheck(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libappudo/toplevel68.swift",
+      "line": 31,
+      "symbol": "dump(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libassert/appudo/Assert69.swift",
+      "line": 30,
+      "symbol": "appudo_initPrint()",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libassert/appudo/Assert69.swift",
+      "line": 34,
+      "symbol": "appudo_getPrint()",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libassert/appudo/Assert69.swift",
+      "line": 40,
+      "symbol": "_strcmp(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libassert/appudo/Assert69.swift",
+      "line": 44,
+      "symbol": "_strcmp1(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/libassert/appudo/Assert69.swift",
+      "line": 62,
+      "symbol": "_strlen(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/neon/Desktop/Appudo"
+}

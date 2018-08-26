@@ -1,0 +1,1 @@
+{"head":"<style name=\"stl_overview\"></style>","body": {"minit":"<script>minit('overview',['content'], {srefs:['content'],sid:'stl_overview'});</script>","misc":"<script>moduleCtx['overview']=function(){\n    return {\n        run : function() {\n        }\n    }\n}();</script>","content":"<div class=\"linner\"><h3>{{info.head}}</h3><div></div></div>"}}

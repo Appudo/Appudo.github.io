@@ -1,0 +1,183 @@
+<style>
+    #result span, #thdr span {
+        display: table-cell;
+        width:120px;
+        border-right:1px solid black;
+        border-top:1px solid black;
+        margin:0;
+        padding:5px;
+        word-break: break-all;
+        white-space: initial;
+        height:100%;
+    }
+    
+    #thdr span {
+        font-weight:bold;
+        padding-bottom:5px;
+        border-top:1px solid black;
+        border-bottom:1px solid black;
+    }
+    
+    #thdr, #result {
+        display:inline-block;
+        border-left:1px solid black;
+        white-space: nowrap;
+    }
+    
+    #result {
+        border-bottom:1px solid black;
+    }
+    #result li {
+        list-style-type:none;
+        float:left;
+        clear:both;
+    }
+    #result div {
+        float:right;
+        display:inline-block;
+        width:0px;
+        height:100%;
+        line-height:100%;
+        padding-top:8px;
+        padding-left:5px;
+        margin-right:-5px;
+    }
+    #result a {
+        font-family: symbols;
+        text-decoration: none;
+        color:inherit;
+    }
+</style>
+<script id="misc">
+    return {
+        master:null,
+        hasAsk:false,
+        items:[],
+        renderFull : function(ty) {
+            var data = this.items;
+            $('#result').text('');
+            for(var i = 0; i < data.length; i++) {
+                if(data[i].e == undefined) {
+                    this.renderNode(ty, data[i])
+                }
+            }
+        },
+        renderNode : function(ty, item) {
+            var data;
+            if(ty == 0) {
+                data = '<li><span>' + item.id + '</span><span>' + item.ty + '</span></li>';
+            }  else {
+                data = '<li><span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.ipv4 + '</span><span>' + item.ty + '</span></li>';
+            }
+            $('#result').append(data);
+        },
+        setupHdr : function(ty) {
+            var hdr = $('#thdr')
+            if(ty == 0) {
+                hdr.html('<span>NodeID</span><span>Type</span>');
+            }  else {
+                hdr.html('<span>NodeID</span><span>Name</span><span>IPv4</span><span>Type</span>');
+            }
+            $('#result').text('');
+        },
+        onChange : function(val) {
+            this.listNodes(val);
+        },
+        listNodes : function(ty) {
+            var _this = this;
+            this.setupHdr(ty);
+            post('https://' + this.master + '/admin/', {data:'{"cmd":1, "data":' + JSON.stringify(JSON.stringify({ty:ty})) + '}'}, function(data) {
+                if(data.r == 0) {
+                    _this.items = data.d;
+                    _this.renderFull(ty);
+                } else {
+                    // TODO error
+                }
+            });
+        },
+        doRemove : function(id) {
+            /*
+            console.log('doRemove', id);
+            var _this = this;
+            post('https://' + this.master + '/admin/', {data:'{"cmd":3,"data":"' + id + '"}'}, function(data) {
+                if(data.r == 0) {
+                    _this.items = _this.items.filter(function(obj) {
+                        return obj.aid != id;
+                    });
+                    _this.renderFull();
+                    _this.hideAsk();
+                } else {
+                    // TODO error
+                }
+            });
+            */
+        },
+        ask : function(id, host) {
+            var _this = this;
+            var rem = $('#theRemove');
+            var val = $('#dval');
+            var ok = $('#ok');
+            rem.css('display', '');
+            val.text(host);
+            disableMain();
+            ok.unbind('click');
+            ok.click(function(){_this.doRemove.call(_this, id);});
+            this.hasAsk = true;
+            rem.focus();
+        },
+        hideAsk : function() {
+            if(this.hasAsk) {
+                $('#theRemove').css('display', 'none');
+                this.hasAsk = false;
+                enableMain();
+            }
+        },
+        run : function() {
+            var _this = this;
+            var sel = $('#selty');
+            var a = window.location.host.split('.');
+            a = a.splice(a.length - 2);
+            this.master = 'mtr.' + a.join('.');
+            
+            this.listNodes(0);
+            $('#rej').click(function(){_this.hideAsk.call(_this);});
+            sel.change(function(){_this.onChange.call(_this, parseInt(sel.val()));});
+        }
+    }
+</script>
+<div class="i18n" id="other">
+    <div id="theRemove" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="disableModal" aria-hidden="true">
+        	<div class="dlg">
+	    		<div class="ltop">
+                    <span>{{rem.rly}}</span>
+                </div>
+	    		<div style="margin-top:20px;">
+                    <label style="margin-right:5px;">{{rem.dsh}}</label><span id="dval"></span>
+                </div>
+	    		<div class="frm btn">
+                    <button type="button" name="ok" id="ok">{{rem.sub}}</button>
+                    <span style="width:20px;display:inline-block;"></span>
+                    <button type="button" name="rej" id="rej">{{rem.rej}}</button>
+                </div>
+		</div>
+    </div>
+</div>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <h3>{{rem.head}}</h3>
+        <pre>{{rem.txt}}</pre>
+        <div>
+            <select id="selty">
+                <option value="0">Connected</option>
+                <option value="1">Registered</option>
+                <option value="2">Pending</option>
+            </select>
+        </div>
+        <div id="thdr" style="margin-top:20px;"></div>
+        <div>
+            <ul id="result">
+                
+            </ul>
+        </div>
+    </div>
+</div>

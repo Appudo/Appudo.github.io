@@ -1,0 +1,228 @@
+<html>
+    <head>
+    <style>
+        button{
+            width:120px;
+        }
+        p{
+            margin:0px;
+            font-size:0.8em;
+        }
+        .data{
+            width:390px;
+            height:100px; 
+            overflow-y: scroll;
+            border-width: 1px;
+            border-style: solid;
+            border-color: grey;
+            padding: 4px;
+        }
+    </style>
+    <script>
+    
+    var theURI;
+    var isSSL;
+    var theData;
+    function Init()
+    {
+        if(window.MozWebSocket)
+        {
+            window.WebSocket = window.MozWebSocket;
+        }
+        
+        isSSL = document.getElementById("isSSL");
+        isSSL.checked = false;
+        isSSL.onclick = setSSL;
+        
+        theURI = document.getElementById("theURI");
+        
+        sendDisc = document.getElementById("sendDisc");
+        sendDisc.onclick = doConnectSendDisconnect;
+        
+        sendDisc2 = document.getElementById("sendDisc2");
+        sendDisc2.onclick = doConnectSendDisconnect2;
+        
+        connectButton = document.getElementById("connect");
+        connectButton.onclick = doConnect;
+        
+        discButton = document.getElementById("disc");
+        discButton.onclick = doDisconnect;
+        
+        sendButton = document.getElementById("send");
+        sendButton.onclick = doSend;
+    
+        theData = document.getElementById("theData");
+    
+        clearButton = document.getElementById("clear");
+        clearButton.onclick = clearData;
+    
+        toggleState(false);
+        setSSL();
+
+    }
+    
+    function fixURI(uri)
+    {
+        return uri;
+    }
+
+    function setSSL()
+    {
+        var port = (window.location.port.toString() === "" ? "" : ":" + window.location.port)
+        if(theURI.value === "") {
+            theURI.value = "ws://" + window.location.hostname + port + '###WSECHO_SERVER###';
+        }
+        
+        theURI.value = isSSL.checked ? theURI.value.replace("ws:", "wss:") :
+                                       theURI.value.replace("wss:", "ws:");
+    }
+  
+    function doConnect()
+    {
+        websocket = new WebSocket(fixURI(theURI.value));
+        websocket.onopen = function(evt) { onOpen(evt) };
+        websocket.onmessage = function(evt) { onMessage(evt) };
+        websocket.onerror = function(evt) { onError(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+    }
+  
+    function doConnectSendDisconnect()
+    {
+        websocket = new WebSocket(fixURI(theURI.value));
+        websocket.onopen = function(evt) { onOpen(evt); websocket.send(theMessage.value);};
+        websocket.onmessage = function(evt) { onMessage(evt); websocket.close(); };
+        websocket.onerror = function(evt) { onError(evt) };
+        websocket.onclose = function(evt) { onClose(evt) };
+    }
+  
+    function doConnectSendDisconnect2()
+    {
+        function newWs()
+        {
+            websocket = new WebSocket(fixURI(theURI.value));
+            websocket.onopen = function(evt) { onOpen(evt); websocket.send(theMessage.value);};
+            websocket.onmessage = function(evt) { onMessage(evt); websocket.close(); };
+            websocket.onerror = function(evt) { onError(evt); websocket.close(); };
+            websocket.onclose = function(evt) { onClose(evt); newWs(); };
+        }
+        newWs();
+    }
+  
+    function doSend()
+    {
+        writeData("OUT: " + theMessage.value);
+        websocket.send(theMessage.value);
+    }
+
+    function writeData(data)
+    {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = getSSL() + data;
+        theData.appendChild(pre);
+        
+        removeFront(60)
+    }
+    
+    function doDisconnect() 
+    {
+        websocket.close()
+    }
+    
+	function removeFront(len)
+	{
+        while(theData.childNodes.length > len)
+        {
+            theData.removeChild(theData.firstChild);
+        }
+        theData.scrollTop = theData.scrollHeight;
+	}
+	
+	function clearData()
+	{
+		while(theData.childNodes.length > 0)
+		{
+			theData.removeChild(theData.firstChild);
+		}
+	}
+  
+    function onOpen(evt)
+    {
+        writeData('CONNECTED');
+        toggleState(true);
+    }
+    
+    function onClose(evt)
+    {
+        writeData('DISCONNECTED');
+        toggleState(false);
+    }
+    
+    function onMessage(evt)
+    {
+        var d = evt.data;
+        if(d instanceof Blob)
+        {
+            var r = new FileReader();
+            r.error = function() {
+                writeData('<span style="color: blue;">BINARY: ERROR</span>');
+            }
+            r.onload = function(v) {
+                writeData('<span style="color: blue;">BINARY:<pre> ' + v.target.result + '</pre></span>');
+            }
+            r.readAsText(d);
+        }
+        else
+        {
+            writeData('<span style="color: blue;">TEXT: ' + evt.data + '</span>');
+        }
+    }
+
+    function onError(evt)
+    {
+        writeData('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+    }
+  
+    function toggleState(connected)
+    {
+        theURI.disabled = connected;
+        connectButton.disabled = connected;
+        discButton.disabled = !connected;
+        theMessage.disabled = !connected;
+        sendButton.disabled = !connected;
+        isSSL.disabled = connected;
+    }
+	
+	
+	function getSSL()
+	{
+        return isSSL.checked ? '<span>&#9911;</span>' : ' ';
+	}
+    </script>
+    </head>
+    <body onLoad="Init();">
+        <div>
+            <span>URI: </span><input id="theURI"  size="40"/> 
+            <br>
+            <span>Secure: </span><input type="checkbox" id="isSSL"/>
+        </div>
+        <br/>
+        <div id="theData" class="data"></div>
+        <br/>
+        <div>
+            <span>Message: </span><input id="theMessage" size="40" value="This is a test!"/>
+        </div>
+        <br/>
+        <div>
+            <button type="button" id="connect">Connect</button>
+            <button type="button" id="disc">Disconnect</button>
+            <button type="button" id="clear">Clear</button>
+        </div>
+        <br/>
+        <div>
+            <button type="button" id="send">Send</button>
+            <button type="button" id="sendDisc">Con/Send/Disc</button>
+            <button type="button" id="sendDisc2">Send nonstop</button>
+        </div>
+    </body>
+</html>

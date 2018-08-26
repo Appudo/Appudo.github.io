@@ -1,0 +1,75 @@
+{
+    history:{{[
+  {
+    "t": "templates_doc_source/dummy",
+    "s": "templates_doc_source/dummy.html"
+  }
+]}},
+    
+    transform:function(intxt, inname, outname, result) {
+        var parseTmpl = function(txt) {
+            var reg = /\{\{([\s\S]*?)\}\}/m;
+            var m = txt.match(reg);
+            try {
+                var f = m[1];
+                var r = [txt.substr(0, m.index), f, txt.substr(m.index + m[0].length)];
+            } catch(e) {
+                return null;
+            }
+            
+            try {
+                var o = eval('(' + r[0] + 'null' + r[2] + ')');
+                var h = eval('(' + r[1] +')');
+                o.history = h;
+            } catch(e) {
+                return null;
+            }
+            
+            return o;
+        }
+        
+        var info = {};
+    
+        appudo.postPlain('/edit/8/3/'+appudo.random(), 'f=templates_doc_source/doc_page.trans&i=0', function() {
+        }).then(function(data){
+            var tmpl = parseTmpl(data);
+            var h = tmpl.history;
+            info.num = h.length;
+            var handle = function(idx, th) { 
+                var item = h[idx];
+                appudo.postPlain('/edit/8/3/'+appudo.random(), 'f=' + item.s + '&i=0', function() {
+                }).then(function(data){
+                    tmpl.transform(data, item.s, item.t, function(result) {
+                        try {
+                            var go = function(g) {
+                                var target = appudo.openFileTab(item.t, true);
+                                var target_ctx = target.ctx;
+                                var target_editor = target_ctx.codeEditor;
+                                if(!target_editor.blocked || target_editor.blocked()) {
+                                    setTimeout(function() {
+                                        g(g);
+                                    }, 500);
+                                    return;
+                                }
+                                target_editor.clearText('');
+                                target_editor.clearText(result);
+                                appudo.on(target.domNode, 'saved', function(e) {
+                                    mainTab.removeChild(target);
+                                    if(--info.num == 0)
+                                        alert('ready');
+                                    else
+                                        th(idx + 1, th);
+                                });
+                                target_ctx.trySave();
+                            };
+                            go(go);
+                        } catch(e) {
+                            console.log(e)
+                        }
+                    })
+                });
+            };
+            handle(0, handle);
+        });	
+    }
+}

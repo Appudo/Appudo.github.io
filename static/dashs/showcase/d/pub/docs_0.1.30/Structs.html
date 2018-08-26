@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Structs  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Structs  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Appudo  Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Appudo  Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Structs  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/DataBlob.html">DataBlob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums.html#/s:6Appudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums.html#/s:6Appudo17HTTPRequestStatusO">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums.html#/s:6Appudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums.html#/s:6Appudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums.html#/s:6Appudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/SQLQryError.html">SQLQryError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/Date.html">Date</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Functions/&lt;!(_:).html">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions/&lt;?(_:_:).html">&lt;?(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Functions.html#/s:6Appudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Blob.html">Blob</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols.html#/s:6Appudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/Account.html">Account</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Dir.html">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Domain.html">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs.html#/s:6Appudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs.html#/s:6Appudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs.html#/s:6Appudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/MenuItem.html">MenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Page.html">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Role.html">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Setting.html">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs.html#/s:6Appudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/UserListItem.html">UserListItem</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:6Appudo10AsyncDelaya">AsyncDelay</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Structs</h1>
+            <p>The following structs are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10ErrorEventV"></a>
+                    <a name="//apple_ref/swift/Struct/ErrorEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10ErrorEventV">ErrorEvent</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A run receives ErrorEvent items on errors.</p>
+
+                        <a href="Structs/ErrorEvent.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ErrorEvent</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8MenuItemV"></a>
+                    <a name="//apple_ref/swift/Struct/MenuItem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8MenuItemV">MenuItem</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The MenuItem is used to walk and access the ordered pages of the run tree.
+Mirroring the tree structure of accessible menu pages.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Link
+
+</div>
+
+                        <a href="Structs/MenuItem.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MenuItem</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo6MemoryV"></a>
+                    <a name="//apple_ref/swift/Struct/Memory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo6MemoryV">Memory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Memory provides information about the used and maximum memory of the current run.
+The maximum memory each run can use is limited.
+If there is no memory pressure a run can use more memory than its initial maximum.
+If there is memory pressure the runs with higher memory usage are slowed down or terminated.
+A run should be designed to not use more memory than the allowed maximum at any time.</p>
+
+                        <a href="Structs/Memory.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Memory</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo6DomainV"></a>
+                    <a name="//apple_ref/swift/Struct/Domain" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo6DomainV">Domain</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>For each registered domain there is a property with the domain name in the Domain struct.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    StaticDomain
+
+</div>
+
+                        <a href="Structs/Domain.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Domain</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo7SettingV"></a>
+                    <a name="//apple_ref/swift/Struct/Setting" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo7SettingV">Setting</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>For each registered setting there is a property with the setting name in the Setting struct.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    SettingVar
+
+</div>
+
+                        <a href="Structs/Setting.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Setting</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo3DirV"></a>
+                    <a name="//apple_ref/swift/Struct/Dir" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo3DirV">Dir</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>For each registered directory there is a property with the directory name in the Dir struct.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileItem
+
+</div>
+
+                        <a href="Structs/Dir.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Dir</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo4RoleV"></a>
+                    <a name="//apple_ref/swift/Struct/Role" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo4RoleV">Role</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>For each registered role there is a property with the role name in the Role struct.</p>
+
+                        <a href="Structs/Role.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Role</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileViewV"></a>
+                    <a name="//apple_ref/swift/Struct/FileView" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileViewV">FileView</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The FileView is used to hand over a partial view of a file to other APIs.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FileView</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo4LinkV"></a>
+                    <a name="//apple_ref/swift/Struct/Link" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo4LinkV">Link</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Link is used to get and modify http links to different target types.</p>
+
+                        <a href="Structs/Link.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Link</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo6SocketV"></a>
+                    <a name="//apple_ref/swift/Struct/Socket" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo6SocketV">Socket</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A single connection to a run is managed with a Socket.
+A Socket is not the same as a linux socket.
+It is not possible to send data to the Socket of a different run.
+It is even possible for two runs to have the same Socket value but different peers.
+Some properties are static and refer to the current active socket of the run.</p>
+
+                        <a href="Structs/Socket.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Socket</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo11SQLQryValueV"></a>
+                    <a name="//apple_ref/swift/Struct/SQLQryValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo11SQLQryValueV">SQLQryValue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>SQLQryValue holds a single SQLQry result value.</p>
+
+                        <a href="Structs/SQLQryValue.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SQLQryValue</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo4PageV"></a>
+                    <a name="//apple_ref/swift/Struct/Page" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo4PageV">Page</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A single page run from the run tree is represented by a Page.</p>
+
+                        <a href="Structs/Page.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Page</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo9GroupInfoV"></a>
+                    <a name="//apple_ref/swift/Struct/GroupInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo9GroupInfoV">GroupInfo</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>GroupInfo holds the owning user and group of a group.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">GroupInfo</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo7GroupIDV"></a>
+                    <a name="//apple_ref/swift/Struct/GroupID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo7GroupIDV">GroupID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>GroupID holds a group&rsquo;s unique id. Other APIs can accept GroupIDs to modify group ownership.</p>
+
+                        <a href="Structs/GroupID.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">GroupID</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo5GroupV"></a>
+                    <a name="//apple_ref/swift/Struct/Group" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo5GroupV">Group</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Single groups are added, modified or removed with a Group.
+Files and other items can be owned by groups and users.
+Users that are owners or members of an owner group can access an item depending on the the items access mode.
+For example to modify a group the current login user must have the right to modify the group
+by being the owning user or being member of the owner group.
+Groups are initially owned by the current login user and the backend group.
+All registered groups are statically accessible as roles by name from the Role struct.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileItem.Mode
+
+</div>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Role
+
+</div>
+
+                        <a href="Structs/Group.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Group</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo9AccountIDV"></a>
+                    <a name="//apple_ref/swift/Struct/AccountID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo9AccountIDV">AccountID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>AccountID holds an account&rsquo;s unique id. Other APIs can accept AccountIDs.</p>
+
+                        <a href="Structs/AccountID.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AccountID</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo7AccountV"></a>
+                    <a name="//apple_ref/swift/Struct/Account" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo7AccountV">Account</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Single accounts are added, updated and removed with an Account. Appudo is a multi account system where each account has multiple users. An Account can have multiple domains to access its runs. To use this API the user of the current login must be in the master group.</p>
+
+                        <a href="Structs/Account.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Account</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo12StaticDomainV"></a>
+                    <a name="//apple_ref/swift/Struct/StaticDomain" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo12StaticDomainV">StaticDomain</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Each host of an account is identified by a StaticDomain.
+This can be used to set a different skin for a run dependent on the host used to view it.</p>
+
+                        <a href="Structs/StaticDomain.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">StaticDomain</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo12FileSeekFlagV"></a>
+                    <a name="//apple_ref/swift/Struct/FileSeekFlag" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo12FileSeekFlagV">FileSeekFlag</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The FileSeekFlag is used for the FileSeekable API.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileSeekable
+
+</div>
+
+                        <a href="Structs/FileSeekFlag.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FileSeekFlag</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileStatV"></a>
+                    <a name="//apple_ref/swift/Struct/FileStat" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileStatV">FileStat</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Information about a file like the size or ownership is accessed with a FileStat.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    FileItem
+
+</div>
+
+                        <a href="Structs/FileStat.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FileStat</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8FileItemV"></a>
+                    <a name="//apple_ref/swift/Struct/FileItem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8FileItemV">FileItem</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A single file or directory is modified with a FileItem.</p>
+
+                        <a href="Structs/FileItem.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FileItem</span> <span class="p">:</span> <span class="kt"><a href="Protocols/FileSeekable.html">FileSeekable</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/FileSendSource.html">FileSendSource</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo8UserInfoV"></a>
+                    <a name="//apple_ref/swift/Struct/UserInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo8UserInfoV">UserInfo</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>UserInfo holds the owning user and group of a user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">UserInfo</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo6UserIDV"></a>
+                    <a name="//apple_ref/swift/Struct/UserID" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo6UserIDV">UserID</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>UserID holds a user&rsquo;s unique id. Other APIs can accept UserIDs to modify user ownership.</p>
+
+                        <a href="Structs/UserID.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">UserID</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo4UserV"></a>
+                    <a name="//apple_ref/swift/Struct/User" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo4UserV">User</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Single users are added, modified or removed with a User.
+Other APIs depend on the current login user and it&rsquo;s group membership.
+Also files and other items are owned by users.</p>
+
+                        <a href="Structs/User.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">User</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo12UserListItemV"></a>
+                    <a name="//apple_ref/swift/Struct/UserListItem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo12UserListItemV">UserListItem</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>UserListItem represents a single item in a UserList.</p>
+
+                        <a href="Structs/UserListItem.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">UserListItem</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo4MailV"></a>
+                    <a name="//apple_ref/swift/Struct/Mail" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo4MailV">Mail</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Mail is used to send mails.</p>
+
+                        <a href="Structs/Mail.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Mail</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10AsyncValueV"></a>
+                    <a name="//apple_ref/swift/Struct/AsyncValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10AsyncValueV">AsyncValue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>AsyncValue is the common return type for async APIs.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Async
+
+</div>
+
+                        <a href="Structs/AsyncValue.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AsyncValue</span><span class="o">&lt;</span><span class="kt">B</span> <span class="p">:</span> <span class="kt">AsyncReverse</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">AsyncData</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo10SettingVarV"></a>
+                    <a name="//apple_ref/swift/Struct/SettingVar" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo10SettingVarV">SettingVar</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Single setting values are accessed or updated with a SettingVar.
+All registered settings of a run are statically accessible by name from the Setting struct.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Setting
+
+</div>
+
+                        <a href="Structs/SettingVar.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SettingVar</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Appudo6MemVarV"></a>
+                    <a name="//apple_ref/swift/Struct/MemVar" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Appudo6MemVarV">MemVar</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Memory variables are accessed and updated with a MemVar.
+All registered Memory variables of a run are statically accessible by name from the Mem struct.
+A Memory variable is shared with all run instances.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    Mem
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MemVar</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2017-08-01)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

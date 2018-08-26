@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ws Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/ws" class="dashAnchor"></a>
+    <a title="ws Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo_WebSocket Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo_WebSocket Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        ws Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9websocket18WebSocketEventTypeO">WebSocketEventType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/User.html">User</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/WebSocketEvent.html">WebSocketEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ws.html">ws</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ws/WSConFlags.html">– WSConFlags</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>ws</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="n">ws</span></code></pre>
+
+                </div>
+              </div>
+            <p>ws is a holder struct for top level WebSocket functions.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV10WSConFlagsV"></a>
+                    <a name="//apple_ref/swift/Struct/WSConFlags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV10WSConFlagsV">WSConFlags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>WSConFlags contains the mode used for a client to server websocket connection.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    open
+
+</div>
+
+                        <a href="../Structs/ws/WSConFlags.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">WSConFlags</span> <span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4open9libappudo10AsyncValueVyAE6SocketVSgGSS_AC10WSConFlagsV5flagstFZ"></a>
+                    <a name="//apple_ref/swift/Method/open(_:flags:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4open9libappudo10AsyncValueVyAE6SocketVSgGSS_AC10WSConFlagsV5flagstFZ">open(_:flags:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Open connection to remote WebSocket.
+The WebSocket listener allows sending and receiving unmasked
+message frames when the underlying connection is secure(SSL).
+This is useful for a direct high performance connection between
+two WebSocket listeners.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">open</span><span class="p">(</span><span class="n">_</span> <span class="nv">uri</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">flags</span> <span class="p">:</span> <span class="kt"><a href="../Structs/ws/WSConFlags.html">WSConFlags</a></span> <span class="o">=</span> <span class="o">.</span><span class="kt">NONE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncStruct</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>uri</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The remote addr to use for the connection.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>flags</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The flags used for the connection (e.g. don&rsquo;t mask frames).</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4contSbypSg3txt_Sb4lastSb5firsts15ContiguousArrayVy9libappudo6SocketVGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/cont(txt:last:first:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4contSbypSg3txt_Sb4lastSb5firsts15ContiguousArrayVy9libappudo6SocketVGtFZ">cont(txt:last:first:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as text with continuation.
+Send functions do not signal the completion or the success of the send.
+They only verify the input data and signal if the send process
+was started.
+Errors will trigger a notification event to handle in the websocket run.
+Notification about successful sends can optionally be enabled with
+the notifyComplete option for each socket.</p>
+
+<p>For example an error is signaled when the rate of outgoing messages
+to a client is high and the transfer rate is too low to make room in
+the clients send buffer.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Socket.notifyComplete</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">cont</span><span class="p">(</span><span class="nv">txt</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="nv">last</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">first</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="n">_</span> <span class="nv">targets</span> <span class="p">:</span> <span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4contSbypSg3txt_Sb4lastSb5first9libappudo6SocketVdtFZ"></a>
+                    <a name="//apple_ref/swift/Method/cont(txt:last:first:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4contSbypSg3txt_Sb4lastSb5first9libappudo6SocketVdtFZ">cont(txt:last:first:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as text with continuation.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">cont</span><span class="p">(</span><span class="nv">txt</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="nv">last</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">first</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="n">_</span> <span class="nv">targets</span> <span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4sendSbypSg3txt_s15ContiguousArrayVy9libappudo6SocketVGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/send(txt:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4sendSbypSg3txt_s15ContiguousArrayVy9libappudo6SocketVGtFZ">send(txt:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as text.
+Send functions do not signal the completion or the success of the send.
+They only verify the input data and signal if the send process
+was started.
+Errors will trigger a notification event to handle in the websocket run.
+Notification about successful sends can optionally be enabled with
+the notifyComplete option for each socket.</p>
+
+<p>For example an error is signaled when the rate of outgoing messages
+to a client is high and the transfer rate is too low to make room in
+the clients send buffer.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p>Socket.notifyComplete</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">txt</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">targets</span><span class="p">:</span> <span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4sendSbypSg3txt_9libappudo6SocketVdtFZ"></a>
+                    <a name="//apple_ref/swift/Method/send(txt:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4sendSbypSg3txt_9libappudo6SocketVdtFZ">send(txt:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as text.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">txt</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">targets</span><span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV2bcSbypSg3txt_s15ContiguousArrayVy9libappudo6SocketVGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/bc(txt:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV2bcSbypSg3txt_s15ContiguousArrayVy9libappudo6SocketVGtFZ">bc(txt:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Broadcast data as text.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">bc</span><span class="p">(</span><span class="nv">txt</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">exclude</span><span class="p">:</span> <span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to broadcast.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exclude</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) NOT to broadcast the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV2bcSbypSg3txt_9libappudo6SocketVdtFZ"></a>
+                    <a name="//apple_ref/swift/Method/bc(txt:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV2bcSbypSg3txt_9libappudo6SocketVdtFZ">bc(txt:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Broadcast data as text.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">bc</span><span class="p">(</span><span class="nv">txt</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">exclude</span><span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to broadcast.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exclude</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) NOT to broadcast the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4sendSbypSg5bytes_s15ContiguousArrayVy9libappudo6SocketVGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/send(bytes:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4sendSbypSg5bytes_s15ContiguousArrayVy9libappudo6SocketVGtFZ">send(bytes:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">bytes</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">targets</span><span class="p">:</span> <span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV4sendSbypSg5bytes_9libappudo6SocketVdtFZ"></a>
+                    <a name="//apple_ref/swift/Method/send(bytes:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV4sendSbypSg5bytes_9libappudo6SocketVdtFZ">send(bytes:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send data as bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">bytes</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">targets</span><span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to send.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>targets</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) to send the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV2bcSbypSg5bytes_s15ContiguousArrayVy9libappudo6SocketVGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/bc(bytes:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV2bcSbypSg5bytes_s15ContiguousArrayVy9libappudo6SocketVGtFZ">bc(bytes:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Broadcast data as bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">bc</span><span class="p">(</span><span class="nv">bytes</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">exclude</span><span class="p">:</span> <span class="kt">ContiguousArray</span><span class="o">&lt;</span><span class="kt">Socket</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to broadcast.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exclude</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) NOT to broadcast the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV2bcSbypSg5bytes_9libappudo6SocketVdtFZ"></a>
+                    <a name="//apple_ref/swift/Method/bc(bytes:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV2bcSbypSg5bytes_9libappudo6SocketVdtFZ">bc(bytes:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Broadcast data as bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">bc</span><span class="p">(</span><span class="nv">bytes</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?,</span> <span class="n">_</span> <span class="nv">exclude</span><span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The data to broadcast.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exclude</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The socket(s) NOT to broadcast the data to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV5closeSb9libappudo6SocketVd_Sb4hardtFZ"></a>
+                    <a name="//apple_ref/swift/Method/close(_:hard:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV5closeSb9libappudo6SocketVd_Sb4hardtFZ">close(_:hard:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Close multiple clients.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">(</span><span class="n">_</span> <span class="nv">exclude</span> <span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">,</span> <span class="nv">hard</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9websocket2wsV5resetSb9libappudo6SocketVd_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/reset(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9websocket2wsV5resetSb9libappudo6SocketVd_tFZ">reset(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reset clients so pending data is not sent out.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">reset</span><span class="p">(</span><span class="n">_</span> <span class="nv">sockets</span><span class="p">:</span> <span class="kt">Socket</span><span class="o">...</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2018-07-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

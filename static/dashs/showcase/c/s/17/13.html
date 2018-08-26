@@ -1,0 +1,511 @@
+<!-- ###MAIN### START --><!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="###$rdir###/css/zTreeStyle.css" type="text/css">
+        <!-- ###STYLE### START -->
+        <link rel="stylesheet" href="###$rdir###/css/wschat.css">
+        <!-- ###STYLE### END -->
+        <script type="text/javascript" src="###$rdir###/js/jquery-1.10.2.min.js"></script>
+        <style>
+            body {
+            }
+            
+            .loginItem {
+                display:none;
+            }
+            
+            .parent {
+                position:relative;
+            }
+            
+            input[type="text"],
+            input[type="password"] {
+                width:190px;
+            }
+            
+            .theUsers {
+                display:inline-block;
+            }
+            
+            .onAdd {
+                
+            }
+            
+            #perm {
+                margin-top:5px;
+            }
+            
+            #perm label {
+                display:inline-block;
+                margin-left:8px;
+            }
+            
+            #permActive, #permAdmin, #permFiles {
+                float:right;    
+                margin: 8px 10px 0 0;
+            }
+            
+            #theUsers li a {
+                color:#11ABA8;
+                text-decoration: none;
+            }
+            
+            #theUsers li > div {
+                padding:0 10px 0 10px;
+            }
+            
+            #theUsers li > div:hover {
+                background-color:rgba(19, 207, 213, .3);
+            }
+            
+            #theUsers li > div > span {
+                display:inline-block;
+                text-align:center;
+            }
+            
+            #theUsers li > div span:nth-child(1) {
+                width:45%;
+                text-align:left;
+            }
+            
+            #theUsers li > div span:nth-child(2) {
+                width:30%;
+            }
+            
+            #theUsers li > div span:nth-child(3) {
+                width:24%;
+                display:inline-block;
+                text-align:center;
+            }
+            
+            .iblock {
+                display:inline-block;
+            }
+            
+            .block {
+                width:500px;
+                height:425px;
+                vertical-align:top;
+                overflow:hidden;
+                margin: 0 auto;
+            }
+            #userBlock {
+                width:500px;
+                height: 360px;
+                overflow-y:auto;
+                overflow-x:hidden;
+            }
+            #theUsers {
+                background:linear-gradient(0deg,#ddd 3.333%,#F7F7F7 3.333%);
+                background-size: 100% 34px;
+            }
+            
+            #theLogin, #theAddMod, #theDel {
+                display:none;
+                padding:10px;
+                border-radius:4px;
+                border:1px solid #ddd;
+                background:#fff;
+                width:200px;
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                margin: auto;
+                margin-top:6%;
+                padding-bottom:10px;
+            }
+            
+            #theLogin p {
+	            font: 14px/24px 'opensans-regular', sans-serif;
+            }
+            
+            .theError {
+                margin-left:10px;
+                display:none;
+                color:red;
+            }
+            
+        </style>
+        <script>  
+            var theUsers;
+            var hasLogin = false;
+            var theTicket = 0;
+            var pending = 0;
+   
+            document.onUpdate = function(result) {
+                if(result.t != 'login' && result.t != 'logout' && result.t != 'user')
+                    return;
+                if(result.h && theTicket != result.h) {
+                    hideAll()
+                    loadUserView();
+                }
+                theTicket = 0;
+            }
+            
+            document.onLoginChange = function(login) {
+                if(!login) {
+                    hasLogin = false;
+                    loadUserView();
+                } else
+                if(!hasLogin){
+                    needLogin(false)
+                    hasLogin = true;
+                    loadUserView();
+                }
+            }
+            
+            function needLogin(v) {
+                $(".loginItem").css('display', v ?  'none' :  'block');
+                $("#theLogin").css('display', v ? 'block' : 'none');
+                if(v) {
+                    var theUsers = document.getElementById("theUsers");
+                    theUsers.innerHTML = '';
+                }
+                if(parent.needLogout)
+                    parent.needLogout(!v);
+            }
+            
+            function getVal(name, prop) {
+                return $(name)[0][prop];
+            }
+            function setVal(name, prop, val) {
+                $(name)[0][prop] = val
+            }
+            
+            function doDel() {
+                if(pending)
+                    return;
+                var id = getVal("#theDel", "_id");
+                var result;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_ADMIN_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            $('#item' + id)[0].parentNode.remove();
+                        } 
+                        $("#theDel").css('display', 'none');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=d&d={"id":"' + id + '"}&h=' + theTicket);
+                return false;
+            }
+            
+            function hideAll(v) {
+                v == showAdd || showAdd(false)
+                v == showMod || showMod(false)
+                v == showDel || showDel(false)
+            }
+            
+            function setupAddMod(add, name, id) {
+                var div = document.getElementById("theAddMod").children[0];
+                var span = div.getElementsByTagName("span")[0];
+                span.innerHTML = add ? "Add User:" : "Modify User: " + name
+                $(".onAdd").css('display', add ? 'block' : 'none');
+                var pwd = document.getElementById("addPassword");
+                pwd.placeholder = add ? 'Password...' : 'Password... (optional)';
+                setVal("#modButton", "_add", add);
+                setVal("#modButton", "_id", id);
+            }
+            
+            function doAddMod() {
+                if(pending)
+                    return;
+                var add = getVal("#modButton", "_add");
+                var name = $("#addName").val();
+                var pwd = $("#addPassword").val();
+                var active = $("#permActive").prop('checked') ? 1 : 0;
+                var groups = $("#permAdmin").prop('checked') ? 1 : 0;
+                groups += $("#permFiles").prop('checked') ? 2 : 0;
+                var result;
+                var xhr = new XMLHttpRequest();
+                $(".theError").css('display','none');
+                xhr.open('POST', '###PAGE_ADMIN_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            if(add) {
+                                var users = collectUserView();
+                                users.push({i:result.d,n:name,g:groups,a:active});
+                                setupUserView(users);
+                            } else {
+                                var id = getVal("#modButton", "_id");
+                                var div = $("#item" + id)[0];
+                                var n = div.children[0].innerHTML;
+                                setupViewItem(div.parentNode, {i:id,n:n,g:groups,a:active});
+                            }
+                            hideAll();
+                        } else {
+                            $(".theError").css('display','inline-block');
+                        }
+                    }
+                }
+                
+                pending = 1;
+                theTicket = Math.random();
+                if(add) {
+                    xhr.send('t=a&d={"name":' + JSON.stringify(name) + ',"pwd":' + JSON.stringify(pwd) + ',"active":' + active + ',"groups":' + groups + '}&h=' + theTicket);
+                } else {
+                    newPwd = '';
+                    if(pwd && pwd != "")
+                        newPwd = ',"pwd":' + JSON.stringify(pwd);
+                    xhr.send('t=m&d={"id":"' + getVal("#modButton", "_id") + '"' + newPwd +',"active":' + active + ',"groups":' + groups + '}&h=' + theTicket);
+                }
+                $("#addName").val('');
+                $("#addPassword").val('');
+            }
+            
+            function showAdd(v) {
+                if(v) {
+                    hideAll(showAdd);
+                    setupAddMod(true);
+                    
+                    $("#permActive").prop('checked', true);
+                    $("#permAdmin").prop('checked', false);
+                    $("#permFiles").prop('checked', false);
+                } else {
+                    $("#addName").val('');
+                    $("#addPassword").val('');
+                }
+                $("#theAddMod").css('display', v ? 'block' : 'none');
+                
+            }
+            
+            function showMod(v, info) {
+                if(v) {
+                    hideAll(showMod);
+                    setupAddMod(false, info.name, info.id);
+                    
+                    $("#permActive").prop('checked', info.active);
+                    $("#permAdmin").prop('checked', info.groups & 1);
+                    $("#permFiles").prop('checked', info.groups & 2);
+                }
+                $("#theAddMod").css('display', v ? 'block' : 'none');
+                
+            }
+            
+            function showDel(v, info) {
+                if(v) {
+                    hideAll(showDel);
+                    var div = document.getElementById("delTxt");
+                    var span = div.getElementsByTagName("span")[0];
+                    span.innerHTML = 'Confirm deletion of user ' + info.name + '.';
+                    setVal("#theDel", "_id", info.id)
+                }
+                $("#theDel").css('display', v ? 'block' : 'none');
+            }
+            
+            function Init() { 
+                if(location.protocol !== 'https:') {
+				    window.location = location.href.replace('http:', 'https:')
+                }
+                
+                $("#addButton").click(function() {showAdd(true); return false; });
+                $("#modStopButton").click(function() {showAdd(false); return false; });
+                $("#delStopButton").click(function() {showDel(false); return false; });
+                $("#loginButton").click(function(e) {e.preventDefault(); doLogin(); return false; });
+                $("#modButton").click(function(e) {e.preventDefault(); doAddMod(); return false; });
+                $("#delButton").click(function(e) {e.preventDefault(); doDel(); return false; });
+                loadUserView();
+                document.complete = true;
+            }
+            
+            function doLogin(e) {
+                if(pending)
+                    return;
+                var loginName = $("#loginName").val();
+                var loginPassword = $("#loginPassword").val();
+                var xhr = new XMLHttpRequest();
+                var result;
+                $(".theError").css('display','none');
+                xhr.open('POST', '###PAGE_ADMIN_SERVER###', true);
+                hasLogin = true;
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == "1") {
+                            needLogin(false)
+                            loadUserView();
+                        } else {
+                            $("#loginName").val("");
+                            $("#loginPassword").val("");
+                            $(".theError").css('display','inline-block');
+                            needLogin(true)
+                        }
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=l&d={"name":' + JSON.stringify(loginName) + ',"pwd":' + JSON.stringify(loginPassword) + '}&h=' + theTicket);
+                delete loginName;
+                delete loginPassword;
+                $("#loginName").val('');
+                $("#loginPassword").val('');
+                return false;
+            }
+            
+            function collectUserView() {
+                var users = $('#theUsers')[0].children;
+                var newUsers = [];
+                for (idx in users) {
+                    if(users[idx].children) {
+                        var div = users[idx].children[0];
+                        var data = div.getAttribute('data').split(',');
+                        newUsers.push({i:data[0],n:data[1],g:data[2],a:data[3]});
+                    }
+                }
+                return newUsers;
+            }
+            
+            function loadUserView() {
+                var xhr = new XMLHttpRequest();
+                var result;
+                xhr.open('POST', '###PAGE_ADMIN_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result instanceof Array) {
+                            setupUserView(result);
+                            needLogin(false)
+                        } else {
+                            needLogin(true)
+                        }
+                    }
+                }
+                xhr.send('t=u');
+            }
+            
+            function setupViewItem(li, item) {
+                var perm = '';
+                if(item.g & 1) {
+                    perm += 'a'
+                }
+                if(item.g & 2) {
+                    if(perm != '')
+                        perm += ' + '
+                    perm += 'f'
+                }
+                if(!item.a) {
+                    perm += ' (disabled)';
+                }
+                li.innerHTML = '<div id="item' + item.i + '" data="' + item.i + ',' + item.n + ',' + item.g + ',' + item.a + '"><span>' + item.n + '</span>|<span>' + perm + '</span>|<span><a href="#" onclick="showMod(true, {id:\'' + item.i + '\',name:\'' + item.n + '\',groups:' + item.g + ',active:' + item.a + '});return false;">edit</a> / <a href="#" onclick="showDel(true, {id:\'' + item.i + '\',name:\'' + item.n + '\'});return false;">delete</a></span></div>';
+            }
+            
+            function setupUserView(items) {
+                var theUsers = document.getElementById("theUsers");
+                theUsers.innerHTML = '';
+                items = sortNodesByName(items);
+                for(var i = 0, l = items.length; i < l; i++) {
+                    var li = document.createElement("li");
+                    var item = items[i];
+                    setupViewItem(li, item);
+                    theUsers.appendChild(li);
+                }
+            }
+        
+            function sortNodesByName(items) {
+                return items.slice(0).sort(function(a,b) {
+                    return (a['n'] > b['n']) ? 1 : (a['n'] < b['n']) ? -1 : 0;
+                });
+            }
+            
+            function filterUserView() {
+                var theFilter, filter, theUsers, li, div, span, i;
+                theFilter = document.getElementById("theFilter");
+                filter = theFilter.value.toUpperCase();
+                theUsers = document.getElementById("theUsers");
+                li = theUsers.getElementsByTagName("li");
+                for (i = 0; i < li.length; i++) {
+                    div = li[i].getElementsByTagName("div")[0];
+                    span = div.children[0];
+                    if (span.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        li[i].style.display = "";
+                    } else {
+                        li[i].style.display = "none";
+            
+                    }
+                }
+            }
+            
+
+        </script>
+    </head>
+    <body onLoad="Init();">
+        <div class="parent">
+            <div class="block">
+                <span>Users:</span><input type="text" id="theFilter" style="float:right;" ondblclick="this.value='';filterUserView();" onkeyup="filterUserView();" placeholder="filter..."/>
+                <div id="userBlock">
+                    <ul id="theUsers" class="ztree"></ul>
+                </div>
+                <input style="float:right;margin:5px 0px 0 0;" type="button" id="addButton" class="loginItem" value="Add">
+            </div>
+            <form action="/none">
+            <div id="theLogin">
+                <div style="border-bottom:1px solid #ddd">Login:<div class="theError">error...</div></div>
+                <div>
+                    <label style="color:#fff;font: 4px/5px 'opensans-bold', sans-serif;">Name</label><input type="text" id="loginName" name="loginName" placeholder="Name...">
+                </div>
+                <div>
+                    <label style="color:#fff;font: 4px/5px 'opensans-bold', sans-serif;">Password</label><input type="password" id="loginPassword" name="loginPassword" placeholder="Password...">
+                </div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="loginButton" value="Submit">
+                </div>
+                <div>
+                    <p>Login as a member of the admin group.</p>
+                </div>
+            </div>
+            <div id="theAddMod">
+                <div style="border-bottom:1px solid #ddd"><span>Add User:</span><div class="theError">error...</div></div>
+                <div class="onAdd">
+                    <label style="color:#fff;font: 4px/5px 'opensans-bold', sans-serif;">Name</label><input type="text" id="addName" placeholder="Name...">
+                </div>
+                <div>
+                    <label style="color:#fff;font: 4px/5px 'opensans-bold', sans-serif;">Password</label><input type="password" id="addPassword" placeholder="Password...">
+                </div>
+                <div id="perm">
+                    <div>
+                        <label><span>Active</span></label><input type="checkbox" id="permActive">
+                    </div>
+                    <div>
+                        <label><span>Admin</span></label><input type="checkbox" id="permAdmin">
+                    </div>
+                    <div>
+                        <label><span>Restricted Files</span></label><input type="checkbox" id="permFiles">
+                    </div>
+                </div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="button" id="modStopButton" value="Cancel">
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="modButton" value="Submit">
+                </div>
+            </div>
+            <div id="theDel">
+                <div style="border-bottom:1px solid #ddd"><span>Delete User?</span><div class="theError">error...</div></div>
+                <div id="delTxt">
+                    <span>The deletion of user connot be undone!</span>
+                </div>
+                <div>
+                    <input style="float:right;margin:10px 5px 0 0;" type="button" id="delStopButton" value="Cancel">
+                    <input style="float:right;margin:10px 5px 0 0;" type="submit" id="delButton" value="Submit">
+                </div>
+            </div>
+            </form>
+        </div>
+    </body>
+</html><!-- ###MAIN### END -->

@@ -1,0 +1,9 @@
+0	16	21	\N	\N	\N	webdav_files	base	\N	f
+0	18	23	\N	\N	\N	templates_www	tmpl_www	\N	f
+6	7	22	\N	\N	\N	admin	\N	\N	f
+7	7	7	\N	\N	5008	\N	\N	\N	\N
+8	3	21	\N	\N	\N	realm	myrealm	\N	f
+8	4	21	\N	\N	\N	auth	basic	\N	f
+9	17	23	\N	1	\N	spf	\N	\N	f
+9	18	22	\N	0	\N	data	\N	\N	f
+10	8	21	\N	6	\N	users	\N	\N	f

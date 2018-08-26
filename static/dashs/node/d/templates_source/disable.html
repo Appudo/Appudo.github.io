@@ -1,0 +1,57 @@
+<script id="misc">
+    return {
+        hasAsk:false,
+        doDisable : function() {
+            showLoad();
+            $.post( "/server/", {data:'{"cmd":6}'}, function(res) { 
+                var data = validateRes(res);
+                if(!data) {
+                    // TODO error
+                    return;
+                }
+                window.location.href="about:blank"
+            });
+        },
+        ask : function() {
+            var dbl = $("#theDisable");
+            dbl.css('display', '');
+            disableMain();
+            this.hasAsk = true;
+            dbl.focus();
+        },
+        hideAsk : function() {
+            if(this.hasAsk) {
+                $("#theDisable").css('display', 'none');
+                this.hasAsk = false;
+                enableMain();
+            }
+        },
+        run : function() {
+            var _this = this;
+            $('#dbl').click(function(){_this.ask.call(_this);});
+            $('#ok').click(function(){_this.doDisable.call(_this);});
+            $('#rej').click(function(){_this.hideAsk.call(_this);});
+        }
+    }
+</script>
+<div class="i18n" id="other">
+    <div id="theDisable" style="display:none;" class="modal" tabindex="-1" role="dialog" aria-labelledby="disableModal" aria-hidden="true">
+    	<div class="dlg">
+    		<div class="ltop">
+                <span>{{dbl.rly}}</span>
+            </div>
+    		<div class="frm btn">
+                <button type="button" name="ok" id="ok">{{dbl.sub}}</button>
+                <span style="width:20px;display:inline-block;"></span>
+                <button type="button" name="rej" id="rej">{{dbl.rej}}</button>
+            </div>
+		</div>
+    </div>
+</div>
+<div class="i18n" id="content">
+    <h3>{{dbl.head}}</h3>
+    <pre>{{dbl.txt}}</pre>
+    <div class="frm">
+        <button type="button" name="dbl" id="dbl">{{dbl.prs}}</button>
+    </div>
+</div>

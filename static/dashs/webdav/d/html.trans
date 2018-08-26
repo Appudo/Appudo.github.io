@@ -1,0 +1,77 @@
+{
+    history:{{[
+  {
+    "t": "templates_www/landing",
+    "s": "templates_www_source/landing.html"
+  }
+]}},
+    transform:function(intxt, inname, outname, result) {
+        // TODO minify
+        var cleanNode = function(n) {
+            var children = n.childNodes;
+            for(var i =0, l = children.length; i < l; i++) {
+                if(children[i] && 
+                   children[i].nodeType == 3 && 
+                   !/\S/.test(children[i].nodeValue)) {
+                    n.replaceChild(document.createTextNode(''), children[i]);
+                } else if(children[i]) {
+                    cleanNode(children[i]);
+                }
+            }
+        }
+        
+           var r = /###.*?###/gm;
+        var wait = [];
+        
+        var fixTxt = function(tin) {
+            var pos = 0;
+            var out = "";
+            if(wait.length == 0) {
+                return tin
+            }
+            for(var i = 0; i < wait.length; i++) {
+                var w = wait[i];
+                out += tin.slice(pos, w.index);
+                out += w.data;
+                pos = w.index + w.len + 6;
+            }
+            
+            out += tin.slice(pos);
+            return out;
+        }
+        
+        var dowait = function(idx, after) {
+            if(idx == wait.length) {
+                after();
+            } else {
+                wait[idx].w.then(function(data) {
+                    wait[idx].data = data;
+                    dowait(idx + 1, after);
+                });
+            }
+        }
+        
+        while((ma = r.exec(intxt)) != null) {
+            try {
+                var t = ma[0].slice(3, -3);
+                var d = JSON.parse(t);
+                wait.push({index:ma.index,len:t.length,w:appudo.postPlain('/edit/8/3/'+appudo.random(), 'f=' + d.file + '&i=0', function() {
+                })});
+            } catch(e) {
+            }
+        }
+        
+        dowait(0, function() {
+            intxt = fixTxt(intxt);
+            /*
+            var node = dojo.create("iframe", {'style':'display:hidden;'});
+            node.src = "javascript:void(0);";
+            var doc = (node[0].contentWindow || node[0].contentDocument);
+            console.log(doc);
+            doc.innerHTML = intxt;
+            cleanNode(doc);
+            */
+            result(intxt);
+        });
+    }
+}

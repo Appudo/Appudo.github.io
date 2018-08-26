@@ -1,0 +1,2202 @@
+<!--
+    module.html is part of Appudo
+
+    Copyright (C) 2011-2016
+        00bd5bdef476a7cd2138cc18cb0274bf9dac8503cf7f406bcdff73381391c976 source@appudo.com
+        45228db3f8134a2c8b24246916d30bb3f66409f40611e6027e8e66b80ca59bd0 source@appudo.com
+
+    Licensed under the Apache License, Version 2.0
+
+    See http://www.apache.org/licenses/LICENSE-2.0 for more information
+-->
+<div data-dojo-id="page" data-dojo-type="dijit.layout.TabContainer" class="fHeight" data-dojo-props="ctx:{}, nested:true">
+        <script type="dojo/method">
+                var parent = dijit.getEnclosingWidget(this.domNode.parentNode);
+                var _this = this;
+
+                var doFocus = function() {
+                    ctx.tabFocus();
+                    setTimeout(function() {
+                        _this.layout();
+                    }, 10);
+                }
+
+                appudo.on(parent, 'show', this, function() {
+                    dojo.global.page = _this;
+                    doFocus();
+                });
+
+                appudo.on(this.tablist, 'selectChild', this, doFocus);
+                appudo.focus(parent);
+                var ctx = dojo.mixin(parent.ctx, this.ctx);
+                ctx.parent = parent;
+                ctx.self = this;
+                setTimeout(function() {
+                    ctx.fstyle = dojo.create('style', {type:'text/css'}, parent.domNode);
+                    ctx.typeCSS = function() {
+                        var p = ctx.fstyle;
+                        var r = [];
+                        for(var i = 0; i < 10; i++) {
+                            r.push(' #' + p.parentNode.id + ' .f' + i + ' { display: none; }');
+                        }
+                        return r;
+                    }();
+                }, 0);
+                ctx._visibility = function(ty) {
+                    var t0 =  ' #' + _this.domNode.id + ' .t0 { display: none; }';  // page view
+                    var t1 =  ' #' + _this.domNode.id + ' .t1 { display: none; }';  // multi view
+                    var t2 =  ' #' + _this.domNode.id + ' .t2 { display: none; }';
+                    switch(ty) {
+                        case 3: // reference
+                        case -1: // empty
+                            break;
+                        case 0: // page
+                            return {hide:t1, ctrl:true};
+                        case 1: // websocket
+                            return {hide:t0, ctrl:false};
+                        case 2: // cron
+                            return {hide:t0, ctrl:false};
+                    }
+                    return {hide:'', ctrl:false, dis:true};
+                }
+                ctx.setVisibility = function() {}
+                ctx.setVisibility_ = function() {
+                    var sctx = ctx.sctx;
+                    var v = ctx.viewPane;
+                    var d = ctx.dataPane;
+                    var c = ctx.codePane;
+                    var p = ctx.preView;
+
+                    if(!sctx || !v || !d || !c || !p)
+                        return;
+
+                    var i;
+                    var cp;
+                    var dpanes = [];
+                    var epanes = [];
+                    var vis = ctx._visibility(parseInt(sctx.ty));
+
+                    dojo.attr(ctx.style, {innerHTML: vis.hide});
+                    if(vis.dis) {
+                        dpanes = [v, p, d, c];
+                    } else {
+                        if(vis.ctrl) {
+                            epanes = [v, p];
+                        } else {
+                            dpanes = [v, p];
+                        }
+                        epanes.push(d);
+                        epanes.push(c);
+                    }
+
+                    for(i = 0; i < epanes.length; i++) {
+                        cp = epanes[i];
+                        cp.controlButton.set('disabled', false);
+                        cp.controlButton.onClick = cp.origOnClick;
+                        dojo.style(cp.controlButton.domNode, 'opacity', '1.0');
+                    }
+
+                    for(i = 0; i < dpanes.length; i++) {
+                        cp = dpanes[i];
+                        cp.controlButton.set('disabled', true);
+                        cp.controlButton.onClick = function() {};
+                        dojo.style(cp.controlButton.domNode, 'opacity', '0.5');
+                    }
+                    
+                    p.controlButton.set('disabled', true);
+                    dojo.style(p.controlButton.domNode, 'opacity', '0.5');
+                    p.controlButton.onClick = function() {};
+
+                    if(ctx.sFrm) {
+                        ctx.onSingle();
+                        if(ctx.type == 0) { // run_tree type 0
+                                if(ctx.vTab && ctx.vTab.selectedChildWidget == ctx.vViews)
+                                    ctx.vTab.selectChild(ctx.vMark);
+                                v.set('title', modNls.view);
+                        } else
+                        if(ctx.type == 1) { // run_tree type 1
+                                v.set('title', modNls.views);
+                        } else {
+                                v.set('title', modNls.views);
+                        }
+
+                        ctx.onType();
+                    }
+                }
+                ctx.initTabs = function(t) {
+                    var p2b = t.tablist.pane2button
+                    for (var i in p2b) {
+                        var o = p2b[i];
+                        var s = dojo.attr(dojo.byId(i), 'class').split(' ');
+                        dojo.forEach(s, function(entry) {
+                            if(entry.startsWith('t'))
+                                dojo.addClass(o.domNode, entry);
+                        });
+                    }
+                    ctx.setVisibility();
+                }
+
+                ctx.vPaneInit = function() {
+                    var _this = this;
+                    ctx.viewPane = this;
+                    setTimeout(function() {
+                        ctx.style = dojo.create('style', {type:'text/css'}, parent.domNode);
+                        _this.origOnClick = _this.controlButton.onClick;
+                        ctx.setVisibility = ctx.setVisibility_;
+                        ctx.setVisibility();
+                    }, 0);
+                }
+                ctx.dPaneInit = function() {
+                    var _this = this;
+                    setTimeout(function() {
+                        ctx.dataPane = _this;
+                        _this.origOnClick = _this.controlButton.onClick;
+                        ctx.setVisibility();
+                    }, 0);
+                }
+                ctx.cPaneInit = function() {
+                    var _this = this;
+                    setTimeout(function() {
+                        ctx.codePane = _this;
+                        _this.origOnClick = _this.controlButton.onClick;
+                        ctx.setVisibility();
+                    }, 0);
+                }
+
+
+                this.ctx = this.initCtx('run', ctx);
+                ctx.dlgs = {};
+                ctx.tmpl = {};
+
+                ctx.grid = function(t, a) { return page.ctx.type == 0 ? appudo.Grid(t, a) : appudo.TreeGrid(t, a) }
+                ctx.dtype = function(t, a) { return page.ctx.type == 2 ? appudo.DummyCont(t, a) : appudo.Dummy(t, a) }
+                ctx.vtype = function(t, a) { return page.ctx.type == 1 ? appudo.DummyCont(t, a) : appudo.Dummy(t, a) }
+
+                var d = ctx.iv = new appudo.defer();
+
+                ctx.gridInit = function(model, store, mergeStore, tree) {
+                        return function() {
+                                var _this = this;
+                                this.ctx = ctx;
+                                d.then(function() {
+                                        if(ctx.type == 0 && !tree) {
+                                                _this.set('store', ctx[mergeStore]);
+                                        } else {
+                                                _this.set('treeModel', ctx[model]);
+                                                if(mergeStore){
+                                                        merge(ctx[store], ctx[mergeStore]);
+                                                }
+                                        }
+                                });
+                        };
+                };
+
+                ctx.storeInit = function(store) {
+                        return function() {
+                                var _this = this;
+                                this.ctx = ctx;
+                                d.then(function(){
+                                        _this.set('store', ctx[store]);
+                                        _this.set('structure', _this.structure);
+                                });
+                        };
+                };
+
+                ctx.viewInit = ctx.storeInit('viewStore');
+
+                function merge(viewStore, mergeStore) {
+                        if(mergeStore._merged)
+                                return;
+                        mergeStore._merged = true;
+                        appudo.on(viewStore, 'New', function(newItem, parentInfo) {
+                                insert(viewStore, mergeStore, newItem);
+                        });
+                        appudo.on(viewStore, 'DeleteStart', function(item) {
+                                var id = viewStore.getValue(item, viewStore.oInf);
+                                mergeStore.delById('o'+id, id);
+                        });
+                        viewStore.fetch({query:{oid:'*'}, onComplete:function(views){
+                                dojo.forEach(views, function(entry, i) {
+                                        insert(viewStore, mergeStore, entry);
+                                });
+                        }, onError:function() {
+                                appudo.checkLogin();
+                        }});
+                }
+
+                function insert(viewStore, mergeStore, entry) {
+                        var id = viewStore.getValue(entry, viewStore.oInf);
+                        var l = viewStore.getValue(entry, 'l');
+                        var c = viewStore.getValue(entry, 'c') || 1;
+                        mergeStore.newItem({id:'o'+id, oid:id ,l:l, c:c});
+                }
+
+                appudo.addTmpl({
+                        mInfo : '/edit/1/6/'+ctx.type+'/'+ctx.id
+                }, ctx.tmpl);
+                ctx.modNls = modNls;
+                ctx.errNls = errNls;
+                ctx.nls = nls;
+                ctx.codeChanged = ctx.viewChanged = ctx.settChanged = function() {return false};
+                var _this = this;
+                var ldefer = ctx.loadSett();
+                ldefer.then(function(){
+                        appudo.addStores({
+                                viewStore : new appudo.ItemFileWriteStore({url:'/edit/1/4/'+ctx.id+'/'+(ctx.type == 1 ? ctx.iid : '')}),
+                                markSubStore : new appudo.ItemFileWriteStore({url:'/edit/1/5/'+ctx.type+'/'+ctx.id}),
+                                fileStore : new appudo.ItemFileWriteStore({url:'/edit/1/7/'+ctx.type+'/'+ctx.iid}),
+                                metaStore : new appudo.ItemFileWriteStore({url:'/edit/1/8/'+ctx.type+'/'+ctx.iid}),
+                                propStore : new appudo.ItemFileWriteStore({url:'/edit/1/9/'+ctx.id}),
+                                tableStore : new appudo.ItemFileWriteStore({url:'/edit/1/A/'+ctx.type+'/'+ctx.iid}),
+                                colStore : new appudo.ItemFileWriteStore({url:'/edit/1/E/'+ctx.id}),
+                                settStore : new appudo.ItemFileWriteStore({url:'/edit/1/B/'+ctx.type+'/'+ctx.iid}),
+                                roleStore : new appudo.ItemFileWriteStore({url:'/edit/1/C/'+ctx.type+'/'+ctx.iid}),
+                                foldersStore : new appudo.ItemFileWriteStore({url:'/edit/1/I/'+ctx.type+'/'+ctx.iid}),
+                                varStore : new appudo.ItemFileWriteStore({url:'/edit/1/D/'+ctx.type+'/'+ctx.iid}),
+                                skinStore : new appudo.ItemFileWriteStore({url:'/edit/1/G/'+ctx.type+'/'+ctx.iid}),
+                                errStore : new dojo.data.ObjectStore({objectStore:new dojo.store.Memory({data:[]})}),
+                                consStore : new appudo.ItemFileWriteStore({clearOnClose:true,urlPreventCache:true}),
+                                dataStore : new appudo.ItemFileWriteStore({clearOnClose:true,urlPreventCache:true}),
+                                htmlStore : new dojo.store.Memory({
+                                        data: [
+                                            {n:'HTML Namespace', v:'xmlns="http://www.w3.org/1999/xhtml"'},
+                                        ]
+                            }),
+                                docStore : new dojo.store.Memory({
+                                        data: [
+                                            {n:'HTML 4.01 Strict', v:'HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"'},
+                                            {n:'HTML 4.01 Transitional', v:'HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"'},
+                                            {n:'HTML 4.01 Frameset', v:'HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"'},
+                                            {n:'XHTML 1.0 Strict', v:'html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"'},
+                                            {n:'XHTML 1.0 Transitional', v:'html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"'},
+                                            {n:'XHTML 1.0 Frameset', v:'html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"'},
+                                            {n:'XHTML 1.1', v:'html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"'},
+                                            {n:'XHTML Basic 1.1', v:'html PUBLIC "-//W3C//DTD XHTML Basic 1.1//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd"'},
+                                            {n:'HTML 5', v:'HTML'},
+                                        ]
+                                }),
+                                rtStore : new dojo.store.Memory({
+                                        data: [
+                                            {n:'text', v:0},
+                                            {n:'bigint', v:1},
+                                            {n:'int', v:2},
+                                            {n:'real', v:3},
+                                            {n:'double precision', v:4},
+                                            {n:'bool', v:5}
+                                        ]
+                                })
+
+                        }, ctx);
+
+                        appudo.addModels({
+                                markModel : new appudo.ForestStoreModel({store:ctx.markSubStore,
+                                                rootId:'r', pId:'oid', cMask:1, cquery:{s:0}, query:{oid:'*'}}),
+                                subModel : new appudo.ForestStoreModel({store:ctx.markSubStore,
+                                                rootId:'r', pId:'oid', cMask:2, cquery:{s:1}, query:{oid:'*'}}),
+                                fileModel : new appudo.ForestStoreModel({store:ctx.fileStore,
+                                                rootId:'r', pId:'oid', cMask:4, query:{oid:'*'}}),
+                                metaModel : appudo.ForestStoreModel({store:ctx.metaStore,
+                                                rootId:'r', pId:'oid', cMask:8, query:{oid:'*'}}),
+                                skinModel : new appudo.ForestStoreModel({store:ctx.skinStore,
+                                                rootId:'r', pId:'oid', cMask:16, query:{oid:'*'}}),
+                                varModel : new appudo.ForestStoreModel({store:ctx.varStore,
+                                                rootId:'r', pId:'oid', query:{oid:'*'}}),
+                                colModel : new appudo.ForestStoreModel({store:ctx.colStore,
+                                                rootId:'r', pId:'oid', query:{oid:'*'}})
+                        }, ctx);
+
+                        ctx.viewStore.idInf = 'oid';
+                        ctx.viewStore.oInf = 'oid';
+                        ctx.tableStore.idInf = 'oid';
+                        ctx.tableStore.oInf = 't';
+
+                        setTimeout(function() {
+                                var ed = dojo.query('.Over', _this.domNode);
+                                if(ed.length != 0)
+                                        dojo.destroy(ed[0]);
+                        }, 0);
+
+                        ctx.sql_sel = dojo.query('.selTbl', _this.domNode)[0];
+                        var sqlCmd = dojo.query('.SQLCmd', _this.domNode)[0];
+                        var cont = dijit.getEnclosingWidget(sqlCmd);
+                        ctx.sql_show = function(v) {
+                            dojo.style(sqlCmd, 'display', v == 1 ? 'none' : 'block');
+                            ctx.sql_state = v;
+                            cont.layout();
+                        }
+
+                        ctx.sql_show(1);
+
+                        ctx.sql_doqry = function(qry, opt, onOk, onErr, doRow) {
+                            if(ctx.sql_inrun == 1){
+                                onErr();
+                                return;
+                            }
+                            var rem = appudo.addTask('');
+                            var drow = doRow || function(v) { return v; }
+                            var update_grid = function() {
+                                setTimeout(function() {
+                                    page.ctx.databar_pane._resizeCalled = false;
+                                    page.ctx.databar_pane.resize();
+                                    page.ctx.databar_tab.layout();
+                                }, 10);
+                            }
+                            ctx.sql_inrun = 1;
+                            dojo.xhrPost({
+                                    url : '/edit/0',
+                                    handleAs: 'text',
+                                    failOk:true,
+                                    content:dojo.mixin({c:'f',q:qry,m:ctx.iid}, opt),
+                                    load : function(response, ioArgs) {
+                                        var rhdr
+                                            try {
+                                                rhdr = JSON.parse(ioArgs.xhr.getResponseHeader("EXECSQL"));
+                                            } catch(e) {
+                                                rhdr = {e:1};
+                                                respone = 'internal error';
+                                            }
+                                            if(rhdr.e == 0) {
+                                                var rows = [];
+                                                var cols = [];
+                                                if(response)
+                                                {
+                                                    var items = response.slice(1, -2).split('"\n"');
+                                                    items.forEach(function(item, index) {
+                                                        item = '"' + item + '"';
+                                                        var ritems = item.split(',');
+                                                        if(index == 0) {
+                                                            ritems.forEach(function(ritem) {
+                                                                try {
+                                                                    cols.push(JSON.parse(ritem));
+                                                                } catch(e) {
+                                                                    cols.push('###JSON.parse error###');
+                                                                }
+                                                            });
+                                                        } else {
+                                                            var row = [];
+                                                            ritems.forEach(function(ritem) {
+                                                                try {
+                                                                    row.push(JSON.parse(ritem));
+                                                                } catch(e) {
+                                                                    row.push('###JSON.parse error###');
+                                                                }
+                                                            });
+                                                            rows.push(drow(row));
+                                                        }
+                                                    });
+                                                }
+                                                if(cols.length == 0) {
+                                                    cols = ['msg'];
+                                                    rows = [drow(['no error, no results'])];
+                                                }
+                                                onOk(cols, rows, rhdr);
+                                            } else {
+                                                var cols = ['msg'];
+                                                var rows = [drow([response])];
+                                                onOk(cols, rows, rhdr);
+                                            }
+                                            ctx.sql_inrun = 0;
+                                            rem();
+                                            update_grid();
+                                            return response;
+                                    },
+                                    error : function(r, io) {
+                                        console.log('error', r, io);
+                                        ctx.sql_inrun = 0;
+                                        appudo.onError(r, io, rem);
+                                        onErr();
+                                        update_grid();
+                                    }
+                            });
+                        }
+
+                        var nlsItems = dojo.query('.nls', _this.domNode);
+                        nlsItems.forEach(function(item) {
+                                item.innerHTML = _this._stringRepl(item.innerHTML);
+                        });
+
+
+                        ctx.viewStore.fetch({query:{oid:'*'}, onComplete:d.callback, onError:d.errback});
+
+                        d.then(function(views) {
+                                if(ctx.type == 0)
+                                        ctx.gParent = ctx.selectedView = ctx.selectedCode = ctx.viewStore.getValue(views[0], 'oid');
+                                ctx.initEdit();
+                        }, function() {
+                                appudo.checkLogin();
+                        });
+                });
+
+</script>
+<script type="dojo/method" data-dojo-event="initCtx" data-dojo-args="widget, ctx">
+                        var p = this;
+                        var pctx = p.ctx;
+                        if(!ctx)
+                                ctx = {};
+                        switch(widget) {
+                        case 'run':
+                                ctx.tabFocus = function() {
+                                        var sel = p.selectedChildWidget
+                                        var editor = null;
+                                        appudo.focus(ctx.parent);
+                                        if(sel.title == ctx.viewPane.title)
+                                                editor = ctx.viewEditor;
+                                        if(sel.title == modNls.code)
+                                                editor = ctx.codeEditor;
+
+                                        if(editor && editor.focus)
+                                                editor.focus();
+                                }
+                   // TODO remove
+                   /*
+ctx.to64 = function(data) {
+    return btoa(String.fromCharCode.apply(null, data));
+}
+*/
+// TODO remove
+                                ctx._save = function(editor) {
+                                        if(!editor || !editor.changed()) {
+                                                editor.abortSave();
+                                                return;
+                                        }
+                                        var rd = editor.getDiff();
+                                        var r = rd.r;
+                                        r = r.size() ? r.getResult() : new Uint8Array(new ArrayBuffer(0));
+                                        // TODO remove
+                                        /*
+                                        console.log(ctx.to64(r));
+                                        */
+                                        // TODO remove
+                                        console.log(r);
+                                        var txt = rd.t;
+                                        var ticket = editor.ticket;
+                                        var newTicket = appudo.random();
+                                        var up;
+                                        if(editor == ctx.viewEditor)
+                                                up = appudo.updateView;
+                                        if(editor == ctx.codeEditor)
+                                                up = appudo.updateCode;
+                                        appudo.postBinary((editor == ctx.viewEditor ? '/edit/7/0/' : '/edit/7/1/') + ctx.id +'/' + editor.viewId +'/' + ticket + '/' + newTicket, r).then(function(){
+                                                up(ctx.id, editor.viewId, txt);
+                                                editor.ticket = newTicket;
+                                                editor.textSaved();
+
+
+// TODO remove
+/*
+    var eget;
+    if(editor == ctx.viewEditor)
+        eget = appudo.getView
+    if(editor == ctx.codeEditor)
+        eget = appudo.getCode
+eget(ctx.id, editor.viewId, newTicket, function() {
+}).then(function(data){
+            if(data !== undefined) {
+            if(data != txt) {
+            console.log(data);
+            console.log(txt);
+                alert('diff error');
+            } else {
+                console.log('###MATCH###');
+            }
+            }
+        }, function() {
+            alert('diff error');
+        });
+        */
+// TODO remove
+                                        });
+                                }
+                                ctx.save = function() {
+                                        var sel = p.selectedChildWidget
+                                        var editor = null;
+                                        if(sel.title == ctx.viewPane.title)
+                                                editor = ctx.viewEditor;
+                                        if(sel.title == modNls.code)
+                                                editor = ctx.codeEditor;
+                                        ctx._save(editor);
+                                }
+                                ctx.saveAll = function() {
+                                        ctx._save(ctx.codeEditor);
+                                        ctx._save(ctx.viewEditor);
+                                        if(ctx.settChanged())
+                                                ctx.saveSett();
+                                }
+                                ctx.parent.save = ctx.saveAll;
+                                ctx.parent.changed = function() {
+                                        return ctx.codeEditor.changed() || ctx.viewEditor.changed();
+                                }
+                                ctx.setTxt = function(editor, txt) {
+                                        if(txt === undefined)
+                                                return;
+                                        editor.setText(txt);
+                                        editor.show();
+                                }
+                                ctx.initEdit = function() {
+                                        function g() {
+                                                if(!ctx.selectedView && !ctx.selectedCode)
+                                                {
+                                                        ctx.updateLoad(pctx.loadView, 2);
+                                                        ctx.updateLoad(pctx.loadCode, 2);
+                                                        return;
+                                                }
+                                                var editor = ctx.viewEditor;
+                                                if(editor && ctx.selectedView != editor.viewId && editor.started)
+                                                {
+                                                        ctx.codeChanged = editor.changed;
+                                                        editor.viewId = ctx.selectedView;
+                                                        editor.ticket = appudo.random();
+                                                        ctx.loadText(editor, editor.viewId);
+                                                }
+                                                editor = ctx.codeEditor;
+                                                if(editor && ctx.selectedCode != editor.viewId && editor.started)
+                                                {
+                                                        ctx.viewChanged = editor.changed;
+                                                        editor.viewId = ctx.selectedCode;
+                                                        editor.ticket = appudo.random();
+                                                        ctx.loadText(editor, editor.viewId);
+                                                }
+                                        }
+                                        if(ctx.iv) {
+                                                var d = ctx.iv;
+                                                ctx.iv = null;
+                                                d.then(g);
+                                        } else {
+                                                g();
+                                        }
+
+                                }
+                                ctx.loadText = function(editor, viewId) {
+                                        editor.hide();
+                                        function r(txt) {
+                                                ctx.setTxt(editor, txt);
+                                        }
+                                        if(editor == ctx.viewEditor)
+                                                appudo.getView(ctx.id, viewId, editor.ticket, function() {
+                                                    ctx.updateLoad(pctx.loadView, 2);
+                                                }).then(r, function() {
+                                                    appudo.onError({r:1}, null);
+                                                });
+                                        if(editor == ctx.codeEditor)
+                                                appudo.getCode(ctx.id, viewId, editor.ticket, function() {
+                                                    ctx.updateLoad(pctx.loadCode, 2);
+                                                }).then(r, function() {
+                                                    appudo.onError({r:1}, null);
+                                                });
+                                }
+                                ctx.updateTitle = function() {
+                                        var e1 = ctx.codeChanged();
+                                        var e2 = ctx.viewChanged();
+                                        var e3 = ctx.settChanged();
+                                        ctx.setTitle(e1 || e2 || e3);
+                                }
+                                ctx.view = function() {
+                                        var iframe = dojo.query('.bframe', ctx.vEdit.domNode)[0];
+                                        ctx.viewMenu.bindDomNode(iframe);
+                                        ctx.viewEditor = appudo.getDoc(iframe);
+                                        appudo.initEdit(ctx, iframe, 'ace/mode/html');
+                                        ctx.viewMenu.ctx.pinit();
+                                        dojo.query('.load', ctx.vEdit.domNode).forEach(function(node, index, nodelist) {
+                                            pctx.loadView = node;
+                                        });
+                                }
+                                ctx.updateLoad = function(node, t) {
+                                        switch(t){
+                                                case 0:
+                                                        node.innerHTML = '<span class="dijitIconLoading dijitInline lIcon"></span>' + nls.load;
+                                                        break;
+                                                case 1:
+                                                        node.innerHTML = modNls.selView;
+                                                        break;
+                                                case 2:
+                                                        node.innerHTML = modNls.selErr;
+                                                        break;
+                                        }
+                                }
+                                ctx.code = function() {
+                                        var iframe = dojo.query('.bframe', ctx.cEdit.domNode)[0];
+                                        ctx.codeMenu.bindDomNode(iframe);
+                                        ctx.codeEditor = appudo.getDoc(iframe);
+                                        ctx.codeOffset = dojo.position(iframe);
+                                        appudo.initEdit(ctx, iframe, 'ace/mode/swift');
+                                        ctx.codeMenu.ctx.pinit();
+                                        dojo.query('.load', ctx.cEdit.domNode).forEach(function(node, index, nodelist) {
+                                            pctx.loadCode = node;
+                                        });
+                                }
+                                ctx.setTitle = function(change) {
+                                        var parent = ctx.parent;
+                                        if(change == parent._changed)
+                                                return;
+                                        var t = parent.get('title');
+                                        if(!change) {
+                                                parent.set('title', t.charAt(0) == '*' ? t.substr(1) : t);
+                                        } else {
+                                                parent.set('title', '*'+t);
+                                        }
+                                        parent._changed = change;
+                                }
+                                ctx.askAdd = function(target, txt, ok) {
+                                        appudo.ask(txt, target, {before:appudo.askAddText(), onOk:ok});
+                                }
+                                ctx.pane = function(pane) {
+                                        var parent = dijit.getEnclosingWidget(pane.domNode.parentNode);
+                                        var self = pctx.self;
+                                        dojo.connect(parent, 'layout', parent, function() {
+                                                if(self != page.ctx.self)
+                                                    return;
+                                                var tab = this.getChildren()[2];
+                                                var pageBox = appudo.pageBox;
+                                                var marginBox = dojo.marginBox(tab.domNode);
+                                                if(pageBox && pageBox.h != marginBox.h && !this._maxState) {
+                                                        dojo.style(tab.domNode, 'height', pageBox.h+'px');
+                                                }
+                                        });
+                                        dojo.connect(pane, 'resize', pane, function(r) {
+                                                if(self != page.ctx.self)
+                                                    return;
+                                                var parent = dijit.getEnclosingWidget(this.domNode.parentNode);
+                                                var marginBox = dojo.marginBox(this.domNode);
+                                                if(r.h && !parent._maxState)
+                                                        appudo.pageBox = marginBox;
+                                        });
+
+                                        function reset(pane) {
+                                                parent._maxState = 0;
+                                                var c = parent.getChildren();
+                                                pane.downButton.set('iconClass', 'iMin');
+                                                pane.downButton.set('title', nls.min);
+                                                pane.upButton.set('iconClass', 'iMax');
+                                                pane.upButton.set('title', nls.max);
+                                                var cl = c[c.length - 1];
+                                                appudo.show(c[0].domNode, 'block');
+                                                appudo.show(c[1].domNode, 'block');
+                                                cl.region='bottom';
+                                                if(parent.getSplitter('bottom').domNode)
+                                                        appudo.show(parent.getSplitter('bottom').domNode, 'block');
+                                                dojo.query('.dijitTab', cl.tablist.containerNode).forEach(function(i) {
+                                                        if(i._show) {
+                                                            appudo.show(i, 'inline-block');
+                                                            delete i._show;
+                                                        }
+                                                });
+                                                if(parent._stateDiv)
+                                                        appudo.hide(parent._stateDiv);
+                                                var pageBox = appudo.pageBox;
+                                                var marginBox = dojo.marginBox(pane.domNode);
+                                                if(pageBox && pageBox.h != marginBox.h)
+                                                        dojo.style(pane.domNode, 'height', pageBox.h+'px');
+                                                parent.layout();
+                                        }
+
+                                        function checkBox(pane) {
+                                                var marginBox = dojo.marginBox(pane.domNode);
+                                                if(!appudo.pageBox)
+                                                        appudo.pageBox = marginBox;
+                                        }
+
+                                        pane.upButton.onClick = function() {
+                                                if(parent._maxState != 1) {
+                                                        parent._maxState = 1;
+                                                        var c = parent.getChildren();
+                                                        var cl = c[c.length - 1];
+                                                        checkBox(pane);
+                                                        appudo.hide(c[0].domNode);
+                                                        appudo.hide(c[1].domNode);
+                                                        if(parent.getSplitter('bottom').domNode)
+                                                                appudo.hide(parent.getSplitter('bottom').domNode);
+                                                        if(parent._stateDiv)
+                                                                appudo.hide(parent._stateDiv);
+                                                        cl.region='center';
+                                                        dojo.query('.dijitTab', cl.tablist.containerNode).forEach(function(i) {
+                                                            if(i._show) {
+                                                                appudo.show(i, 'inline-block');
+                                                                delete i._show;
+                                                            }
+                                                        });
+                                                        parent.layout();
+                                                        pane.upButton.set('iconClass', 'iRes');
+                                                        pane.upButton.set('title', nls.reset);
+                                                        pane.downButton.set('iconClass', 'iMin');
+                                                        pane.downButton.set('title', nls.min);
+                                                } else {
+                                                        reset(pane);
+                                                }
+                                        }
+                                        pane.downButton.onClick = function() {
+                                                if(parent._maxState != 2) {
+                                                        parent._maxState = 2;
+                                                        var c = parent.getChildren();
+                                                        var cl = c[c.length - 1];
+                                                        checkBox(pane);
+                                                        appudo.show(c[0].domNode, 'block');
+                                                        appudo.show(c[1].domNode, 'block');
+                                                        dojo.style(cl.domNode, 'height', '28px');
+                                                        cl.region='bottom';
+                                                        if(parent.getSplitter('bottom').domNode)
+                                                        appudo.hide(parent.getSplitter('bottom').domNode);
+                                                        dojo.query('.dijitTab', cl.tablist.containerNode).forEach(function(i) {
+                                                                if(appudo.isVisible(i)) {
+                                                                    i._show = true;
+                                                                    appudo.hide(i);
+                                                                }
+                                                        });
+                                                        if(!parent._stateDiv)
+                                                                parent._stateDiv = dojo.create('div', {style:{width:'20px', height:'27px'}}, cl.tablist.containerNode);
+                                                        appudo.show(parent._stateDiv, 'block');
+                                                        parent.layout();
+                                                        pane.downButton.set('iconClass', 'iRes');
+                                                        pane.downButton.set('title', nls.reset);
+                                                        pane.upButton.set('iconClass', 'iMax');
+                                                        pane.upButton.set('title', nls.max);
+                                                } else {
+                                                        reset(pane);
+                                                }
+                                        }
+                                }
+                                ctx._loadEmptySett = function(sctx, obj)
+                                {
+                                    ctx.iid = ctx.id;
+                                    sctx.ty = -1;
+                                    sctx.ouid = obj.ou || '';
+                                    sctx.ogid = obj.og || '';
+                                }
+                                ctx._loadSett = [
+                                    function(sctx, obj)     // 0 : page
+                                    {
+                                        ctx.iid = ctx.type == 1 ? obj.i : ctx.id;
+                                        sctx.ty = parseInt(obj.ty);
+                                        sctx.ouid = obj.ou || '';
+                                        sctx.ogid = obj.og || '';
+                                        sctx.entry = obj.entry || '';
+                                        sctx.desc = obj.d || '';
+                                        sctx.tl = obj.t || '';
+                                        sctx.html = obj.h || '';
+                                        sctx.doc = obj.doc || '';
+                                        sctx.inh = appudo.intToCheck(obj.r == 0 ? 1 : 0);
+                                        sctx.aref = appudo.intToCheck(obj.ref);
+                                        sctx.cont = obj.c || 0;
+                                        sctx.exc = appudo.intToCheck(obj.ex);
+                                        sctx.ssl = appudo.intToCheck(obj.s);
+                                        sctx.fn = '/'+obj.fn;
+                                        sctx.fold = obj.fn;
+                                    }, function(sctx, obj)  // 1 : websocket
+                                    {
+                                        ctx.iid = ctx.type == 1 ? obj.i : ctx.id;
+                                        sctx.ws_entry = obj.entry || '';
+                                        sctx.ws_desc = obj.d || '';
+                                        sctx.ty = parseInt(obj.ty);
+                                        sctx.ws_aref = appudo.intToCheck(obj.ref);
+                                        sctx.ouid = obj.ou || '';
+                                        sctx.ogid = obj.og || '';
+                                        sctx.ws_comp = appudo.intToCheck(obj.ws_comp);
+                                        sctx.ws_disp = appudo.intToCheck(obj.ws_disp);
+                                        sctx.ws_bin = appudo.intToCheck(obj.ws_bin);
+                                        sctx.ws_txt = appudo.intToCheck(obj.ws_txt);
+                                        sctx.ws_msize = obj.ws_msize || 0;
+                                        sctx.ws_bsize = obj.ws_bsize || 0;
+                                        sctx.ws_blimit = obj.ws_blimit || 0;
+                                        sctx.ws_climit = obj.ws_climit || 0;
+                                        sctx.ws_tlimit = obj.ws_tlimit || 0;
+                                        sctx.ws_ssl = appudo.intToCheck(obj.ws_ssl);
+                                    }, function(sctx, obj)  // 2 : cron
+                                    {
+                                        ctx.iid = ctx.type == 1 ? obj.i : ctx.id;
+                                        sctx.cr_desc = obj.d || '';
+                                        sctx.ty = parseInt(obj.ty);
+                                        sctx.ouid = obj.ou || '';
+                                        sctx.ogid = obj.og || '';
+                                        sctx.cr_once = appudo.intToCheck(obj.cr_once);
+                                        sctx.cr_now = appudo.intToCheck(obj.cr_now);
+                                        sctx.cr_rst = appudo.intToCheck(obj.cr_rst);
+                                        var bv = obj.cr_begin || 0;
+                                        var d = new Date();
+                                        var v = Math.floor(bv / (60 * 60))
+                                        d.setHours(v);
+                                        bv -= v * 60 * 60;
+                                        v = Math.floor(bv / 60);
+                                        d.setMinutes(v);
+                                        bv -= v * 60;
+                                        d.setSeconds(bv);
+                                        sctx.cr_begin = d;
+                                        sctx.cr_rep = obj.cr_rep || 0;
+                                        sctx.cr_runit = obj.cr_runit || 0;
+                                    }, function(sctx, obj)  // 3 : reference
+                                    {
+                                        ctx.iid = ctx.id;
+                                        sctx.ty = parseInt(obj.ty);
+                                        sctx.ref_entry = obj.entry || '';
+                                        sctx.ref_target = obj.target || '';
+                                        sctx.ref_desc = obj.d || '';
+                                        sctx.ref_acc = obj.acc || '';
+                                        sctx.ouid = obj.ou || '';
+                                        sctx.ogid = obj.og || '';
+                                    }
+                                ];
+                                ctx._saveSett = [
+                                    function(r, v) {         // 0 : page
+                                        var p = 0;
+                                        var sctx = ctx.sctx;
+                                        if(v.entry != sctx.entry && (p = 1))
+                                                r.b = v.entry;
+                                        if(v.desc != sctx.desc && (p = 1))
+                                                r.d = v.desc;
+                                        var inh = appudo.checkToInt(v.inh);
+                                        if(appudo.checkToInt(sctx.inh) != inh && (p = 1))
+                                                r.e = inh == 0 ? 't' : 'f';
+                                        var exc = appudo.checkToInt(v.exc);
+                                        if(appudo.checkToInt(sctx.exc) != exc && (p = 1))
+                                                r.f = exc;
+                                        if(v.html != sctx.html && (p = 1))
+                                                r.g = v.html;
+                                        if(v.doc != sctx.doc && (p = 1))
+                                                r.h = v.doc;
+                                        if(v.tl != sctx.tl && (p = 1))
+                                                r.i = v.tl;
+                                        if(v.ty != sctx.ty && (p = 1))
+                                                r.j = v.ty;
+                                        if(v.ouid != sctx.ouid && (p = 1))
+                                                r.x = v.ouid;
+                                        if(v.ogid != sctx.ogid && (p = 1))
+                                                r.y = v.ogid;
+                                        if(v.cont != sctx.cont && (p = 1))
+                                                r.k = v.cont;
+                                        if(v.fold != sctx.fold && (p = 1))
+                                                r.l = v.fold;
+                                        var ssl = appudo.checkToInt(v.ssl);
+                                        if(appudo.checkToInt(sctx.ssl) != ssl && (p = 1))
+                                                r.m = ssl;
+                                        var aref = appudo.checkToInt(v.aref);
+                                        if(appudo.checkToInt(sctx.aref) != aref && (p = 1))
+                                                r.n = aref;
+                                        if(p)
+                                            r.o = 0;
+                                        return p;
+                                    }, function(r, v) {        // 1 : websocket
+                                        var p = 0;
+                                        var sctx = ctx.sctx;
+                                        if(v.ws_entry != sctx.ws_entry && (p = 1))
+                                                r.b = v.ws_entry;
+                                        if(v.ws_desc != sctx.desc && (p = 1))
+                                                r.d = v.ws_desc;
+                                        var ws_comp = appudo.checkToInt(v.ws_comp);
+                                        if(appudo.checkToInt(sctx.ws_comp) != ws_comp && (p = 1))
+                                                r.e = ws_comp;
+                                        var ws_disp = appudo.checkToInt(v.ws_disp);
+                                        if(appudo.checkToInt(sctx.ws_disp) != ws_disp && (p = 1))
+                                                r.f = ws_disp;
+                                        var ws_bin = appudo.checkToInt(v.ws_bin);
+                                        if(appudo.checkToInt(sctx.ws_bin) != ws_bin && (p = 1))
+                                                r.g = ws_bin;
+                                        var ws_txt = appudo.checkToInt(v.ws_txt);
+                                        if(appudo.checkToInt(sctx.ws_txt) != ws_txt && (p = 1))
+                                                r.h = ws_txt;
+                                        if(v.ws_msize && v.ws_msize != sctx.ws_msize && (p = 1))
+                                                r.i = v.ws_msize;
+                                        if(v.ws_bsize && v.ws_bsize != sctx.ws_bsize && (p = 1))
+                                                r.j = v.ws_bsize;
+                                        if(v.ws_blimit && v.ws_blimit != sctx.ws_blimit && (p = 1))
+                                                r.k = v.ws_blimit;
+                                        if(v.ws_climit && v.ws_climit != sctx.ws_climit && (p = 1))
+                                                r.l = v.ws_climit;
+                                        if(v.ws_tlimit && v.ws_tlimit != sctx.ws_tlimit && (p = 1))
+                                                r.m = v.ws_tlimit;
+                                        var ws_ssl = appudo.checkToInt(v.ws_ssl);
+                                        if(appudo.checkToInt(sctx.ws_ssl) != ws_ssl && (p = 1))
+                                                r.n = ws_ssl;
+                                        var aref = appudo.checkToInt(v.ws_aref);
+                                        if(appudo.checkToInt(sctx.ws_aref) != aref && (p = 1))
+                                                r.p = aref;
+                                        if(v.ouid != sctx.ouid && (p = 1))
+                                                r.x = v.ouid;
+                                        if(v.ogid != sctx.ogid && (p = 1))
+                                                r.y = v.ogid;
+                                        if(p)
+                                            r.o = 1;
+                                        return p;
+                                    }, function(r, v) {         // 2 : cron
+                                        var p = 0;
+                                        var sctx = ctx.sctx;
+                                        var begin = v.cr_begin ? (v.cr_begin.getHours() * 60 * 60 + v.cr_begin.getMinutes() * 60 + v.cr_begin.getSeconds()) : null;
+                                        if(begin && sctx.cr_begin != begin && (p = 1))
+                                                r.b = begin;
+                                        if(v.cr_desc != sctx.cr_desc && (p = 1))
+                                                r.d = v.cr_desc;
+                                        var rep = v.cr_rep;
+                                        if(rep && sctx.cr_rep != rep && (p = 1))
+                                                r.e = rep;
+                                        var unit = v.cr_runit;
+                                        if(unit && sctx.cr_runit != unit && (p = 1))
+                                                r.f = unit;
+                                        var once = appudo.checkToInt(v.cr_once);
+                                        if(appudo.checkToInt(sctx.cr_once) != once && (p = 1))
+                                                r.g = once == 1 ? 't' : 'f';
+                                        var now = appudo.checkToInt(v.cr_now);
+                                        if(appudo.checkToInt(sctx.cr_now) != now && (p = 1))
+                                                r.h = now == 1 ? 't' : 'f';
+                                        var rst = appudo.checkToInt(v.cr_rst);
+                                        if(appudo.checkToInt(sctx.cr_rst) != rst && (p = 1))
+                                                r.i = rst == 1 ? 't' : 'f';
+                                        if(v.ouid != sctx.ouid && (p = 1))
+                                                r.x = v.ouid;
+                                        if(v.ogid != sctx.ogid && (p = 1))
+                                                r.y = v.ogid;
+                                        if(p)
+                                            r.o = 2;
+                                        return p;
+                                    }, function(r, v) {         // 3 : reference
+                                        var p = 0;
+                                        var sctx = ctx.sctx;
+                                        if(v.ref_entry != sctx.ref_entry && (p = 1))
+                                                r.b = v.ref_entry;
+                                        if(v.ref_target != sctx.ref_target && (p = 1))
+                                                r.f = v.ref_target;
+                                        if(v.ref_desc != sctx.desc && (p = 1))
+                                                r.d = v.ref_desc;
+                                        if(v.ref_acc != sctx.ref_acc && (p = 1))
+                                                r.e = v.ref_acc;
+                                        if(v.ouid != sctx.ouid && (p = 1))
+                                                r.x = v.ouid;
+                                        if(v.ogid != sctx.ogid && (p = 1))
+                                                r.y = v.ogid;
+                                        if(p)
+                                            r.o = 3;
+                                        return p;
+                                    }
+                                ];
+                                ctx.loadSett = function() {
+                                        if(ctx.sctx) {
+                                                var d = new appudo.defer();
+                                                d.resolve(null);
+                                                return d;
+                                        }
+                                        return appudo.cache(ctx.tmpl.mInfo, undefined, function() {
+                                            ctx.self.closeActive();
+                                        }).then(function(d){
+                                                var obj = dojo.fromJson(d);
+                                                if(obj) {
+                                                    var sctx = {};
+                                                    ctx.sctx = sctx;
+                                                    sctx.id = ctx.id = obj.id;
+                                                    var ty = parseInt(obj.ty);
+                                                    if(ty > -1 && ty < ctx._loadSett.length) {
+                                                        ctx._loadSett[ty](sctx, obj);
+                                                    } else {
+                                                        ctx._loadEmptySett(sctx, obj);
+                                                    }
+                                                }
+                                        });
+                                }
+                                ctx.initSett = function() {
+                                        if(ctx.type != 0)
+                                                return;
+                                        var sctx;
+                                        ctx.stateSett(true, true);
+                                        ctx.loadSett().then(function(){
+                                                appudo.on(ctx.sFrm, 'childChange', function() {
+                                                        ctx.stateSett(false);
+                                                });
+                                                ctx.settChanged = ctx.sChanged;
+                                                ctx.sChanged = null;
+                                                sctx = ctx.sctx;
+                                                ctx.sFrm.set('value', sctx);
+                                                ctx.sFreset();
+                                                ctx.setVisibility();
+                                        });
+                                }
+                                ctx.resSett = function() {
+                                        sctx = ctx.sctx;
+                                        ctx.sFrm.reset();
+                                        ctx.sFrm.set('value', sctx);
+                                        ctx.sFreset();
+                                        ctx.stateSett(true);
+                                        ctx.setVisibility();
+                                }
+                                ctx.onSingle = function() {
+                                    var v = ctx.sFrm.get('value');
+                                    var once = v.cr_once ? v.cr_once.length != 0 : false;
+                                    var now = v.cr_now ? v.cr_now.length != 0 : false;
+                                    var label = dijit.getEnclosingWidget(dojo.query('[name=cr_rep]', ctx.sFrm.domNode)[0]);
+                                    var select = dijit.getEnclosingWidget(dojo.query('[name=cr_runit]', ctx.sFrm.domNode)[0]);
+                                    var begin = dijit.getEnclosingWidget(dojo.query('[name=cr_begin]', ctx.sFrm.domNode)[0]);
+                                    label.set('disabled', once);
+                                    select.set('disabled', once);
+                                    begin.set('disabled', now);
+                                }
+                                ctx.onType = function() {
+                                    var v = ctx.sFrm.get('value');
+                                    var html = "";
+
+                                    for(var i = 0; i < ctx.typeCSS.length; i++) {
+                                        if(i != v.ty) {
+                                            html += ctx.typeCSS[i];
+                                        }
+                                    }
+
+                                    dojo.attr(ctx.fstyle, {innerHTML: html});
+
+                                    if(ctx.sctx.ty != v.ty) {
+                                        ctx.sFrm._changed = true;
+                                        ctx.stateSett(false);
+                                    }
+                                    
+                                    dojo.query('.dijitTextBoxDisabled, .dijitDisabled, .dijitCheckBoxDisabled, .dijitCheckBoxCheckedDisabled', ctx.sFrm.domNode).forEach(function(i) {
+                                        dojo.removeClass(i, 'dijitTextBoxDisabled');
+                                        dojo.removeClass(i, 'dijitDisabled');
+                                        dojo.removeClass(i, 'dijitCheckBoxDisabled');
+                                        dojo.removeClass(i, 'dijitCheckBoxCheckedDisabled');
+                                    });
+                                }
+                                ctx.saveSett = function() {
+                                        var v = ctx.sFrm.get('value');
+                                        var r = {};
+                                        var sctx = ctx.sctx;
+                                        r.a = sctx.id;
+                                        var p = 0;
+                                        if(v.ty > -1 && v.ty < ctx._saveSett.length) {
+                                            p = ctx._saveSett[v.ty](r, v);
+                                        }
+                                        if(p){
+                                                var rem = appudo.addTask('');
+                                                dojo.xhrPost({
+                                                        url : '/edit/0/' + ctx.iid,
+                                                        handleAs: 'json',
+                                                        failOk:true,
+                                                        content:dojo.mixin({c:'N'}, r),
+                                                        load : function(response, ioArgs) {
+                                                                if(response && response.r == 0) {
+                                                                        dojo.mixin(sctx, v);
+                                                                        var tfn = sctx.tfn || '';
+                                                                        sctx.fn = tfn;
+                                                                        sctx.fold = tfn.substr(1);
+                                                                        ctx.resSett();
+                                                                        if(response.d) {
+                                                                            rem();
+                                                                            ctx.remove(ctx._selfPane);
+                                                                            setTimeout(function() {
+                                                                                ctx.reload();
+                                                                            }, 0);
+                                                                        }
+                                                                } else {
+                                                                        appudo.onError(response, ioArgs);
+                                                                }
+                                                                rem();
+                                                                return response;
+                                                        },
+                                                        error : function(r, io) {appudo.onError(r, io, rem)}
+                                                });
+
+                                                appudo.cache(ctx.tmpl.mInfo, null);
+                                        }
+                                }
+                                ctx.stateSett = function(dis, p) {
+                                        ctx.sSav.set('disabled', dis);
+                                        ctx.sRes.set('disabled', dis);
+                                        ctx.sSav.set('disabled', true);
+                                        ctx.sRes.set('disabled', true);
+                                        if(!p)
+                                                ctx.updateTitle();
+                                }
+                                ctx.sChanged = function() {
+                                        return false;
+                                        //return ctx.sFrm._changed;
+                                }
+                                ctx.sAdd = function(t) {
+                                        return function(e) {
+                                                var r = {};
+                                                function dbl(ev) {
+                                                        if(ev)
+                                                                ev.preventDefault();
+                                                        if(r.sub)
+                                                                r.sub();
+                                                }
+                                                r.sub = appudo.ask(nls.sel, e.target, {
+                                                        before:appudo.askAddMSelect(t == 0 ? ctx.htmlStore : ctx.docStore, dbl),
+                                                        onOk:function(d){
+                                                                var field = t == 0 ? ctx.fhtml : ctx.fdoc;
+                                                                field.set('value', d.value[0]);
+                                                }});
+                                        }
+                                }
+                                ctx.sFRem = function() {
+                                        var f = dojo.query('.fold', ctx.sFrm.domNode)[0];
+                                        dojo.forEach(f.children, function(item) {
+                                                dojo.destroy(item);
+                                        });
+                                }
+                                ctx.sFreset = function() {
+                                        var f = dojo.query('.fold', ctx.sFrm.domNode)[0];
+                                        ctx.sFRem();
+                                        f.appendChild(ctx.scFolder(ctx.sctx.fn));
+                                }
+                                ctx.sFset = function(e, vF) {
+                                        var v = ctx.sFrm.get('value');
+                                        if(vF === undefined){
+                                                var f = dojo.query('.fold', ctx.sFrm.domNode)[0];
+                                                ctx.sFRem();
+                                                f.appendChild(ctx.scFolder(fileTree.rootName()));
+                                        }
+                                        v.fold = vF === undefined ? "" : vF;
+                                        ctx.sFrm.set('value', v);
+                                        ctx.sFrm._changed = true;
+                                        ctx.stateSett();
+                                },
+                                ctx.sDrop = function(source, nodes, copy){
+                                        var f = dojo.query('.fold', ctx.sFrm.domNode)[0];
+                                        var dnode = nodes[0];
+                                        var t = source.getItem(dnode.id);
+                                        var tree = source.tree;
+                                    var node = dijit.getEnclosingWidget(dnode);
+                                        var n = ctx.scFolder('/data/' + tree.absName(node));
+                                        var m = tree.model;
+                                        var s = m.store;
+                                        var type = s.getValue(node.item, 't');
+                                        var id = tree.getDropTarget(node);
+                                        if(nodes.length != 1 || type != 0)
+                                                return;
+
+                                        ctx.sFRem();
+                                        f.appendChild(n);
+                                        ctx.sFset(null, id);
+                                }
+                                ctx.scFolder = function(f) {
+                                var n = dojo.create('div');
+                                var node = dojo.create('span', null, n);
+                                var img = dojo.create('img', {src:page._blankGif}, node);
+                                        ctx.sctx.tfn = f;
+                                        dojo.addClass(n, 'dijitTreeRow');
+                                        dojo.addClass(node, 'dijitTreeContent');
+                                node = dojo.create('span', {innerHTML:f}, node);
+                                        dojo.addClass(node, 'dijitTreeLabel');
+                                        dojo.addClass(img, 'dijitIcon dijitTreeIcon iFolder');
+                                        return n;
+                                }
+                                ctx.inh = function(t) {
+                                        if(!t)
+                                                return function(value, idx, level) {
+                                                        return value && value != '0' ? nls.y : nls.n;
+                                                }
+                                        else
+                                                return function(value, idx, level) {
+                                                        if(level == 0 && !this.grid._in) return '';
+                                                        return value && value != '0' ? nls.y : nls.n;
+                                                }
+                                }
+                                ctx.empty = function(value, idx, level){
+                                        return !value && value !== 0 ? '' : value;
+                                }
+                                ctx.skin = function(){
+                                        if(ctx.type == 0)
+                                                return function(value, idx, level) {
+                                                        return !value && value !== 0 ? nls.all : value;
+                                                }
+                                        else
+                                                return function(value, idx, level) {
+                                                        if(level == 0 && !this.grid._in) return '';
+                                                        return !value && value !== 0 ? nls.all : value;
+                                                }
+                                }
+                                ctx.lvlFmt = function(){
+                                        if(ctx.type == 0)
+                                                return null;
+                                        return function(value, idx, level) {
+                                                if(level == 0 && !this.grid._in) return '';
+                                                return value;
+                                        }
+                                }
+                                ctx.addE = function(t, c, f, i, a){
+                                        if(!a) a= {};
+                                        var id = a.id === undefined ? 'id' : a.id;
+                                        return function(s, item, values){return {item:item,t:t,c:c,r:a.r,field:f,value:values[i],mypost:a.mypost,post:{a:values[id],p:ctx.type == 0 ? a.p : null,i:ctx.type == 1 ? ctx.iid : null},onOk:function(v){s.setValue(item, i, v.value)}}};
+                                }
+                                break;
+                        case 'viewsBar':
+                                ctx.mchg = function(v) { pctx.viewEditor.findMarker(v) };
+                                ctx.vchg = function(v, f) {
+                                        var ft = pctx.vmfilter;
+                                        ft.set('displayedValue', '');
+                                        pctx.selectedView = f.getItemIdentity();
+                                        ft.set('query', {p:pctx.selectedView});
+                                        pctx.updateLoad(pctx.loadView, 0);
+                                        pctx.initEdit();
+                                };
+                                ctx.addData = function(type, n) {
+                                        var txt = '';
+                                        if(type == 0)
+                                                txt = pctx.viewEditor.selectedText();
+                                        var m = '###'+n+'###';
+                                        txt = '<!-- '+m+' START -->'+txt+'<!-- '+m+' END -->';
+                                        pctx.viewEditor.insertText(type == 0 ? txt : m );
+                                };
+                                ctx.addMS = function(e) {
+                                        var f = pctx.vmfilter;
+                                        if(f.check()) {
+                                                var s = f.getItemValue('s');
+                                                var v = f.get('displayedValue');
+                                                appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addData(s ? 0 : 1, v)}})
+                                        }
+                                };
+                                ctx.addR = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addData(1, '$rdir')}})};
+                                ctx.addT = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addData(1, '$target')}})};
+                                break;
+                        case 'dataBar':
+                                ctx.ins = function() { alert('ins'); };
+                                ctx.query = function() { pctx.sql_show(0); };
+                                ctx.view = function() { pctx.sql_show(1); };
+                                ctx.run = function() {
+                                    var s = [];
+                                    var g = ctx.grid;
+                                    var opt = {l:0,i:0,s:0};
+                                    var qry = pctx.sql_qry.value;
+                                    if(pctx.sql_state == 1)
+                                        return;
+                                    if(pctx.sql_sel) {
+                                        dojo.style(pctx.sql_sel, 'display', 'none');
+                                        pctx.sql_sel = null;
+                                    }
+                                    pctx.sql_doqry(qry, opt, function(cols, rows){
+                                        var store = null;
+                                        cols.forEach(function(item, index) {
+                                            var ft = 'f'+index;
+                                            s.push({name:item, field:ft});
+                                        });
+                                        store = new dojo.data.ObjectStore({objectStore:new dojo.store.Memory({data:rows})});
+                                        g.setStore(null);
+                                        g.set('structure', s);
+                                        g.setStore(store);
+                                        g.ed = null;
+                                        g.resize();
+                                        g.render();
+                                        pctx.self.layout();
+                                    }, function(){}, function(v) {
+                                        var ritem = {};
+                                        v.forEach(function(item, index) {
+                                            ritem['f'+index] = item;
+                                        });
+                                        return ritem;
+                                    });
+                                };
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.gup = function(v) {
+                                        var s = [];
+                                        var ed = [null];
+                                        var g = ctx.grid;
+                                        var opt = {l:0,i:0,s:0};
+                                        var qry = pctx.sql_qry.value;
+                                        var rs = pctx.colStore;
+                                        if(pctx.sql_state == 0)
+                                            return;
+                                        if(pctx.sql_sel) {
+                                            dojo.style(pctx.sql_sel, 'display', 'none');
+                                            pctx.sql_sel = null;
+                                        }
+                                        pctx.sql_doqry('SELECT * FROM "' + v + '"', opt, function(cols, rows){
+                                            var store = null;
+                                            cols.forEach(function(item, index) {
+                                                var ft = 'f'+index;
+                                                s.push({name:item, field:ft});
+
+                                                /*
+                                                var ef = function(st, item, values){
+                                                        return {t:0,c:']',field:'e',value:values[ft],post:{a:id, b:rs.getIdentity(entry)},onOk:function(v){st.setValue(item, ft, v.value)}}
+                                                };
+                                                ed.push(ef);
+                                                */
+                                                // TODO allow to update data fields
+                                            });
+                                            store = new dojo.data.ObjectStore({objectStore:new dojo.store.Memory({data:rows})});
+                                            g.setStore(null);
+                                            g.set('structure', s);
+                                            g.setStore(store);
+                                            g.ed = ed;
+                                            g.render();
+                                            g.resize();
+                                            pctx.self.layout();
+                                        }, function(){}, function(v) {
+                                            var ritem = {};
+                                            v.forEach(function(item, index) {
+                                                ritem['f'+index] = item;
+                                            })
+                                            return ritem;
+                                        });
+                                };
+                                break;
+                        case 'codeBar':
+                                ctx.mchg = function(v) { pctx.codeEditor.findFkt(v) };
+                                ctx.vchg = function(v, f) {
+                                        var ft = pctx.cmfilter;
+                                        ft.set('displayedValue', '');
+                                        pctx.selectedCode = f.getItemIdentity();
+                                        ft.set('query', {p:pctx.selectedCode});
+                                        pctx.updateLoad(pctx.loadCode, 0);
+                                        pctx.initEdit();
+                                };
+                                ctx.addFunc = function(n, a, r) {pctx.codeEditor.insertText('\nfunc '+n+'(' + (a ? a : "") + ') -> ' + (r ? r : "Void") + ' {\n\n}\n')}
+                                ctx.addMS = function(e) {
+                                        var f = pctx.cmfilter;
+                                        if(f.check()) {
+                                                var s = f.getItemValue('s');
+                                                var v = f.get('displayedValue');
+                                                appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc(v)}})
+                                        }
+                                };
+                                ctx.funcs = {};
+                                ctx.funcs['main'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('main')}})};
+                                ctx.funcs['preHeader'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('preHeader')}})};
+                                ctx.funcs['preCache'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('preCache', 'ev : PageEvent', 'PageCache')}})};
+                                ctx.funcs['onStart'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('onStart')}})};
+                                ctx.funcs['onUpload'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('onUpload', 'ev : PageEvent', 'FileItem?')}})};
+                                ctx.funcs['onError'] = function(e) {appudo.ask(nls.insc,null, {x:e.clientX,y:e.clientY,onOk:function(){ctx.addFunc('onError', 'ev : ErrorEvent')}})};
+                                break;
+                        case 'props':
+                                ctx.type = appudo.gridFmt('iProp');
+                                break;
+                        case 'views':
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.nview, function(v) {ctx.grid.add(4, null, v.value)})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.type = appudo.gridFmt('iView');
+                                ctx.ed = [pctx.addE(0, '\\', 'b', 'l', {id:'oid'})];
+                                break;
+                        case 'marks':
+                                ctx.show = function() {console.log(ctx.grid);}
+                                pctx.marks = ctx;
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.amark, function(v) {ctx.grid.addSub(6, v.value, null, {s:0}, pctx.type == 2 ? pctx.selectedView : undefined)})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iView', 'iMark');
+                                ctx.type = ctx.fmt[0];
+                                ctx.init = pctx.gridInit('markModel', 'viewStore', 'markSubStore');
+                                ctx.ed = [pctx.addE(0, 'S', 'b', 'l'),
+                                                  pctx.addE(1, 'S', 'e', 'i')];
+                                break;
+                        case 'sub':
+                                ctx.show = function() {console.log(ctx.grid.parent);}
+                                pctx.sub = ctx;
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.asub, function(v) {ctx.grid.addSub('K', v.value, null, {s:1}, pctx.type == 2 ? pctx.selectedView : undefined)})}
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt= appudo.treeFmt('iView', 'iSub');
+                                ctx.type = ctx.fmt[0];
+                                ctx.view = function(value, idx) {
+                                                return value !== undefined ? value : '';
+                                };
+                                ctx.init = pctx.gridInit('subModel', 'viewStore', 'markSubStore');
+                                ctx.ed = [pctx.addE(0, 'S', 'b', 'l'),
+                                                  pctx.addE(0, 'S', 'v', 'v', {r:true}),
+                                                  pctx.addE(1, 'S', 'e', 'i')];
+                                break;
+                        case 'meta':
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.ameta, function(v) {ctx.grid.addSub(8, v.value, pctx.type == 1 ? {i:pctx.iid} : null)})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iView', 'iMeta');
+                                ctx.type = ctx.fmt[0];
+                                ctx.init = pctx.gridInit('metaModel', 'viewStore', 'metaStore');
+                                ctx.ed = [pctx.addE(0, 'T', 'b', 'l'),
+                                                  pctx.addE(3, 'T', 'e', 's', {r:true}),
+                                                  pctx.addE(1, 'T', 'f', 'i')];
+                                break;
+                        case 'files':
+                                ctx.add = function(e) {appudo.ask(modNls.dragf, e.target, {nobtn:true})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iView', 'iFile');
+                                ctx.type = ctx.fmt[0];
+                                ctx.init = pctx.gridInit('fileModel', 'viewStore', 'fileStore');
+                                ctx.addDrop = function(tree, node, target, coords){
+                                        var item = tree.itemToObj(node.item);
+                                        var ok = function(v) {ctx.grid.addSubData('Q', item.l, pctx.type == 1 ? {i:pctx.iid} : null, null, {noname:true, d:v.value, f:tree.absName(node)})};
+                                        if(this.treeModel && !target.oid)
+                                                return;
+                                        appudo.ask(modNls.afile, null, dojo.mixin({before:appudo.askAddText(), onOk:ok},coords));
+                                }
+                                ctx.ed = [null,
+                                                  pctx.addE(0, 'U', 'b', 'd'),
+                                                  pctx.addE(3, 'U', 'e', 's', {r:true}),
+                                                  pctx.addE(1, 'U', 'f', 'i')];
+                                break;
+                        case 'skins':
+                                ctx.add = function(e) {appudo.ask(modNls.dragf, e.target, {nobtn:true})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iView', 'iSkin');
+                                ctx.type = ctx.fmt[0];
+                                ctx.init = pctx.gridInit('skinModel', 'viewStore', 'skinStore');
+                                ctx.addDrop = function(tree, node, target, coords){
+                                        var item = tree.itemToObj(node.item);
+                                        var ok = function(v) {ctx.grid.addSubData('O', item.l, pctx.type == 1 ? {i:pctx.iid} : null, null, {noname:true, s:v.value, f:tree.absName(node)})};
+                                        if(this.treeModel && !target.oid)
+                                                return;
+                                        appudo.ask(modNls.nskin, null, dojo.mixin({before:appudo.askAddText('', false, '^0|([1-9][0-9]{0,9})$', nls.pos), onOk:ok},coords));
+                                }
+                                ctx.ed = [null,
+                                                  pctx.addE(2, 'V', 'b', 's')];
+                                break;
+                        case 'tables':
+                                ctx.add = function(e) {appudo.ask(modNls.dragf, e.target, {nobtn:true})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.type = appudo.gridFmt('iTbl');
+                                ctx.addDrop = function(tree, node, target, coords){
+                                        var item = tree.itemToObj(node.item);
+                                        var ok = function(v) {ctx.grid.addSubData('A', item.l, pctx.type == 1 ? {i:pctx.iid} : null, {oid:target.oid, d:item.l}, {l:v.value, t:item.id})};
+                                        if(this.treeModel && !target.oid)
+                                                return;
+                                        appudo.ask(modNls.afile, null, dojo.mixin({before:appudo.askAddText(), onOk:ok},coords));
+                                }
+                                ctx.canDrop = function(s, item, nodes){
+                                        var type = s.getValue(item, 't');
+                                return type == 0;
+                                }
+                                ctx.ed = [pctx.addE(0, 'W', 'b', 'l', {id:'oid'}),
+                                                  null,
+                                                  pctx.addE(1, 'W', 'f', 'i', {id:'oid'})];
+                                break;
+                        case 'rows':
+                                ctx.fmt = appudo.treeFmt('iTbl', 'iCol');
+                                ctx.type = ctx.fmt[0];
+                                ctx.rtype = function(value, idx) {
+                                                return value !== undefined ? value : '';
+                                };
+                                ctx.rdef = ctx.rtype
+                                ctx.rnull = ctx.rtype
+                                ctx.init = pctx.gridInit('colModel', 'tableStore', 'colStore', true);
+                                ctx.ed = [null,
+                                          pctx.addE(4, '', 'v', 't', {mypost:function(x, d){
+                                            ctx.upd(d.item, d.r.data[x.v].n);
+                                          },r:pctx.rtStore})];
+                                ctx.funcs = {};
+                                ctx._addQry = function() {
+                                    return function(tbl, tbl_id, col, t) {
+                                        return 'ALTER TABLE "' + tbl + '" ADD COLUMN "' + col + '" ' + t +';';
+                                    }
+                                }
+                                ctx._addIDQry = function() {
+                                    return function(tbl, tbl_id, col, t) {
+                                        return 'ALTER TABLE "' + tbl + '" ADD COLUMN id ' + t +';' +
+                                               'ALTER TABLE "' + tbl + '" ADD CONSTRAINT "' + tbl_id + '_pkey" PRIMARY KEY(id);';
+                                    }
+                                }
+                                ctx._add = function(e, t, addF, before) {
+                                    var sel = ctx.grid.getSelection();
+                                    var s = ctx.grid.store;
+                                    if(sel.length != 1 || s.getValue(sel[0], 'c') != 1)
+                                        return;
+                                    var tbl = s.getValue(sel[0], 'l');
+                                    var pid = s.getValue(sel[0], 'oid');
+                                    s.fetch({ query: {id:'o'+pid},onComplete: dojo.hitch(s, function(items){
+                                        var p = items[0];
+                                        var pidty = s.getIdentity(p);
+                                        appudo.ask(modNls.ncol,null, {before:before,x:e.clientX,y:e.clientY,onOk:function(v){
+                                            var opt = {l:0,i:1,s:1,n:1};
+                                            pctx.sql_doqry(addF(tbl, pid, v.value, t), opt, function(cols, rows, rhdr){
+                                                if(rhdr.e) {
+                                                    appudo.showError(rows[0]);
+                                                } else {
+                                                    ctx.grid.ins({_p:pidty,p:pid,l:v.value, t:t}, ctx.grid.insPnt());
+                                                }
+                                            }, function(){
+                                                // on error
+                                            }, function(v) {
+                                                return v;
+                                            });
+                                        }});
+                                    }),
+                                    onError: function() {
+                                    }});
+                                };
+                                ctx.del = function(e) {
+                                    var sel = ctx.grid.getSelection();
+                                    var s = ctx.grid.store;
+                                    if(sel.length != 1 || s.getValue(sel[0], 'c') == 1)
+                                        return;
+                                    var col = s.getValue(sel[0], 'l');
+                                    var pid = s.getValue(sel[0], 'p');
+                                    s.fetch({ query: {id:'o'+pid},onComplete: dojo.hitch(s, function(items){
+                                        var p  = items[0];
+                                        var tbl = s.getValue(p, 'l');
+                                        appudo.ask(nls.delItems,null, {x:e.clientX,y:e.clientY,onOk:function(){
+                                            var opt = {l:0,i:1,s:1,n:1};
+                                            pctx.sql_doqry('ALTER TABLE "' + tbl + '" DROP COLUMN "' + col +'";', opt, function(cols, rows, rhdr){
+                                                if(rhdr.e) {
+                                                    appudo.showError(rows[0]);
+                                                } else {
+                                                    s.delItem(sel[0]);
+                                                    ctx.grid.clearSelection();
+                                                }
+                                            }, function(){
+                                                // on error
+                                            }, function(v) {
+                                                return v;
+                                            });
+                                        }});
+                                    }),
+                                    onError: function() {
+                                    }});
+                                };
+                                ctx.upd = function(item, t) {
+                                    var s = ctx.grid.store;
+                                    var col = s.getValue(item, 'l');
+                                    var pid = s.getValue(item, 'p');
+                                    s.fetch({ query: {id:'o'+pid},onComplete: dojo.hitch(s, function(items){
+                                        var p  = items[0];
+                                        var tbl = s.getValue(p, 'l');
+                                        var opt = {l:0,i:1,s:1,n:1};
+                                        pctx.sql_doqry('ALTER TABLE "' + tbl + '" DROP COLUMN "' + col +'";' +
+                                                       'ALTER TABLE "' + tbl + '" ADD COLUMN "' + col + '" ' + t + ';', opt, function(cols, rows, rhdr){
+                                            if(rhdr.e) {
+                                                appudo.showError(rows[0]);
+                                            } else {
+                                                s.setValue(item, 't', t);
+                                            }
+                                        }, function(){
+                                            // on error
+                                        }, function(v) {
+                                            return v;
+                                        });
+                                    }),
+                                    onError: function() {
+                                    }});
+                                };
+                                ctx.funcs['s_id'] = function(e) {ctx._add(e,'serial',ctx._addIDQry())};
+                                ctx.funcs['b_id'] = function(e) {ctx._add(e,'bigserial',ctx._addIDQry())};
+                                ctx.funcs['bint'] = function(e) {ctx._add(e,'bigint',ctx._addQry(), appudo.askAddText())};
+                                ctx.funcs['int'] = function(e) {ctx._add(e,'integer',ctx._addQry(), appudo.askAddText())};
+                                ctx.funcs['text'] = function(e) {ctx._add(e,'text',ctx._addQry(), appudo.askAddText())};
+                                ctx.funcs['bool'] = function(e) {ctx._add(e,'bool',ctx._addQry(), appudo.askAddText())};
+                                ctx.funcs['dp'] = function(e) {ctx._add(e,'double precision',ctx._addQry(), appudo.askAddText())};
+                                ctx.funcs['real'] = function(e) {ctx._add(e,'real',ctx._addQry(), appudo.askAddText())};
+                                break;
+                        case 'folders':
+                                ctx.add = function(e) {appudo.ask(modNls.dragf, e.target, {nobtn:true})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iView', 'iFolder');
+                                ctx.type = ctx.fmt[0];
+                                ctx.canDrop = function(s, item, nodes){
+                                        var type = s.getValue(item, 't');
+                                return type == 0;
+                                }
+                                ctx.addDrop = function(tree, node, target, coords){
+                                        var item = tree.itemToObj(node.item);
+                                        var ok = function(v) {ctx.grid.addSubData('`', v.value, pctx.type == 1 ? {i:pctx.iid,d:v.value} : {d:v.value}, {d:item.l}, {noname:true, f:tree.absName(node)})};
+                                        if(this.treeModel && !target.oid)
+                                                return;
+                                        appudo.ask(modNls.afile, null, dojo.mixin({before:appudo.askAddText(), onOk:ok},coords));
+                                }
+
+                                ctx.ed = [pctx.addE(0, 'b', 'd', 'l'),
+                                                  null,
+                                                  pctx.addE(1, 'b', 'f', 'i')];
+                                break;
+                        case 'custom':
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.nsett, function(v) {ctx.grid.addData('E', null, v.value,{d:''})})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.type = appudo.gridFmt('iSet');
+                                ctx.ed = [pctx.addE(0, 'Y', 'b', 'l'),
+                                                  pctx.addE(0, 'Y', 'd', 'd'),
+                                                  pctx.addE(1, 'Y', 'f', 'i')];
+                                break;
+                        case 'roles':
+                                ctx.add = function(e) {pctx.askAdd(e.target, modNls.nrole, function(v) {ctx.grid.add('G', null, v.value)})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.type = appudo.gridFmt('iRole');
+                                ctx.ed = [pctx.addE(0, 'Z', 'b', 'l'),
+                                                  pctx.addE(2, 'Z', 'd', 'g'),
+                                                  pctx.addE(1, 'Z', 'f', 'i')];
+                                break;
+                        case 'vars':
+                                ctx.addP = function(e) {pctx.askAdd(e.target, modNls.npvar, function(v) {ctx.grid.addData('I', null, v.value,{t:0,p:0})})};
+                                ctx.addG = function(e) {pctx.askAdd(e.target, modNls.ngvar, function(v) {ctx.grid.addData('I', null, v.value,{t:1,p:1})})};
+                                ctx.addC = function(e) {pctx.askAdd(e.target, modNls.ncvar, function(v) {ctx.grid.addData('I', null, v.value,{t:2,p:2})})};
+                                ctx.del = function() {ctx.grid.askDelete()};
+                                ctx.fmt = appudo.treeFmt('iVar', 'iVar');
+                                ctx.type = ctx.fmt[1];
+                                ctx.init = function() {
+                                        var m = this.treeModel = pctx.varModel;
+                                        var s = m.store;
+                                        this.ctx = pctx;
+                                        var k = ['post', 'get', 'cookie', 'memory', 'session']
+                                        s.fetch({query:{oid:'*'}, onComplete:function(views){
+                                                dojo.forEach(views, function(entry, i) {
+                                                        var id = s.getIdentity(entry);
+                                                        s.setValue(entry, 'l', k[parseInt(id.charAt(1))]);
+                                                });
+                                        }, onError:function() {
+                                                appudo.checkLogin();
+                                        }});
+                                }
+                                ctx.ed = [pctx.addE(0, '[', 'b', 'l'),
+                                                  pctx.addE(1, '[', 'e', 'i')];
+                                break;
+                        case 'errs':
+                                ctx.loc = function(item, idx) {
+                                    return item;
+                                };
+                                ctx.type = appudo.gridFmt(null, function(item, img) {
+                                    if(img) {
+                                        if(item[4] == 'warning')
+                                            return 'iWarn'
+                                        if(item[4] == 'error')
+                                            return 'iErr';
+                                        return '';
+                                    }
+                                    return item[5].replace(/>/g,'&gt;').
+                                                   replace(/</g,'&lt;').
+                                                   replace(/"/g,'&quot;');
+                                });
+                                ctx.init = function() {
+                                    pctx.errsGrid = ctx.grid;
+                                }
+                                pctx.errInit = ctx.init;
+                                break;
+                        case 'log':
+                                ctx.initEdit = function() {
+                                        ctx.logEditor.setOption("showLineNumbers", false);
+                                        //ctx.logEditor.renderer.setShowGutter(false);
+                                        ctx.logEditor.renderer.setHighlightGutterLine(false);
+                                        ctx.logEditor.editor.focus = function(){};
+                                        ctx.logEditor.setText("");
+                                        ctx.logEditor.block();
+                                        ctx.logEditor.show();
+                                }
+                                ctx.init = function() {
+                                        var iframe = dojo.query('.bframe', pctx.log.domNode)[0];
+                                        pctx.logEditor = ctx.logEditor = appudo.getDoc(iframe);
+                                        ctx.logEditor.plain = true;
+                                        appudo.initEdit(ctx, iframe, 'ace/mode/text');
+                                        var l = dojo.query(".ace_gutter-layer", ctx.logEditor)[0];
+                                        if(l)
+                                            dojo.style(l, 'visibility', 'hidden');
+                                        l = dojo.query(".ace_cursor", ctx.logEditor)[0];
+                                        if(l)
+                                            dojo.style(l, 'visibility', 'hidden');
+                                        appudo.regLog(pctx.id, ctx.update);
+                                }
+                                ctx.update = function(v) {
+                                        var session = pctx.codeEditor.editor.getSession();
+                                        var editor = ctx.logEditor;
+                                        var re = /^(.*):(\d+):(\d+):\s+(warning|error):\s+(.*)$/gm;
+                                        var m;
+                                        var a = [];
+                                        if(!editor || !editor.truncLine)
+                                            return;
+                                        var errs = [];
+                                        dojo.forEach(v, function(o) {
+                                                if(o.t == 'r')
+                                                        editor.truncLine(0);
+                                                editor.truncLine(80000);
+                                                editor.appendLines(o.d);
+                                        });
+                                        var txt = editor.editor.session.getValue();
+                                        while(m = re.exec(txt)) {
+                                            if(m[1]) {
+                                                a.push({
+                                                    row: m[2]-1,
+                                                    column: m[3],
+                                                    text: m[5],
+                                                    type: m[4]
+                                                  });
+
+                                                errs.push({t:m,l:m[2]});
+                                            }
+                                        }
+                                        pctx.errStore = new dojo.data.ObjectStore({objectStore:new dojo.store.Memory({data:errs})});
+                                        if(pctx.errsGrid)
+                                            pctx.errsGrid.setStore(pctx.errStore);
+                                        session.setAnnotations(a);
+                                }
+                                pctx.logInit = ctx.init;
+                                break;
+                        case 'prevBar':
+                                ctx.prevInit = function() {
+                                    var d = pctx.preView;
+                                    var _onClick = d.controlButton.onClick;
+                                    d.controlButton.onClick = function() {
+                                        var e = pctx.sctx.entry;
+                                        if(e) {
+                                            window.open('http' + (pctx.sctx.ssl[0] ? 's':'')  + '://' + window.location.hostname + e + '&_t_=' + appudo.random(),
+                                            '_blank',
+                                            'resizable,scrollbars,status,menubar,toolbar');
+                                        } else {
+                                            _onClick();
+                                        }
+                                    }
+                                    d.origOnClick = d.controlButton.onClick;
+                                }
+                                pctx.prevInit = ctx.prevInit;
+                                break;
+                        case 'viewMenu':
+                                ctx.init = function() { pctx.viewMenu = page.viewMenu; }
+                                ctx.pinit = function() {
+                                                        var editor = pctx.viewEditor;
+                                                        var viewMenu = page.viewMenu;
+                                                        ctx.editor = editor;
+                                                        var children = viewMenu.getChildren();
+                                                        appudo.on(viewMenu, 'close', function(e) {
+                                                                pctx.tabFocus();
+                                                        });
+                                                        dojo.connect(viewMenu, '_openMyself', viewMenu, function(e) {
+                                                                ctx.undoI = children[0];
+                                                                ctx.redoI = children[1];
+                                                                ctx.saveI = children[2];
+                                                                ctx.markI = children[8];
+                                                                ctx.subI = children[9];
+                                                                ctx.undoI.set('disabled', !ctx.editor.hasUndo());
+                                                                ctx.redoI.set('disabled', !ctx.editor.hasRedo());
+                                                                ctx.saveI.set('disabled', !ctx.editor.changed());
+                                                                ctx.markI.set('disabled', !ctx.editor.inMarker());
+                                                                ctx.subI.set('disabled', !ctx.editor.inMarker());
+                                                        });
+                                }
+                                ctx.undo = function() { ctx.editor.undo(); };
+                                ctx.redo = function() { ctx.editor.redo(); };
+                                ctx.save = function() { pctx.save(); };
+                                ctx.copy = function() { ctx.editor.copy(); };
+                                ctx.cut = function() { ctx.editor.cut(); };
+                                ctx.regm = function() { pctx.vchild(pctx.type == 2 ? 1 : 0);pctx.marks.grid.addSub(6, ctx.editor.inMarker(), null, {s:0}, pctx.type == 2 ? pctx.selectedView : undefined)};
+                                ctx.regs = function() { pctx.vchild(pctx.type == 2 ? 2 : 1);pctx.sub.grid.addSub('K', ctx.editor.inMarker(), null, {s:1}, pctx.type == 2 ? pctx.selectedView : undefined)};
+                                break;
+                        case 'codeMenu':
+                                ctx.init = function() { pctx.codeMenu = page.codeMenu; }
+                                ctx.pinit = function() {
+                                    var editor = pctx.codeEditor;
+                                    var codeMenu = page.codeMenu;
+                                    ctx.editor = editor;
+                                    var children = codeMenu.getChildren();
+                                    appudo.on(codeMenu, 'close', function(e) {
+                                            pctx.tabFocus();
+                                    });
+                                    dojo.connect(codeMenu, '_openMyself', codeMenu, function(e) {
+                                            ctx.undoI = children[0];
+                                            ctx.redoI = children[1];
+                                            ctx.saveI = children[2];
+                                            ctx.undoI.set('disabled', !ctx.editor.hasUndo());
+                                            ctx.redoI.set('disabled', !ctx.editor.hasRedo());
+                                            ctx.saveI.set('disabled', !ctx.editor.changed());
+                                    });
+                                }
+                                ctx.undo = function() { ctx.editor.undo(); };
+                                ctx.redo = function() { ctx.editor.redo(); };
+                                ctx.save = function() { pctx.save(); };
+                                ctx.copy = function() { ctx.editor.copy(); };
+                                ctx.cut = function() { ctx.editor.cut(); };
+                                break;
+                        case 'errMenu':
+                                ctx.init = function() {
+                                    var errMenu = page.errMenu;
+                                    pctx.errMenu = errMenu;
+                                    var iframe = dojo.query('.bframe', pctx.log.domNode)[0];
+                                    pctx.errMenu.bindDomNode(iframe);
+                                }
+                                ctx.copy = function() { pctx.logEditor.copy(); };
+                                break;
+                        }
+                        return ctx;
+</script>
+<div class="Over"></div>
+<div data-dojo-type="appudo.LazyCont" data-dojo-props="title:modNls.settings">
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top'">
+                <div data-dojo-type="dijit.Toolbar" data-dojo-props="style:'border-bottom:1px solid #E3E8EA'">
+                        <div data-dojo-id="page.ctx.sSav" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.ctx.saveSett, iconClass:'iDisk', label:nls.save"></div>
+                        <div data-dojo-id="page.ctx.sRes" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.ctx.resSett, iconClass:'iRew', label:nls.res"></div>
+                        </div>
+                </div>
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+                        <div class="frm frmnb" style="overflow:auto;width:100%;height:100%">
+                                <div data-dojo-type="dijit.TitlePane" data-dojo-props="title:modNls.base">
+                                        <div data-dojo-id="page.ctx.sFrm" data-dojo-type="appudo.Form" data-dojo-props="region:'center', ctx:{nls:nls,modNls:modNls},onSubmit:function(event) {if(event)event.preventDefault();if(page.ctx.sFrm.validate())page.ctx.saveSett()}">
+                                                <div class="t2">
+                                                        <label>${ctx.modNls.type}</label>
+                                                        <select data-dojo-type="appudo.Select" data-dojo-props="name:'ty', onChange:page.ctx.onType">
+                                                                <option value="-1" disabled="true" selected="true" hidden="true">${ctx.nls.sel}</option>
+                                                                <option value="0" disabled="true">${ctx.modNls.page}</option>
+                                                                <option value="1" disabled="true">${ctx.modNls.socket}</option>
+                                                                <option value="2" disabled="true">${ctx.modNls.cron}</option>
+                                                                <option value="3" disabled="true">${ctx.modNls.ref}</option>
+                                                                <option value="4" disabled="true">${ctx.modNls.remote}</option>
+                                                                <option value="5" disabled="true">${ctx.modNls.m2m}</option>
+                                                                <option value="6" disabled="true">${ctx.modNls.inst}</option>
+                                                        </select><br/>
+                                                        <label>${ctx.nls.oUID}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ouid',regExp:'^0|([1-9][0-9]{0,9})$',invalidMessage:nls.pos"><br/>
+                                                        <label>${ctx.nls.oGID}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ogid',regExp:'^0|([1-9][0-9]{0,9})$',invalidMessage:nls.pos"><br/>
+                                                        <div class="f0">
+                                                                <label>${ctx.nls.ePoint}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'entry',regExp:'^/(.+/){0,1}$',invalidMessage:nls.epv"><br/>
+                                                                <label>${ctx.modNls.title}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'tl'"><br/>
+                                                                <label>${ctx.modNls.cont}</label>
+                                                                <select data-dojo-type="appudo.Select" data-dojo-props="name:'cont'">
+                                                                        <option value="0" disabled="true">${ctx.modNls.plain}</option>
+                                                                        <option value="1" disabled="true">${ctx.modNls.xhtml}</option>
+                                                                </select><br/>
+                                                                <label>${ctx.modNls.html}</label><input data-dojo-type="appudo.TextArea" data-dojo-id="page.ctx.fhtml" data-dojo-props="disabled:true,name:'html'">
+                                                                <div><div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,style:'padding:0px',onClick:page.ctx.sAdd(0), iconClass:'iAdd', label:nls.sel"></div></div><br/>
+                                                                <label>${ctx.modNls.doc}</label><input data-dojo-type="appudo.TextArea" data-dojo-id="page.ctx.fdoc" data-dojo-props="disabled:true,name:'doc'">
+                                                                <div><div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,style:'padding:0px',onClick:page.ctx.sAdd(1), iconClass:'iAdd', label:nls.sel"></div></div><br/>
+                                                                <label>${ctx.nls.desc}</label><input data-dojo-type="appudo.TextArea" data-dojo-props="disabled:true,name:'desc'"><br/>
+                                                                <label>${ctx.modNls.fold}</label><div style="float:left;">
+                                                                <div data-dojo-type="appudo.dndTreeTarget" data-dojo-props="onDropExternal:page.ctx.sDrop" class="nls" style="border:1px solid #B5BCC7;line-height:1.5em;width:20em;float:left;margin: 0.5em 0 0.5em 0;padding:2px"><span style="color:#BCBCBC;">${ctx.modNls.dropF}</span>
+                                                                <div class="fold"></div></div>
+                                                                <div style="float:left;margin-top:5px"><div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,style:'padding:0px',onClick:page.ctx.sFset, iconClass:'iRem', label:nls.res"></div></div>
+                                                                <input data-dojo-type="dijit.form.TextBox" data-dojo-props="type:'hidden',name:'fold'"></div><br/>
+                                                                <label>${ctx.modNls.inhp}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'inh'"><br/>
+                                                                <label>${ctx.modNls.aref}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'aref'"><br/>
+                                                                <label>${ctx.modNls.excl}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'exc'"><br/>
+                                                                <label>${ctx.modNls.ssec}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ssl'"><br/>
+                                                        </div>
+                                                        <div class="f1">
+                                                            <label>${ctx.nls.ePoint}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_entry',regExp:'^/(.+/){0,1}$',invalidMessage:nls.epv"><br/>
+                                                            <label>${ctx.nls.desc}</label><input data-dojo-type="appudo.TextArea" data-dojo-props="disabled:true,name:'ws_desc'"><br/>
+                                                            <label>${ctx.modNls.aref}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_aref'"><br/>
+                                                            <label>${ctx.modNls.ws_disp}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_disp'"><br/>
+                                                            <label>${ctx.modNls.ws_comp}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_comp'"><br/>
+                                                            <label>${ctx.modNls.ws_bin}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_bin'"><br/>
+                                                            <label>${ctx.modNls.ws_txt}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_txt'"><br/>
+                                                            <label>${ctx.modNls.sec}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'ws_ssl'"><br/>
+                                                            <label>${ctx.modNls.ws_msize}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_msize',regExp:'^\\d+$',invalidMessage:modNls.int_range"><br/>
+                                                            <label>${ctx.modNls.ws_bsize}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_bsize',regExp:'^\\d+$',invalidMessage:modNls.int_range"><br/>
+                                                            <label>${ctx.modNls.ws_blimit}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_blimit',regExp:'^\\d+$',invalidMessage:modNls.int_range"><br/>
+                                                            <label>${ctx.modNls.ws_climit}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_climit',regExp:'^\\d+$',invalidMessage:modNls.int_range"><br/>
+                                                            <label>${ctx.modNls.ws_tlimit}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ws_tlimit',regExp:'^\\d+$',invalidMessage:modNls.int_range"><br/>
+                                                        </div>
+                                                        <div class="f2">
+                                                                <label>${ctx.modNls.now}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'cr_now',onClick:page.ctx.onSingle"><br/>
+                                                                <label>${ctx.modNls.begin}</label><input data-dojo-type="appudo.TimeTextBox" data-dojo-props="disabled:true,name:'cr_begin'"><br/>
+                                                                <label>${ctx.modNls.once}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'cr_once',onClick:page.ctx.onSingle"><br/>
+                                                                <label>${ctx.modNls.rep}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'cr_rep',regExp:'^\\d+$',invalidMessage:modNls.int_range">
+                                                                <select data-dojo-type="appudo.Select" data-dojo-props="name:'cr_runit'">
+                                                                        <option value="0" disabled="true">${ctx.modNls.sec}</option>
+                                                                        <option value="1" disabled="true">${ctx.modNls.mint}</option>
+                                                                        <option value="2" disabled="true">${ctx.modNls.hrs}</option>
+                                                                        <option value="3" disabled="true">${ctx.modNls.days}</option>
+                                                                        <option value="4" disabled="true">${ctx.modNls.weeks}</option>
+                                                                        <option value="5" disabled="true">${ctx.modNls.months}</option>
+                                                                </select><br/>
+                                                                <label>${ctx.modNls.rst}</label><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="disabled:true,name:'cr_rst'"><br/>
+                                                                <label>${ctx.nls.desc}</label><input data-dojo-type="appudo.TextArea" data-dojo-props="disabled:true,name:'cr_desc'"><br/>
+                                                        </div>
+                                                </div>
+                                                <div class="f3">
+                                                    <label>${ctx.nls.ePoint}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ref_entry',regExp:'^/(.+/){0,1}$',invalidMessage:nls.epv"><br/>
+                                                    <label>${ctx.nls.tPoint}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ref_target',regExp:'^/(.+/){0,1}$',invalidMessage:nls.epv"><br/>
+                                                    <label>${ctx.modNls.acc}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ref_acc'"><br/>
+                                                    <label>${ctx.nls.desc}</label><input data-dojo-type="appudo.TextArea" data-dojo-props="disabled:true,name:'ref_desc'"><br/>
+                                                </div>
+                                                <div class="f4">
+                                                        <label>${ctx.modNls.ckp}</label><input data-dojo-type="appudo.ValidationTextBox" data-dojo-props="disabled:true,name:'ckp'"><br/>
+                                                </div>
+                                        <button data-dojo-type="dijit.form.Button" type="submit"></button>
+                                        </div>
+                        </div>
+                </div>
+                <script type="dojo/connect" data-dojo-event="startup">setTimeout(page.ctx.initSett, 0);</script>
+        </div>
+</div>
+<div data-dojo-type="appudo.LazyCont" data-dojo-props="lazyInit:page.ctx.vPaneInit">
+        <div class="t0" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top'">
+                <div data-dojo-id="page.viewsBar" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('viewsBar')">
+                        <span class="t1 nls" style="vertical-align:middle;">&nbsp;${ctx.modNls.view}&nbsp;&nbsp;</span>
+                        <input class="t1" data-dojo-type="appudo.FilteringSelect"
+                                   data-dojo-props="onInit:page.ctx.viewInit,onValue:page.viewsBar.ctx.vchg,
+                                        searchAttr:'l'">
+                        <span class="nls" style="vertical-align:middle;">&nbsp;&nbsp;${ctx.modNls.msub}&nbsp;&nbsp;</span>
+                        <input data-dojo-id="page.ctx.vmfilter" data-dojo-type="appudo.FilteringSelect"
+                                       data-dojo-props="onInit:page.ctx.storeInit('markSubStore'),onValue:page.viewsBar.ctx.mchg,
+                                    searchAttr:'l',query:{p:'*'}">
+                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.viewsBar.ctx.addMS, iconClass:'iMsAdd',label:modNls.nmscode"></div>
+                        <div data-dojo-type="appudo.AddDropDown" data-dojo-props="disabled:true,iconClass:'iPackAdd'">
+                                        <span class="nls">${ctx.modNls.ahtml}</span>
+                                        <div data-dojo-type="dijit.Menu" data-dojo-props="title:''">
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewsBar.ctx.addR, iconClass:'iPack', label:modNls.root"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewsBar.ctx.addT, iconClass:'iPack', label:modNls.target"></div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        <div class="t0" data-dojo-id="page.ctx.vEdit" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+                <ul data-dojo-type="dijit.Menu" data-dojo-id="page.viewMenu" data-dojo-props="style:'display:none;', ctx:page.initCtx('viewMenu')">
+                                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.undo, iconClass:'dijitEditorIcon dijitEditorIconUndo', label:nls.undo"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.redo, iconClass:'dijitEditorIcon dijitEditorIconRedo', label:nls.redo"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.save, iconClass:'iDisk', label:nls.save"></li>
+                        <li data-dojo-type="dijit.MenuSeparator"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.copy, iconClass:'dijitEditorIcon dijitEditorIconCopy', label:nls.copy"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.cut, iconClass:'dijitEditorIcon dijitEditorIconCut', label:nls.cut"></li>
+                        <li data-dojo-type="dijit.MenuSeparator"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.regm, iconClass:'iMarkAdd', label:modNls.nmark"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.viewMenu.ctx.regs, iconClass:'iSubAdd', label:modNls.nsub"></li>
+                        </ul>
+                <span class="nls load"><span class="dijitIconLoading dijitInline lIcon"></span>${ctx.nls.load}</span>
+                <iframe class="bframe"></iframe>
+                <script type="dojo/connect" data-dojo-event="startup">page.ctx.view();</script>
+        </div>
+        <div data-dojo-type="page.ctx.vtype" data-dojo-props="style:'border:none',baseClass:'cCont', region:'center'">
+                <div data-dojo-type="appudo.BottomTab" data-dojo-props="noMax:1">
+                    <script type="dojo/connect" data-dojo-event="startup">page.ctx.vTab=this;page.ctx.initTabs(this);</script>
+                    <script type="dojo/connect" data-dojo-event="startup">page.ctx.vchild = dojo.hitch(this, this.selectChildAt);if(page.ctx.type != 1){this.createMax();page.ctx.pane(this)}</script>
+                        <div class="t1" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.views,lazyInit:function(){page.ctx.vViews=this;}">
+                                <div data-dojo-id="page.views" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('views')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.views.ctx.add, iconClass:'iViewAdd',label:modNls.nview"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.views.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.views.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="onInit:page.ctx.viewInit,
+                                            clientSort:true, delCall:5, ed:page.views.ctx.ed, structure: [
+                                                                {name: nls.name, field: 'l', width:'100%', formatter:page.views.ctx.type}
+                                                        ]">
+                                </div>
+                        </div>
+                        <div class="t0" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.mark,lazyInit:function(){page.ctx.vMark=this;}">
+                            <div data-dojo-id="page.marks" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('marks')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.marks.ctx.add, iconClass:'iMarkAdd',label:modNls.nmark"></div>
+                                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.marks.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.marks.ctx.grid" data-dojo-type="page.ctx.grid" data-dojo-props="onInit:page.marks.ctx.init, fmt:page.marks.ctx.fmt,
+                                           query:{s:0}, clientSort:true, delCall:7, ed:page.marks.ctx.ed, structure: [
+                                                            { name: nls.name, field: 'l', width: '90%', formatter:page.marks.ctx.type },
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                ]">
+                                </div>
+                        </div>
+                        <div class="t0" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.sub">
+                            <div data-dojo-id="page.sub" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('sub')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.sub.ctx.add, iconClass:'iSubAdd',label:modNls.nsub"></div>
+                                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.sub.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.sub.ctx.grid" data-dojo-type="page.ctx.grid" data-dojo-props="onInit:page.sub.ctx.init, fmt:page.sub.ctx.fmt,
+                                           query:{s:1}, clientSort:true, delCall:'L', ed:page.sub.ctx.ed, structure: [
+                                                            { name: nls.name, field: 'l', width: '50%', formatter:page.sub.ctx.type},
+                                                            { name: modNls.mview, field: 'v', width: '40%', formatter:page.sub.ctx.view},
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                ]">
+                                </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.tags">
+                            <div data-dojo-id="page.meta" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('meta')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.meta.ctx.add, iconClass:'iMetaAdd',label:modNls.nmeta"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.meta.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.meta.ctx.grid" data-dojo-type="page.ctx.grid" data-dojo-props="onInit:page.meta.ctx.init, fmt:page.meta.ctx.fmt,
+                                           clientSort:true, delCall:9, ed:page.meta.ctx.ed, structure: [
+                                                                {name: modNls.data, field: 'l', width:'70%', formatter:page.meta.ctx.type},
+                                                                {name: modNls.sid, field: 's', width:'20%', formatter:page.ctx.skin()},
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                        ]">
+                                </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.files">
+                            <div data-dojo-id="page.files" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('files')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.files.ctx.add, iconClass:'iFileAdd',label:nls.drop"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.files.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.files.ctx.grid" data-dojo-type="page.ctx.grid" data-dojo-props="onInit:page.files.ctx.init, fmt:page.files.ctx.fmt,
+                                           dndTarget:true, delCall:'R', ed:page.files.ctx.ed, addDrop:page.files.ctx.addDrop, clientSort:true, structure: [
+                                                                {name: modNls.file, field: 'l', width:'40%', formatter:page.files.ctx.type},
+                                                                {name: modNls.data, field: 'd', width:'30%', formatter:page.ctx.lvlFmt()},
+                                                                {name: modNls.sid, field: 's', width:'20%', formatter:page.ctx.skin()},
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                        ]">
+                                </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.skin">
+                                <div data-dojo-id="page.skins" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('skins')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.skins.ctx.add, iconClass:'iSkinAdd',label:modNls.nskin"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.skins.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.skins.ctx.grid" data-dojo-type="page.ctx.grid" data-dojo-props="onInit:page.skins.ctx.init, fmt:page.skins.ctx.fmt,
+                                           dndTarget:true, delCall:'P', ed:page.skins.ctx.ed, addDrop:page.skins.ctx.addDrop, clientSort:true, structure: [
+                                                                {name: modNls.file, field: 'l', width:'80%', formatter:page.skins.ctx.type},
+                                                                {name: modNls.sid, field: 's', width:'20%', formatter:page.ctx.lvlFmt()}
+                                                        ]">
+                                </div>
+                        </div>
+                </div>
+        </div>
+</div>
+<div data-dojo-id="page.ctx.databar_tab" data-dojo-type="appudo.LazyCont" data-dojo-props="title:modNls.data, lazyInit:page.ctx.dPaneInit">
+        <div class="t2" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top', splitter:false">
+            <div data-dojo-id="page.dataBar" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('dataBar')">
+                <span class="nls" style="vertical-align:middle;">&nbsp;${ctx.modNls.tab}&nbsp;&nbsp;</span>
+                <input data-dojo-type="appudo.FilteringSelect"
+                           data-dojo-props="disabled:true,onInit:page.ctx.storeInit('tableStore'),onValue:page.dataBar.ctx.gup,
+                            searchAttr:'l'">
+                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.dataBar.ctx.ins, iconClass:'iIns',label:modNls.idata"></div>
+                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.dataBar.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                <div data-dojo-type="dijit.ToolbarSeparator"></div>
+                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.dataBar.ctx.run, iconClass:'iPlay',label:modNls.now"></div>
+                <div data-dojo-type="dijit.ToolbarSeparator"></div>
+                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.dataBar.ctx.query, iconClass:'iTGear',label:modNls.query"></div>
+                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.dataBar.ctx.view, iconClass:'iTbl',label:modNls.rows"></div>
+            </div>
+        </div>
+        <div class="SQLCmd t2" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'top', splitter:true, minSize:100">
+            <div data-dojo-id="page.ctx.sql_qry" class="fHeight" data-dojo-type="dijit.form.SimpleTextarea" data-dojo-props="style:'resize: none;min-height:100px;'"></div>
+        </div>
+        <div class="t2" data-dojo-id="page.ctx.databar_pane" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+            <div class="t5 nls selTbl" style="margin:10px;">${ctx.modNls.ndata}</div>
+            <div class="fHeight" data-dojo-id="page.dataBar.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="
+                               rowSelector:'20px', clientSort:true">
+            </div>
+        </div>
+        <div data-dojo-type="page.ctx.dtype" data-dojo-props="style:'border:none',baseClass:'cCont', region:'bottom'">
+                <div data-dojo-type="appudo.BottomTab" data-dojo-props="noMax:1">
+                        <script type="dojo/connect" data-dojo-event="startup">if(page.ctx.type != 2){this.createMax();page.ctx.pane(this)}</script>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.tbl">
+                            <div data-dojo-id="page.tables" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('tables')">
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.tables.ctx.add, iconClass:'iTblAdd',label:modNls.ntbl"></div>
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.tables.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                            </div>
+                            <div data-dojo-id="page.tables.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="onInit:page.ctx.storeInit('tableStore'),
+                                            dndSource:dataTree, dndTarget:true, clientSort:true, delCall:'B', addDrop:page.tables.ctx.addDrop, canDrop:page.tables.ctx.canDrop, ed:page.tables.ctx.ed, structure: [
+                                                            {name: nls.name, field: 'l', width:'40%', formatter:page.tables.ctx.type},
+                                                            {name: modNls.tbl, field: 'd', width:'50%', formatter:page.ctx.empty},
+                                                             page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                    ]">
+                            </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.rows">
+                            <div data-dojo-id="page.rows" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('rows')">
+                                <div data-dojo-type="appudo.AddDropDown" data-dojo-props="disabled:true,iconClass:'iColAdd'">
+                                    <span class="nls">${ctx.modNls.ncol}</span>
+                                    <div data-dojo-type="dijit.Menu" data-dojo-props="title:''">
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['s_id'],label:'serial id'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['b_id'],label:'bigserial id'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['bint'],label:'bigint'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['int'],label:'int'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['text'],label:'text'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['bool'],label:'bool'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['dp'],label:'double precision'"></div>
+                                            <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCol', onClick:page.rows.ctx.funcs['real'],label:'real'"></div>
+                                    </div>
+                                </div>
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.rows.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                            </div>
+                            <div data-dojo-id="page.rows.ctx.grid" data-dojo-type="appudo.TreeGrid" data-dojo-props="onInit:page.rows.ctx.init, fmt:page.rows.ctx.fmt,
+                                       clientSort:true, delCall:'D', ed:page.rows.ctx.ed, structure: [
+                                                            {name: nls.name, field: 'l', width:'25%', formatter:page.rows.ctx.type},
+                                                            {name: modNls.type, field: 't', width:'25%', formatter:page.rows.ctx.rtype},
+                                                            {name: modNls.def, field: 'd', width:'25%', formatter:page.rows.ctx.rdef},
+                                                            {name: modNls.nnull, field: 'n', width:'25%', formatter:page.rows.ctx.rnull}
+                                                    ]">
+                            </div>
+                        </div>
+                </div>
+        </div>
+</div>
+<div data-dojo-type="appudo.LazyCont" data-dojo-props="title:modNls.code, lazyInit:page.ctx.cPaneInit">
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top'">
+                <div data-dojo-id="page.codeBar" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('codeBar')">
+                        <span class="t0 t1 nls" style="vertical-align:middle;">&nbsp;${ctx.modNls.view}&nbsp;&nbsp;</span>
+                        <input class="t0 t1" data-dojo-type="appudo.FilteringSelect"
+                                   data-dojo-props="onInit:page.ctx.viewInit,onValue:page.codeBar.ctx.vchg,
+                                    searchAttr:'l'">
+                        <span class="t0 nls" style="vertical-align:middle;">&nbsp;&nbsp;${ctx.modNls.msub}&nbsp;&nbsp;</span>
+                        <input class="t0" data-dojo-id="page.ctx.cmfilter" data-dojo-type="appudo.FilteringSelect"
+                                       data-dojo-props="onInit:page.ctx.storeInit('markSubStore'),onValue:page.codeBar.ctx.mchg,
+                                    searchAttr:'l'">
+                        <div class="t0" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.codeBar.ctx.addMS, iconClass:'iMsAdd',label:modNls.nmscode"></div>
+                        <div class="t0" data-dojo-type="appudo.AddDropDown" data-dojo-props="disabled:true,iconClass:'iSnipAdd'">
+                                        <span class="nls">${ctx.modNls.acode}</span>
+                                        <div data-dojo-type="dijit.Menu" data-dojo-props="title:''">
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['main'],label:'main'"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['onStart'],label:'onStart'"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['onUpload'],label:'onUpload'"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['onError'],label:'onError'"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['preHeader'],label:'preHeader'"></div>
+                                                <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iSnip', onClick:page.codeBar.ctx.funcs['preCache'],label:'preCache'"></div>
+                                        </div>
+                                </div>
+                </div>
+        </div>
+        <div data-dojo-id="page.ctx.cEdit" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+                <ul data-dojo-type="dijit.Menu" data-dojo-id="page.codeMenu" data-dojo-props="style:'display:none;', ctx:page.initCtx('codeMenu')">
+                                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.codeMenu.ctx.undo, iconClass:'dijitEditorIcon dijitEditorIconUndo', label:nls.undo"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.codeMenu.ctx.redo, iconClass:'dijitEditorIcon dijitEditorIconRedo', label:nls.redo"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.codeMenu.ctx.save, iconClass:'iDisk', label:nls.save"></li>
+                        <li data-dojo-type="dijit.MenuSeparator"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.codeMenu.ctx.copy, iconClass:'dijitEditorIcon dijitEditorIconCopy', label:nls.copy"></li>
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.codeMenu.ctx.cut, iconClass:'dijitEditorIcon dijitEditorIconCut', label:nls.cut"></li>
+                    </ul>
+                <span class="nls load"><span class="dijitIconLoading dijitInline lIcon"></span>${ctx.nls.load}</span>
+                <iframe class="bframe"></iframe>
+            <script type="dojo/connect" data-dojo-event="startup">page.ctx.code();</script>
+                </div>
+        <div data-dojo-type="page.ctx.vtype" data-dojo-props="style:'border:none',baseClass:'cCont', region:'center'">
+                <div data-dojo-type="appudo.BottomTab" data-dojo-props="noMax:1">
+                        <script type="dojo/connect" data-dojo-event="startup">if(page.ctx.type != 1){this.createMax();page.ctx.pane(this)};page.ctx.initTabs(this);</script>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.sett">
+                                <div data-dojo-id="page.custom" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('custom')">
+                                        <div class="t2" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.custom.ctx.add, iconClass:'iSetAdd',label:modNls.nsett"></div>
+                                        <div class="t2" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.custom.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.custom.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="onInit:page.ctx.storeInit('settStore'),
+                                   clientSort:true, delCall:'F', ed:page.custom.ctx.ed, structure: [
+                                                        {name: nls.name, field: 'l', width:'50%', formatter:page.custom.ctx.type},
+                                                        {name: modNls.def, field: 'd', width:'40%'},
+                                                        page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                ]">
+                                </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.roles">
+                            <div data-dojo-id="page.roles" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('roles')">
+                                        <div class="t2" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.roles.ctx.add, iconClass:'iRoleAdd',label:modNls.nrole"></div>
+                                        <div class="t2" data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.roles.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.roles.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="onInit:page.ctx.storeInit('roleStore'),
+                                           clientSort:true, delCall:'H',ed:page.roles.ctx.ed,structure: [
+                                                                {name: nls.name, field: 'l', width:'50%', formatter:page.roles.ctx.type},
+                                                                {name: modNls.group, field: 'g', width:'40%', formatter:page.ctx.empty},
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                        ]">
+                                </div>
+                        </div>
+                        <div class="t0" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.vars">
+                            <div data-dojo-id="page.vars" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('vars')">
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.vars.ctx.addP, iconClass:'iPAdd',label:modNls.npvar"></div>
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.vars.ctx.addG, iconClass:'iGAdd',label:modNls.ngvar"></div>
+                                <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.vars.ctx.addC, iconClass:'iCAdd',label:modNls.ncvar"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.vars.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.vars.ctx.grid" data-dojo-type="appudo.TreeGrid" data-dojo-props="onInit:page.vars.ctx.init, fmt:page.vars.ctx.fmt,
+                                           clientSort:true, delCall:'J',ed:page.vars.ctx.ed,structure: [
+                                                                {name: nls.name, field: 'l', width:'90%', formatter:page.vars.ctx.type},
+                                                                page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh(1)} : null
+                                                        ]">
+                                </div>
+                        </div>
+                        <div data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.folders">
+                            <div data-dojo-id="page.folders" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('folders')">
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.folders.ctx.add, iconClass:'iFileAdd',label:modNls.drop"></div>
+                                        <div data-dojo-type="appudo.IconButton" data-dojo-props="disabled:true,onClick:page.folders.ctx.del, iconClass:'iDel',label:nls.del"></div>
+                                </div>
+                                <div data-dojo-id="page.folders.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="onInit:page.ctx.storeInit('foldersStore'), fmt:page.folders.ctx.fmt,
+                                           clientSort:true, dndTarget:true, delCall:'a', canDrop:page.folders.ctx.canDrop, addDrop:page.folders.ctx.addDrop, ed:page.folders.ctx.ed, structure: [
+                                                                {name: nls.name, field: 'l', width:'30%', formatter:page.folders.ctx.type},
+                                                                {name: modNls.file, field: 'd', width:'60%', formatter:page.ctx.empty},
+                                                                 page.ctx.type == 0 ? {name: modNls.inh, field: 'i', width:'10%', formatter:page.ctx.inh()} : null
+                                                        ]">
+                                </div>
+                        </div>
+                        <div class="t2" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.err">
+                                <div data-dojo-id="page.errs" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('errs')">
+                                </div>
+                                <div data-dojo-id="page.errs.ctx.grid" data-dojo-type="appudo.Grid" data-dojo-props="
+                                           store:page.ctx.errStore, clientSort:true, structure: [
+                                                                {name: modNls.type, field: 't', width:'70%', formatter:page.errs.ctx.type},
+                                                                {name: modNls.loc, field: 'l', width:'30%', formatter:page.errs.ctx.loc}
+                                                        ]">
+                                        <script type="dojo/connect" data-dojo-event="startup">page.ctx.errInit();</script>
+                                </div>
+                        </div>
+                        <div class="t2" data-dojo-type="appudo.LazyPane" data-dojo-props="title:modNls.cons">
+                                <ul data-dojo-type="dijit.Menu" data-dojo-id="page.errMenu" data-dojo-props="style:'display:none;', ctx:page.initCtx('errMenu')">
+                                    <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:page.errMenu.ctx.copy, iconClass:'dijitEditorIcon dijitEditorIconCopy', label:nls.copy"></li>
+                                    <li data-dojo-type="dijit.MenuSeparator">
+                                </ul>
+                                <div data-dojo-id="page.ctx.log" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'cPane', region:'center'">
+                                    <div data-dojo-id="page.cons" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('log')">
+                                        </div>
+                                        <iframe class="bframe fbtm"></iframe>
+                                        <script type="dojo/connect" data-dojo-event="startup">page.ctx.logInit();</script>
+                                </div>
+                        </div>
+                     </div>
+        </div>
+</div>
+<div class="t1 t2" data-dojo-type="dijit.layout.ContentPane" data-dojo-id="page.ctx.preView" data-dojo-props="title:modNls.prev, style:{ padding:'0px' }, ctx:page.initCtx('prevBar')">
+    <script type="dojo/connect" data-dojo-event="startup">page.ctx.prevInit();</script>
+    <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+        <div class="nls" style="padding:10px;">${ctx.modNls.ncont}</div>
+    </div>
+</div>
+</div>

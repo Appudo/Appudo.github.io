@@ -1,0 +1,20 @@
+.__any:before {
+    content:url('./file_ext/page_white.png');
+    width:16px;
+    height:16px;
+    margin-right:5px;
+}
+
+.__prot:before {
+    background:rgb(222, 170, 170);
+    background:rgba(222, 170, 170, 0.35);
+    border-radius:2px;
+}
+
+.__php:before {
+    content:url('./file_ext/page_white_php.png');
+}
+
+.__pdf:before {
+    content:url('./file_ext/page_white_acrobat.png');
+}

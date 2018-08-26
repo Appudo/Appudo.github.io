@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>User Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/User" class="dashAnchor"></a>
+    <a title="User Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Appudo Docs</a></p>
+        <p class="header-right"><a href="https://www.github.com/Appudo"><img src="../../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Appudo Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        User Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Async.html">Async</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FileItemList.html">FileItemList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient.html">HTTPClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPClient/HTTPVersion.html">– HTTPVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ManagedCharBuffer.html">ManagedCharBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SQLQry.html">SQLQry</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray.html">TimedArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimedArray/TimedArrayError.html">– TimedArrayError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserAsync.html">UserAsync</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/UserList.html">UserList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/ControlResult.html">ControlResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo14ErrorEventTypeO">ErrorEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo15HTTPRequestTypeO">HTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo18HTTPRequestVersionO">HTTPRequestVersion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/InetAddr.html">InetAddr</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo12InetAddrTypeO">InetAddrType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo19InternalAppudoErrorO">InternalAppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo25InternalHTTPRequestStatusO">InternalHTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo4LangO">Lang</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums.html#/s:9libappudo8LinkTypeO">LinkType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/UploadResult.html">UploadResult</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Date.html">Date</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/StaticString.html">StaticString</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnopxSgAA10AsyncValueVyACGlF">&lt;!(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lnoixSgAA10AsyncErrorVz_AA0C5ValueVyACGtlF">&lt;!(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2lqopSbyycF">&lt;?(_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yAA0C0CctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo2qgoiSbAA10AsyncValueVyxGz_yyctAA0C7ReverseRzlF">?&gt;(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortASCs5Int32VAA8FileItemV1a_AF1btF">AlphasortASC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA13_UserListItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo12AlphasortDSCs5Int32VAA8FileItemV1a_AF1btF">AlphasortDSC(a:b:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo13appudo_assertySbyXK_SSyXKs12StaticStringVSutF">appudo_assert(_:_:_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:9libappudo4sendyypd_tF">send(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:9libappudo15DataWriteSourceP">DataWriteSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FastCodable.html">FastCodable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileLockable.html">FileLockable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSeekable.html">FileSeekable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FileSendSource.html">FileSendSource</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/ACME.html">ACME</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ACME/RequestFlags.html">– RequestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AccountID.html">AccountID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AppudoError.html">AppudoError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncError.html">AsyncError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo10AsyncTimerV">AsyncTimer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AsyncValue.html">AsyncValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Base64.html">Base64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BaseMenuItem.html">BaseMenuItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH.html">CHASH</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CHASH/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert.html">Cert</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Cert/CertFlags.html">– CertFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CertID.html">CertID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/CharBufferData.html">CharBufferData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlData.html">ControlData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ControlInfo.html">ControlInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo3DirV">Dir</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Disk.html">Disk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8DiskStatV">DiskStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6DomainV">Domain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ErrorEvent.html">ErrorEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo5EventV">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem.html">FileItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Flag.html">– Flag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RenameFlags.html">– RenameFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/CopyFlags.html">– CopyFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/RemoveFlags.html">– RemoveFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessFlags.html">– AccessFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/MKPathFlags.html">– MKPathFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileItem/AccessMode.html">– AccessMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileSeekFlag.html">FileSeekFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FileStat.html">FileStat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8FileViewV">FileView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Group.html">Group</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GroupID.html">GroupID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo9GroupInfoV">GroupInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC.html">HMAC</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/DigestFlags.html">– DigestFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC/Item.html">– Item</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HTTPRequestStatus.html">HTTPRequestStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Hex.html">Hex</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Link.html">Link</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html">Mail</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Mail.html#/s:9libappudo4MailV8AuthTypeO">– AuthType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo6MemVarV">MemVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Memory.html">Memory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html">PDF</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFCreateFlags.html">– PDFCreateFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF.html#/s:9libappudo3PDFV13PDFSignDigestO">– PDFSignDigest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/PDF/PDFSignFlags.html">– PDFSignFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4PageV">Page</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Proc.html">Proc</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Rand.html">Rand</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RefCharBufferData.html">RefCharBufferData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo4RoleV">Role</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Run.html">Run</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RunID.html">RunID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SHComp.html">SHComp</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryErrCode.html">SQLQryErrCode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SQLQryValue.html">SQLQryValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo7SettingV">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SettingVar.html">SettingVar</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StaticDomain.html">StaticDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/System.html">System</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/URL.html">URL</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/User.html">User</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserID.html">UserID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:9libappudo8UserInfoV">UserInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UserListItem.html">UserListItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchEvent.html">WatchEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/WatchFlag.html">WatchFlag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/zBase32.html">zBase32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>User</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">User</span></code></pre>
+
+                </div>
+              </div>
+            <p>Single users are added, modified or removed with a User.
+Other APIs depend on the current login user and it&rsquo;s group membership.
+Also files and other items are owned by users.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV6updateySiFZ"></a>
+                    <a name="//apple_ref/swift/Method/update(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV6updateySiFZ">update(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Update the current login user before the login expires. Logins can be set to automatically expire after a time period.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">_</span> <span class="nv">expire</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>expire</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The time until the login expires in seconds.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV5loginAA10AsyncValueVySbGSS_SSSiSSSgtFZ"></a>
+                    <a name="//apple_ref/swift/Method/login(_:_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV5loginAA10AsyncValueVySbGSS_SSSiSSSgtFZ">login(_:_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Login as a user. This will logout a current user.
+There can only be one login sesssion per user. It is possible to join a current login session by using a valid loginHash.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">login</span><span class="p">(</span><span class="n">_</span> <span class="nv">name</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">password</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">expire</span> <span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">,</span> <span class="n">_</span> <span class="nv">loginHash</span> <span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The login name of the user.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>password</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The login password of the user.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>expire</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The expiration time for the login in seconds.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>loginHash</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The login hash of an active login to reuse.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV6logoutyyFZ"></a>
+                    <a name="//apple_ref/swift/Method/logout()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV6logoutyyFZ">logout()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Logout the current login user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">logout</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV5ownerAA0B2IDVvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/owner" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV5ownerAA0B2IDVvpZ">owner</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the owner user id for the current run.
+Each run starts with the user that owns it.
+The current user can change with a user login
+or a swap to a different user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">owner</span><span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV7currentAA0B2IDVvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/current" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV7currentAA0B2IDVvpZ">current</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the current effective user id.
+Each run starts with the user that owns it.
+The current user can change with a user login
+or a swap to a different user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">current</span><span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV5adminAA0B2IDVvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/admin" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV5adminAA0B2IDVvpZ">admin</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the admin user id.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">admin</span><span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV5logonAA0B2IDVSgvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/logon" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV5logonAA0B2IDVSgvpZ">logon</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the login user id.
+Each run can have a single user at a time to be logged in.
+The login and current user can differ due to a user swap.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">logon</span><span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV9loginHashSSSgvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/loginHash" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV9loginHashSSSgvpZ">loginHash</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the login hash for the current login session.
+This is useful to join an active login session.
+The hash can only be used in addition to a full credential user login.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    login
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">loginHash</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV4dataSiSgvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/data" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV4dataSiSgvpZ">data</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the custom data value of the current login user or nil if there is no login.
+The data itself can not be set to nil.
+The current user must be either the owner, a member of the master group or the user itself.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV2idAA0B2IDVvp"></a>
+                    <a name="//apple_ref/swift/Property/id" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV2idAA0B2IDVvp">id</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the unique id of the user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">id</span><span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV4nameSSvp"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV4nameSSvp">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the unique name of the user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV6activeSbvp"></a>
+                    <a name="//apple_ref/swift/Property/active" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV6activeSbvp">active</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the user is active.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">active</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">mutating</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV7expiredSbvp"></a>
+                    <a name="//apple_ref/swift/Property/expired" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV7expiredSbvp">expired</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the login of the user has expired.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">expired</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV9lastLoginAA10AsyncValueVy10Foundation4DateVSgGvp"></a>
+                    <a name="//apple_ref/swift/Property/lastLogin" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV9lastLoginAA10AsyncValueVy10Foundation4DateVSgGvp">lastLogin</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the time of the last login of the user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">lastLogin</span><span class="p">:</span> <span class="kt">AsyncStruct</span><span class="o">&lt;</span><span class="kt">Date</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV4infoAA10AsyncValueVyAA0B4InfoVSgGvp"></a>
+                    <a name="//apple_ref/swift/Property/info" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV4infoAA10AsyncValueVyAA0B4InfoVSgGvp">info</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the UserID and GroupID for the current user and group owning the user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">info</span><span class="p">:</span> <span class="kt">AsyncStruct</span><span class="o">&lt;</span><span class="kt"><a href="../Structs.html#/s:9libappudo8UserInfoV">UserInfo</a></span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV8hasGroupAA10AsyncValueVySbGAA0D2IDVF"></a>
+                    <a name="//apple_ref/swift/Method/hasGroup(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV8hasGroupAA10AsyncValueVySbGAA0D2IDVF">hasGroup(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Check if the user is a member of the group.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">hasGroup</span><span class="p">(</span><span class="n">_</span> <span class="nv">group</span><span class="p">:</span> <span class="kt"><a href="../Structs/GroupID.html">GroupID</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>group</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The group id to check ownership for.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV8hasGroupAA10AsyncValueVySbGAA0D2IDVFZ"></a>
+                    <a name="//apple_ref/swift/Method/hasGroup(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV8hasGroupAA10AsyncValueVySbGAA0D2IDVFZ">hasGroup(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Check if the current user is a member of the group.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">hasGroup</span><span class="p">(</span><span class="n">_</span> <span class="nv">group</span><span class="p">:</span> <span class="kt"><a href="../Structs/GroupID.html">GroupID</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncBool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>group</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The group id to check ownership for.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV9listOwnedAA10AsyncValueVyAA0B4ListCSgGAA0B2IDV_s5Int32VAA01_bG4ItemV_APtcSg5orderAN10chunkLimitSb10withGroupstFZ"></a>
+                    <a name="//apple_ref/swift/Method/listOwned(_:order:chunkLimit:withGroups:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV9listOwnedAA10AsyncValueVyAA0B4ListCSgGAA0B2IDV_s5Int32VAA01_bG4ItemV_APtcSg5orderAN10chunkLimitSb10withGroupstFZ">listOwned(_:order:chunkLimit:withGroups:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the list of users owned by a user.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">listOwned</span><span class="p">(</span><span class="n">_</span> <span class="nv">user</span> <span class="p">:</span> <span class="kt"><a href="../Structs/UserID.html">UserID</a></span><span class="p">,</span> <span class="nv">order</span> <span class="p">:</span> <span class="p">(</span><span class="n">_UserListItem</span><span class="o">.</span><span class="kt">Sorter</span><span class="p">?)</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">chunkLimit</span> <span class="p">:</span> <span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">withGroups</span> <span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncClass</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/UserList.html">UserList</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>user</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The user owning the users.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The sort function to order the list.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>chunkLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The chunk limit for the list.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>withGroups</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Also load the groups with each user.
+The list is created in chunks. Only the current chunk is held in memory and sorted.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:9libappudo4UserV9listOwnedAA10AsyncValueVyAA0B4ListCSgGAA7GroupIDV_s5Int32VAA01_bG4ItemV_APtcSg5orderAN10chunkLimitSb10withGroupstFZ"></a>
+                    <a name="//apple_ref/swift/Method/listOwned(_:order:chunkLimit:withGroups:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:9libappudo4UserV9listOwnedAA10AsyncValueVyAA0B4ListCSgGAA7GroupIDV_s5Int32VAA01_bG4ItemV_APtcSg5orderAN10chunkLimitSb10withGroupstFZ">listOwned(_:order:chunkLimit:withGroups:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get the list of users owned by a group.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">listOwned</span><span class="p">(</span><span class="n">_</span> <span class="nv">group</span> <span class="p">:</span> <span class="kt"><a href="../Structs/GroupID.html">GroupID</a></span><span class="p">,</span> <span class="nv">order</span><span class="p">:(</span><span class="n">_UserListItem</span><span class="o">.</span><span class="kt">Sorter</span><span class="p">?)</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">chunkLimit</span><span class="p">:</span><span class="kt">Int32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">withGroups</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AsyncClass</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/UserList.html">UserList</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>group</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The group owning the users.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The sort function to order the list.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>chunkLimit</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The chunk limit for the list.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>withGroups</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Also load the groups with each user.
+The list is created in chunks. Only the current chunk is held in memory and sorted.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:s9EquatableP2eeoiSbx_xtFZ"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s9EquatableP2eeoiSbx_xtFZ">==(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">User</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="" target="_blank" rel="external">source@appudo.com</a>. All rights reserved. (Last updated: 2018-08-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

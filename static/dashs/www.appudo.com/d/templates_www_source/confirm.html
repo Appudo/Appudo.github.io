@@ -1,0 +1,60 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        doFgt : function() {
+            var frm = $('#fgtFrm');
+            var data = frm.serializeJSON();
+            
+            getUserNode(data.nem, function(ud) {
+                var err = function(d) {
+                    modalError(JSON.stringify(d));
+                }
+                if(rOk(ud)) {
+                    _post(userBase('/admin/', ud.n), {data:'{"cmd":5,"data":' + JSON.stringify(JSON.stringify({em:data.nem,lID:langID(),ln:slang})) + '}'}, function(data) {
+                        if(rOk(data)) {
+                            window.location.href = '/login';
+                        } else {
+                            err(data);
+                        }
+                    }, undefined, true);
+                } else {
+                    err(ud);
+                }
+            });
+        },
+        run : function() {
+            var _this = this;
+            $('#fgtFrm').submit(function(e) {
+                e.preventDefault();
+                _this.doFgt();
+            });
+            $('#abrtCf').click(function(e) {
+                window.location.href = '/';
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner" style="text-align:center;">
+        <div style="display:inline-block;text-align:initial;margin-top:50px;">
+            <h2 style="margin-bottom:10px;">{{info.head}}</h2>
+            <div class="frmBox">
+                <form id="fgtFrm" action="fgt" class="frm sfrm">
+                    <input style="display:none;" type="text" name="_em1">
+                    <input style="display:none;" type="password" name="_pw2">
+                    <input class="full" type="email" id="nem" name="nem" placeholder="{{fgt.m}}" required="">
+                    <div class="full info">
+                        <span>{{fgt.info}}</span>
+                    </div>
+                    <div>
+                        <div style="float:right;">
+                            <input type="submit" name="doCf" style="margin:10px 10px 5px 0" value="{{fgt.sub}}">
+                            <input class="bn" type="button" id="abrtCf" name="abrtCf" style="margin:10px 10px 5px 0" value="{{fgt.abrt}}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

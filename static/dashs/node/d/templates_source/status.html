@@ -1,0 +1,159 @@
+<div class="style">
+    <style name="mstl">
+        #state label {
+            font-weight:bold;
+            margin-right:10px;
+        }
+        #theForm {
+            display:none;
+        }
+
+        #psk {
+            display:inline-block;
+            width:500px;
+            word-wrap:break-word;
+        }
+
+        #frmBox {
+            display:inline-block;
+            padding:10px;
+            background:#efefef;
+            -pie-background: linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#efefef), color-stop(100%,#e2e2e2));
+            background:-webkit-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-moz-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-ms-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            background:-o-linear-gradient(top,#efefef 0%,#e2e2e2 100%);
+            border-radius:3px;
+            border:1px solid #223560;
+        }
+    </style>
+</div>
+<script id="misc">
+    return {
+        state:0,
+        getStatus : function() {
+            var _this = this;
+            var val = $("#val");
+            var ver = $("#ver");
+            var psk = $("#psk");
+            var nname = $("#nname");
+            var frm = $('#theForm');
+            if($('#status_unique_34233').length == 0)
+                return;
+            showLoad();
+            $.post( "/server/", {data:'{"cmd":0}'}, function(res) {
+                var data = validateRes(res);
+                if(!data) {
+                    // TODO error
+                    return;
+                }
+                state = data.s;
+                switch(state) {
+                    default:
+                    case 0: // NONE
+                        res = _this.i18n.sts.non;
+                        break;
+                    case 1: // PENDING
+                        res = _this.i18n.sts.pen;
+                        break;
+                    case 2: // OK
+                        res = _this.i18n.sts.rdy;
+                        break;
+                    case 3: // FAILED
+                        res = _this.i18n.sts.fail;
+                        break;
+                }
+                var vd = data.v;
+                var vs = vd.split(/[\(,\)]+/)
+                var d = new Date(parseInt(vs[1], '16') * 1000);
+                val.text(res);
+                ver.text(vs[0] + '(' + d.toLocaleString() + ')');
+                psk.text(data.p)
+                nname.text(data.n)
+                hideLoad();
+                if(state == 3) {
+                    frm.css('display', 'block');
+                } else {
+                    frm.css('display', '');
+                }
+
+                if(state == 1) {
+                    setTimeout(function(){_this.getStatus.apply(_this)}, 2000);
+                }
+            });
+        },
+        retry:function() {
+            var _this = this;
+            var frm = $('#theForm');
+            frm.css('display', '');
+            $.post( "/server/", {data:'{"cmd":7}'}, function(res) {
+                _this.getStatus.call(_this);
+            });
+        },
+        rstFrm : function(frm) {
+            this.rstFrmErr(frm);
+            frm[0].reset();
+        },
+        rstFrmErr : function(frm) {
+            // TODO remove error messages
+        },
+        doUpdate:function(fdata) {
+            var nname = $("#nname");
+            var _this = this;
+            showLoad();
+            $.post( '/server/', {data:JSON.stringify({cmd:14,data:fdata.nm})}, function(res) {
+                hideLoad();
+                var data = validateRes(res);
+                if(!data) {
+                    return;
+                }
+                if(data.r == 0) {
+                    nname.text(fdata.nm);
+                            _this.rstFrm($('#updForm'));
+                } else {
+                    // TODO error
+                }
+            });
+        },
+        run : function() {
+            var _this = this;
+            this.getStatus();
+            $('#retry').click(function() {_this.retry.apply(_this)});
+            var frm = $('#updForm');
+
+            frm.submit(function(e) {
+                e.preventDefault();
+                _this.doUpdate.call(_this, frm.serializeJSON());
+            });
+        }
+    }
+</script>
+<div class="i18n" id="content">
+    <h3>{{sts.head}}</h3>
+    <pre>{{sts.txt}}</pre>
+    <div id="state">
+        <label>{{sts.ver}}:</label><span id="ver"></span>
+        <div style="margin:10px;"></div>
+        <label>{{sts.nname}}:</label><span id="nname"></span>
+        <div style="margin:10px;"></div>
+        <label style="display:inline-block;vertical-align:top;">{{sts.psk}}:</label><span id="psk"></span>
+        <div style="margin:10px;"></div>
+        <label>{{sts.lbl}}:</label><span id="val"></span>
+    </div>
+    <div>
+        <form id="theForm" class="frm">
+            <button id="retry" name="retry" type="button" style="margin-top:15px;">{{frm.rty}}</button>
+        </form>
+        <div style="clear:both;"></div>
+        <div id="frmBox" style="margin-top:40px;padding-bottom:20px;">
+            <form id="updForm" class="frm">
+                <input id="nm" name="nm" style="width:400px;" placeholder="{{sts.nname}}" required>
+                <button id="sub" name="sub" type="submit" style="margin-top:15px;">{{frm.sub}}</button>
+            </form>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+    <div id="status_unique_34233"></div>
+</div>

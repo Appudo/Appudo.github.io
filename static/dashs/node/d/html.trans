@@ -1,0 +1,12 @@
+{
+    history:{{[
+  {
+    "t": "templates/main",
+    "s": "templates_source/main.html"
+  }
+]}},
+    transform:function(intxt, inname, outname, result) {
+        // TODO minify
+        result(intxt);
+    }
+}

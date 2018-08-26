@@ -1,0 +1,1507 @@
+<!-- ###MAIN### START --><!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="###$rdir###/css/zTreeStyle.css" type="text/css">
+        <link rel="stylesheet" href="###$rdir###/css/file_ext.css">
+        <link rel="stylesheet" href="###$rdir###/css/jquery.contextMenu.css">
+        <!-- ###STYLE### START -->
+        <link rel="stylesheet" href="###$rdir###/css/wschat.css">
+        <!-- ###STYLE### END -->
+        <script type="text/javascript" src="###$rdir###/js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="###$rdir###/js/jquery.ztree.core.js"></script>
+        <script type="text/javascript" src="###$rdir###/js/jquery.contextMenu.js"></script>
+        <script type="text/javascript" src="###$rdir###/js/jquery.ui.min.js"></script>
+        <script type="text/javascript" src="###$rdir###/js/jquery.ui.position.min.js"></script>
+        <style>
+            body {
+                background:#F7F7F7;
+            }
+            
+            .theFiles {
+                display:inline-block;
+            }
+            
+            .inner {   
+                margin:0 auto;    
+                width:680px;
+            }
+            
+            .block {
+                width:400px;
+                height:395px;
+                display:inline-block;
+                vertical-align:top;
+                overflow:hidden; 
+            }
+            
+            .parent {
+                position:relative;
+            }
+            
+            #dirBlock {
+                width:270px;
+                height:379px;
+            }
+            
+            #dirHover {
+                overflow:auto;
+                height:350px;
+            }
+            
+            form input[type="text"]{
+                width:390px;
+            }
+            
+            .fileframe {
+                height:340px;
+                width:398px;
+                border:1px solid #ddd;
+                border-radius:4px;
+            }
+            
+            .ov {    
+                height:100%;
+                width:100%;
+                overflow-x:auto;
+                overflow-y:hidden;
+            }
+            
+            .files {    
+                width:323px;
+                height:100%;
+                margin-left:52px;
+                margin-top:-52px;
+                list-style-type:none;
+                -webkit-transform:rotate(270deg);
+                -ms-transform:rotate(270deg);
+                -webkit-transform:rotate(270deg);
+                transform:rotate(270deg);
+            }
+            
+            .files li {    
+                width:140px;
+                height:1px;
+                float:right;
+                margin:5px;
+                margin-bottom:219px;
+                margin-left:-118px;
+                -webkit-transform:rotate(90deg);
+                -ms-transform:rotate(90deg);
+                -webkit-transform:rotate(90deg);
+                transform:rotate(90deg);
+            }
+            
+            .files li a {  
+                display:inline-block;
+                width:220px;
+                height:26px;
+                cursor:pointer; 
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+            
+            #drag, .files .sel a { 
+                background:rgb(170, 220, 222);
+                background:rgba(170, 220, 222, 0.42);
+                border:1px solid rgb(170, 220, 222);
+                border:1px solid rgba(170, 220, 222, 0.76);
+                margin:-1px;
+            }
+            
+            #drag {
+                width:100px;
+                padding-left:5px;
+            }
+
+            .files li span {  
+                vertical-align:text-bottom;
+                line-height:25px;
+            }
+            
+            .dragHover {  
+                background:rgba(170, 222, 164, 0.37) !important;
+            }
+            
+            .theError {
+                margin-left:10px;
+                display:none;
+                color:red;
+            }
+
+            #theStatus {
+                float:right;
+            }
+            
+            #theAddMod, #theAsk, #theProgress {
+                display:none;
+                padding:10px;
+                border-radius:4px;
+                border:1px solid #ddd;
+                background:#fff;
+                width:400px;
+                position:absolute;
+                top:0;
+                right:0;
+                left:0;
+                margin:auto;
+                margin-top:6%;
+                padding-bottom:10px;
+            }
+            
+            #progOuter {
+                padding:0;
+                background:rgba(221, 221, 221, 0.13);
+                border:1px solid #ddd;
+                border-radius:4px;
+                margin-top:10px;
+            }
+            
+            #progName {
+                display: inline-block;
+                line-height: 30px;
+                vertical-align: bottom;
+                width:250px;
+                margin-left:20px;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+            
+            #progPercent {
+                float:right;
+                margin-right:20px;
+            }
+            
+            #progInner {
+                display:inline-block;
+                width:30px;
+                height:30px;
+                padding:0;
+                position:absolute;
+                background:rgba(170, 220, 222, 0.23);
+            }
+            
+        </style>
+        <script>  
+            var theFiles = {removeChildNodes:function() {}};
+            var progress;
+            var selDir = [];   
+            var selFiles = [];   
+            var dragType;
+            var dragItems;   
+            var dragDir;
+            var selCls = 'sel';
+            var selDelay = 600;
+            var selLast, selDiff;
+            var fileData = [];
+            var onMouseUp;
+            var targetFile = false;
+            var pending = 0;
+            var filesCache = {};
+            var theTicket = 0;
+            
+            var setting = { view:{ showLine:false, 
+                                   selectedMulti:false },
+                            callback:{ 
+                                beforeAsync:doAsync,
+                                onClick:doClick,
+                            },
+                            async:{
+                                enable:true,
+                                url:'###PAGE_DOWNLOAD_SERVER###',
+    				            autoParam:['name=p'],
+    				            otherParam:{'t':'d'},
+    				            dataFilter:doFilter,
+    
+                            },
+                            data:{
+                                key:{
+                                    name:'n',
+                                    children:'c',
+                                }
+                            }
+            };
+   
+            document.onUpdate = function(result) {
+                if(result.t != 'download')
+                    return;
+                if(result.h && theTicket != result.h) {
+                    hideAll();
+                    filesCache = {};
+                    selDir = null;
+                    setupFileView([]);
+                    theFiles.destroy();
+                    theFiles = $.fn.zTree.init($('#theDirs'), setting, null);
+                }
+                theTicket = 0;
+            }
+            
+            function Init() {
+                progress = {o:$('#progOuter'),i:$('#progInner'),p:$('#progPercent'),n:$('#progName')};
+                theFiles = $.fn.zTree.init($('#theDirs'), setting, null);
+                var body = $('body');
+                 
+                $('.parent').bind('mouseup', function(e) {
+                    targetFile = false;
+                    body.removeAttr('style');
+                });
+                
+                var files = $('.files');       
+                files.bind('mousedown mouseup', function(e) {
+                    e.preventDefault();
+                    if(e.type == 'mousedown') {
+                        selLast = e.timeStamp;
+                    } else {
+                        selDiff = e.timeStamp - selLast;
+                        if(!targetFile && selDiff < selDelay) {
+                            files.find('.' + selCls).each(function() {
+                                $(this).removeClass(selCls);
+                            })
+                            $(this).toggleClass(selCls);
+                            onFileSelect([]);
+                        }
+                    }
+                });
+                
+                var getFilesHelper = function() {
+                    var txt = selFiles.length + ' file';
+                    if(selFiles.length != 1)
+                        txt += 's';
+                    return txt;
+                }
+                
+                files.draggable({
+                    cursor:'move',
+                    helper:'clone',
+                    appendTo:'body',
+                    cursorAt:{ left:-70, 
+                                bottom:-10
+                    },
+                    helper:function() {
+                        return $('<div id="drag">' + getFilesHelper() + '</div>');
+                    },
+                    start:function(event, ui) {
+                        var li = findInside(event.currentTarget, getTarget(event), 0);
+                        if(li == null) {
+                            return false;
+                        }
+                        if(!isSelected(li)) {
+                            onMouseUp({timeStamp:selLast+1}, li);
+                            ui.helper[0].innerHTML = getFilesHelper();
+                        }
+                        dragItems = selFiles;
+                        dragDir = selDir;
+                        dragType = 1;
+                    } 
+                });
+                
+                var theDirs = $('#theDirs'); 
+                
+                var getDirsHelper = function(li) {
+                    var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                    return node.n;
+                }
+                
+                theDirs.draggable({
+                    cursor:'move',
+                    appendTo:'body',
+                    cursorAt:{ left:-20, 
+                                bottom:50
+                    },
+                    helper:function(event, ui) {
+                        var li = findParent('li', getTarget(event), theDirs[0]);
+                        if(li == null) {
+                            return '<div></div>';
+                        }
+                        return $('<div id="drag">' + getDirsHelper(li) + '</div>');
+                    },
+                    start:function(event, ui) {
+                        var li = findParent('li', getTarget(event), theDirs[0]);
+                        if(li == null) {
+                            return false;
+                        }
+                        var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                        if(!isDirSelected(node)) {
+                            selectDir(node);
+                        }
+                        dragDir = selDir.getParentNode();
+                        dragItems = [node];
+                        dragType = 0;
+                    } 
+                });
+                
+                var dirDrop = $('#dirDrop');
+                var dirHover = $('#dirHover');
+                var current = null;
+                var canHover = false;
+                
+                var markDrop = function(li) {
+                    var a = li.children[0];
+                    if(canHover && current != a) {
+                        $(current).removeClass('dragHover');
+                        $(a).addClass('dragHover');
+                        current = a;
+                    }
+                }
+                
+                var unmarkDrop = function() {
+                    if(current) {
+                        $(current).removeClass('dragHover');
+                        current = null;
+                    }
+                    canHover = false;
+                }
+                
+                var onOver = function(event){
+                    var li = findParent('li', getTarget(event), dirDrop[0]);
+                    if(li == null) {
+                        return;
+                    }
+                    markDrop(li);
+                }
+                
+                dirDrop.droppable({
+                    accept:'.thedrag',
+                    tolerance:'pointer',
+                    over:function(event, ui) {
+                        canHover = true;
+                        dirHover.mousemove(onOver);
+                    },
+                    out:function(event, ui) {
+                        dirHover.unbind('mousemove');
+					    unmarkDrop();
+                    },
+                    drop:function(event, ui) {
+					    unmarkDrop();
+                        dirHover.unbind('mousemove');
+                        var li = findParent('li', getTarget(event), dirDrop[0]);
+                        if(li == null) {
+                            return false;
+                        }
+                        var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                        var copy = 0;
+                        doCopy(dragDir, node, dragItems, dragType, copy);
+                        return true;
+                    }
+                });
+                
+                dirDrop[0].ondrop = function(e) {
+                    e.preventDefault();  
+                    var li = findParent('li', getTarget(e), dirDrop[0]);
+					unmarkDrop();
+                    if(li == null || !e.dataTransfer) {
+                        return false;
+                    }
+                    
+                    var items;
+                    if ((items = e.dataTransfer.items)) {
+                    } else 
+                    if((items = e.dataTransfer.files)){
+                    } else {
+                        return false;
+                    }
+                    
+                    var node = theFiles.getNodeByTId(li.getAttribute('id'));
+					doUploadBegin({node:node}, items);
+                } 
+                
+                dirDrop[0].ondragover = function(e) {
+                    e.preventDefault();
+                    var li = findParent('li', getTarget(e), dirDrop[0]);
+                    if(li == null)
+                        return;
+                    canHover = true;
+                    markDrop(li);
+                }
+                
+                dirDrop[0].ondragleave = function(e) {
+                    e.preventDefault();
+                    unmarkDrop();
+                }
+                
+                $.contextMenu({
+                    selector:'.__any', 
+                    callback:function(key, options) {
+                        switch(key) {
+                            case 'add':
+                                showAdd(true, 1);
+                                break;
+                            case 'open':
+                                for(var i = 0, l = selFiles.length; i < l; i++) {
+                                    doOpenFile(selFiles[i]);
+                                }
+                                break;
+                            case 'remove':
+                                showRemove(true, selDir, selFiles, 1);
+                                break;
+                            case 'rename':
+                                var li = this[0].parentNode;
+                                var d = getData(li);
+                                var p = getPath(selDir);
+                                showRename(true, p, d.n, 1, function(to) {
+                                    li.remove();
+                                    var items = collectFileView();
+                                    items.push({n:to,r:d.r});
+                                    setupFileView(items, p);
+                                });
+                                break;
+                            case 'select':
+                                doSelectAll();
+                                break;
+                            case 'expose':
+                                showExposeFiles(true);
+                                break;
+                            case 'restrict':
+                                showRestrictFiles(true);
+                                break;
+                        }
+                    },
+                    items:{
+                        'add':{name:'New File', icon:'add'},
+                        'open':{name:'Open', icon:'open'},
+                        'remove':{name:'Remove', icon:'remove'},
+                        'rename':{name:'Rename', icon:'edit'},
+                        'select':{name:'Select All', icon:'select'},
+                        'expose':{name:'Expose', icon:'prop'},
+                        'restrict':{name:'Restrict', icon:'prop'},
+                    },
+                    events:{
+                        show :function(options){
+                            var li = this[0].parentNode;
+                            if(!isSelected(li)) {
+                                onMouseUp({timeStamp:selLast+1}, li);
+                            }
+                        }
+                    }
+                });
+                
+                $.contextMenu({
+                    selector:'#theDirs a', 
+                    callback:function(key, options) {
+                        switch(key) {
+                            case 'add_file':
+                                showAdd(true, 1);
+                                break;
+                            case 'add_dir':
+                                showAdd(true, 0);
+                                break;
+                            case 'remove':
+                                var li = this[0].parentNode;
+                                var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                                showRemove(true, node.getParentNode(), [node], 0);
+                                break;
+                            case 'rename':
+                                var li = this[0].parentNode;
+                                var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                                showRename(true, getPath(node.getParentNode()), node.n, 0, function(to) {
+                                    node.n = to;
+                                    onUpdateNode(node, true);
+                                });
+                                break;
+                            case 'select':
+                                doSelectAll();
+                                break;
+                        }
+                    },
+                    items:{
+                        'add_file':{name:'New File', icon:'add'},
+                        'add_dir':{name:'New Directory', icon:'add'},
+                        'remove':{name:'Remove', icon:'remove'},
+                        'rename':{name:'Rename', icon:'edit'},
+                        'select':{name:'Select All', icon:'select'},
+                    },
+                    events:{
+                        show :function(options){
+                            var li = this[0].parentNode;
+                            var node = theFiles.getNodeByTId(li.getAttribute('id'));
+                            if(!isDirSelected(node)) {
+                                selectDir(node);
+                            }
+                        }
+                    }
+                });
+                
+                $('#askStopButton').click(function() {hideAll(); return false; });
+                $('#modStopButton').click(function() {hideAll(); return false; });
+                
+                document.complete = true;
+            }
+            
+            function isDirSelected(node) {
+                return node == selDir
+            }
+            
+            function selectDir(node) {
+                theFiles.selectNode(node);
+                doClick(node)
+            }
+            
+            function onUpdateNode(node, sel) {
+                var parent = node.getParentNode();
+                parent.c = sortNodesByName(parent.c);
+                theFiles.refresh();
+                if(sel) {
+                    node = theFiles.getNodeByTId(node.tId);
+                    selectDir(node);
+                }
+            }
+            
+            function findParent(parent, target, limit) {
+                while(target && target != limit && target.localName != parent){
+                    target = target.parentNode;
+                }
+                return target && target.localName == parent ? target : null;
+            }
+            
+            function findInside(parent, target, offset) {
+                var path = [];
+                while(target && target.parentNode != parent){
+                    path.push(target.parentNode);
+                    target = target.parentNode;
+                }
+                var l = path.length;
+                return l == 0 ? null :path[l -1 - offset];
+            }
+            
+            function setupAsk(txt, f) {
+                var okButton = $('#askOkButton');
+                okButton.unbind('click');
+                okButton.click(function(e) {e.preventDefault(); f(); return false; });
+                $('#askTxt')[0].innerHTML = txt;
+            }
+            
+            function hideAll(v) {
+                if(pending)
+                    return;
+                v == showAdd || showAdd(false)
+                v == showRemove || showRemove(false)
+                v == showRename || showRename(false)
+                v == showExposeFiles || showExposeFiles(false)
+                v == showRestrictFiles || showRestrictFiles(false)
+                v == showUpload || showUpload(false)
+                $('.theError').css('display','none');
+            }
+            
+            function showAdd(v, type) {
+                if(v) {
+                    var txt = $('#addTxt')[0];
+                    var okButton = $('#modOkButton');
+                    okButton.unbind('click');
+                    okButton.click(function(e) {e.preventDefault(); doAdd(selDir, type); return false; });
+                    txt.innerHTML = type == 1 ? 'Add File:' :'Add Directory:';
+                    $('#addLabel').val("");
+                }
+                
+                $('#theAddMod').css('display', v ? 'block' :'none');
+            }
+            
+            function showRename(v, path, from, type, onOk) {
+                if(v) {
+                    var txt = $('#addTxt')[0];
+                    var okButton = $('#modOkButton');
+                    okButton.unbind('click');
+                    okButton.click(function(e) {e.preventDefault(); doRename(path, from, $('#addLabel').val(), onOk); return false; });
+                    txt.innerHTML = type == 1 ? 'Rename File:' :'Rename Directory:';
+                    $('#addLabel').val(from);
+                }
+                
+                $('#theAddMod').css('display', v ? 'block' :'none');
+            }
+            
+            function showRemove(v, dir, items, type) {
+                if(v)
+                {
+                    setupAsk('Remove selected files or folders?', function() {
+                        doRemove(getPath(dir), items, type);
+                    })
+                } 
+                
+                $('#theAsk').css('display', v ? 'block' :'none');
+            }
+            
+            function showExposeFiles(v) {
+                if(v)
+                {
+                    setupAsk('Expose selected files?', function() {
+                        doChangeProt(getPath(selDir), selFiles, 1);
+                    });
+                } 
+                
+                $('#theAsk').css('display', v ? 'block' :'none');
+            }
+            
+            function showRestrictFiles(v) {
+                if(v)
+                {
+                    setupAsk('Restrict selected files?', function() {
+                        doChangeProt(getPath(selDir), selFiles, 0);
+                    });
+                } 
+                
+                $('#theAsk').css('display', v ? 'block' :'none');
+            }
+            
+            function showUpload(v, name) {
+                if(v)
+                {
+                    $('#progName')[0].innerHTML = name;
+                    $('#progPercent')[0].innerHTML = '40%';
+                } 
+                
+                $('#theProgress').css('display', v ? 'block' :'none');
+            }
+            
+            function doSelectAll(){
+                var sel = [];
+                $('.files').find('li').each(function() {
+                    $(this).addClass(selCls);
+                    sel.push($(this)[0]);
+                })
+                onFileSelect(sel);
+            }
+            
+            function doChangeProt(path, items, pub) {
+                if(pending)
+                    return;
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            for(var i = 0, l = items.length; i < l; i++) {
+                                var a = items[i].children[0];
+                                if(pub) {
+                                    $(a).removeClass('__prot');
+                                } else {
+                                    $(a).addClass('__prot');
+                                }
+                            }
+                            onFileSelect([]);
+                            error = false;
+                            hideAll();
+                        }
+                    } 
+                    
+                    if(error) {
+                        $('.theError').css('display','inline-block');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=p&d={"d":' + filesToString(path, items) + ',"p":' + pub + '}&h=' + theTicket);
+                return false;
+            }
+            
+            function doAdd(dir, type) {
+                 if(pending)
+                    return;
+                var name = $('#addLabel').val();
+                var path = getPath(dir);
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            if(type == 1) { // files
+                                var items = collectFileView();
+                                items.push({n:name,r:0});
+                                setupFileView(items, path);
+                                onFileSelect([]);
+                            } else { // directory
+                                addDir(dir, [{n:name,p:1}], true);
+                            }
+                            error = false;
+                            hideAll();
+                        }
+                    } 
+                    
+                    if(error) {
+                        $('.theError').css('display','inline-block');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                var r = '';
+                var d;
+                if(type == 1) {
+                    if(path != '') 
+                        path += '/'
+                    d = path + name;
+                } else {
+                    d = name;
+                    r = '"r":"' + path + '",';
+                }
+                
+                xhr.send('t=n&d={' + r + '"f":"' + d +'","t":' + type + ',"p":0}&h=' + theTicket);
+                return false;
+            }
+            
+            function findDirNode(parent, name) {
+                return theFiles.getNodeByParam('n', name, parent);
+            }
+            
+            function trySelect(parent, data, cnt) {
+                if(cnt === undefined)
+                    cnt = 10;
+                if(cnt == 0)
+                    return;
+                setTimeout(function() {
+                    var n = findDirNode(parent, data.n);
+                    if(n) {
+                        onUpdateNode(n, true);
+                    } else {
+                        trySelect(parent, data, cnt - 1);
+                    }
+                }, 100);
+            }
+            
+            function addDir(parent, items, sel) {
+                var r, p, n;
+                if(selDir) {
+                    p = selDir.getParentNode();
+                    n = selDir.n;
+                }
+                r = theFiles.addNodes(parent, 0, items, true)[0];
+                filesCache[canoPath(getPath(parent) + '/' + r.n, '_')] = null;
+                parent.isParent = true;
+                r.isParent = true;
+                theFiles.refresh();
+                if(sel) {
+                    theFiles.expandNode(parent, true, false, true, false);
+                    trySelect(parent, r);
+                } else if(n) {
+                    n = findDirNode(p, n);
+                    if(n)
+                        theFiles.selectNode(n);
+                }
+                return r[0];
+            }
+            
+            function doCopy(from_node, to_node, items, type, copy) {
+                if(pending || from_node == to_node || (type == 0 && samePath(items[0], to_node)))
+                    return;
+                var from_path = getPath(from_node);
+                var to_path = getPath(to_node);
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            if(type == 1) { // files
+                                if(!copy) {
+                                    for(var i = 0, l = items.length; i < l; i++) {
+                                        items[i].remove();
+                                    }
+                                    filesCache[canoPath(to_path, '_')] = null;
+                                    var v = collectFileView();
+                                    setupFileView(v, from_path);
+                                    onFileSelect([]);
+                                    
+                                }
+                            } else { // directory
+                                var n = items[0];
+                                var p = n.getParentNode();
+                                var nn;
+                                if(!copy) {
+                                    theFiles.removeNode(n);
+                                    p.isParent = true;
+                                    if(from_path != '')
+                                        from_path += '/'
+                                    setupFileView([], from_path + n.n, true);
+                                }
+                                addDir(to_node, items, true);
+                            }
+                            error = false;
+                            hideAll();
+                        } else {
+                            // TODO error handling with possibly partial success
+                        }
+                    } 
+                    
+                    if(error) {
+                        $('.theError').css('display','inline-block');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                var d;
+                if(type == 1) {
+                    d = getData;
+                } else {
+                    d = function(a) { return a; };
+                }
+                xhr.send('t=c&d={"m":' + (copy ? 0 : 1) + ',"f":"' + from_path + '","t":"' + to_path + '","d":' + _filesToString("", items, d) + '}&h=' + theTicket);
+                return false;
+            }
+            
+            function filesToString(path, items) {
+                return _filesToString(path, items, getData);
+            }
+            
+            function _filesToString(path, items, _getData) {
+                var first = true;
+                var res = '[';
+                if(path != '') 
+                    path += '/'
+                if(items.length) {
+                    var d = _getData(items[0]);
+                    res += '"' + path + d.n + '"';
+                    for(var i = 1, l = items.length; i < l; i++) {
+                        d = _getData(items[i]);
+                        res += ',"' + path + d.n + '"';
+                    }
+                }
+                res += ']'
+                return res;
+            }
+            
+            function doRemove(path, items, type) {
+                if(pending)
+                    return;
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            if(type == 1) { // files
+                                for(var i = 0, l = items.length; i < l; i++) {
+                                    items[i].remove();
+                                }
+                                var v = collectFileView();
+                                setupFileView(v, path);
+                                onFileSelect([]);
+                            } else { // directory
+                                var n = items[0];
+                                var p = n.getParentNode();
+                                theFiles.removeNode(n);
+                                p.isParent = true;
+                                theFiles.refresh();
+                                if(path != "")
+                                    path += '/';
+                                setupFileView([], path + n.n, true);
+                            }
+                            error = false;
+                            hideAll();
+                        }
+                    } 
+                    
+                    if(error) {
+                        $('.theError').css('display','inline-block');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                var d;
+                if(type == 1) {
+                    d = getData;
+                } else {
+                    d = function(a) { return a; };
+                }
+                xhr.send('t=r&d={"d":' + _filesToString(path, items, d) + '}&h=' + theTicket);
+                return false;
+            }
+            
+            function doRename(path, from, to, onOk) {
+                if(pending)
+                    return;
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            onOk(to);
+                            onFileSelect([]);
+                            error = false;
+                            hideAll();
+                        }
+                    } 
+                    
+                    if(error) {
+                        $('.theError').css('display','inline-block');
+                    }
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=a&d={"p":"' + path + '","f":"' + from + '","t":"' + to + '"}&h=' + theTicket);
+                return false;
+            }
+    		
+    		function fixFile(s) {
+                return encodeURI(s).replace(/%5B/g, '[').replace(/%5D/g, ']');
+            }
+            
+            function doOpenFile(li) {
+                var d = getData(li)
+                var p = getPath(selDir);
+                var f = '/pub/download/' + fixFile(p);
+                if(p != '')
+                    f += '/';
+                window.open(f + d.n);
+            }
+            
+            function getPath(treeNode) {  
+                var path = treeNode.getPath();
+                if(path.length > 1) {
+                    var p = path[1].n;
+                    for(var i = 2, l = path.length; i < l; i++) {
+                        p += '/' + path[i].n;
+                    }
+                    return p;
+                }
+                return '';
+            }
+            
+            function getTarget(e) {
+                return e.toElement || (e.originalEvent ? e.originalEvent.target : undefined) || e.target;
+            }
+            
+            function doAsync(treeId, treeNode, post) {
+                theFiles.removeChildNodes(treeNode);
+                if(treeNode) {
+                    post.p = getPath(treeNode);
+                } else {
+                    post.r = 'r';
+                }
+                return true;
+            }
+            
+            function doFilter(treeId, node, newNodes) {
+                for(var i = 0, l = newNodes.length; i < l; i++) {
+                    newNodes[i].isParent = true;
+                }
+                return sortNodesByName(newNodes);
+            }
+            
+            function canoPath(path, prefix) {
+                if(path)
+                {
+    	        	if(path[path.length - 1] == '/')
+    	        	    path = path.substr(0, path.length - 1);
+    	        	return prefix + path;
+                }
+                return prefix;
+            }
+            
+            function loadFileView(path) {
+                var result;
+                if((result = filesCache[canoPath(path, '_')])) {
+                    setupFileView(result);
+                    return;
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState == 4 && this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        setupFileView(result, path);
+                    }
+                }
+                xhr.send('p=' + path + '&t=l');
+            }
+            
+            function isSelected(li) {
+                return selFiles.index ? selFiles.index(li) != -1 :selFiles.indexOf(li) != -1;
+            }
+            
+            function getFileExt(name) {
+                var idx;
+                if((idx = name.lastIndexOf('.')) != -1) {
+                    return name.substr(idx + 1).toLowerCase();
+                }
+                return null;
+            }
+            
+            function collectFileView() {
+                var items = $('#theFiles')[0].children;
+                var newItems = [];
+                var sum = 0;
+                for (idx in items) {
+                    if(items[idx].children) {
+                        newItems.push(getData(items[idx]));
+                    }
+                }
+                return newItems;
+            }
+            
+            function setupFileView(items, path, clear) {
+                if(clear) {
+                    selDir = null;
+                }
+                if(path !== undefined) {
+                    filesCache[canoPath(path, '_')] = clear ? null : items;
+                }
+                hideAll();
+                var theFiles = document.getElementById('theFiles');
+                theFiles.innerHTML = '';
+                items = sortNodesByName(items);
+                for(var i = 0, l = items.length; i < l; i++) {
+                    var li = document.createElement('li');
+                    setupFileItem(li, items[i]);
+                    theFiles.appendChild(li);
+                }
+                fileData = items;
+                
+                var files = $('.files');
+                var items = files.find('li');
+            
+                onMouseUp = function(e, li) {
+                    selDiff = e.timeStamp - selLast;
+                    if(selDiff < selDelay) {
+                        if(e.ctrlKey) {
+                            $(li).toggleClass(selCls);
+                            onFileSelect(files.find('.' + selCls));
+                        } else {
+                            files.find('.' + selCls).each(function() {
+                                $(this).removeClass(selCls);
+                            })
+                            $(li).toggleClass(selCls);
+                            onFileSelect([li]);
+                        }
+                    }
+                }
+                
+                items.bind('mousedown mouseup', function(e) {
+                    e.preventDefault(); 
+                    if(e.type == 'mousedown') {
+                        targetFile = true;
+                        selLast = e.timeStamp;
+                    } else {
+                        onMouseUp(e, $(this)[0]);
+                    }
+                });
+                
+                items.bind('dblclick', function(e) {
+                    e.stopPropagation(); 
+                    e.preventDefault();
+                    doOpenFile($(this)[0]);
+                })
+                
+                onFileSelect([]);
+            }
+            
+            function setupFileItem(li, item) {
+                var n = item.n;
+                var ext = getFileExt(n);
+                var cls = ' class="__any' + (ext ? ' __' + ext :'') + (item.r ? '' :' __prot') + '"';
+                li.innerHTML = '<a data="' + item.n + ',' + item.r + '"' + cls + '><span>' + n + '</span></a>';
+            }
+        
+            function sortNodesByName(items) {
+                return items.slice(0).sort(function(a,b) {
+                    return (a['n'] > b['n']) ? 1 :(a['n'] < b['n']) ? -1 :0;
+                });
+            }
+            
+            function getData(li) {
+                var span = li.children[0];
+                var data = span.getAttribute('data').split(',');
+                return {n:data[0], r:parseInt(data[1])};
+            }
+            
+            function getFileInfo(path, onOk) {   
+                if(pending)
+                    return;
+                var result;
+                var error = true;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###', true);
+                $('.theError').css('display','none');
+                xhr.onreadystatechange = function(e) {
+                    if(this.readyState != 4)
+                        return;
+                    pending = 0;
+                    if(this.status == 200) {
+                        result = JSON.parse(this.responseText);
+                        if(result.r == '1') {
+                            onOk(result);
+                        }
+                    } 
+                }
+                pending = 1;
+                theTicket = Math.random();
+                xhr.send('t=f&p=' + path + '&h=' + theTicket);
+                return false;
+            }
+            
+            function formatSize(size) {
+                if(size < 1024)
+                    return size + ' B';
+                else
+                if(size < 1024 * 1024)
+                    return (size / 1024).toFixed(1) + ' KiB';
+                else
+                if(size < 1024 * 1024 * 1024)
+                    return (size / (1024 * 1024)).toFixed(1) + ' MiB';
+                return (size / (1024 * 1024 * 1024)).toFixed(1) + ' GiB';
+            }
+            
+            function doUpdateState(items) {
+                var count = fileData.length;
+                var state = '';
+                if(items.length == 0) {
+                    state += count + ' file';
+                    if(count > 1)
+                        state += 's';
+                } else
+                if(items.length == 1) {
+                    var d = getData(items[0]);
+                    var n = d.n;
+                    var p = getPath(selDir);
+                    if(p != '')
+                        p += '/';
+                    if(n.length > 20) {
+                        n = n.substr(0, 20) + '...';
+                    }
+                    getFileInfo(p+d.n, function(r) {
+                        $('#theStatus')[0].innerHTML = n + ' (' + formatSize(r.s) + ')';
+                    });
+                    return;
+                } else {
+                    state += items.length + '(' + count + ') files selected';
+                }
+                $('#theStatus')[0].innerHTML = state;
+            }
+            
+            function onFileSelect(items) {
+                selFiles = items;
+                doUpdateState(items);
+            }
+            
+            function onDirSelect(item) {
+                selDir = item;
+                doUpdateState([]);
+            }
+            
+            function filterFileView() {
+                onFileSelect([]);
+                var theFilter, filter, theFiles, li, a, i;
+                theFilter = document.getElementById('theFilter');
+                filter = theFilter.value.toUpperCase();
+                theFiles = document.getElementById('theFiles');
+                li = theFiles.getElementsByTagName('li');
+                for (i = 0; i < li.length; i++) {
+                    a = li[i].getElementsByTagName('a')[0];
+                    if(a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        li[i].style.display = '';
+                    } else {
+                        li[i].style.display = 'none';
+                    }
+                }
+            }
+            
+            function doClick(node) {
+                var s = theFiles.getSelectedNodes();
+                if(s)
+                    s = s[0];
+                if(s != selDir) {
+                    if(s) {
+                        loadFileView(getPath(s));
+                    }
+                    onDirSelect(s);
+                }
+            }
+            
+            function setProgress(v, name) {
+                v = Math.round(v);
+                progress.p[0].innerHTML = v + '%';
+                progress.i.css('width', Math.round((progress.o.width()*v)/100) + 'px');
+                if(name) {
+                   progress.n[0].innerHTML = name;
+                }
+            }
+            
+			function doUploadBegin(info, list) {
+			    if(pending)
+			        return;
+				var stopButton = $('#progStopButton');
+				var parent = getPath(info.node);
+				var d1 = $.Deferred();
+				var d = d1;
+				var i = 0;
+                pending = 1;
+			    showUpload(true, 'none');
+				info.error = false;
+				setProgress(0);
+				function onFile(file, folder, type) {
+					var j = i++;
+					if(file){
+						var name = file.name;
+						d = d.then(function(){
+							var num = info.num;
+							var x = (100 / num) * j;
+							var fd = new FormData();
+							fd.append('t', 'u');
+							fd.append('parent', parent);
+                            fd.append('subDir', folder);
+							fd.append('name', name);
+							if(type == 1)
+						    	fd.append('file', file);
+						    else
+						        fd.append('isDir', 1);	
+							var p = $.Deferred();
+					        var xhr = new XMLHttpRequest();
+                            stopButton.unbind('click');
+                            stopButton.click(function(e) {
+                                e.preventDefault(); 
+                                if(info.error) {
+                				    hideAll();
+                                } else {
+                                    xhr.abort();
+                                } 
+                                return false; 
+                            });
+					        xhr.upload.addEventListener('progress', function(e) {
+					        	if(e.lengthComputable) {
+					        		var p = x + (e.loaded * (100 / num) / (e.total));
+					        		setProgress(p);
+					        	}
+					        	else
+					        	{
+					        		//setProgress(p);
+					        		//upBar.update({indeterminate: true});					        		
+					        	}
+					        }, false);
+					        xhr.addEventListener('load', function() {
+					            var response = {r:0};
+								var ioArgs = xhr.ioArgs;
+					            if(xhr.status == 200) {
+								    response = JSON.parse(xhr.responseText);
+					            }
+								if(response.r == 1)
+								{
+						        	p.resolve();
+						        	// add file if visible
+						        	if(type != 0 && isDirSelected(info.node) && folder == '') {
+                                        var items = collectFileView();
+                                        items.push({n:name,r:0});
+                                        setupFileView(items, parent);
+                                        onFileSelect([]);
+						        	}
+						        	
+						        	// add path if visible
+						        	if(type == 0) {
+						        	    folder += name;
+						        	} else {
+                                        filesCache[canoPath(parent, '_')] = null;
+						        	}
+						        	
+						        	if(folder != '') {
+    						        	folder = canoPath(folder, '');
+    						        	createPath(info.node, folder);
+						        	}
+								}
+								else
+								{
+                				    info.error = true;
+                				    doUploadEnd(info);	
+								}
+					        }, false);
+					        xhr.addEventListener('error', function() {
+            				    info.error = true;
+            				    doUploadEnd(info);	        	
+					        }, false);
+					        xhr.addEventListener('abort', function() {
+            				    info.cancel = true;
+            				    doUploadEnd(info);
+					        }, false);
+                            xhr.open('POST', '###PAGE_DOWNLOAD_SERVER###');
+					        setProgress(x, name);
+					        xhr.send(fd);
+					        return p;
+						});
+					} else 
+					if(folder) {
+						
+					}
+				}
+				var l = parseFileList(info, list, onFile);
+				$.when.apply($, l).then(function() {
+					d.then(function() {
+				        doUploadEnd(info);
+					}, function() {
+				        doUploadEnd(info);
+					});
+					info.num = i;
+					d1.resolve();
+				});
+			}
+			
+            function createPath(parent, folder) {
+                var p = folder.split('/');
+                var i = 0;
+                folder = getPath(parent);
+                for(var l = p.length; i < l; i++) {
+                    var n = findDirNode(parent, p[i]);
+                    folder += '/' + p[i];
+                    if(!n) {
+                        parent = addDir(parent, [{n:p[i], p:1}], false);
+                        if(!parent)
+                            break;
+                    } else {
+                        parent = n;
+                    }
+                }
+            }
+			
+            function samePath(from, to) {
+                while(to)
+                {
+                    if(from == to)
+                        return true;
+                    to = to.getParentNode();
+                }
+                return false;
+            }
+		
+            function doUploadEnd(info) {
+                if(pending) {
+                    if(info.error) {
+                        $('.theError').css('display','inline-block');
+                        pending = 0;
+                    } else {
+                        pending = 0;
+                        hideAll();
+                    }
+                }
+            }
+            
+			function parseFileList(info, list, cb) {
+				var l = [];
+				for(var i = 0, len = list.length; i < len; i++) {
+					if(list[i].webkitGetAsEntry && list[i].kind=='file') {
+						var item = list[i].webkitGetAsEntry();
+						if(item)
+							l.push(parseFiles(info, item, null, cb));
+					}
+				}
+				return l;
+			}
+
+    		function parseFiles(info, item, folder, cb) {
+    		    if(info.error || info.cancel)
+    		        return;
+    			folder = folder || '';
+    			var d = $.Deferred();
+    			if(item.isFile) {
+    				item.file(function(file) {
+    					cb(file, folder, 1);
+						d.resolve();
+    				}, function(){
+    				    info.error = true;
+    				    doUploadEnd(info);
+    				});
+    			} else 
+    			if(item.isDirectory) {
+    				var rd = item.createReader();
+    				rd.readEntries(function(items, a) {
+    					if(items.length == 0) {
+    						cb(item, folder, 0);
+							d.resolve();
+    					} else {
+        					var l = [];
+        					for(var i = 0, len = items.length; i< len; i++)
+        			        	l.push(parseFiles(info, items[i], folder + item.name + '/', cb));	
+        			        	
+            				$.when.apply($, l).then(function() {
+        						d.resolve();
+            				});
+    					}
+    				}, function(){
+    				    info.error = true;
+    				    doUploadEnd(info);
+    				});
+    			}
+    		    return d;
+    		}
+
+        </script>
+    </head>
+    <body onLoad="Init();">
+        <div class="parent">
+            <div class="inner">
+                <div id="dirBlock" class="block">
+                        <span>Directories:</span>
+                        <div id="dirHover"> 
+                            <div id="dirDrop">
+                                <ul id="theDirs" class="ztree thedrag"></ul>
+                            </div>
+                        </div>
+                </div>
+                <div class="block">
+                    <span>Files:</span><input type="text" id="theFilter" style="float:right;" ondblclick="this.value='';filterFileView();" onkeyup="filterFileView();" placeholder="filter..."/>
+                    <div class="fileframe">
+                        <div class="ov">
+                        <ul id="theFiles" class="files thedrag" style="float:clear;">
+                            <li style="position: absolute;right:-28px;top:22px;width:192px;">Click a directory to view it.</li>
+                        </ul>
+                        </div>
+                        <div id="theStatus">
+                        </div>
+                    </div>
+                    <form>
+                    <div id="theAddMod">
+                        <div style="border-bottom:1px solid #ddd"><span id="addTxt">Add File:</span><div class="theError">error...</div></div>
+                        <div>
+                            <label style="color:#fff;font:4px/5px 'opensans-bold', sans-serif;">Name</label><input type="text" id="addLabel" placeholder="Name...">
+                        </div>
+                        <div>
+                            <input style="float:right;margin:10px 5px 0 0;" type="button" id="modStopButton" value="Cancel">
+                            <input style="float:right;margin:10px 5px 0 0;" type="submit" id="modOkButton" value="Submit">
+                        </div>
+                    </div>
+                    <div id="theAsk">
+                        <div style="border-bottom:1px solid #ddd"><span id="askTxt"></span><div class="theError">error...</div></div>
+                        <div>
+                            <input style="float:right;margin:10px 5px 0 0;" type="button" id="askStopButton" value="Cancel">
+                            <input style="float:right;margin:10px 5px 0 0;" type="submit" id="askOkButton" value="Submit">
+                        </div>
+                    </div>
+                    <div id="theProgress">
+                        <div style="border-bottom:1px solid #ddd"><span>File Upload</span><div class="theError">error...</div></div>
+                        <div>
+                            <div id="progOuter"><div id="progInner"></div><span id="progName"></span><span id="progPercent"></span></div>
+                            <input style="float:right;margin:10px 5px 0 0;" type="button" id="progStopButton" value="Cancel">
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html><!-- ###MAIN### END -->

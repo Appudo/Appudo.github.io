@@ -1,0 +1,68 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 18,
+      "symbol": "WebSocketEventType.TEXT_MESSAGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 19,
+      "symbol": "WebSocketEventType.BYTE_MESSAGE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 20,
+      "symbol": "WebSocketEventType.CONTROL",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 21,
+      "symbol": "WebSocketEventType.START",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 22,
+      "symbol": "WebSocketEventType.CONNECT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 23,
+      "symbol": "WebSocketEventType.DISCONNECT",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 24,
+      "symbol": "WebSocketEventType.ERROR",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 25,
+      "symbol": "WebSocketEventType.COMPLETE",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/neon/Desktop/Appudo/Appudo/src/appudo_websocket/appudo/WebSocketEvent20.swift",
+      "line": 32,
+      "symbol": "WebSocketEvent.init(id:data:target:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/neon/Desktop/Appudo"
+}

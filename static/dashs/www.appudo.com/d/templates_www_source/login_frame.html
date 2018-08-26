@@ -1,0 +1,56 @@
+<style>
+</style>
+<script id="misc">
+    return {
+        noI18nLoad:true,
+        preI18n : function(o, m) {
+            o.login = i18nCtx['landing'].login;
+            o.ft = i18nCtx['landing'].ft;
+        },
+        run : function() {
+            var frm = $('#loginFrm');
+            var api = $('.btm .api');
+            api.attr('href', apiRef());
+            frm.submit(function(e) {
+                e.preventDefault();
+                var data = frm.serializeJSON();
+                frm[0].reset();
+                doLogin(data);
+            });
+        }
+    }
+</script>
+<div class="i18n style" id="header">
+  <div class="hdr flhdr"></div>
+  <div class="lhdr">
+        <div class="linner">
+            <div id="logo" class="logobg" onclick="toMain();"></div>
+            <div id="login" class="lgn">
+                <form id="loginFrm" action="none" class="frm">
+                    <div><label>{{login.em}}</label><input name="email" id="email" type="text" required></div><div><label>{{login.pw}}<a class="spf-link" href="/confirm" id="lst" tabindex="-1">({{login.lst}})</a></label><input name="password" id="password" type="password" required><input type="submit" name="doLn" value="{{login.sub}}"></div>
+                </form>
+            </div>
+            <div style="clear:both;"></div>  
+        </div>
+    </div>
+</div>
+<div class="i18n" id="menu"></div>
+<div class="i18n style" id="footer">
+    <div class="fbg"></div>
+    <div class="fcontent">
+        <div class="linner">
+            <div class="lang">
+                <a class="lsel" href="javascript:setLang('www')">{{ft.en}}</a>
+                <a href="javascript:setLang('de-de')">{{ft.de}}</a>
+            </div>
+            <div class="hline" style="display:block;margin:20px auto;background:#ddd"></div>
+            <div class="btm">
+                <a class="spf-link" href="/legal">{{ft.legal}}</a>
+                <a class="spf-link" href="/doc/">{{ft.doc}}</a>
+                <a class="api" target="_blank" href="">APPUDO APIs</a>
+                <a target="_blank" href="https://www.github.com/Appudo">Github</a>
+                <a class="spf-link" href="/about">{{ft.abt}}</a>
+            </div>
+        </div>
+    </div>
+</div>

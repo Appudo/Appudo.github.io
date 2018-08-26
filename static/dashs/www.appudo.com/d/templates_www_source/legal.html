@@ -1,0 +1,151 @@
+<style>
+    #ctFrm {
+        width: 500px;   
+        overflow:hidden; 
+        margin:0 0 10px -10px;
+    }
+    #ctFrm label {
+        margin-top:10px;
+        display:block;
+        font-size:1.4em;
+    }
+    #ct_err {
+        color:red;
+    }
+    #ct_mail {
+        width:412px;
+    }
+    #ct_msg {
+        width:419px;
+        height:150px;
+    }
+    #ct_comment {
+        float left;
+        margin-left:801px;
+        height:10px;
+    }
+    #ct_sub {
+        float:right;
+        margin-right:70px;
+    }
+</style>
+<script id="misc">
+    return {
+         dec : function(idx) {
+            var i18n = i18nCtx[this._module].info;
+            var _this = this;
+            var sub = $("#ct_sub");
+            sub.attr('value', i18n.wt + ' ' + idx + 's');
+            if(--idx < 0)
+            {
+                sub.attr('value', i18n.snd);
+                sub.attr('disabled', false);
+                return;
+            }
+            setTimeout(function() {
+                _this.dec(idx);
+            }, 1000);
+        },
+        checkFrm : function() {
+            var i18n = i18nCtx[this._module].info;
+            var emsg = i18n.cerr;
+            var frm = $('#theCtFrm');
+            var err = $('#ct_err');
+            var txt = $('#ct_msg');
+            err.html('');
+            err.css('display', 'none');
+            if(txt[0].value.length > 1000) {
+                err.css('display', 'block');
+                err.html(emsg.replace('###', txt[0].value.length));
+                return false;
+            }
+            frm.replaceWith('<div class="pre" style="color:#457edb">' + i18n.ok + '</div>');
+            return true;
+        },
+        run : function() {
+            var _this = this;
+            var frm = $('#ctFrm');
+            var hash = $('#ct_hash');
+            var sub = $("#ct_sub");
+            if(sub) {
+                sub.attr('disabled', true);
+                _get('/contact/', function(data) {
+                    hash.attr('value', data);
+                    _this.dec(5);
+                });
+            }
+            
+            frm.submit(function(e) {
+                e.preventDefault();
+                if(_this.checkFrm()) {
+                    var d = frm.serializeJSON();
+                    _post('/contact/', d, function(data) {
+                        console.log(data);
+                    });
+                }
+            })
+        }
+    }
+</script>
+<div class="i18n style" id="content">
+    <div class="linner">
+        <h1 class="ct_head">{{info.head}}</h1>
+        <div class="ct_ct">
+            <div class="men">
+                <a href="#address">{{info.addr}}</a><br>
+                <a href="#contact">{{info.cnt}}</a><br>
+                <a href="#privacy">{{info.dt}}</a><br>
+                <a href="#disclaimer">{{info.dsc}}</a>
+            </div>
+            <h2 id="address" class="ct_h">{{info.addr}}</h2>
+            <div class="rpre">Appudo UG (haftungsbeschränkt)
+Krautenaustraße 15
+76344 Eggenstein-Leopoldshafen
+{{info.ger}}</div>
+            <div class="rpre">USt-IdNr.: DE 289 272 728
+Handelsregister: Amtsgericht Mannheim unter HRB 729020
+Geschäftsführer: Alexander Hochbaum</div>
+            <h2 id="contact" class="ct_h">{{info.cnt}}</h2>
+            <div class="pre">E-Mail: <img style="vertical-align:baseline;margin-bottom:-5px;" src="/pub/img/mail.png"></div>
+            <div class="hline"></div>
+            <div id="theCtFrm" class="frm">
+                <div id="ct_err" style="display:none;">ERROR</div>
+                <form id="ctFrm" method="POST" action='/contact/'>
+                    <input type="hidden" id="ct_hash" name="hash" value=''>
+                    <label>{{info.ml}}:</label><input type="email" id="ct_mail" name="mail" required>
+                    <label>{{info.req}}:</label>
+                    <textarea id="ct_msg" name="msg" cols="50" rows="13" required></textarea>
+                    <input tabindex="-1" type="text" id="ct_comment" name="comment">
+                    <input type="submit" id="ct_sub" value="Send">
+                </form>
+            </div>
+            <h2 id="privacy">{{info.trans}}</h2>
+            <h2 class="ct_h">{{info.dt}}</h2>
+            <div class="pre">{{info.dsgv}}</div>
+            <h3 class="ct_h">{{info.cntb}}</h3>
+            <div class="pre">{{info.cntbt}}</div>
+            <h3 class="ct_h">{{info.act}}</h3>
+            <div class="pre">{{info.actt}}</div>
+            <h3 class="ct_h">{{info.cky}}</h3>
+            <div class="pre">{{info.ckyt}}</div>
+            <h3 class="ct_h">{{info.ldt}}</h3>
+            <div class="pre">{{info.ldtt}}</div>
+            <h3 class="ct_h">{{info.bws}}</h3>
+            <div class="pre">{{info.bwst}}</div>
+            <h3 class="ct_h">{{info.trd}}</h3>
+            <div class="pre">{{info.trdt}}</div>
+            <h3 class="ct_h">{{info.rgt}}</h3>
+            <div class="pre">{{info.rgtt}}</div>
+            <h3 class="ct_h">{{info.rej}}</h3>
+            <div class="pre">{{info.rejt1}} <a href="https://www.appudo.com/legal#contact">https://www.appudo.com/legal#contact</a> {{info.rejt2}}</div>
+            <h3 class="ct_h">{{info.dur}}</h3>
+            <div class="pre">{{info.durt1}} <a href="https://www.appudo.com/legal#privacy">https://www.appudo.com/legal#privacy</a> {{info.durt2}}</div>
+            <div class="hline"></div>
+            <h2 id="disclaimer" class="ct_h">{{info.dsc}}</h2>
+            <div class="pre">{{info.dsct}}</div>
+            <div class="rpre">{{info.dsce}}</div>
+            <div class="{{info.dsch}}"></div>
+            <div class="rpre">{{info.dscg}}</div>
+        </div>
+    </div>
+</div>

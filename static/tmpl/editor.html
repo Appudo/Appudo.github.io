@@ -1,0 +1,518 @@
+<!--
+    editor.html is part of Appudo
+
+    Copyright (C) 2011-2016
+        00bd5bdef476a7cd2138cc18cb0274bf9dac8503cf7f406bcdff73381391c976 source@appudo.com
+        31e58341d31d3a196ed6502a68b4f87115456459d60f5a1d70c00779266aec60 source@appudo.com
+
+    Licensed under the Apache License, Version 2.0
+
+    See http://www.apache.org/licenses/LICENSE-2.0 for more information
+-->
+
+<div data-dojo-id="page" data-dojo-type="appudo.TemplateContent" data-dojo-props="gutters:false,ctx:{}">
+        <script type="dojo/method">
+                        var parent = dijit.getEnclosingWidget(this.domNode.parentNode);
+                        appudo.on(parent, 'show', this, function() {
+                                dojo.global.page = this;
+                                ctx.tabFocus();
+                        });
+
+                        appudo.focus(parent);
+                        var ctx = dojo.mixin(parent.ctx, this.ctx);
+                        ctx.dprovNode = dojo.query('.dprovH', this.domNode)[0];
+                        ctx.dprovParent = dijit.getEnclosingWidget(ctx.dprovNode);
+                        ctx.parent = parent;
+                        this.ctx = this.initCtx('page', ctx);
+                        ctx.dlgs = {};
+                        ctx.tmpl = {};
+
+
+                        var _this = this;
+                        setTimeout(function() {
+                                var ed = dojo.query('.Over', _this.domNode);
+                                if(ed.length != 0)
+                                        dojo.destroy(ed[0]);
+                        }, 0);
+
+                        var nlsItems = dojo.query('.nls', this.domNode);
+                        editNls = editNls;
+                        ctx.nls = nls;
+                        nlsItems.forEach(function(item) {
+                                item.innerHTML = _this._stringRepl(item.innerHTML);
+                        });
+
+                        dojo.query('.load', this.domNode).forEach(function(node, index, nodelist) {
+                            ctx.loadNode = node;
+                        });
+                        ctx.updateLoad = function(t) {
+                                switch(t){
+                                        case 0:
+                                                ctx.loadNode.innerHTML = '<span class="dijitIconLoading dijitInline lIcon"></span>' + nls.load;
+                                                break;
+                                        case 1:
+                                                ctx.loadNode.innerHTML = 'error';
+                                                break;
+                                }
+                        }
+        </script>
+        <script type="dojo/method" data-dojo-event="initCtx" data-dojo-args="widget, ctx">
+                                var p = this;
+                                var pctx = p.ctx;
+                                if(!ctx)
+                                        ctx = {};
+                                ctx.r = '/'+appudo.random();
+                                switch(widget) {
+                                case 'page':
+                                    ctx.cleanup = function() {
+                                        appudo.emit(p.domNode, 'closed', {
+                                            bubbles: true,
+                                            cancelable: true
+                                        });
+                                    }
+                                    ctx.findOpt = function(sel, label) {
+                                        var o = sel.getOptions();
+                                        return appudo.filter(o, function(item) {
+                                            return item.label == label;
+                                        })[0];
+                                    }
+                                    ctx.setSelV = function(sel, v) {
+                                        sel.set('value', v);
+                                        var o = sel.getOptions(v);
+                                        o.selected = true;
+                                    }
+                                    ctx.setSelOpt = function(sel, opt) {
+                                        sel.set('options', opt);
+                                        sel.addOption({label:nls.sel, value:'-1'});
+                                        var o1 = sel.getOptions('-1');
+                                        o1.selected = true;
+                                        o1.disabled = true;
+                                        sel.set('value', '-1');
+                                    }
+                                    ctx.init = function() {
+                                    }
+                                    ctx.trySave = function() {
+                                        var retry = {};
+                                        var f = function() {
+                                            if(ctx.codeEditor.inChange()) {
+                                                setTimeout(function() {
+                                                    retry.f();
+                                                });
+                                                return;
+                                            }
+                                            ctx.codeEditor.save();
+                                        }
+                                        retry.f = f;
+                                        f();
+                                    }
+                                        ctx.file = '/edit/7/3/'+ctx.id;
+                                        ctx.tabFocus = function() {
+                                                appudo.focus(ctx.parent);
+                                                var editor = ctx.codeEditor;
+
+                                                if(editor && editor.focus)
+                                                        editor.focus();
+                                        }
+                                        ctx.parent.changed = function() {
+                                                return ctx.codeChanged && ctx.codeChanged();
+                                        }
+                                        ctx.save = function() {
+                                                var editor = ctx.codeEditor;
+                                                if(!editor || !editor.changed()) {
+                                                        editor.abortSave();
+                                                        return;
+                                                }
+                                                var rd = editor.getDiff();
+                                                var r = rd.r;
+                                                var txt = rd.t;
+                                                var o = ctx.r;
+                                                var n = ctx.absName;
+                                                ctx.r = '/'+appudo.random();
+                                                r.writeString('&f='+n+'&l='+n.length);
+                                                r = r.getResult();
+                                                appudo.postBinary('/edit/7/2/'+ctx.id+o+ctx.r, r).then(function(h){
+                                                        appudo.cache(ctx.file, txt);
+                                                        editor.textSaved();
+                                                        if(h.r == 0) {
+                                                            appudo.emit(p.domNode, 'saved', {
+                                                                bubbles: true,
+                                                                cancelable: true
+                                                            });
+
+
+// TODO remove
+/*
+    appudo.postPlain('/edit/8/3'+ctx.r, 'f='+ctx.absName+'&i='+ctx.id, function() {
+    }).then(function(data){
+        if(data !== undefined) {
+            if(data != txt) {
+            console.log(data);
+            console.log(txt);
+                alert('diff error');
+            } else {
+                console.log('###MATCH###');
+            }
+        }
+    });
+    */
+// TODO remove
+                                                        }
+                                                });
+                                        }
+                                        ctx.parent.save = ctx.save;
+                                        ctx.setTxt = function(txt) {
+                                                var editor = ctx.codeEditor;
+                                                editor.setText(txt);
+                                                editor.show();
+                                        }
+                                        ctx.initEdit = function() {
+                                                var editor = ctx.codeEditor;
+                                                if(editor && editor.started && !editor.started()) {
+                                                        ctx.codeChanged = editor.changed;
+                                                        ctx.codeText();
+                                                        ctx.setMode(ctx.mode ? ctx.mode : 0);
+                                                }
+                                        }
+                                        ctx.codeText = function() {
+                                                ctx.codeEditor.hide();
+                                                ctx.updateLoad(0);
+                                                appudo.postPlain('/edit/8/3'+ctx.r, 'f='+ctx.absName+'&i='+ctx.id, function() {
+                                                    ctx.updateLoad(1);
+                                                }).then(function(data){
+                                                        appudo.cache(ctx.file, data);
+                                                        if(data !== undefined)
+                                                                ctx.setTxt(data);
+                                                });
+                                        }
+                                        ctx.updateTitle = function() {
+                                                ctx.setTitle(ctx.codeEditor.changed());
+                                        }
+                                        ctx.code = function() {
+                                                var iframe = dojo.query('.bframe', ctx.cEdit.domNode)[0];
+                                                ctx.codeMenu.bindDomNode(iframe);
+                                                ctx.codeEditor = appudo.getDoc(iframe);
+                                                ctx.codeOffset = dojo.position(iframe);
+                                                appudo.initEdit(ctx, iframe, null);
+                                                ctx.codeMenu.ctx.pinit();
+                                        }
+                                        ctx.setTitle = function(change) {
+                                                var parent = ctx.parent;
+                                                if(change == parent._changed)
+                                                        return;
+                                                var t = parent.get('title');
+                                                if(!change) {
+                                                        parent.set('title', t.charAt(0) == '*' ? t.substr(1) : t);
+                                                } else {
+                                                        parent.set('title', '*'+t);
+                                                }
+                                                parent._changed = change;
+                                        }
+                                        ctx.modes = [null, null, 'ace/mode/html', 'ace/mode/css', 'ace/mode/javascript'];
+                                        ctx.setMode = function(mode) {
+                                                var newStyle = mode == 5 ? 'block' : 'none';
+                                                if(dojo.getStyle(ctx.dprovNode, 'display') != newStyle) {
+                                                    if(!ctx.dprov_init) {
+                                                        ctx.dprov_init = true;
+                                                        ctx.dprovFrm.ctx.init();
+                                                    }
+                                                    dojo.style(ctx.dprovNode, 'display', newStyle);
+                                                    ctx.dprovParent.resize();
+                                                }
+                                                ctx.drop.setIconClass(appudo.fileClass(mode));
+                                                ctx.codeEditor.setMode(ctx.modes[mode]);
+                                        }
+                                        break;
+                                case 'codeBar':
+                                        ctx.addC = function() { alert('1'); };
+                                        ctx.selM = function(idx) { return function() { pctx.setMode(idx) }};
+                                        break;
+                                case 'dprovFrm':
+                                        ctx.nls = nls;
+                                        ctx.editNls = editNls;
+                                        ctx.init = function(nohtry) {
+                                            var s = appudo.getFileTabs();
+                                            var inp = dijit.getEnclosingWidget(dojo.query('[name$=in]', pctx.dprovNode)[0]);
+                                            var out = dijit.getEnclosingWidget(dojo.query('[name$=out]', pctx.dprovNode)[0]);
+                                            pctx.setSelOpt(out, s);
+                                            s = appudo.getFileTabs();
+                                            pctx.setSelOpt(inp, s);
+                                            if(!nohtry)
+                                                ctx.refrehHtry();
+                                        }
+                                        ctx.refrehHtry = function() {
+                                            var t = ctx.parseTmpl();
+                                            var htry = dijit.getEnclosingWidget(dojo.query('[name$=htry]', pctx.dprovNode)[0]);
+                                            if(t) {
+                                                try {
+                                                    var o = eval('(' + t[1] +')');
+                                                    if(o instanceof Array) {
+                                                        var r = [];
+                                                        var idx = 0;
+                                                        o.forEach(function(item) {
+                                                            r.push({label:item.s + ' to ' + item.t, value:''+(idx++), data:item});
+                                                        });
+                                                        pctx.setSelOpt(htry, r);
+                                                        return true;
+                                                    }
+                                                } catch(e) {
+                                                }
+                                                ctx.destroySignals();
+                                            }
+                                            pctx.setSelOpt(htry, []);
+                                            return false;
+                                        }
+                                        ctx.destroySignals = function() {
+                                            if(ctx.saveSignal) {
+                                                ctx.saveSignal.remove();
+                                                ctx.saveSignal = null;
+                                            }
+                                            if(ctx.closeSignal_source) {
+                                                ctx.closeSignal_source.remove();
+                                                ctx.closeSignal_source = null;
+                                            }
+                                            if(ctx.closeSignal_target) {
+                                                ctx.closeSignal_target.remove();
+                                                ctx.closeSignal_target = null;
+                                            }
+                                            ctx.dprovFrm_source = null;
+                                            ctx.dprovFrm_target = null;
+                                            ctx.dprovActive = false;
+                                            ctx.updateVisibility();
+                                        }
+                                        ctx.destroySignal = appudo.on(p.domNode, 'closed', function(e) {
+                                            ctx.destroySignals();
+                                            ctx.destroySignal.remove();
+                                        });
+                                        ctx.submit = function(e) {
+                                            var v = pctx.dprovFrm.get('value');
+                                            if(v.in == v.out || v.in == '-1' || v.out == '-1')
+                                                return;
+                                            var inp = dijit.getEnclosingWidget(dojo.query('[name$=in]', pctx.dprovNode)[0]);
+                                            var out = dijit.getEnclosingWidget(dojo.query('[name$=out]', pctx.dprovNode)[0]);
+                                            var target = appudo.openFileTab(out.getOptions(v.out).label, true);
+                                            var source = appudo.openFileTab(inp.getOptions(v.in).label, true);
+                                            if(!ctx.dprovActive) {
+                                                ctx.dprovActive = true;
+                                                ctx.updateVisibility();
+                                                ctx.saveSignal = appudo.on(source.domNode, 'saved', function(e) {
+                                                    ctx.doTransform();
+                                                });
+                                                ctx.closeSignal_source = appudo.on(source.domNode, 'closed', function(e) {
+                                                    ctx.destroySignals();
+                                                });
+                                                ctx.closeSignal_target = appudo.on(target.domNode, 'closed', function(e) {
+                                                    ctx.destroySignals();
+                                                });
+                                            } else {
+                                                ctx.destroySignals();
+                                            }
+                                            if(ctx.dprovActive && ctx.startTransform(source, target)) {
+                                                appudo.selectTab(source);
+                                            }
+                                        }
+                                        ctx.parseTmpl = function() {
+                                            var editor = pctx.codeEditor;
+                                            var txt = editor.getText();
+                                            var reg = /\{\{([\s\S]*?)\}\}/m;
+                                            var m = txt.match(reg);
+                                            try {
+                                                var f = m[1];
+                                                var r = [txt.substr(0, m.index), f, txt.substr(m.index + m[0].length)];
+                                            } catch(e) {
+                                                ctx.destroySignals();
+                                                return null;
+                                            }
+                                            return r;
+                                        }
+                                        ctx.updateVisibility = function() {
+                                            var btn = dijit.getEnclosingWidget(dojo.query('[type$=submit]', pctx.dprovNode)[0]);
+                                            if(btn)
+                                                btn.set('label', ctx.dprovActive ? editNls.stop : editNls.start);
+                                        }
+                                        ctx.startTransform = function(source, target) {
+                                            ctx.dprovFrm_source = source;
+                                            ctx.dprovFrm_target = target;
+                                            var t = ctx.parseTmpl();
+                                            if(t) {
+                                                try {
+                                                    var o = eval('(' + t[0] + 'null' + t[2] + ')');
+                                                    ctx.transFunc = o.transform;
+                                                    if(ctx.transFunc)
+                                                        return true;
+                                                } catch(e) {
+                                                }
+                                                ctx.destroySignals();
+                                            }
+                                            return false;
+                                        }
+                                        ctx.doTransform = function() {
+                                            if(ctx.dprovActive && ctx.transFunc) {
+                                                var source_ctx = ctx.dprovFrm_source.ctx;
+                                                var target_ctx = ctx.dprovFrm_target.ctx;
+                                                var source_editor = source_ctx.codeEditor;
+                                                var target_editor = target_ctx.codeEditor;
+                                                ctx.transFunc(source_editor.getText(), source_ctx.absName, target_ctx.absName, function(text) {
+                                                    target_editor.clearText(text);
+                                                    target_ctx.trySave();
+                                                });
+                                            }
+                                        }
+                                        ctx.refresh = function() {
+                                            ctx.destroySignals();
+                                            ctx.init();
+                                        }
+                                        ctx.htry = function(e) {
+                                            ctx.destroySignals();
+                                            var v = pctx.dprovFrm.get('value');
+                                            var htry = dijit.getEnclosingWidget(dojo.query('[name$=htry]', pctx.dprovNode)[0]);
+                                            var inp = dijit.getEnclosingWidget(dojo.query('[name$=in]', pctx.dprovNode)[0]);
+                                            var out = dijit.getEnclosingWidget(dojo.query('[name$=out]', pctx.dprovNode)[0]);
+                                            var o = htry.getOptions(v.htry);
+                                            try {
+                                                var target = appudo.openFileTab(o.data.t, true);
+                                                var source = appudo.openFileTab(o.data.s, true);
+                                                setTimeout(function() {
+                                                    ctx.init(true);
+                                                    var oin = pctx.findOpt(inp, o.data.s);
+                                                    var oout = pctx.findOpt(out, o.data.t);
+                                                    pctx.setSelV(inp, oin.value);
+                                                    pctx.setSelV(out, oout.value);
+                                                }, 0);
+                                            } catch(e) {
+                                            }
+                                        }
+                                        ctx.save = function() {
+                                            var v = pctx.dprovFrm.get('value');
+                                            if(v.in == v.out || v.in == '-1' || v.out == '-1')
+                                                return;
+                                            var t = ctx.parseTmpl();
+                                            if(t) {
+                                                var inp = dijit.getEnclosingWidget(dojo.query('[name$=in]', pctx.dprovNode)[0]);
+                                                var out = dijit.getEnclosingWidget(dojo.query('[name$=out]', pctx.dprovNode)[0]);
+                                                var i = {t:out.getOptions(v.out).label, s:inp.getOptions(v.in).label};
+                                                try {
+                                                    var o = eval('(' + t[1] +')');
+                                                    if(o instanceof Array) {
+                                                        var h = {};
+                                                        var r = [];
+                                                        o.forEach(function(item) {
+                                                            h[item.s + '*' + item.t] = item;
+                                                        });
+                                                        h[i.s + '*' + i.t] = i;
+                                                        for(var key in h) {
+                                                           if (h.hasOwnProperty(key)) {
+                                                               r.push(h[key]);
+                                                           }
+                                                        }
+                                                        var txt = t[0] + '{{' + JSON.stringify(r, null, 2) + '}}' + t[2];
+                                                        pctx.codeEditor.clearText(txt);
+                                                        pctx.trySave();
+                                                        ctx.refrehHtry();
+                                                        return true;
+                                                    }
+                                                } catch(e) {
+                                                }
+                                                ctx.destroySignals();
+                                            }
+                                            return false;
+                                        }
+                                        ctx.reset = function() {
+                                            var t = ctx.parseTmpl();
+                                            if(t) {
+                                                var txt = t[0] + '{{[]}}' + t[2];
+                                                pctx.codeEditor.clearText(txt);
+                                                pctx.trySave();
+                                                var htry = dijit.getEnclosingWidget(dojo.query('[name$=htry]', pctx.dprovNode)[0]);
+                                                pctx.setSelOpt(htry, []);
+                                            }
+                                            ctx.destroySignals();
+                                        }
+                                        ctx.chSel = function() {
+                                            var htry = dijit.getEnclosingWidget(dojo.query('[name$=htry]', pctx.dprovNode)[0]);
+                                            pctx.setSelV(htry, '-1');
+                                        }
+                                        break;
+                                case 'codeMenu':
+                                        ctx.init = function() { pctx.codeMenu = codeMenu; }
+                                        ctx.pinit = function() {
+                                                                var editor = pctx.codeEditor;
+                                                                ctx.editor = editor;
+                                                                var children = codeMenu.getChildren();
+                                                                appudo.on(codeMenu, 'close', function(e) {
+                                                                        pctx.tabFocus();
+                                                                });
+                                                                dojo.connect(codeMenu, '_openMyself', codeMenu, function(e) {
+                                                                        ctx.undoI = children[0];
+                                                                        ctx.redoI = children[1];
+                                                                        ctx.saveI = children[2];
+                                                                        ctx.undoI.set('disabled', !ctx.editor.hasUndo());
+                                                                        ctx.redoI.set('disabled', !ctx.editor.hasRedo());
+                                                                        ctx.saveI.set('disabled', !ctx.editor.changed());
+                                                                });
+                                        }
+                                        ctx.undo = function() { ctx.editor.undo(); };
+                                        ctx.redo = function() { ctx.editor.redo(); };
+                                        ctx.save = function() { pctx.save(); };
+                                        ctx.copy = function() { ctx.editor.copy(); };
+                                        ctx.cut = function() {  ctx.editor.cut(); };
+                                        break;
+                                }
+                                return ctx;
+        </script>
+        <div class="Over"></div>
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'barCont', region:'top'">
+                <div data-dojo-id="codeBar" data-dojo-type="dijit.Toolbar" data-dojo-props="ctx:page.initCtx('codeBar')">
+                <div data-dojo-id="page.ctx.drop" data-dojo-type="appudo.AddDropDown" data-dojo-props="iconClass:'iFile'">
+                                <span>Set Mode</span>
+                                <div data-dojo-id="page.ctx.menu" data-dojo-type="dijit.Menu" data-dojo-props="title:''">
+                                        <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iFile', onClick:codeBar.ctx.selM(0),label:editNls.txt"></div>
+                                        <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iHTML', onClick:codeBar.ctx.selM(2),label:editNls.html"></div>
+                                        <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCSS', onClick:codeBar.ctx.selM(3),label:editNls.css"></div>
+                                        <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iCode', onClick:codeBar.ctx.selM(4),label:editNls.js"></div>
+                                        <div data-dojo-type="dijit.MenuItem" data-dojo-props="iconClass:'iFile', onClick:codeBar.ctx.selM(5),label:editNls.dps"></div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+        <div class="dprovH" style="display:none;">
+            <div data-dojo-id="page.ctx.dprovPanel" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'top'">
+                <div class="frm" style="overflow:auto;width:100%;height:100%">
+                    <div data-dojo-id="dprovFrm" data-dojo-type="appudo.Form" data-dojo-props="region:'center', ctx:page.initCtx('dprovFrm'),onSubmit:function(event) {if(event)event.preventDefault();this.ctx.submit(event);}">
+                                <label>${ctx.editNls.dpSrc}</label>
+                                <select data-dojo-type="appudo.Select" data-dojo-props="name:'in',onChange:dprovFrm.ctx.chSel"></select>
+                                <br/>
+                                <label>${ctx.editNls.dpTgt}</label>
+                                <select data-dojo-type="appudo.Select" data-dojo-props="name:'out',onChange:dprovFrm.ctx.chSel"></select>
+                                <div class="dBtn" style="margin:5px 5px 5px 30px;display:inline-block;">
+                                    <button data-dojo-type="dijit.form.Button" data-dojo-props="type:'button', label:editNls.refresh, onClick:dprovFrm.ctx.refresh"></button>
+                                </div>
+                                <br/>
+                                <label>${ctx.editNls.dpHst}</label>
+                                <select data-dojo-type="appudo.Select" data-dojo-props="name:'htry',onChange:dprovFrm.ctx.htry"></select>
+                                <div class="dBtn" style="margin:5px 5px 5px 30px;display:inline-block;">
+                                    <button data-dojo-type="dijit.form.Button" data-dojo-props="type:'button', label:nls.save, onClick:dprovFrm.ctx.save"></button>
+                                    <button data-dojo-type="dijit.form.Button" data-dojo-props="type:'button', label:editNls.reset, onClick:dprovFrm.ctx.reset"></button>
+                                </div>
+                                <br/>
+                                <div class="dBtn" style="margin:5px 5px 5px 30px;">
+                                    <button data-dojo-type="dijit.form.Button" data-dojo-props="type:'submit', label:editNls.start"></button>
+                                </div>
+                                <script type="dojo/connect" data-dojo-event="startup">page.ctx.dprovFrm = this;</script>
+                         </div>
+                   </div>
+             </div>
+        </div>
+        <div data-dojo-id="page.ctx.cEdit" data-dojo-type="dijit.layout.ContentPane" data-dojo-props="baseClass:'mPane', region:'center'">
+                <ul data-dojo-type="dijit.Menu" data-dojo-id="codeMenu" data-dojo-props="style:'display:none;', ctx:page.initCtx('codeMenu')">
+                        <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:codeMenu.ctx.undo, iconClass:'dijitEditorIcon dijitEditorIconUndo', label:nls.undo"></li>
+                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:codeMenu.ctx.redo, iconClass:'dijitEditorIcon dijitEditorIconRedo', label:nls.redo"></li>
+                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:codeMenu.ctx.save, iconClass:'iDisk', label:nls.save"></li>
+                <li data-dojo-type="dijit.MenuSeparator"></li>
+                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:codeMenu.ctx.copy, iconClass:'dijitEditorIcon dijitEditorIconCopy', label:nls.copy"></li>
+                <li data-dojo-type="dijit.MenuItem" data-dojo-props="onClick:codeMenu.ctx.cut, iconClass:'dijitEditorIcon dijitEditorIconCut', label:nls.cut"></li>
+            </ul>
+                <iframe class="bframe"></iframe>
+        <span class="nls load"><span class="dijitIconLoading dijitInline lIcon"></span>${ctx.nls.load}</span>
+                <script type="dojo/connect" data-dojo-event="startup">page.ctx.code();page.ctx.init();</script>
+        </div>
+</div>
