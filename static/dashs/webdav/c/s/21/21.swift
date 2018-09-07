@@ -729,11 +729,13 @@ func PUT_Handler(_ path : String, _ If : UnsafeTmpString?) {
         Page.resultStatus = e
         return
     }
-    
+
     if let target = err <! Dir.base.open2(path, [.O_CREAT, .O_RDWR]) {
         let r : HTTPRequestStatus = target.created ? .S_201  : .S_204
+        var tf = target.item
         if var body = Page.rawBody {
-            if let _ = err <! body.send(target.item) {
+            if target.created || <!tf.truncate_open(0) != false,
+               let _ = err <! body.send(target.item) {
                 Page.resultStatus = r
                 return
             }
