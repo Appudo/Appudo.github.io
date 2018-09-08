@@ -580,7 +580,8 @@ func lock_handle_if(_ path : String, _ If : UnsafeTmpString?, _ lockTokens : ino
         if p.next(&idx, char:UInt8(ascii:"<"))?.until(char:UInt8(ascii:">"), &v) != nil {
             var t = v!
             if(t.starts(swith:"http://", remove:true) || t.starts(swith:"https://", remove:true)) {
-                if(!t.starts(with:getBasePathNoSchema(), remove:true)) {
+                if(!t.starts(with:getBasePathNoSchema(), remove:true) &&
+                   (t.find(char:UInt8(ascii:"@"), remove_until:true) == -1 || !t.starts(with:getBasePathNoSchema(), remove:true))) {
                     return false
                 }
             }
@@ -883,10 +884,20 @@ func MOVE_Handler(_ path : String, _ If : UnsafeTmpString?, _ Dest : UnsafeTmpSt
 }
 
 func toRelDest(_ host : String, _ Dest : UnsafeTmpString?) -> String? {
-    if var theDest = Dest,
-       theDest.starts(with:host, remove : true) {
-        theDest.url_decode(path:true)
-        return theDest.description
+    if var theDest = Dest {
+        let c = theDest.common(with:host, remove : true)
+        if c != 0 {
+            var len = host.utf8.count
+            if(c != len) {
+                let d = theDest.find(char:UInt8(ascii:"@"), remove_until:true)
+                len -= c
+                if(d == -1 || theDest.common(with:String(host.dropFirst(c)), remove : true) != len) {
+                    return nil
+                }
+            }
+            theDest.url_decode(path:true)
+            return theDest.description
+        }
     }
     return nil
 }
