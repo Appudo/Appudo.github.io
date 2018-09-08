@@ -735,7 +735,7 @@ func PUT_Handler(_ path : String, _ If : UnsafeTmpString?) {
         var tf = target.item
         if var body = Page.rawBody {
             if target.created || <!tf.truncate_open(0) != false,
-               let _ = err <! body.send(target.item) {
+               let _ = err <! body.send(tf, inOffset:0) {
                 Page.resultStatus = r
                 return
             }
