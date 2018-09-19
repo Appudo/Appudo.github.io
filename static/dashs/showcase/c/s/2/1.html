@@ -167,6 +167,7 @@
             theMedia.addEventListener('sourceopen', function(e) {
                 try  {
                 sourceBuffer = theMedia.addSourceBuffer('video/mp4; codecs="avc1.640029, mp4a.40.5"');
+                sourceBuffer.abort = function() {};
                 sourceBuffer.mode = 'segments';// sequence
                 requestChunk(idx);
                 if(!document.nostart)
