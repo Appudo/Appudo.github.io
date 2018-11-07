@@ -1,0 +1,377 @@
+{
+    "info":"\/*\n * operation fields:\n * \"i\" = operation number\n * \"n\" = operation name\n * \"d\" = operation description\n * \"k\" = operation keys object\n * \"l\" = i18n lang settings\n *\n * operation key fields:\n * \"n\" = name\n * \"a\" = array (must be 1 for array and 2 for array or single value)\n * \"t\" = type integer or array of type integers\n * \"m\" = mandatory (must be 1 if present)\n * \"r\" = array of reliant keys (must exist if this one is set)\n * \"e\" = array of exlusive keys (must not exist if this one is set)\n * \"u\" = array of undefined keys (must exist if this one is not set)\n * \"l\" = array of linked keys (e.g. arrays with the same size)\n * \"v\" = value (if not present)\n * \"d\" = key description\n *\/",
+    "types":{
+        "AnyJSON":{"d":""},
+        "String":{"d":"", "t":0}, 
+        "Bool":{"d":"", "t":1}, 
+        "Integer":{"d":"", "t":2},
+        "VarSlotIndex":{"d":"", "t":2, "s":0},
+        "FunctionIndex":{"d":"", "t":2},
+        "Number":{"d":"", "t":3}, 
+        "ArgumentKind":{"d":"Without a value, the item is a boolean flag", "t":2, "p":"Typed Value", "n":"Typed Value or boolean flag", "pn":"TypeNumber"}, 
+        "TypeNumber":{"d":"", "t":2, "or":["Required", "ValueTypeLShift"]}, 
+        "ValueType":{"d":"", "t":2, "cl":{
+            "None":{"d":"", "v":0},
+            "Any":{"d":"", "v":1},
+            "String":{"d":"", "v":2},
+            "Integer":{"d":"", "v":3},
+            "Number":{"d":"", "v":4},
+            "Bool":{"d":"", "v":5},
+            "JSON":{"d":"", "v":6},
+            "File":{"d":"", "v":7},
+            "CookieList":{"d":"", "v":8},
+            "Array":{"d":"", "v":9},
+            "StringMap":{"d":"", "v":10},
+            "TreeIterator":{"d":"", "v":11},
+            "JsonIterator":{"d":"", "v":12},
+            "TransformIterator":{"d":"", "v":13},
+            "WebSocketClientObject":{"d":"", "v":14},
+            "WaitObject":{"d":"", "v":15},
+            "BinaryData":{"d":"", "v":16},
+            "Time":{"d":"", "v":17},
+            "_TrueORUndefined":{"d":"", "v":64},
+            "_FalseORUndefined":{"d":"", "v":65}
+        }},
+        "Required":{"d":"The value for this type is either required or optional", "t":2, "cl":{
+            "required":{"d":"Required", "v":1},
+            "optional":{"d":"Optional", "v":0}
+        }},
+        "ValueTypeLShift":{"d":"", "t":2, "ls":{"n":1, "v":"ValueType"}},
+        "JumpTestKind":{"d":"", "cl":{
+            "HasValue":{"d":"Test if the slot has a value", "v":0},
+            "IsTrue":{"d":"Test if the slot interpreted as boolean is true (no value = false)", "v":1}
+        }},
+        "OptionKeyValue":{"d":"", "t":2, "cl":{
+            "StopOnFail":{"d":"stop_on_fail  (Bool)", "v":1},
+            "NoCertError":{"d":"no cert error (Bool)", "v":2},
+            "unixNewLine":{"d":"unix_new_line (Bool)", "v":3},
+            "i18nLang":{"d":"i18n lang     (String)", "v":4},
+            "i18nDir":{"d":"i18n dir      (String)", "v":5},
+            "Verbose":{"d":"verbose       (Integer)", "v":6},
+            "ProgramName":{"d":"program name  (String)      - read only", "v":7},
+            "ToolVersion":{"d":"tool version  (String)      - read only", "v":8},
+            "CmdVersion":{"d":"cmd version   (String)", "v":9}
+        }},
+        "OptionUndefined":{"d":"", "t":2, "cl":{
+            "UndefinedError":{"d":"Error if values are undefined", "v":0},
+            "UndefinedIgnore":{"d":"Ignore undefined values", "v":1},
+            "UndefinedFalse":{"d":"Undefined is false", "v":2},
+            "UndefinedTrue":{"d":"Undefined is true", "v":3}
+        }}
+    },
+    "i18n":{},
+    "operations":[
+        {"i":1, "n":"Arguments",
+                "d":"Define the command line arguments for the command", 
+                "k":{
+                    "n":{"n":"Names", "d":"The named arguments", "a":1, "t":"String"},
+                    "t":{"n":"Types", "d":"The argument value types", "a":1, "t":"ArgumentKind", "l":["n"]},
+                    "a":{"n":"PositionalTypes", "d":"Types for positional arguments", "a":1, "t":"ValueType"},
+                    "d":{"n":"DefaultValues", "d":"The default argument values", "a":1, "t":"String", "l":["n", "a"]},
+                    "p":{"n":"OptionalPositional", "d":"Number of optional positional arguments", "t":"Integer"},
+                    "c":{"n":"ClearSlots", "d":"Initially clear result slot variables", "t":"Bool"}
+                }, 
+                "s":{"i":{"min":0, "ln":["n", "a"]}}
+        }, 
+        {"i":2, "n":"Jump",
+                "d":"Conditionally jump n operations in the operation chain if evaluated to jump condition", 
+                "k":{
+                    "v":{"n":"TestSlot", "d":"The slot with the value to test or always jump if undefined", "t":"VarSlotIndex"},                    
+                    "t":{"n":"TestKind", "d":"How the slot value is handled", "t":"JumpTestKind"},
+                    "c":{"n":"TestCondition", "d":"The condition to test for", "t":"Bool"},
+                    "n":{"n":"JumpSteps", "d":"The steps to jump forward or backwards", "t":"Integer"},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the test slot", "t":"Bool"}
+                },
+                "s":{"im":"g", "i":"v"}
+        },
+        {"i":3, "n":"Copy",
+                "d":"Copy temporary command results to global slots.\nIf i is defined, the input keys are not used directly.\nInstead the value of the slot is used as indirect input key.", 
+                "k":{
+                    "s":{"n":"Inputs", "d":"Array of input variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                    "t":{"n":"Targets", "d":"Array of target variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the input slots", "t":"Bool"},
+                    "i":{"n":"IndirectInput", "d":"Use the input values as variable slots index", "t":"Bool"},
+                    "p":{"n":"IndirectOffset", "d":"An additional offset for the indirect input values", "t":"Integer"}
+                },
+                "s":{"im":"g", "i":"s", "o":"t"}
+        },
+        {"i":4, "n":"SettingLoad",
+                "d":"Load settings from the settings store into the temporary result slots.",
+                "k":{
+                    "k":{"n":"SettingKeys", "d":"Array of string keys for the settings store", "a":1, "m":1, "t":"String"},
+                    "t":{"n":"SettingTypes", "d":"Array of types for the setting values", "a":1, "m":1, "t":"TypeNumber", "l":["k"]},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the setting values", "t":"Bool"},
+                    "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"}
+                },
+                "s":{"om":"g", "o":{"min":"r", "ln":"k"}}
+        },
+        {"i":5, "n":"SettingSave",
+                "d":"Save settings.",
+                "k":{
+                    "k":{"n":"SettingKeys", "d":"Array of string keys for the settings store", "a":1, "m":1, "t":"String"},
+                    "v":{"n":"InputSlots", "d":"Array of slots for the input values", "a":1, "t":"VarSlotIndex", "l":["k"]},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                    "d":{"n":"DeleteOnly", "d":"Only delete the values from setting store", "t":"Bool"}
+                },
+                "s":{"im":"g", "i":"v"}
+        },
+        {"i":6, "n":"JSONFrom",
+                "d":"Extract values from JSON.",
+                "k":{
+                    "v":{"n":"InputSlot", "d":"Input variable slot", "m":1, "t":"VarSlotIndex"},
+                    "p":{"n":"Paths", "d":"Array of string paths to extract\nmember keys are separated by . (dots).\nDots in member names must be encoded with  \"%2E\".\n\".Number\" e.g. \".0\" is referencing an array element.\n\"%\" in member names must be encoded with \"%25\".", "a":1, "m":1, "t":"String"},
+                    "t":{"n":"Types", "d":"Array of types for the extracted values", "a":1, "t":"TypeNumber", "l":["p"]},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                    "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"}
+                },
+                "s":{"im":"g", "i":"v", "o":{"min":"r", "ln":"p"}}
+        },
+        {"i":7, "n":"JSONTo",
+                "d":"Pack values into a JSON Object.",
+                "k":{
+                    "k":{"n":"NameKeys", "d":"Array of string keys for the JSON Object", "a":1, "m":1, "t":"String"},
+                    "v":{"n":"InputSlots", "d":"Array of source variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                    "e":{"n":"ExcludeNull", "d":"Exclude null values", "t":"Bool"},
+                    "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+                },
+                "s":{"im":"g", "i":"v", "o":"r"}
+        },
+        {"i":8, "n":"Print",
+                "d":"Print formatted values.",
+                "k":{
+                    "n":{"n":"NumValues", "d":"Number of input values", "m":1, "t":"Integer"},
+                    "l":{"n":"RepeatSlot", "d":"The slot for the number of repeats", "t":"VarSlotIndex"},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the number of repeats value", "t":"Bool"},
+                    "e":{"n":"Verbosity", "d":"The level of verbosity needed to actually print", "t":"Integer"}
+                },
+                "s":{"im":"g", "i":"l"}
+        },
+        {"i":9, "n":"JSONParse",
+            "d":"Fetch json values arranged in array like structure with optional parent-child relationship.",
+            "k":{
+                "a":{"n":"ObjectSlot", "d":"Input variable slot for iterator object", "m":1, "t":"VarSlotIndex"},
+                "v":{"n":"InputSlot", "d":"Input variable slot for value", "m":1, "t":"VarSlotIndex"},
+                "i":{"n":"ItemsKey", "d":"String key for items array", "m":1, "t":"String"},
+                "k":{"n":"NameKeys", "d":"Array of string name keys to extract", "a":1, "m":1, "t":"String"},
+                "t":{"n":"Types", "d":"Array of types for the extracted values", "a":1, "t":"TypeNumber", "l":["k"]},
+                "p":{"n":"ParentKey", "d":"String key for parent id", "t":"String"},
+                "l":{"n":"ParentSlot", "d":"The slot for the parent id", "t":"VarSlotIndex"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                "s":{"n":"SortResult", "d":"Sort the children", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"}
+            },
+            "s":{"im":"g", "i":["a", "v"], "o":["l", {"min":"r", "ln":"k"}]}
+        },
+        {"i":10, "n":"Help",
+            "d":"Print command help."
+        },
+        {"i":11, "n":"WebSocketClient",
+            "d":"Connect to websocket server and send or revceive data.",
+            "k":{
+                "c":{"n":"ConnectConfig", "k":{
+                    "u":{"n":"Url", "d":"The url value or slot index", "t":"AnyJSON"},
+                    "d":{"n":"OnDiconnect", "d":"Index to function table called on disconnect", "t":"FunctionIndex"},
+                    "n":{"n":"OnConnect", "d":"Index to function table called on connect", "t":"FunctionIndex"},
+                    "c":{"n":"Cookies", "d":"The cookies value or slot index", "t":"AnyJSON"},
+                    "m":{"n":"OnMessage", "d":"Index to function table called on incoming message", "t":"FunctionIndex"},
+                    "t":{"n":"Type", "d":"The incoming message value type", "t":"ValueType"},
+                    "k":{"n":"Chunked", "d":"Handle chunks instead of complete messages", "t":"Bool"},
+                    "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                    "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+                }},
+                "s":{"n":"TextMessage", "d":"The text message value or slot index", "t":"AnyJSON"},
+                "b":{"n":"BinaryMessage", "d":"Index for the slot of the binary message", "t":"VarSlotIndex"},
+                "d":{"n":"Disconnect", "d":"Do disconnect", "t":"Bool"},
+                "e":{"n":"Reconnect", "d":"Do reconnect", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+            },
+            "s":{"i":["s", "b"]}
+        },
+        {"i":12, "n":"Value",
+            "d":"If v is not defined then store static values from v into the global or tmporary result store.\nIf v is defined, then try to reference values in v with k and t as keys.\nThis can be used to define static values or extract values from storage values like arrays or an index.",
+            "k":{
+                "v":{"n":"BaseObjectSlot", "d":"Index for the slot of the base input value", "t":"VarSlotIndex"},
+                "k":{"n":"Values", "d":"Array of static values or variable slot index", "a":1, "t":"AnyJSON"},
+                "t":{"n":"Type", "d":"The type for the values", "a":1, "t":"ValueType"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"},
+                "d":{"n":"Delete", "d":"Number to delete n values", "t":"Integer"},
+                "i":{"n":"Indirect", "d":"Indirect usage of input values (k)", "t":"Bool"},
+                "p":{"n":"IndirectOffset", "d":"An additional offset for the indirect input values", "t":"Integer"}
+            },
+            "s":{"im":"g", "i":["v", "k"], "o":"r"}
+        },
+        {"i":13, "n":"Equal",
+            "d":"Compare value a to b and store result.\nIf t is defined, a must match type of t.\nIf a does not match t and b is defined, the whole operation will fail.\nIf a does not match t and b is not defined, the operation will return false as a result.\nIf b is defined, a and b must be equal.\n\nCan be used to compare values or the type of a value for equality.",
+            "k":{
+                "a":{"n":"InputSlotA", "d":"Index for the slot of the first input value", "m":1, "t":"VarSlotIndex"},
+                "b":{"n":"InputSlotB", "d":"Index for the slot of the second input value", "t":"VarSlotIndex"},
+                "t":{"n":"Type", "d":"The type for the value", "t":"ValueType"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+            },
+            "s":{"im":"g", "i":["a", "b"], "o":"r"}
+        },
+        {"i":14, "n":"Options",
+            "d":"Set the i18n dir and current language.\nThe file is always i18n.lang.json\nThe default dir is ./i18n\nThe default lang is en",
+            "k":{
+                "k":{"n":"OptionKeys", "d":"Array of option key values", "a":1, "m":1, "t":"OptionKeyValue"},
+                "v":{"n":"Values", "d":"Array of static values or variable slot index", "a":1, "m":1, "t":"AnyJSON"},
+                "i":{"n":"Indirect", "d":"Indirect usage of input values (v)", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"},
+                "w":{"n":"Write", "d":"Write (true) or read (false)", "t":"Bool"},
+                "u":{"n":"UndefinedKey", "d":"the value for undefined key handling", "t":"OptionUndefined"}
+            },
+            "s":{"im":"g", "i":"v"}
+        },
+        {"i":15, "n":"Shell",
+            "d":"Start shell mode."
+        },
+        {"i":16, "n":"EnvRead",
+            "d":"Read environment variable.",
+            "k":{
+                "k":{"n":"NameKeys", "d":"Array of string keys for the environment variables", "a":1, "m":1, "t":"String"},
+                "t":{"n":"Types", "d":"Array of types for the result values", "a":1, "t":"TypeNumber", "l":["k"]},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the result values", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+            },
+            "s":{"om":"g", "o":{"min":"r", "ln":"k"}}
+        },
+        {"i":17, "n":"Append",
+            "d":"Append values in v. E.g. v[0] + v[1] + v[2] + ...\nIf v[0] needs multiple values, then it is v[0] + (v[1], v[2]) + (v[3], v[4]) + ...\nThis can be used to append string values or add items to a storage value like an index.",
+            "k":{
+                "v":{"n":"Inputs", "d":"Array of input variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the result values", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"},
+                "i":{"n":"InitialType", "d":"Initialize v to type if not present", "t":"ValueType"}
+            },
+            "s":{"im":"g", "i":"v", "o":"r"}
+        },
+        {"i":18, "n":"ErrorResult",
+            "d":"Define result values as errors to abort the command and jump to the error handler.\nError codes for i18n are the indexs into the values or tyep array.\nE.g. to check the existence of value, one can check for its type.",
+            "k":{
+                "i":{"n":"InputSlot", "d":"Index for the slot of the input value", "m":1, "t":"VarSlotIndex"},
+                "v":{"n":"Values", "d":"Array of static values", "a":1, "t":"AnyJSON"},
+                "t":{"n":"Types", "d":"Array of types for the static values", "a":1, "t":"ValueType", "l":["v"]},
+                "c":{"n":"Condition", "d":"The condition to report an error", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"}
+            },
+            "s":{"im":"g","i":"i"}
+        },
+        {"i":19, "n":"HTTPClient",
+            "d":"Send HTTP request and get result.",
+            "k":{
+                "u":{"n":"UrlSlot", "d":"Index for the slot of the target url", "m":1, "t":"VarSlotIndex"},
+                "m":{"n":"Method", "d":"The method type", "t":"String"},
+                "d":{"n":"BodySlot", "d":"Variable slot for body data to send", "t":"VarSlotIndex"},
+                "f":{"n":"FileSlot", "d":"Variable slot for data file to send", "t":"VarSlotIndex"},
+                "h":{"n":"HeaderKeys", "d":"Array of additional headers keys", "a":1, "t":"String"},
+                "c":{"n":"CookieKeys", "d":"Array of additional cookie keys", "a":1, "t":"String"},
+                "v":{"n":"HeaderSlots", "d":"Array of source variable slots for header and cookie values", "a":1, "t":"VarSlotIndex"},
+                "l":{"n":"Follow", "d":"Follow location", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                "i":{"n":"CookieResultSlot", "d":"Result variable slot for cookies", "t":"VarSlotIndex"},
+                "r":{"n":"DataResultSlot", "d":"Index for the result data slot", "t":"VarSlotIndex"},
+                "e":{"n":"CodeResultSlot", "d":"Index for the result code slot", "t":"VarSlotIndex"}
+            },
+            "s":{"im":"g", "i":["u", "d", "f"], "o":["i", "r", "e"]}
+        },
+        {"i":20, "n":"FormDataTo",
+            "d":"Pack values into form-transmittable data.",
+            "k":{
+                "k":{"n":"NameKeys", "d":"Array of string keys for the JSON Object", "a":1, "m":1, "t":"String"},
+                "v":{"n":"InputSlots", "d":"Array of source variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                "e":{"n":"ExcludeNull", "d":"Exclude null values", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"}
+            },
+            "s":{"im":"g", "i":"v", "o":"r"}
+        },
+        {"i":21, "n":"DebugPrint",
+            "d":"Debug print global and temp store.\nDebug print missing i18n values.\nDisable or enable hint printing on missing i18n values.",
+            "k":{
+                "v":{"n":"PrintVars", "d":"Debug print vars", "t":"Bool"},
+                "i":{"n":"i18nMissing", "d":"Debug print missing i18n", "t":"Bool"},
+                "h":{"n":"i18nMissingHints", "d":"Enable or disable missing 118n print hints", "t":"Bool"}
+            }
+        },
+        {"i":22, "n":"JSONTreeParse",
+            "d":"Fetch json values arranged in tree like structures.\nThe operation creates an iterator and places the parsed values to the result store on each invocation.\nThe iterator keeps track of the parsed values and clears them on destruction.\nA subsequent operation can work with the values",
+            "k":{
+                "a":{"n":"ObjectSlot", "d":"Index for the slot of the iterator object", "m":1, "t":"VarSlotIndex"},
+                "v":{"n":"InputSlot", "d":"Index for the slot of the input value", "m":1, "t":"VarSlotIndex"},
+                "i":{"n":"ItemsKey", "d":"String key for items array", "m":1, "t":"String"},
+                "c":{"n":"ChildrenKey", "d":"String key for child array", "m":1, "t":"String"},
+                "k":{"n":"NameKeys", "d":"Array of string name keys to extract", "a":1, "m":1, "t":"String"},
+                "t":{"n":"Types", "d":"Array of types for the extracted values", "a":1, "t":"TypeNumber", "l":["k"]},
+                "x":{"n":"RootItem", "d":"String key for the root item", "t":"String"},
+                "p":{"n":"ChildID", "d":"String key for child id", "t":"String"},
+                "m":{"n":"ChildRef", "d":"String key for child reference", "t":"String"},
+                "l":{"n":"LevelSlot", "d":"The slot for the level", "t":"VarSlotIndex"},
+                "w":{"n":"ColumnWidthSlot", "d":"The slot for the 1st column width", "t":"VarSlotIndex"},
+                "n":{"n":"IndentWidthSlot", "d":"The slot for the indentiation with", "t":"VarSlotIndex"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"},
+                "s":{"n":"SortResult", "d":"Sort the children", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"}
+            },
+            "s":{"im":"g", "i":["a", "v"], "o":["w", "n", "l", {"min":"r", "ln":"k"}]}
+        },
+        {"i":23, "n":"I18nLoad",
+            "d":"Load i18n values into temporary or global store.",
+            "k":{
+                "k":{"n":"Inputs", "d":"Array of offsets into i18n table", "m":1, "t":"Integer"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the result values", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"},
+                "i":{"n":"Indirect", "d":"Indirect usage of input values (k)", "t":"Bool"},
+                "p":{"n":"IndirectOffset", "d":"An additional offset for the indirect input values", "t":"Integer"}
+            },
+            "s":{"om":"g", "o":{"min":"r", "ln":"k"}}
+        },
+        {"i":24, "n":"FunctionCall",
+            "d":"Call afunction from the function table.\nThe index in f can either be direct into the function table or indirect into a temp store.",
+            "k":{
+                "f":{"n":"Function", "d":"Offset into function table or variable slots", "m":1, "t":"FunctionIndex"},
+                "i":{"n":"Indirect", "d":"Indirect usage of input value (f)", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input value", "t":"Bool"}
+            }
+        },
+        {"i":25, "n":"Transform",
+            "d":"Transform values by changing to another type or using an sql query.",
+            "k":{
+                "s":{"n":"Inputs", "d":"Array of input variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                "v":{"n":"Targets", "d":"Array of target variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                "t":{"n":"Types", "d":"Array of types for the result values", "a":1, "t":"TypeNumber", "l":["v"]},
+                "i":{"n":"ObjectSlot", "d":"Index for the slot of the iterator object ", "t":"VarSlotIndex"},
+                "q":{"n":"Slot", "d":"Index for the slot of the query string", "t":"VarSlotIndex"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"}
+            },
+            "s":{"im":"g", "i":["s", "i", "q"], "o":["v"]}
+        },
+        {"i":26, "n":"Input",
+            "d":"Await user input.",
+            "k":{
+                "t":{"n":"Type", "d":"Result value type", "t":"ValueType"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the result values", "t":"Bool"},
+                "r":{"n":"ResultSlot", "d":"Start index for the result slots", "t":"VarSlotIndex"}
+            },
+            "s":{"om":"g", "o":"r"}
+        },
+        {"i":27, "n":"WaitSignal",
+            "d":"Wait for signal.",
+            "k":{
+                "w":{"n":"DoWait", "d":"Wait (true) or signal (false)", "t":"Bool"},
+                "g":{"n":"GlobalSlots", "d":"Use global slots for the object value", "t":"Bool"},
+                "r":{"n":"ObjectSlot", "d":"Index for the slot of the wait object ", "t":"VarSlotIndex"}
+            },
+            "s":{"om":"g", "o":"r"}
+        },
+        {"i":28, "n":"GIT",
+            "d":"Perform git operations.",
+            "k":{
+                
+            }
+        }
+    ]
+}

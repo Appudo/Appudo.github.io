@@ -1,0 +1,134 @@
+/* ************************************************************************
+
+   APPUDO CLI Creator
+
+   https://www.appudo.com
+
+   Copyright: 2018 Appudo UG (haftungsbeschränkt), https://www.appudo.com
+
+   License: MIT License, https://opensource.org/licenses/MIT
+
+   Authors: source@appudo.com
+
+************************************************************************ */
+
+qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
+{
+  extend : qx.ui.container.Composite,
+
+  members : {
+    __controller : null,
+    __currentData : null,
+    __holder : null,
+    __dataMap : {},
+
+    __render : function(data) {
+      var toolBar = new qx.ui.toolbar.ToolBar();
+      var toolLbl = new qx.ui.basic.Label(this.tr("General Tool Settings")).set({padding:9});
+      var formHolder = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      toolBar.add(toolLbl);
+      this.__holder = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+      this.__holder.add(toolBar);
+      this.__holder.add(formHolder, {flex:1});
+      this.add(this.__holder, {flex:1});
+
+      this.__holder.setPaddingTop(2);
+      formHolder.setPadding(5);
+      formHolder.setPaddingTop(10);
+
+      var tabIndex = 1;
+      var form = new qx.ui.form.Form();
+
+      var pn = Object.getOwnPropertyNames(data);
+      for(var i = 0; i < pn.length; i++) {
+        var key = pn[i];
+        var item = data[key];
+        if(item.cl) {
+          var kindField = new qx.ui.form.SelectBox();
+          kindField.setMaxWidth(300);
+          kindField.setTabIndex(tabIndex++);   
+          form.add(kindField, item.d);
+
+          this.__dataMap[item.p] = kindField;
+
+          kindField.addListener('changeSelection', function(e) {
+            var sel_item = e.getData()[0];
+            if(this.__currentData) {
+              this.__currentData[item.p] = sel_item.getLabel();
+              if(item.p == 'version') {
+                this.__controller.resetOperationData(this);
+              }
+            }
+          }, this);
+
+          var children = item.cl;
+          for(var j = 0; j < children.length; j++) {
+            var item1 = children[j];
+            var cmdKind = new qx.ui.form.ListItem(item1, null, item1);
+            kindField.add(cmdKind);
+          }
+        }
+      }
+      var renderedForm = new qx.ui.form.renderer.Single(form);
+      formHolder.add(renderedForm);
+    },
+
+    clear : function() {
+      this.__currentData =  null;
+      var pn = Object.getOwnPropertyNames(this.__dataMap);
+      for(var i = 0; i < pn.length; i++) {
+        var key = pn[i];
+        var item = this.__dataMap[key];
+        if(item.cl) {
+          item.setSelection(item.getChildren()[0]);
+        }
+      }
+    },
+
+    update : function(data) {
+      this.__currentData = data.d;
+      var pn = Object.getOwnPropertyNames(this.__dataMap);
+      for(var i = 0; i < pn.length; i++) {
+        var key = pn[i];
+        var item = this.__dataMap[key];
+        var v = this.__currentData[key];
+        if(v && item) {
+          if(item.getChildren && item.setSelection) {
+            var children = item.getChildren();
+            var j = 0;
+            for(; j < children.length; j++) {
+              var item1 = children[j];
+              if(item1.getLabel() == v) {
+                break;
+              }
+            }
+            item.setSelection([children[j]]);
+          }
+        }
+      }
+    }
+  },
+
+  construct : function(controller)
+  {
+    var _this = this;
+    this.base(arguments);
+    this.__controller = controller;
+    
+    this.setLayout(new qx.ui.layout.VBox());
+
+    this.__controller.addReset(function(from) {
+      if(from != _this) {
+        _this.clear.call(_this);
+      }
+    });
+
+    this.__controller.settingViewUpdate = function(op, data) {
+      _this.update.call(_this, op, data);
+    }
+
+    this.__controller.getConfigInfoFile(function(data) {
+      _this.__render.call(_this, data);
+    });
+  }
+});
