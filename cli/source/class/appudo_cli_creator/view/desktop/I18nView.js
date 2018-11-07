@@ -618,6 +618,13 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
       if(items) {
         result.s = this.__saveItem(items);
       }
+
+      if(!result.f || result.f.length == 0)
+        delete result.f;
+
+      if(!result.s || result.s.length == 0)
+        delete result.s;
+
       var fd = this.__controller.getRawFileData();
       fd.deploy.i18n[lang + '.json'].d = result;
     },
