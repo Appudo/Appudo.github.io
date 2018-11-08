@@ -29,6 +29,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
       __enabledCheck : null,
       __valueHolder : null,
       __valueType : null,
+      __currentValueType : null,
       __groupEnabled : true,
 
       getController : function() {
@@ -217,6 +218,14 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
         }
       },
 
+      setRawType : function(v) {
+        this.__currentValueType = v;
+      },
+
+      setValue : function(v) {
+        return this.__valueHolder.setValue(v);
+      },
+
       getValueType : function() {
         return this.__valueType;
       },
@@ -224,11 +233,11 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
       getRawType : function() {
         var types = this.__controller.getOperationTypes();
         var type_info = this.__valueType ? types[this.__valueType] : {t:-1};
-        return type_info.t;
+        return type_info.t ? type_info.t : this.__currentValueType;
       },
 
       getCurrentRawType : function() {
-        return this.__controller.getType(this.__currentData);
+        return this.__controller.getType(this.getOpValue());
       },
 
       getValueHolder : function() {
@@ -283,8 +292,11 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
             }
             break;
         }
-        data[n] = v;
-        this.__controller.changedData(this.__parent, false, {t:'OperationSetupItem'});
+        var d = data[n];
+        if(v !== d) {
+          data[n] = v;
+          this.__controller.changedData(this.__parent, false, {t:'OperationSetupItem'});
+        }
       },
 
       __onCheckClick : function(e) {

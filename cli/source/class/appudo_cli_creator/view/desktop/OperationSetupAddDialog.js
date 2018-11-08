@@ -179,9 +179,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
       var sitem;
       var submit;
       var info = {tabIndex:1, currentRawType:-1, textValue:null};
-      var getTarget = function() {
-        return target;
-      };
+      var getTarget;
       if((type & 1) != 0) { // textField in list
         var litem = target.getLayoutParent();
         var idx = litem.getIndex();
@@ -198,6 +196,9 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
         tv = sitem.getCaption();
         info.currentRawType = sitem.getCurrentRawType();
         info.textValue = target.getValue();
+        getTarget = function() {
+          return sitem;
+        };
       } else {  // list
         sitem = target.getParent();
         tv = sitem.getCaption();
