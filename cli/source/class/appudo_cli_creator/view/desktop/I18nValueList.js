@@ -316,7 +316,6 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nValueList",
     }, this);
 
     this.__list.addListener("drop", function(e) {
-      var item;
       var index = this.__currentDropPos.index;
       var before = this.__currentDropPos.before;
       if(index == -1) {
@@ -344,12 +343,19 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nValueList",
     this.__remBtn.setEnabled(false);
 
     addBtn.addListener('execute', function(e) {
-      var item = this.addListItem();
+      if(!this.__currentData) {
+        this.__currentData = this.__currentDataHolder.v = [];
+      }
+      this.addListItem();
     }, this);
     this.__remBtn.addListener('execute', function(e) {
       if(this.__selectedItem) {
         var idx = this.__selectedItem.getIndex();
         this.__currentData.splice(idx, 1);
+        if(this.__currentData.length == 0) {
+          delete this.__currentDataHolder.v;
+          this.__currentData = null;
+        }
         this.__parent.changedI18nData();
         this.refresh();
       }
