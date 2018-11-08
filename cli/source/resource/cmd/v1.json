@@ -344,7 +344,7 @@
                 "v":{"n":"Targets", "d":"Array of target variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
                 "t":{"n":"Types", "d":"Array of types for the result values", "a":1, "t":"TypeNumber", "l":["v"]},
                 "i":{"n":"ObjectSlot", "d":"Index for the slot of the iterator object ", "t":"VarSlotIndex"},
-                "q":{"n":"Slot", "d":"Index for the slot of the query string", "t":"VarSlotIndex"},
+                "q":{"n":"Slot", "d":"Index for the slot of the query string", "t":"AnyJSON"},
                 "g":{"n":"GlobalSlots", "d":"Use global slots for the input values", "t":"Bool"}
             },
             "s":{"im":"g", "i":["s", "i", "q"], "o":["v"]}
