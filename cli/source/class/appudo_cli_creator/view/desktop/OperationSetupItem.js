@@ -97,6 +97,32 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
         }); 
       },
 
+      updateItem : function(v, index, rawType) {
+        switch(rawType) {
+          case -1: // SettingGroup
+            return;
+          case 0: // String
+            break;
+          case 1: // Bool
+            v = v == 'true';
+            break;
+          case 2: // Integer
+            v = parseInt(v);
+            break;
+          case 3: // Number
+            v = parseFloat(v);
+            break;
+          default:
+            break;
+        }
+        var data = this.getData();
+        var nd = data[index];
+        if(nd !== v) {
+          data[index] = v;
+          this.__controller.changedData(this.__parent, false, {t:'OperationSetupItem'});
+        }
+      },
+
       __getOpTextValue : function(rawValue, listTypeKey, valueRawType, result) {
         var textValue = '' + rawValue;
         var types = this.__controller.getOperationTypes();

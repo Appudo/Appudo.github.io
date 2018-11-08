@@ -188,7 +188,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
         info.currentRawType = litem.getCurrentRawType();
         info.textValue = target.getValue();
         getTarget = function() {
-          return litem;
+          return {t:litem};
         }
       } else 
       if((type & 2) != 0) { // textField
@@ -197,7 +197,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
         info.currentRawType = sitem.getCurrentRawType();
         info.textValue = target.getValue();
         getTarget = function() {
-          return sitem;
+          return {t:sitem};
         };
       } else {  // list
         sitem = target.getParent();
@@ -205,9 +205,9 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
         getTarget = function() {
           var li = target.addListItem();
           var rt = sitem.getRawType();
-          if(rt !== undefined)
-            li.setRawType(rt);
-          return li;
+          var rawType = rt !== undefined && rt !== null ? rt : 0;
+          li.setRawType(rawType);
+          return {t:li, s:sitem, rt:rawType, idx:target.getLastIndex()};
         };
       }
       valueType = sitem.getValueType();
@@ -229,9 +229,12 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupAddDialog",
       var submit = function() {
         var target = getTarget();
         var res = info.submit();
-        if(res.type !== undefined)
-          target.setRawType(res.type);
-        target.setValue('' + res.value);
+        var value = '' + res.value;
+        if(res.type !== undefined && res.type !== null)
+          target.t.setRawType(res.type);
+        target.t.setValue(value);
+        if(target.s)
+          target.s.updateItem(value, target.idx, target.rt);
         return true;
       }
   

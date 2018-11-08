@@ -24,9 +24,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupListObject",
       this.setValue(label);
     }
 
-    if(type != null) {
-      this.setRawType(type);
-    }
+    this.setRawType(type !== undefined && type !== null ? type : 0);
     
     this.setIndex(index);
   },

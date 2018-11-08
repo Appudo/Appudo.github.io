@@ -45,30 +45,12 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupListItem",
 
       onDataChange : function() {
         var v = this.__valueHolder.getValue();
-        switch(this.getRawType()) {
-          case -1: // SettingGroup
-            return;
-          case 0: // String
-            break;
-          case 1: // Bool
-            v = v == 'true';
-            break;
-          case 2: // Integer
-            v = parseInt(v);
-            break;
-          case 3: // Number
-            v = parseFloat(v);
-            break;
-          default:
-            break;
-        }
-        this.__parent.getData()[this.__index] = v;
-        this.__parent.getController().changedData(this.__parent.getParent(), false, {t:'OperationSetupItem'});
-    },
+        this.__parent.updateItem(v, this.__index, this.getRawType());
+      },
 
-    getParent : function() {
-      return this.__parent;
-    }
+      getParent : function() {
+        return this.__parent;
+      }
   },
 
   construct : function(value, parent, rawType, readOnly)
@@ -87,7 +69,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupListItem",
     this.__indexLabel.setPadding(4);
 
 
-    this.setRawType(rawType !== undefined ? rawType : 0);
+    this.setRawType(rawType !== undefined && rawType !== null ? rawType : 0);
 
     this.bind("value", this.__valueHolder, "value");
     if(!readOnly) {

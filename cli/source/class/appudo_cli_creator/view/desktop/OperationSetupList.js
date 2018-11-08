@@ -58,6 +58,10 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupList",
       this.__currentData = data;
     },
 
+    getLastIndex : function() {
+      return this.__model.getLength() - 1;
+    },
+
     addListItem : function() {
       var data = this.__currentData;
       data.push(undefined);
