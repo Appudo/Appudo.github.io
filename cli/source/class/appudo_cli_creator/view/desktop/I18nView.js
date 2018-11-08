@@ -541,7 +541,11 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
             while(!hit && k <= end) {
               var hit = res[end];
               if(hit) {
-                obj = res[k] = res[end];
+                obj = res[end];
+                if(Array.isArray(obj)) {
+                  obj = {o:obj};
+                }
+                res[k] = obj;
                 obj.p = [end];
               }
               end--;
