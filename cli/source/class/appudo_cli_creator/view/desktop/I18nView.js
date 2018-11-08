@@ -469,28 +469,29 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
             }
 
             var ro = collect(print);
-            var max_num = ro.r ? ro.num : 0;
+            var max_ro = ro.r ? ro.num : 0;
             var rg = collect(general);
-            max_num = rg.r && rg.num > max_num ? rg.num : max_num;
+            var max_rg = rg.r ? rg.num : 0;
             rg = rg.r;
             ro = ro.r;
             if(rg) {
               if(!ro) {
                 ro = {g:rg};
-                if(max_num > rg.length)
-                  ro.n = max_num;
+                if(max_rg > rg.length)
+                  ro.m = max_rg;
               } else {
                 var oro = ro;
                 ro = {o:ro, g:rg};
-                if(max_num > rg.length || max_num > oro.length)
-                  ro.n = max_num;
+                if(max_ro > oro.length)
+                  ro.n = max_ro;
+                if(max_rg > rg.length)
+                  ro.m = max_rg;
               }
             } else {
               if(ro) {
-                if(max_num > ro.length) {
+                if(max_ro > ro.length)
                   ro = {o:ro};
-                }
-                ro.n = max_num;
+                ro.n = max_ro;
               }
             }
             ritem = ro;
@@ -570,7 +571,9 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
           n = obj[key] = {};
         }
       }
-      n[sp[sp.length - 1]] = res;
+      if(res) {
+        n[sp[sp.length - 1]] = {o:res};
+      }
     },
 
     __saveTree : function(lang) {
