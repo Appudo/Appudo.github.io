@@ -47,17 +47,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nValueListItem",
       onDataChange : function() {
         var v = this.__valueHolder.getValue();
         var c = this.__check.getValue();
-
-        var cv = this.__parent.getData()[this.__index];
-
-        if(!c) {
-            v = parseInt(v);
-        }
-
-        if(cv !== v) {
-          this.__parent.getData()[this.__index] = v;
-          this.__parent.getParent().changedI18nData();
-        }
+        this.__parent.updateItem(this.__index, v, c);
       },
 
       getParent : function() {
