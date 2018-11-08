@@ -268,7 +268,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupItem",
           case 0: // String
             break;
           case 1: // Bool
-            v = v == 'true';
+            v = v === 'true' || v === true;
             break;
           case 2: // Integer
             v = parseInt(v);
