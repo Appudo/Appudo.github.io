@@ -37,7 +37,7 @@
             "optional":{"d":"Optional", "v":0}
         }},
         "ValueTypeLShift":{"d":"", "t":2, "ls":{"n":1, "v":"ValueType"}},
-        "JumpTestKind":{"d":"", "cl":{
+        "JumpTestKind":{"d":"", "t":2, "cl":{
             "HasValue":{"d":"Test if the slot has a value", "v":0},
             "IsTrue":{"d":"Test if the slot interpreted as boolean is true (no value = false)", "v":1}
         }},
