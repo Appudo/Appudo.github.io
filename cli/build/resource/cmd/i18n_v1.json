@@ -1,654 +1,147 @@
-{
-	"p": [{
-		"n": "Undefined",
-		"e": {}
-	}, {
-		"n": "Arguments",
-		"e": {
-			"c_0": {
-				"t": "printArgumentUnknownError"
-			},
-			"c_1": {
-				"t": "printArgumentUnknownError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printArgumentMissingError"
-			},
-			"c_4": {
-				"t": "printArgumentMissingPositionalError"
-			},
-			"c_5": {
-				"t": "printArgumentInvalidPositionalError"
-			},
-			"c_6": {
-				"t": "printArgumentMismatch"
-			},
-			"c_7": {
-				"t": "printArgumentPositionalMismatch"
-			},
-			"c_8": {
-				"t": "printArgumentRequiredBegin"
-			},
-			"c_9": {
-				"t": "printArgumentRequiredValue"
-			},
-			"c_10": {
-				"t": "printArgumentOptionalValue"
-			},
-			"c_11": {
-				"t": "printArgumentNoValue"
-			},
-			"cg_0": {
-				"t": "print",
-				"d": "n",
-				"h": "argument description"
-			},
-			"c_12": {
-				"t": "printArgumentPositional"
-			},
-			"c_13": {
-				"t": "printArgumentOptionalBegin"
-			},
-			"c_14": {
-				"t": "printArgumentRequiredValue"
-			},
-			"c_15": {
-				"t": "printArgumentOptionalValue"
-			},
-			"c_16": {
-				"t": "printArgumentNoValue"
-			},
-			"c_17": {
-				"t": "printArgumentPositional"
-			}
-		}
-	}, {
-		"n": "FunctionCall",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "Transform",
-		"e": {
-			"c_0": {
-				"t": "printTypeMismatchError"
-			},
-			"c_1": {
-				"t": "printInternalError"
-			},
-			"c_2": {
-				"t": "printInternalError"
-			},
-			"c_3": {
-				"t": "printInternalError"
-			},
-			"c_4": {
-				"t": "printInternalError",
-				"h": "number of output column mismatch"
-			},
-			"c_5": {
-				"t": "printInternalError"
-			},
-			"c_6": {
-				"t": "printTypeMismatchError"
-			},
-			"c_7": {
-				"t": "printTypeMismatchError"
-			},
-			"c_8": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "Jump",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "WebSocketClient",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printTypeMismatchError"
-			},
-			"c_4": {
-				"t": "printIndexBoundError"
-			},
-			"c_5": {
-				"t": "printIndexBoundError"
-			},
-			"c_6": {
-				"t": "printTypeMismatchError"
-			},
-			"c_7": {
-				"t": "printIndexBoundError"
-			},
-			"c_8": {
-				"t": "printTypeMismatchError"
-			},
-			"c_9": {
-				"t": "printIndexBoundError"
-			},
-			"c_10": {
-				"t": "printTypeMismatchError"
-			}
-		}
-	}, {
-		"n": "ErrorResult",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"cg_0": {
-				"t": "print",
-				"d": "v+t",
-				"h": "error type or value match"
-			}
-		}
-	}, {
-		"n": "Copy",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printInternalError",
-				"h": "copy error"
-			}
-		}
-	}, {
-		"n": "SettingLoad",
-		"e": {
-			"c_0": {
-				"t": "printInternalError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			}
-		}
-	}, {
-		"n": "SettingSave",
-		"e": {
-			"c_0": {
-				"t": "printInternalError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printInternalError"
-			},
-			"c_3": {
-				"t": "printInternalError"
-			}
-		}
-	}, {
-		"n": "Help",
-		"e": {
-			"c_0": {
-				"t": "printJSONParseError"
-			},
-			"c_1": {
-				"t": "printMemoryError"
-			},
-			"c_2": {
-				"t": "printMemoryError"
-			},
-			"cg_0": {
-				"t": "print",
-				"h": "print help command nodes"
-			},
-			"cg_1": {
-				"t": "print",
-				"h": "print help command"
-			},
-			"c_3": {
-				"t": "printInternalError",
-				"h": "no command found that matches the request"
-			},
-			"c_4": {
-				"t": "printInternalError",
-				"h": "use the full command name to get detailed information"
-			}
-		}
-	}, {
-		"n": "Append",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printTypeMismatchError"
-			},
-			"c_3": {
-				"t": "printIndexBoundError"
-			},
-			"c_4": {
-				"t": "printIndexBoundError"
-			},
-			"c_5": {
-				"t": "printMemoryError"
-			}
-		}
-	}, {
-		"n": "EnvRead",
-		"e": {
-			"c_0": {
-				"t": "printInternalError",
-				"h": "undefined value error"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printTypeMismatchError"
-			}
-		}
-	}, {
-		"n": "Value",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printTypeMismatchError"
-			},
-			"c_4": {
-				"t": "printTypeMismatchError"
-			},
-			"c_5": {
-				"t": "printInternalError",
-				"h": "item not defined in StringMap"
-			},
-			"c_6": {
-				"t": "printTypeMismatchError"
-			},
-			"c_7": {
-				"t": "printIndexBoundError"
-			},
-			"c_8": {
-				"t": "printTypeMismatchError"
-			},
-			"c_9": {
-				"t": "printTypeMismatchError"
-			},
-			"c_10": {
-				"t": "printInternalError",
-				"h": "invalid value"
-			},
-			"c_11": {
-				"t": "printIndexBoundError"
-			},
-			"c_12": {
-				"t": "printInternalError",
-				"h": "copy value error"
-			},
-			"c_13": {
-				"t": "printInternalError",
-				"h": "copy value error"
-			},
-			"c_14": {
-				"t": "printIndexBoundError"
-			},
-			"c_15": {
-				"t": "printIndexBoundError"
-			},
-			"c_16": {
-				"t": "printTypeMismatchError"
-			},
-			"c_17": {
-				"t": "printTypeMismatchError"
-			},
-			"c_18": {
-				"t": "printTypeMismatchError"
-			},
-			"c_19": {
-				"t": "printInternalError",
-				"h": "invalid value"
-			},
-			"c_20": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "Shell",
-		"e": {}
-	}, {
-		"n": "WaitSignal",
-		"e": {
-			"c_2": {
-				"t": "printInternalError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"c_0": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "GIT",
-		"e": {}
-	}, {
-		"n": "Input",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printInternalError"
-			}
-		}
-	}, {
-		"n": "Equal",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "Print",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"cg_0": {
-				"t": "print",
-				"h": "print"
-			},
-			"c_2": {
-				"t": "printInternalError",
-				"h": "print error"
-			}
-		}
-	}, {
-		"n": "JSONParse",
-		"e": {
-			"cg_0": {
-				"t": "print",
-				"h": "parent"
-			},
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printInternalError",
-				"h": "invalid input value"
-			},
-			"c_3": {
-				"t": "printMemoryError"
-			},
-			"c_4": {
-				"t": "printInternalError",
-				"h": "invalid object error"
-			}
-		}
-	}, {
-		"n": "JSONTreeParse",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printIndexBoundError"
-			},
-			"c_4": {
-				"t": "printInternalError",
-				"h": "invalid input value"
-			},
-			"c_5": {
-				"t": "printInternalError",
-				"h": "invalid object error"
-			}
-		}
-	}, {
-		"n": "JSONTo",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printInternalError",
-				"h": "unable to convert to JSON"
-			}
-		}
-	}, {
-		"n": "FormDataTo",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printMemoryError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printMemoryError"
-			}
-		}
-	}, {
-		"n": "JSONFrom",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printMemoryError"
-			},
-			"c_2": {
-				"t": "printInternalError",
-				"h": "invalid object error"
-			},
-			"c_3": {
-				"t": "printMemoryError"
-			},
-			"c_4": {
-				"t": "printIndexBoundError"
-			},
-			"c_5": {
-				"t": "printInternalError",
-				"h": "invalid object error"
-			}
-		}
-	}, {
-		"n": "DebugPrint",
-		"e": {}
-	}, {
-		"n": "Options",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printTypeMismatchError"
-			},
-			"c_2": {
-				"t": "printInternalError"
-			},
-			"c_3": {
-				"t": "printInternalError"
-			},
-			"c_4": {
-				"t": "printInternalError"
-			},
-			"c_5": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "I18nLoad",
-		"e": {
-			"c_0": {
-				"t": "printIndexBoundError"
-			},
-			"c_1": {
-				"t": "printIndexBoundError"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			}
-		}
-	}, {
-		"n": "HTTPClient",
-		"e": {
-			"c_0": {
-				"t": "printInternalError",
-				"h": "invalid url error"
-			},
-			"c_1": {
-				"t": "printInternalError",
-				"h": "invalid file error"
-			},
-			"c_2": {
-				"t": "printIndexBoundError"
-			},
-			"c_3": {
-				"t": "printMemoryError"
-			},
-			"c_4": {
-				"t": "printInternalError",
-				"h": "invalid data error"
-			},
-			"c_5": {
-				"t": "printMemoryError"
-			},
-			"c_6": {
-				"t": "printInternalError"
-			},
-			"c_7": {
-				"t": "printIndexBoundError"
-			},
-			"c_8": {
-				"t": "printIndexBoundError"
-			},
-			"c_9": {
-				"t": "printInternalError"
-			},
-			"c_10": {
-				"t": "printMemoryError"
-			},
-			"c_11": {
-				"t": "printIndexBoundError"
-			},
-			"c_12": {
-				"t": "printInternalError",
-				"h": "internal error"
-			}
-		}
-	}],
-	"g": {
-		"c_0": {
-			"t": "printInternalError"
-		},
-		"c_1": {
-			"t": "printMemoryError",
-			"h": "memory error"
-		},
-		"c_2": {
-			"t": "printTypeMismatchError",
-			"h": "type mismatch error"
-		},
-		"c_3": {
-			"t": "printIndexBoundError",
-			"h": "invalid value index error"
-		},
-		"c_4": {
-			"t": "printJSONParseError",
-			"h": "JSON parse error"
-		},
-		"c_5": {
-			"t": "printArgumentUnknownError"
-		},
-		"c_6": {
-			"t": "printArgumentMissingError"
-		},
-		"c_7": {
-			"t": "printArgumentInvalidPositionalError"
-		},
-		"c_8": {
-			"t": "printArgumentMissingPositionalError",
-			"h": "missing positional argument"
-		},
-		"c_9": {
-			"t": "printArgumentRequiredBegin",
-			"h": "begin required arguments"
-		},
-		"c_10": {
-			"t": "printArgumentOptionalBegin",
-			"h": "begin optional arguments"
-		},
-		"c_11": {
-			"t": "printArgumentRequiredValue"
-		},
-		"c_12": {
-			"t": "printArgumentOptionalValue"
-		},
-		"c_13": {
-			"t": "printArgumentNoValue"
-		},
-		"c_14": {
-			"t": "printArgumentPositional",
-			"h": "optional positional argumets"
-		},
-		"c_15": {
-			"t": "printArgumentPositional",
-			"h": "required positional argumets"
-		},
-		"c_16": {
-			"t": "printArgumentMismatch"
-		},
-		"c_17": {
-			"t": "printArgumentPositionalMismatch"
-		}
-	}
-}
+{"p":[
+	{"n":"Undefined","e":{}},{"n":"Arguments","e":{"c_0":{"t":"printArgumentUnknownError"},
+	"c_1":{"t":"printArgumentUnknownError"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printArgumentMissingError"},
+	"c_4":{"t":"printArgumentMissingPositionalError"},
+	"c_5":{"t":"printArgumentInvalidPositionalError"},
+	"c_6":{"t":"printArgumentMismatch"},
+	"c_7":{"t":"printArgumentPositionalMismatch"},
+	"c_8":{"t":"printArgumentRequiredBegin"},
+	"c_9":{"t":"printArgumentRequiredValue"},
+	"c_10":{"t":"printArgumentOptionalValue"},
+	"c_11":{"t":"printArgumentNoValue"},
+	"cg_0":{"t":"print","d":"n","h":"argument description"},
+	"c_12":{"t":"printArgumentPositional"},
+	"c_13":{"t":"printArgumentOptionalBegin"},
+	"c_14":{"t":"printArgumentRequiredValue"},
+	"c_15":{"t":"printArgumentOptionalValue"},
+	"c_16":{"t":"printArgumentNoValue"},
+	"c_17":{"t":"printArgumentPositional"}}},{"n":"FunctionCall","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"c_2":{"t":"printIndexBoundError"}}},{"n":"Transform","e":{"c_0":{"t":"printTypeMismatchError"},
+	"c_1":{"t":"printInternalError"},
+	"c_2":{"t":"printInternalError"},
+	"c_3":{"t":"printInternalError"},
+	"c_4":{"t":"printInternalError","h":"number of output column mismatch"},
+	"c_5":{"t":"printInternalError"},
+	"c_6":{"t":"printTypeMismatchError"},
+	"c_7":{"t":"printTypeMismatchError"},
+	"c_8":{"t":"printIndexBoundError"}}},{"n":"Jump","e":{"c_0":{"t":"printIndexBoundError"}}},{"n":"WebSocketClient","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printTypeMismatchError"},
+	"c_4":{"t":"printIndexBoundError"},
+	"c_5":{"t":"printIndexBoundError"},
+	"c_6":{"t":"printTypeMismatchError"},
+	"c_7":{"t":"printIndexBoundError"},
+	"c_8":{"t":"printTypeMismatchError"},
+	"c_9":{"t":"printIndexBoundError"},
+	"c_10":{"t":"printTypeMismatchError"}}},{"n":"ErrorResult","e":{"c_0":{"t":"printIndexBoundError"},
+	"cg_0":{"t":"print","d":"v+t","h":"error type or value match"}}},{"n":"Copy","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printInternalError","h":"copy error"}}},{"n":"SettingLoad","e":{"c_0":{"t":"printInternalError"},
+	"c_1":{"t":"printTypeMismatchError"}}},{"n":"SettingSave","e":{"c_0":{"t":"printInternalError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printInternalError"},
+	"c_3":{"t":"printInternalError"}}},{"n":"Help","e":{"c_0":{"t":"printJSONParseError"},
+	"c_1":{"t":"printMemoryError"},
+	"c_2":{"t":"printMemoryError"},
+	"cg_0":{"t":"print","h":"print help command nodes"},
+	"cg_1":{"t":"print","h":"print help command"},
+	"c_3":{"t":"printInternalError","h":"no command found that matches the request"},
+	"c_4":{"t":"printInternalError","h":"use the full command name to get detailed information"}}},{"n":"Append","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printTypeMismatchError"},
+	"c_3":{"t":"printIndexBoundError"},
+	"c_4":{"t":"printIndexBoundError"},
+	"c_5":{"t":"printMemoryError"}}},{"n":"EnvRead","e":{"c_0":{"t":"printInternalError","h":"undefined value error"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printTypeMismatchError"}}},{"n":"Value","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printTypeMismatchError"},
+	"c_4":{"t":"printTypeMismatchError"},
+	"c_5":{"t":"printInternalError","h":"item not defined in StringMap"},
+	"c_6":{"t":"printTypeMismatchError"},
+	"c_7":{"t":"printIndexBoundError"},
+	"c_8":{"t":"printTypeMismatchError"},
+	"c_9":{"t":"printTypeMismatchError"},
+	"c_10":{"t":"printInternalError","h":"invalid value"},
+	"c_11":{"t":"printIndexBoundError"},
+	"c_12":{"t":"printInternalError","h":"copy value error"},
+	"c_13":{"t":"printInternalError","h":"copy value error"},
+	"c_14":{"t":"printIndexBoundError"},
+	"c_15":{"t":"printIndexBoundError"},
+	"c_16":{"t":"printTypeMismatchError"},
+	"c_17":{"t":"printTypeMismatchError"},
+	"c_18":{"t":"printTypeMismatchError"},
+	"c_19":{"t":"printInternalError","h":"invalid value"},
+	"c_20":{"t":"printIndexBoundError"}}},{"n":"Shell","e":{}},{"n":"WaitSignal","e":{"c_2":{"t":"printInternalError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"c_0":{"t":"printIndexBoundError"}}},{"n":"GIT","e":{}},{"n":"Input","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printInternalError"}}},{"n":"Equal","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"c_2":{"t":"printIndexBoundError"}}},{"n":"Print","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"cg_0":{"t":"print","h":"print"},
+	"c_2":{"t":"printInternalError","h":"print error"}}},{"n":"JSONParse","e":{"cg_0":{"t":"print","h":"parent"},
+	"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printInternalError","h":"invalid input value"},
+	"c_3":{"t":"printMemoryError"},
+	"c_4":{"t":"printInternalError","h":"invalid object error"}}},{"n":"JSONTreeParse","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printIndexBoundError"},
+	"c_4":{"t":"printInternalError","h":"invalid input value"},
+	"c_5":{"t":"printInternalError","h":"invalid object error"}}},{"n":"JSONTo","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printInternalError","h":"unable to convert to JSON"}}},{"n":"FormDataTo","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printMemoryError"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printMemoryError"}}},{"n":"JSONFrom","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printMemoryError"},
+	"c_2":{"t":"printInternalError","h":"invalid object error"},
+	"c_3":{"t":"printMemoryError"},
+	"c_4":{"t":"printIndexBoundError"},
+	"c_5":{"t":"printInternalError","h":"invalid object error"},
+	"c_6":{"t":"printInternalError","h":"missing required item"}}},{"n":"DebugPrint","e":{}},{"n":"Options","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printTypeMismatchError"},
+	"c_2":{"t":"printInternalError"},
+	"c_3":{"t":"printInternalError"},
+	"c_4":{"t":"printInternalError"},
+	"c_5":{"t":"printInternalError"},
+	"c_6":{"t":"printIndexBoundError"}}},{"n":"I18nLoad","e":{"c_0":{"t":"printIndexBoundError"},
+	"c_1":{"t":"printIndexBoundError"},
+	"c_2":{"t":"printIndexBoundError"}}},{"n":"HTTPClient","e":{"c_0":{"t":"printInternalError","h":"invalid url error"},
+	"c_1":{"t":"printInternalError","h":"invalid file error"},
+	"c_2":{"t":"printIndexBoundError"},
+	"c_3":{"t":"printMemoryError"},
+	"c_4":{"t":"printInternalError","h":"invalid data error"},
+	"c_5":{"t":"printMemoryError"},
+	"c_6":{"t":"printInternalError"},
+	"c_7":{"t":"printIndexBoundError"},
+	"c_8":{"t":"printIndexBoundError"},
+	"c_9":{"t":"printInternalError"},
+	"c_10":{"t":"printMemoryError"},
+	"c_11":{"t":"printIndexBoundError"},
+	"c_12":{"t":"printInternalError","h":"internal error"}}}
+	],"g":{
+	"c_0":{"t":"printInternalError"},
+	"c_1":{"t":"printMemoryError","h":"memory error"},
+	"c_2":{"t":"printTypeMismatchError","h":"type mismatch error"},
+	"c_3":{"t":"printIndexBoundError","h":"invalid value index error"},
+	"c_4":{"t":"printJSONParseError","h":"JSON parse error"},
+	"c_5":{"t":"printArgumentUnknownError"},
+	"c_6":{"t":"printArgumentMissingError"},
+	"c_7":{"t":"printArgumentInvalidPositionalError"},
+	"c_8":{"t":"printArgumentMissingPositionalError","h":"missing positional argument"},
+	"c_9":{"t":"printArgumentRequiredBegin","h":"begin required arguments"},
+	"c_10":{"t":"printArgumentOptionalBegin","h":"begin optional arguments"},
+	"c_11":{"t":"printArgumentRequiredValue"},
+	"c_12":{"t":"printArgumentOptionalValue"},
+	"c_13":{"t":"printArgumentNoValue"},
+	"c_14":{"t":"printArgumentPositional","h":"optional positional argumets"},
+	"c_15":{"t":"printArgumentPositional","h":"required positional argumets"},
+	"c_16":{"t":"printArgumentMismatch"},
+	"c_17":{"t":"printArgumentPositionalMismatch"}
+	}}

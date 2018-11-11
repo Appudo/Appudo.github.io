@@ -50,7 +50,9 @@
             "Verbose":{"d":"verbose       (Integer)", "v":6},
             "ProgramName":{"d":"program name  (String)      - read only", "v":7},
             "ToolVersion":{"d":"tool version  (String)      - read only", "v":8},
-            "CmdVersion":{"d":"cmd version   (String)", "v":9}
+            "CmdVersion":{"d":"cmd version   (String)", "v":9},
+            "WorkingDir":{"d":"working directory   (String)", "v":10},
+            "HTTPVerbose":{"d":"verbose http   (Bool)", "v":11}
         }},
         "OptionUndefined":{"d":"", "t":2, "cl":{
             "UndefinedError":{"d":"Error if values are undefined", "v":0},
@@ -143,7 +145,8 @@
                     "n":{"n":"NumValues", "d":"Number of input values", "m":1, "t":"Integer"},
                     "l":{"n":"RepeatSlot", "d":"The slot for the number of repeats", "t":"VarSlotIndex"},
                     "g":{"n":"GlobalSlots", "d":"Use global slots for the number of repeats value", "t":"Bool"},
-                    "e":{"n":"Verbosity", "d":"The level of verbosity needed to actually print", "t":"Integer"}
+                    "v":{"n":"Verbosity", "d":"The level of verbosity needed to actually print", "t":"Integer"},
+                    "e":{"n":"Stderr", "d":"Print to stderr", "t":"Bool"}
                 },
                 "s":{"im":"g", "i":"l"}
         },
@@ -242,7 +245,7 @@
         {"i":17, "n":"Append",
             "d":"Append values in v. E.g. v[0] + v[1] + v[2] + ...\nIf v[0] needs multiple values, then it is v[0] + (v[1], v[2]) + (v[3], v[4]) + ...\nThis can be used to append string values or add items to a storage value like an index.",
             "k":{
-                "v":{"n":"Inputs", "d":"Array of input variable slots", "a":1, "m":1, "t":"VarSlotIndex"},
+                "v":{"n":"Inputs", "d":"Array of input variable slots", "a":1, "m":1, "t":"AnyJSON"},
                 "g":{"n":"GlobalSlots", "d":"Use global slots for the result values", "t":"Bool"},
                 "r":{"n":"ResultSlot", "d":"Start index for the result slot", "t":"VarSlotIndex"},
                 "i":{"n":"InitialType", "d":"Initialize v to type if not present", "t":"ValueType"}
