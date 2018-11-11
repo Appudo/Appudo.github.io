@@ -53,7 +53,6 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nSetup",
           textField = new qx.ui.form.TextField();
           textField.setReadOnly(true);
           textField.setTextColor('text-disabled');
-          textField.setTabIndex(tabIndex++);
           textField.setValue(kindData.h);
           form.add(textField, this.tr("Hint"));
         }
@@ -61,10 +60,19 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nSetup",
           textField = new qx.ui.form.TextField();
           textField.setReadOnly(true);
           textField.setTextColor('text-disabled');
-          textField.setTabIndex(tabIndex++);
           textField.setValue(kindData.d);
           form.add(textField, this.tr("Depends"));
         }
+
+        textField = new qx.ui.form.CheckBox();
+        textField.setTabIndex(tabIndex++);
+        textField.setValue(fd.e || false);
+        form.add(textField, this.tr("Stderr"));
+
+        textField.addListener('changeValue', function(e) {
+          fd.e = e.getData();
+          this.__view.changedI18nData();
+        }, this);
 
         textField = new appudo_cli_creator.view.desktop.EscapeTextField();
         textField.setTabIndex(tabIndex++);

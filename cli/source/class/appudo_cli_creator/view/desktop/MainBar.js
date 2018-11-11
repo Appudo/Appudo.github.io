@@ -23,6 +23,7 @@
  * @asset(qx/icon/${qx.icontheme}/22/apps/preferences-locale.png)
  * @asset(qx/icon/${qx.icontheme}/22/categories/system.png)
  * @asset(qx/icon/${qx.icontheme}/22/apps/utilities-text-editor.png)
+ * @asset(qx/icon/${qx.icontheme}/22/actions/media-playback-start.png)
  */
 qx.Class.define("appudo_cli_creator.view.desktop.MainBar",
 {
@@ -63,9 +64,10 @@ qx.Class.define("appudo_cli_creator.view.desktop.MainBar",
     var edit = new qx.ui.toolbar.RadioButton(this.tr("Editor"), "icon/22/apps/utilities-text-editor.png");
     var i18n = new qx.ui.toolbar.RadioButton(this.tr("I18n"), "icon/22/apps/preferences-locale.png");
     var setting = new qx.ui.toolbar.RadioButton(this.tr("Settings"), "icon/22/categories/system.png");
+    var run = new qx.ui.toolbar.RadioButton(this.tr("Run"), "icon/22/actions/media-playback-start.png");
 
     var group = new qx.ui.form.RadioGroup();
-    group.add(cmd, edit, i18n, setting);
+    group.add(cmd, edit, i18n, setting, run);
     
     this.addSeparator();
 
@@ -73,6 +75,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.MainBar",
     this.add(edit);
     this.add(i18n);
     this.add(setting);
+    this.add(run);
 
     group.addListener("changeSelection", function(e)
     {
@@ -91,6 +94,11 @@ qx.Class.define("appudo_cli_creator.view.desktop.MainBar",
         if(selection[0] == edit)
         {
           child = 3;
+        }
+        else
+        if(selection[0] == run)
+        {
+          child = 4;
         }
         var item = this.__stack.getChildren()[child];
         if(item.activate)

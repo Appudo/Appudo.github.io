@@ -40,6 +40,7 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
     __dataChange : [],
     __dataSave : [],
     __commandChange : [],
+    __settingsChange : [],
     __dataInitialize : [],
     __operationMap : [],
     __operationData : null,
@@ -95,7 +96,7 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
       reader.readAsText(blob);
     },
  
-    __zipCompress : function(onReady, onerror) {
+    __zipCompress : function(onReady, onerror, asBlob) {
       var tmp = {c:1};
       var _this = this;
       zip.createWriter(new zip.BlobWriter("application/zip"), function(zipWriter) {
@@ -106,7 +107,7 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
             n();
           if(--tmp.c == 0) {
             zipWriter.close(function(blob) {
-              onReady(URL.createObjectURL(blob));
+              onReady(asBlob ? blob : URL.createObjectURL(blob));
             });
           }
         }
@@ -373,7 +374,6 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
       this.__operationData = null;
       this.__operationMap = null;
       this.__doReset(from);
-      this.settingViewUpdate(this.__fileData['config.json']);
     },
 
     getCommandSelection : function() {
@@ -443,6 +443,19 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
       if(!d.d['s']) {
         d.d['s'] = [];
       }
+    },
+
+    saveFileToBase64 : function(after) {
+      this.__zipCompress(function(data) {
+        var reader = new FileReader();
+        reader.onload = function() {
+          var rUrl = reader.result;
+          after(rUrl.split(',')[1]);
+        };
+        reader.readAsDataURL(data);
+      }, function() {
+        
+      }, true);
     },
 
     saveFile : function(filename, onready, onerror) {
@@ -563,6 +576,10 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
       this.__commandChange.push(fkt);
     },
 
+    addSettingsChanged : function(fkt) {
+      this.__settingsChange.push(fkt);
+    },
+
     addDataInitialized : function(fkt) {
       this.__dataInitialize.push(fkt);
     },
@@ -594,6 +611,16 @@ qx.Class.define("appudo_cli_creator.controller.MainController",
     __doCommandChanged : function(from, cmd, text, path, kind) {
       this.__commandChange.forEach(function(n) {
         n(from, cmd, text, path, kind);
+      });
+    },
+
+    updateSettings : function(from) {
+      this.__doSettingsChanged(from);
+    },
+
+    __doSettingsChanged : function(from) {
+      this.__settingsChange.forEach(function(n) {
+        n(from);
       });
     },
 

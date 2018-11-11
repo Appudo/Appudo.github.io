@@ -335,10 +335,6 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
 
     __copyI18nValue : function(to, from) {
       var r = 0;
-      if(from.o !== undefined) {
-        from = from.o;
-        r++;
-      }
       if(from.f !== undefined) {
         to.f = from.f;
         r++;
@@ -351,8 +347,12 @@ qx.Class.define("appudo_cli_creator.view.desktop.I18nView",
         to.u = from.u;
         r++;
       }
-      if(from.v !== undefined) {
+      if(from.g !== undefined) {
         to.g = from.g;
+        r++;
+      }
+      if(from.e !== undefined) {
+        to.e = from.e;
         r++;
       }
       return r;

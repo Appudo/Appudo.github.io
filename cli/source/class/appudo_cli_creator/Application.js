@@ -126,6 +126,7 @@ qx.Class.define("appudo_cli_creator.Application",
       stack.add(new appudo_cli_creator.view.desktop.I18nView(this.__mainController));
       stack.add(new appudo_cli_creator.view.desktop.SettingView(this.__mainController));
       stack.add(new appudo_cli_creator.view.desktop.EditorView(this.__mainController));
+      stack.add(new appudo_cli_creator.view.desktop.RunView(this.__mainController));
 
       this.__mainController.resetData();
 
