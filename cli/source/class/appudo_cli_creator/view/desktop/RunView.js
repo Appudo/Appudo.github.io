@@ -76,6 +76,8 @@ qx.Class.define("appudo_cli_creator.view.desktop.RunView",
             this.__history.splice(0, 1);
           }
           this.__historyIdx = this.__history.length - 1;
+        } else {
+          this.__historyIdx = this.__currentHistoryIdx;
         }
       }
     },
@@ -183,7 +185,6 @@ qx.Class.define("appudo_cli_creator.view.desktop.RunView",
     },
 
     __onMessage : function(e) {
-      console.log(e);
       var d;
       try {
         d = JSON.parse(e.data);
