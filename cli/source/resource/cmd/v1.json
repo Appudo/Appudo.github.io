@@ -52,7 +52,8 @@
             "ToolVersion":{"d":"tool version  (String)      - read only", "v":8},
             "CmdVersion":{"d":"cmd version   (String)", "v":9},
             "WorkingDir":{"d":"working directory   (String)", "v":10},
-            "HTTPVerbose":{"d":"verbose http   (Bool)", "v":11}
+            "HTTPVerbose":{"d":"verbose http   (Bool)", "v":11},
+            "DebugLevel":{"d":"debug level   (Integer)", "v":12}
         }},
         "OptionUndefined":{"d":"", "t":2, "cl":{
             "UndefinedError":{"d":"Error if values are undefined", "v":0},
