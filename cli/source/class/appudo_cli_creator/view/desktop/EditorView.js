@@ -89,6 +89,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
         return;
       }
 
+      this.__controller.modifyData();
       if(Array.isArray(data)) {
         data.length = 0;
         data.push.apply(data, newData);

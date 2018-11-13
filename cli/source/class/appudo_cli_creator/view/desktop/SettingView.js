@@ -21,6 +21,7 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
     __currentData : null,
     __holder : null,
     __setDefaults : false,
+    __noSave : false,
     __dataMap : {},
 
     __render : function(data) {
@@ -59,7 +60,7 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
                     nv = parseInt(nv);
                     break;
                 }
-                if(nv !== v) {
+                if(nv !== v && this.__noSave == false) {
                   if(this.__setDefaults == false) {
                     this.__controller.modifyData();
                   }
@@ -82,7 +83,7 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
               if(this.__currentData) {
                 var v = this.__currentData[item.p];
                 var nv = sel_item.getLabel();
-                if(nv !== v) {
+                if(nv !== v && this.__noSave == false) {
                   if(this.__setDefaults == false) {
                     this.__controller.modifyData();
                   }
@@ -154,7 +155,9 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
     this.__controller.addReset(function(from) {
       if(from != _this) {
         var fd = _this.__controller.getRawFileData();
+        _this.__noSave = true;
         _this.update.call(_this, fd['config.json']);
+        _this.__noSave = false;
       }
     });
 
