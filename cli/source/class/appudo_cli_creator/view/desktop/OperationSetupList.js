@@ -129,7 +129,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.OperationSetupList",
       if(to_index >= from_index)
         to_index--;
       this.__currentData.splice(to_index, 0, item_data);
-      this.__controller.changedData(this.__parent.getParent(), {t:'OperationSetupItemMove'});
+      this.__controller.changedData(this.__parent.getParent(), false, {t:'OperationSetupItemMove'});
       this.refresh();
     }
   },
