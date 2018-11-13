@@ -97,7 +97,10 @@ qx.Class.define("appudo_cli_creator.view.desktop.RunView",
       if(this.__historyIdx < 0 || this.__historyIdx >= this.__history.length)
         this.__historyIdx = 0;
       this.__currentHistoryIdx = this.__historyIdx;
-      this.__stdinTxt.setValue(this.__history[this.__historyIdx]);
+      if(this.__history[this.__historyIdx])
+      {
+        this.__stdinTxt.setValue(this.__history[this.__historyIdx]);
+      }
       this.__historyIdx += dir;
     },
 
