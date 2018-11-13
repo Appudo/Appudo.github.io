@@ -20,6 +20,7 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
     __controller : null,
     __currentData : null,
     __holder : null,
+    __setDefaults : false,
     __dataMap : {},
 
     __render : function(data) {
@@ -31,7 +32,6 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
       this.__holder.add(toolBar);
       this.__holder.add(formHolder, {flex:1});
       this.add(this.__holder, {flex:1});
-      this.__currentData = data;
 
       this.__holder.setPaddingTop(2);
       formHolder.setPadding(5);
@@ -51,15 +51,21 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
             form.add(value, item.d);
             this.__dataMap[item.p] = value;
             value.addListener('changeValue', function(e) {
-              var v = e.getData();
               if(this.__currentData) {
+                var nv = e.getData();
+                var v = this.__currentData[item.p];
                 switch(parseInt(item.t)) {
                   case 2:
-                    v = parseInt(v);
+                    nv = parseInt(nv);
                     break;
                 }
-                this.__currentData[item.p] = v;
-                this.__controller.updateSettings();
+                if(nv !== v) {
+                  if(this.__setDefaults == false) {
+                    this.__controller.modifyData();
+                  }
+                  this.__currentData[item.p] = nv;
+                  this.__controller.updateSettings();
+                }
               }
             }, this);
           } else
@@ -74,11 +80,18 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
             kindField.addListener('changeSelection', function(e) {
               var sel_item = e.getData()[0];
               if(this.__currentData) {
-                this.__currentData[item.p] = sel_item.getLabel();
-                if(item.p == 'version') {
-                  this.__controller.resetOperationData(this);
+                var v = this.__currentData[item.p];
+                var nv = sel_item.getLabel();
+                if(nv !== v) {
+                  if(this.__setDefaults == false) {
+                    this.__controller.modifyData();
+                  }
+                  this.__currentData[item.p] = nv;
+                  if(item.p == 'version') {
+                    this.__controller.resetOperationData(this);
+                  }
+                  this.__controller.updateSettings();
                 }
-                this.__controller.updateSettings();
               }
             }, this);
 
@@ -146,7 +159,9 @@ qx.Class.define('appudo_cli_creator.view.desktop.SettingView',
     });
 
     this.__controller.getConfigInfoFile(function(data) {
+      _this.__setDefaults = true;
       _this.__render.call(_this, data);
+      _this.__setDefaults = false;
     });
   }
 });

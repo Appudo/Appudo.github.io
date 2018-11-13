@@ -189,7 +189,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.RunView",
       try {
         d = JSON.parse(e.data);
       } catch(err) {
-        console.log(err);
+        console.log(err, e.data);
         return;
       }
       switch(d.t) {
