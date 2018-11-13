@@ -56,6 +56,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
       this.__justAdded = true;
       this.__editor.setValue(JSON.stringify(this.__currentData, undefined, 4));
       this.__justAdded = false;
+      this.__addEditorListener();
     },
 
     __onChangeValue : function() {
@@ -67,6 +68,12 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
         this.__listenerId = -1;
       }
       this.__saveBtn.setEnabled(true);
+    },
+
+    __addEditorListener : function() {
+      if(this.__listenerId == -1) {
+        this.__listenerId = this.__editor.addListener('changeValue', this.__onChangeValue, this);
+      }
     },
 
     __onSave : function() {
@@ -96,9 +103,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
       this.__controller.refreshData(this);
       this.__controller.setSelection(sel);
       this.__saveBtn.setEnabled(false);
-      if(this.__listenerId == -1) {
-        this.__listenerId = this.__editor.addListener('changeValue', this.__onChangeValue, this);
-      }
+      this.__addEditorListener();
     }
   },
 
@@ -131,7 +136,6 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
     this.add(this.__holder, {flex:1});
 
     this.__saveBtn.addListener('execute', this.__onSave, this);
-    this.__editor.addListenerOnce('changeValue', this.__onChangeValue, this);
     this.__saveBtn.setEnabled(false);
 
     this.__controller.addCommandChanged(function(from, cmd, text) {
