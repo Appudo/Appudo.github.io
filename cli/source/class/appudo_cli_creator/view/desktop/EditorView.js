@@ -42,6 +42,7 @@ qx.Class.define("appudo_cli_creator.view.desktop.EditorView",
       } else {
         this.clear();
       }
+      this.__addEditorListener();
     },
 
     clear : function(after) {
