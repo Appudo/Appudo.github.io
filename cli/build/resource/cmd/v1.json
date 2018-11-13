@@ -29,10 +29,10 @@
             "WaitObject":{"d":"", "v":15},
             "BinaryData":{"d":"", "v":16},
             "Time":{"d":"", "v":17},
-            "_TrueORUndefined":{"d":"", "v":32767},
-            "_FalseORUndefined":{"d":"", "v":32766},
-            "_URIWithoutSchema":{"d":"", "v":32765},
-            "_FullPath":{"d":"", "v":32764}
+            "_TrueORUndefined":{"d":"", "v":16383},
+            "_FalseORUndefined":{"d":"", "v":16382},
+            "_URIWithoutSchema":{"d":"", "v":16381},
+            "_FullPath":{"d":"", "v":163830}
         }},
         "Required":{"d":"The value for this type is either required or optional", "t":2, "cl":{
             "required":{"d":"Required", "v":1},
