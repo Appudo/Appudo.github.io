@@ -874,11 +874,14 @@
                         paths:{	appudo:'.',
                                         dojo:'release/dojo',
                                         dijit:'release/dijit',
-                                        dojox:'release/dojox'
+                                        dojox:'release/dojox',
+					thelayer:'release/thelayer',
+					main:'release/thelayer/layers'
                                         },
                                 isDebug:false, debugAtAllCosts:false"></script>
         <script type="text/javascript">
                 require([
+			'main/core',
                         'dojo/_base/kernel',
                         'dijit',
                         'dojo/_base/declare',
@@ -943,7 +946,7 @@
                         'dojox/grid/DataGrid',
                         'dojox/grid/LazyTreeGrid',
 
-                ], function(dojo, dijit, declare, nls, aspect, on, xhr, defer, dlist, sock, sock_rc, array) {
+                ], function(core, dojo, dijit, declare, nls, aspect, on, xhr, defer, dlist, sock, sock_rc, array) {
                         Error.prototype.log = false;
                         var global = dojo.global;
                         global.nls = nls;
