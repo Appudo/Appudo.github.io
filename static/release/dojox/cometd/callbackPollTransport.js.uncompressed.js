@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/cometd/callbackPollTransport", ["dojo","dijit","dojox","dojo/require!dojox/cometd/_base,dojox/cometd/longPollTransport,dojo/io/script"], function(dojo,dijit,dojox){
+define("dojox/cometd/callbackPollTransport", ["dijit","dojo","dojox","dojo/require!dojox/cometd/_base,dojox/cometd/longPollTransport,dojo/io/script"], function(dijit,dojo,dojox){
 dojo.provide("dojox.cometd.callbackPollTransport");
 dojo.require("dojox.cometd._base");
 dojo.require("dojox.cometd.longPollTransport");

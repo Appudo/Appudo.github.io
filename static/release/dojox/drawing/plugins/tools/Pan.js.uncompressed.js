@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/plugins/tools/Pan", ["dojo","dijit","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dojo,dijit,dojox){
+define("dojox/drawing/plugins/tools/Pan", ["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins.tools.Pan");
 dojo.require("dojox.drawing.plugins._Plugin");
 

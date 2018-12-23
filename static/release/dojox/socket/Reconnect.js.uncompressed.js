@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/socket/Reconnect", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/socket/Reconnect", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.socket.Reconnect");
 
 dojox.socket.Reconnect = function(socket, options){

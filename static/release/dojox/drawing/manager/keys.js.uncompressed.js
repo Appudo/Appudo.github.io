@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/manager/keys", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/manager/keys", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.manager.keys");
 
 (function(){

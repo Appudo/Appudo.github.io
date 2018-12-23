@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/plugins/_Plugin", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/plugins/_Plugin", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins._Plugin");
 
 dojox.drawing.plugins._Plugin = dojox.drawing.util.oo.declare(

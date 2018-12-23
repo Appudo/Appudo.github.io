@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/widget/rotator/Slide", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/widget/rotator/Slide", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.Slide");
 
 (function(d){

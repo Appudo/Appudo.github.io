@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/ui/Button", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/ui/Button", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.ui.Button");
 
 dojox.drawing.ui.Button =  dojox.drawing.util.oo.declare(

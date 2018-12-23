@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/widget/rotator/Wipe", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/widget/rotator/Wipe", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.Wipe");
 
 (function(d){

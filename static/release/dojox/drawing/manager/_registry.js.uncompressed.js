@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/manager/_registry", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/manager/_registry", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.manager._registry");
 
 (function(){

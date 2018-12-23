@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/util/typeset", ["dojo","dijit","dojox","dojo/require!dojox/drawing/library/greek"], function(dojo,dijit,dojox){
+define("dojox/drawing/util/typeset", ["dijit","dojo","dojox","dojo/require!dojox/drawing/library/greek"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.util.typeset");
 dojo.require("dojox.drawing.library.greek");
 // Summary:

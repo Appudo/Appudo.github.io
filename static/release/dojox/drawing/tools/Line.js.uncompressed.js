@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/Line", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/Line", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.Line");
 
 dojox.drawing.tools.Line = dojox.drawing.util.oo.declare(

@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/annotations/Label", ["dojo","dijit","dojox","dojo/require!dojox/drawing/stencil/Text"], function(dojo,dijit,dojox){
+define("dojox/drawing/annotations/Label", ["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Text"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.annotations.Label");
 dojo.require("dojox.drawing.stencil.Text");
 

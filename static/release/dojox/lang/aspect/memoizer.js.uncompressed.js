@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/lang/aspect/memoizer", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/lang/aspect/memoizer", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.aspect.memoizer");
 
 (function(){

@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/widget/AutoRotator", ["dojo","dijit","dojox","dojo/require!dojox/widget/Rotator"], function(dojo,dijit,dojox){
+define("dojox/widget/AutoRotator", ["dijit","dojo","dojox","dojo/require!dojox/widget/Rotator"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.AutoRotator");
 dojo.require("dojox.widget.Rotator");
 

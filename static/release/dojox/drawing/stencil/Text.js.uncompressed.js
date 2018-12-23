@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/stencil/Text", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/stencil/Text", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.stencil.Text");
 
 dojox.drawing.stencil.Text = dojox.drawing.util.oo.declare(

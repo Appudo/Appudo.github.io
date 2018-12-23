@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/secure/capability", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/secure/capability", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.secure.capability");
 
 dojox.secure.badProps = /^__|^(apply|call|callee|caller|constructor|eval|prototype|this|unwatch|valueOf|watch)$|__$/;

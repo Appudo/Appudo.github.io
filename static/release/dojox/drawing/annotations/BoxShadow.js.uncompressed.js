@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/annotations/BoxShadow", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/annotations/BoxShadow", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.annotations.BoxShadow");
 
 dojox.drawing.annotations.BoxShadow = dojox.drawing.util.oo.declare(

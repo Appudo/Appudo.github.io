@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/cometd/longPollTransportFormEncoded", ["dojo","dijit","dojox","dojo/require!dojox/cometd/_base"], function(dojo,dijit,dojox){
+define("dojox/cometd/longPollTransportFormEncoded", ["dijit","dojo","dojox","dojo/require!dojox/cometd/_base"], function(dijit,dojo,dojox){
 dojo.provide("dojox.cometd.longPollTransportFormEncoded");
 dojo.require("dojox.cometd._base");
 

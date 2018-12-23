@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/stencil/Line", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/stencil/Line", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.stencil.Line");
 
 dojox.drawing.stencil.Line = dojox.drawing.util.oo.declare(

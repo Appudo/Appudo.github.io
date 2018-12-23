@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/widget/FisheyeList", ["dojo","dijit","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/_Contained"], function(dojo,dijit,dojox){
+define("dojox/widget/FisheyeList", ["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Templated,dijit/_Container,dijit/_Contained"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.FisheyeList");
 
 dojo.require("dijit._Widget");

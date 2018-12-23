@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/manager/Mouse", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/manager/Mouse", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.manager.Mouse");
 
 dojox.drawing.manager.Mouse = dojox.drawing.util.oo.declare(

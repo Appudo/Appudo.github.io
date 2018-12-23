@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/custom/Axes", ["dojo","dijit","dojox","dojo/require!dojox/drawing/stencil/Path"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/custom/Axes", ["dijit","dojo","dojox","dojo/require!dojox/drawing/stencil/Path"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.custom.Axes");
 dojo.require("dojox.drawing.stencil.Path");
 

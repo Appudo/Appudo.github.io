@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/ui/Toolbar", ["dojo","dijit","dojox","dojo/require!dojox/drawing/library/icons"], function(dojo,dijit,dojox){
+define("dojox/drawing/ui/Toolbar", ["dijit","dojo","dojox","dojo/require!dojox/drawing/library/icons"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.ui.Toolbar");
 dojo.require("dojox.drawing.library.icons");
 

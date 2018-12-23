@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/help/console", ["dojo","dijit","dojox","dojo/require!dojox/help/_base"], function(dojo,dijit,dojox){
+define("dojox/help/console", ["dijit","dojo","dojox","dojo/require!dojox/help/_base"], function(dijit,dojo,dojox){
 dojo.provide("dojox.help.console");
 dojo.require("dojox.help._base");
 

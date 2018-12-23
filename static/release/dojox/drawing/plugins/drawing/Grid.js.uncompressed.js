@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/plugins/drawing/Grid", ["dojo","dijit","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dojo,dijit,dojox){
+define("dojox/drawing/plugins/drawing/Grid", ["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins.drawing.Grid");
 dojo.require("dojox.drawing.plugins._Plugin");
 

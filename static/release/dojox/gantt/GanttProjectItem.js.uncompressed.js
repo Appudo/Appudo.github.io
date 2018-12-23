@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/gantt/GanttProjectItem", ["dojo","dijit","dojox","dojo/require!dojox/gantt/GanttTaskItem,dojo/date/locale,dijit/focus"], function(dojo,dijit,dojox){
+define("dojox/gantt/GanttProjectItem", ["dijit","dojo","dojox","dojo/require!dojox/gantt/GanttTaskItem,dojo/date/locale,dijit/focus"], function(dijit,dojo,dojox){
 dojo.provide("dojox.gantt.GanttProjectItem");
 
 dojo.require("dojox.gantt.GanttTaskItem");

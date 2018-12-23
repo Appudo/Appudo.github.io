@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/editor/plugins/ResizeTableColumn", ["dojo","dijit","dojox","dojo/require!dojox/editor/plugins/TablePlugins"], function(dojo,dijit,dojox){
+define("dojox/editor/plugins/ResizeTableColumn", ["dijit","dojo","dojox","dojo/require!dojox/editor/plugins/TablePlugins"], function(dijit,dojo,dojox){
 dojo.provide("dojox.editor.plugins.ResizeTableColumn");
 
 dojo.require("dojox.editor.plugins.TablePlugins");

@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/library/icons", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/library/icons", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.library.icons");
 
 dojox.drawing.library.icons = {

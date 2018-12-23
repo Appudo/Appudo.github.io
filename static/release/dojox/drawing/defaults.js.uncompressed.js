@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/defaults", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/defaults", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.defaults");
 
 dojox.drawing.defaults = {

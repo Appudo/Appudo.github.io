@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/lang/async/topic", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/lang/async/topic", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.async.topic");
 
 // Source of Deferred for topics

@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/Drawing", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/Drawing", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.Drawing");
 
 (function(){

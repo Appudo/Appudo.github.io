@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/gantt/GanttChart", ["dojo","dijit","dojox","dojo/require!dijit/Tooltip,dojox/gantt/GanttProjectItem,dojox/gantt/GanttResourceItem,dojox/gantt/TabMenu,dojo/date/locale"], function(dojo,dijit,dojox){
+define("dojox/gantt/GanttChart", ["dijit","dojo","dojox","dojo/require!dijit/Tooltip,dojox/gantt/GanttProjectItem,dojox/gantt/GanttResourceItem,dojox/gantt/TabMenu,dojo/date/locale"], function(dijit,dojo,dojox){
 dojo.provide("dojox.gantt.GanttChart");
 
 dojo.require("dijit.Tooltip");

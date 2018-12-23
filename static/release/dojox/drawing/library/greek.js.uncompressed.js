@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/library/greek", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/library/greek", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.library.greek");
 
 dojox.drawing.library.greek = {

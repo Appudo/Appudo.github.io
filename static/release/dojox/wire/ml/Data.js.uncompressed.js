@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/wire/ml/Data", ["dojo","dijit","dojox","dojo/require!dijit/_Widget,dijit/_Container,dojox/wire/ml/util"], function(dojo,dijit,dojox){
+define("dojox/wire/ml/Data", ["dijit","dojo","dojox","dojo/require!dijit/_Widget,dijit/_Container,dojox/wire/ml/util"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.ml.Data");
 
 dojo.require("dijit._Widget");

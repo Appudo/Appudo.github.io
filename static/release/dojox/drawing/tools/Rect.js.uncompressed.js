@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/Rect", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/Rect", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.Rect");
 
 dojox.drawing.tools.Rect = dojox.drawing.util.oo.declare(

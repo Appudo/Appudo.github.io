@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/manager/Undo", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/manager/Undo", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.manager.Undo");
 
 dojox.drawing.manager.Undo = dojox.drawing.util.oo.declare(

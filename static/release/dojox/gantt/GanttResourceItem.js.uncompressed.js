@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/gantt/GanttResourceItem", ["dojo","dijit","dojox","dojo/require!dojo/date/locale"], function(dojo,dijit,dojox){
+define("dojox/gantt/GanttResourceItem", ["dijit","dojo","dojox","dojo/require!dojo/date/locale"], function(dijit,dojo,dojox){
 dojo.provide("dojox.gantt.GanttResourceItem");
 
 dojo.require("dojo.date.locale");

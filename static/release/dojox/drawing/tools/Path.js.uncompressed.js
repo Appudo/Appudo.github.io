@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/Path", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/Path", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.Path");
 
 dojox.drawing.tools.Path = dojox.drawing.util.oo.declare(

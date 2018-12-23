@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/plugins/drawing/Silverlight", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/plugins/drawing/Silverlight", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.plugins.drawing.Silverlight");
 
 dojox.drawing.plugins.drawing.Silverlight = dojox.drawing.util.oo.declare(

@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/Arrow", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/Arrow", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.Arrow");
 
 dojox.drawing.tools.Arrow = dojox.drawing.util.oo.declare(

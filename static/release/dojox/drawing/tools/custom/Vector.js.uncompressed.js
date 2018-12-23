@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/custom/Vector", ["dojo","dijit","dojox","dojo/require!dojox/drawing/tools/Arrow,dojox/drawing/util/positioning"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/custom/Vector", ["dijit","dojo","dojox","dojo/require!dojox/drawing/tools/Arrow,dojox/drawing/util/positioning"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.custom.Vector");
 dojo.require("dojox.drawing.tools.Arrow");
 dojo.require("dojox.drawing.util.positioning");

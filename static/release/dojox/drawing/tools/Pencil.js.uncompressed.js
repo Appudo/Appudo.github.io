@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/tools/Pencil", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/tools/Pencil", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.tools.Pencil");
 
 dojox.drawing.tools.Pencil = dojox.drawing.util.oo.declare(

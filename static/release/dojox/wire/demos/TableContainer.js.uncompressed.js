@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/wire/demos/TableContainer", ["dojo","dijit","dojox","dojo/require!dojo/parser,dijit/_Widget,dijit/_Templated"], function(dojo,dijit,dojox){
+define("dojox/wire/demos/TableContainer", ["dijit","dojo","dojox","dojo/require!dojo/parser,dijit/_Widget,dijit/_Templated"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.demos.TableContainer");
 
 dojo.require("dojo.parser");

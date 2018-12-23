@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/annotations/Angle", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/drawing/annotations/Angle", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.annotations.Angle");
 
 dojox.drawing.annotations.Angle = dojox.drawing.util.oo.declare(

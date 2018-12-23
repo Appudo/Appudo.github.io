@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/drawing/ui/Tooltip", ["dojo","dijit","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dojo,dijit,dojox){
+define("dojox/drawing/ui/Tooltip", ["dijit","dojo","dojox","dojo/require!dojox/drawing/plugins/_Plugin"], function(dijit,dojo,dojox){
 dojo.provide("dojox.drawing.ui.Tooltip");
 dojo.require("dojox.drawing.plugins._Plugin");
 

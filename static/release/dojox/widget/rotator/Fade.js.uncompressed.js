@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/widget/rotator/Fade", ["dojo","dijit","dojox","dojo/require!dojo/fx"], function(dojo,dijit,dojox){
+define("dojox/widget/rotator/Fade", ["dijit","dojo","dojox","dojo/require!dojo/fx"], function(dijit,dojo,dojox){
 dojo.provide("dojox.widget.rotator.Fade");
 dojo.require("dojo.fx");
 

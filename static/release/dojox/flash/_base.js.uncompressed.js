@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/flash/_base", ["dojo","dijit","dojox","dojo/require!dojo/window"], function(dojo,dijit,dojox){
+define("dojox/flash/_base", ["dijit","dojo","dojox","dojo/require!dojo/window"], function(dijit,dojo,dojox){
 dojo.provide("dojox.flash._base");
 dojo.experimental("dojox.flash");
 

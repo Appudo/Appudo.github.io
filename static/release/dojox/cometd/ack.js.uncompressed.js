@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/cometd/ack", ["dojo","dijit","dojox","dojo/require!dojox/cometd/_base"], function(dojo,dijit,dojox){
+define("dojox/cometd/ack", ["dijit","dojo","dojox","dojo/require!dojox/cometd/_base"], function(dijit,dojo,dojox){
 dojo.provide("dojox.cometd.ack");
 dojo.require("dojox.cometd._base");
 

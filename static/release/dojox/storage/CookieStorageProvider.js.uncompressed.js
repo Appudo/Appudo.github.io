@@ -1,6 +1,6 @@
 //>>built
 // wrapped by build app
-define("dojox/storage/CookieStorageProvider", ["dojo","dijit","dojox","dojo/require!dojox/storage/Provider,dojox/storage/manager,dojo/cookie"], function(dojo,dijit,dojox){
+define("dojox/storage/CookieStorageProvider", ["dijit","dojo","dojox","dojo/require!dojox/storage/Provider,dojox/storage/manager,dojo/cookie"], function(dijit,dojo,dojox){
 dojo.provide("dojox.storage.CookieStorageProvider");
 
 dojo.require("dojox.storage.Provider");
