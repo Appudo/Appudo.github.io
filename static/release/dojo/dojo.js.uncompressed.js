@@ -1810,6 +1810,10 @@
 		},
 		packages:[
 				{
+					 location:"../dojox",
+					 name:"dojox"
+				},
+				{
 					 location:"../dijit",
 					 name:"dijit"
 				},
@@ -1818,8 +1822,8 @@
 					 name:"dojo"
 				},
 				{
-					 location:"../dojox",
-					 name:"dojox"
+					 location:"../thelayer",
+					 name:"thelayer"
 				}
 		]
 });require({cache:{
