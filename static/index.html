@@ -880,8 +880,8 @@
                                         },
                                 isDebug:false, async:true, debugAtAllCosts:false"></script>
         <script type="text/javascript">
+                require(['main/core'], function(core) {
                 require([
-			'main/core',
                         'dojo/_base/kernel',
                         'dijit',
                         'dojo/_base/declare',
@@ -946,7 +946,7 @@
                         'dojox/grid/DataGrid',
                         'dojox/grid/LazyTreeGrid',
 
-                ], function(core, dojo, dijit, declare, nls, aspect, on, xhr, defer, dlist, sock, sock_rc, array) {
+                ], function(dojo, dijit, declare, nls, aspect, on, xhr, defer, dlist, sock, sock_rc, array) {
                         Error.prototype.log = false;
                         var global = dojo.global;
                         global.nls = nls;
@@ -5205,6 +5205,7 @@
                         }
         });
 
+        });
 
         </script>
 </head>
