@@ -1,0 +1,791 @@
+<script sub="code_file_open">
+    var _canClose = true;
+    var filesCache = {};
+    var selFiles = [];
+    var selDelay = 600;
+    var selCls = 'sel';
+    var selDelay = 600;
+    var selLast, selDiff;
+    var _upper = $('.ui.modal.fileOpen .upper');
+    var _openPath = $('#openPath');
+    var openPathBtn = $('#openPathBtn');
+    var openReloadBtn = $('#openReloadBtn');
+    var openUpBtn = $('#openUpBtn');
+    var openClear = $('#openClear')
+    var openPathIcon = _openPath.parents('.ui.input').find('.icon');
+    var fileBox = $('.fileBox');
+    var m = $('.ui.modal.fileOpen');
+    var sts = $('#theStatus');
+    var theFiles = $('#theFiles');
+    var files = $('.files');
+    var openAcceptBtn = m.find('.ui.accept');
+    var activeTasks = {};
+    var in_path = false;
+    var probeId;
+    
+    var ct = m.find('.content');
+    var loader = loader_init(ct);
+    var serr = error_init(ct, polyglot.t('code.eh_diss'), polyglot.t('code.e_diss'));
+    
+    sub.m = m;
+    
+    function task_add(t) {
+        activeTasks[t] = true;
+    }
+    
+    function task_remove(t) {
+        delete activeTasks[t];
+    }
+    
+    function task_kill() {
+        $.each(activeTasks, function(k, v) {
+            window.request_kill(k);
+        });
+        activeTasks = {};
+    }
+    
+    fileBox[0].style = 'height:' + (200 + window.sbh()) + 'px;';
+    
+    sub.probeChange = function(e, probes) {
+        probes_reset();
+    }
+    
+    $(document).on('probeChange', sub.probeChange);
+    
+    m.modal({detachable:false,
+             autofocus: false,
+                                     dimmerSettings:{
+                                          useCSS   : true,
+                            opacity: 0.5
+                                     },
+                                     onShow:onShowModal,
+                                     onHide:function() {
+                                        if(_canClose) {
+                                            onHideModal();
+                                            return true;
+                                        } 
+                                         
+                                        $('body').dimmer('show');
+                                        return false;
+                                    },
+                                    onDeny:function(){
+                                        return _canClose;
+                                    },
+                                     onVisible:onVisibleModal,
+                                     onHidden:onHiddenModal
+                                    });
+                               
+    var dropDown = m.find('.ui.dropdown');    
+    var dropSettings = {
+        forceSelection: false,
+        selectOnKeydown: false,
+        clearable: true,
+        onChange:function(value, text, $choice){
+            view_reset();
+            if(value) {
+                _upper.addClass('fl-is-active');
+                path_active(true);
+                dropDown.find('input').blur();
+            } else {
+                _upper.removeClass('fl-is-active');
+            }
+        }
+    };
+    dropDown.dropdown(dropSettings);
+    
+    var _pathPending = false;
+    
+    function path_remove_pending() {
+        if(_pathPending) {
+            openPathIcon.removeClass('clear');
+            openPathIcon.removeClass('iclr');
+        }
+    }
+    
+    openPathIcon.on('click', function() {
+        if(_pathPending) {
+            path_load(_path);
+        }
+    });
+    
+    function go() {
+        var v = _openPath.val();
+        if(_pathPending && v) {
+            path_load(v);
+        }
+    }
+    
+    openPathBtn.on('click', function() {
+        go();
+    });
+    
+    openUpBtn.on('click', function() {
+        if(in_path) {
+            var p = _path;
+            if(p[p.length - 1] == '/') {
+                p = p.slice(0, -1);
+            }
+            var i = p.lastIndexOf('/');
+            if(i != -1) {
+                p = p.substr(0, i);
+                if(p == '')
+                    p = '/';
+                path_load(p);
+            }
+        }
+    });
+    
+    openReloadBtn.on('click', function() {
+        var v = _openPath.val();
+        if(v) {
+            if(in_path) {
+                delete filesCache[canoPath(v, '_')];
+            }
+            
+            path_load(v);
+        }
+    });
+    
+    _openPath.on('keydown', function(e) {
+        if(e.keyCode == 13) {
+            go();
+        }
+    });
+    
+    _openPath.on('input', function(e) {
+        if(!_pathPending) {
+           _pathPending = true;
+            path_button_active(true);
+            path_up_button_active(false);
+            openPathIcon.addClass('clear');
+            openPathIcon.addClass('iclr');
+           // TODO add clear button
+        }
+    });
+    
+    function path_set(v) {
+        path_remove_pending();
+        _pathPending = false;
+        _path = v;
+        path_button_active(false);
+        path_up_button_active(true);
+        label_set(_openPath, v);
+    }
+    
+    function request_prepare(o) {
+        var s = dropDown.dropdown('get value');
+        var i = dropDown.dropdown('get item');
+        var sock = parseInt(i.attr('socket'));
+        var pr = probes_get(sock)
+        var pi = {id:pr.id, s:sock};
+        o.p = pi;
+        if(!i[0].hasAttribute('empty')) {
+            pi.idn = s;
+        }
+        return pr;
+    }
+        
+    function path_load(p) {
+        task_kill();
+        var items = filesCache[canoPath(p, '_')];
+        if(items) {
+            in_path = true;
+            path_set(p);
+            setupFileView(items, undefined, true);
+            return;
+        } else {
+            in_path = false;
+        }
+        
+        state_set_load();
+        
+        var first = true;
+        var o = {
+            onResult:function(d) {
+                var c = first;
+                if(first) {
+                    in_path = d.f || false;
+                    first = false;
+                }
+                
+                setupFileView_append(d.d || [], in_path ? p : undefined, c);
+                
+                if(d.r !== undefined) {
+                    var f = theFiles.parent();
+                    f[0].scrollLeft = 0;
+                    
+                    task_remove(this.t);
+                    if(in_path) {
+                        path_set(p);
+                    }
+                }
+            },
+            onError:function(d) {
+                task_remove(this.t);
+                console.log('onError', d);
+                console.log('ticket error');
+            }
+        };
+        var pr = request_prepare(o);
+        var d = {t:1, data:JSON.stringify(p).slice(1,-1), p:o.p, x:pr.t};
+        if(request(d, o)) {
+            task_add(o.t);
+        }
+    }
+    
+    function path_button_active(v) {
+        if(v) {
+            openPathBtn.removeClass('disabled');
+            openUpBtn.removeClass('disabled');
+        } else {
+            openPathBtn.addClass('disabled');
+            openUpBtn.addClass('disabled');
+        }
+    }
+    
+    function path_up_button_active(v) {
+        if(v) {
+            openUpBtn.removeClass('disabled');
+        } else {
+            openUpBtn.addClass('disabled');
+        }
+    }
+    
+    function path_active(v) {
+        var openPath = _openPath.parents('.ui.input');
+        if(v) {
+            openPath.removeClass('disabled');
+            path_load('/');
+        } else {
+            openPath.addClass('disabled');
+        }
+    }
+    
+    function view_reset() {
+        task_kill();
+        filesCache = {};
+        selFiles = [];
+        setupFileView([], undefined, true);
+        check();
+        path_set(null);
+        path_active(false);
+        path_button_active(false);
+        path_up_button_active(false);
+    }
+    
+    function probes_reset() {
+        var s = dropDown.dropdown('get value');
+        var m = dropDown.find('.menu');
+        var f = $(document.createDocumentFragment());
+        probes_each(function(k, v) {
+            var l = probe_label(v);
+            var e = '';
+            if(!probe_has_label(v)) {
+                e = 'empty';
+            }
+            f.append('<div class="item" socket="' + k + '"' + e + '>' + l + '</div>');     
+        });
+        m.html('');
+        m.append(f);
+        dropDown.dropdown('restore defaults')
+				.dropdown('destroy')
+				.dropdown('setting', dropSettings);
+		if(s) {
+            dropDown.dropdown('set selected', s);
+            if(dropDown.dropdown('get value') != s) {
+                view_reset();
+            }
+		}
+    }
+    
+    sub.onOpen = function(after) {
+        sub.after = after;
+        serr.hide();
+        view_reset();
+        dropDown.dropdown('clear');
+        openClear.prop('checked', false);
+    }
+    
+    var input = dropDown.find('input.search');
+    input.on('focus', function(e) {
+        _upper.addClass('fl-has-focus');
+    });
+    input.on('blur', function(e) {
+        _upper.removeClass('fl-has-focus');
+    });
+    input.on('input', function(e) {
+        if(input.val()) {
+            _upper.addClass('fl-is-active');
+        } else if(!dropDown.dropdown('get value')) {
+            _upper.removeClass('fl-is-active');
+        }
+    });
+    
+    function confirm(v) {
+        if(v === undefined) {
+            v = getPath(selFiles[0]);
+        }
+        
+        var parse = function(d) {
+            var x = d.split(',');
+            return {a:parseInt(x[0]), b:parseInt(x[1])};
+        };
+        
+        var pr;
+        var p = _path;
+        var o = {
+            onResult:function(d) {
+                task_remove(this.t);
+                loader.hide();
+                _canClose = true;
+                sub.m.modal('hide');
+                sub.after({pid:probeId, d:parse(d.d), v:v, p:p, pr:pr});
+            },
+            onError:function(d) {
+                task_remove(this.t);
+                loader.hide();
+                _canClose = true;
+                if(d && d.r == 17 && d.d && d.d.indexOf(',') != -1) {
+                    sub.m.modal('hide');
+                    sub.after({pid:probeId, d:parse(d.d), v:v, p:p, pr:pr});
+                } else {
+                    serr.show();
+                }
+                console.log('onError', d);
+                console.log('ticket error');
+            },
+            sub:sub
+        };
+        pr = request_prepare(o);
+        var c = openClear.is(':checked') ? 1 : 0;
+        var m = {p:v, c:c, k:login_current().r};
+        var d = {t:4, p:o.p, x:pr.t};
+        probeId = o.p.id;
+        if(request(d, o, m)) {
+            _canClose = false;
+            loader.show();
+            task_add(o.t);
+        } else {
+            serr.show();
+        }
+    }
+    
+    sub.onOk = function() {
+        if(selFiles.length == 1 && !isDir(selFiles[0])) {
+            confirm();
+        }
+    }
+    
+    function setupFileView_append(items, path, clear) {
+        if(path !== undefined) {
+            var c = canoPath(path, '_');
+            var o = filesCache[c] || [];
+            items = filesCache[c] = o.concat(items);
+        }
+        _setupFileView(items, path, clear);
+    }
+    
+    function setupFileView(items, path, clear) {
+        if(path !== undefined) {
+            filesCache[canoPath(path, '_')] = clear ? null : items;
+        }
+        _setupFileView(items, path, clear);
+    }
+    function _setupFileView(items, path, clear) {
+        hideAll();
+        theFiles.html('');
+        items = sortNodesByName(items);
+        var f = $(document.createDocumentFragment());
+        for(var i = 0, l = items.length; i < l; i++) {
+            var li = document.createElement('li');
+            setupFileItem(li, items[i]);
+            f.append(li);
+        }
+        var div = document.createElement('li');
+        div.style = 'clear:both;float:right;pointer-events:none;margin-top:-18px;';
+        f.append(div);
+        fileData = items;
+        
+        theFiles.append(f);
+        
+        var items = files.find('li');
+    
+        onMouseUp = function(e, li) {
+            selDiff = e.timeStamp - selLast;
+            if(selDiff < selDelay) {
+                if(e.ctrlKey) {
+                    $(li).toggleClass(selCls);
+                    onFileSelect(files.find('.' + selCls));
+                } else {
+                    files.find('.' + selCls).each(function() {
+                        $(this).removeClass(selCls);
+                    })
+                    $(li).toggleClass(selCls);
+                    onFileSelect([li]);
+                }
+            }
+        }
+        
+        items.bind('mousedown mouseup', function(e) {
+            e.preventDefault(); 
+            if(e.type == 'mousedown') {
+                targetFile = true;
+                selLast = e.timeStamp;
+            } else {
+                onMouseUp(e, this);
+            }
+        });
+        
+        items.bind('dblclick', function(e) {
+            e.stopPropagation(); 
+            e.preventDefault();
+            doOpenFile(this);
+        })
+        
+        onFileSelect([]);
+    }
+    
+    function setupFileItem(li, item) {
+        var p = in_path ? getBaseName(item.p) : item.p;
+        var ext = getFileExt(p, item.c);
+        var cls = ' class="__any' + (ext ? ' __' + ext :'') + (item.r ? '' :' __prot') + '"';
+        li.innerHTML = '<a' + 
+                                (p.length > 22 ? ' title="' + item.p + '"' : '') + 
+                                ' tabindex="-1" ' + (item.s !== undefined ? 's="' + item.s + '" ' : '')
+                                + 'p="' + item.p + '"' + cls + '><div>&lrm;<span>' + p + '</span></div></a>';
+    }
+    
+    function hideAll(v) {
+        
+    }
+    
+    function check() {
+        if(selFiles.length == 1 && !isDir(selFiles[0])) {
+            openAcceptBtn.removeClass('disabled');
+        } else {
+            openAcceptBtn.addClass('disabled');
+        }
+    }
+    
+    function onFileSelect(items) {
+        selFiles = items;
+        doUpdateState(items);
+        check();
+    }
+
+    function sortNodesByName(items) {
+        return items.slice(0).sort(function(a,b) {
+            return a['p'].localeCompare(b['p'], undefined, {sensitivity: 'base'});
+        });
+    }
+            
+    function canoPath(path, prefix) {
+        if(path)
+        {
+        	if(path[path.length - 1] == '/')
+        	    path = path.substr(0, path.length - 1);
+        	return prefix + path;
+        }
+        return prefix;
+    }
+           
+    function getBaseName(name) {
+        var idx;
+        if((idx = name.lastIndexOf('/')) != -1) {
+            return name.substr(idx+1);
+        }
+        return name;
+    }
+    
+    function getFileExt(name, dir) {
+        var idx;
+        if(dir) {
+            return '_d';
+        }
+        if((idx = name.lastIndexOf('.')) != -1) {
+            return name.substr(idx + 1).toLowerCase();
+        }
+        return null;
+    }
+            
+    function isSelected(li) {
+        return selFiles.index ? selFiles.index(li) != -1 :selFiles.indexOf(li) != -1;
+    }
+    
+    function getPath(li) {
+        var a = li.children[0];
+        return a.getAttribute('p');
+    }
+    
+    function getName(li) {
+        var a = li.children[0];
+        return getBaseName(a.innerText);
+    }
+    
+    function isDir(li) {
+        var a = li.children[0];
+        return !a.hasAttribute('s');
+    }
+    
+    function getSize(li) {
+        var a = li.children[0];
+        if(!a.hasAttribute('s'))
+            return undefined;
+        return parseInt(a.getAttribute('s'))
+    }
+    
+	function fixFile(s) {
+        return encodeURI(s).replace(/%5B/g, '[').replace(/%5D/g, ']');
+    }
+           
+    function doOpenFile(li) {
+        var d = isDir(li)
+        var p = getPath(li);
+        if(d) {
+            path_load(p);
+        } else {
+            confirm(p);
+        }
+    }
+            
+    function formatSize(size) {
+        if(size < 1024)
+            return size + ' B';
+        else
+        if(size < 1024 * 1024)
+            return (size / 1024).toFixed(1) + ' KiB';
+        else
+        if(size < 1024 * 1024 * 1024)
+            return (size / (1024 * 1024)).toFixed(1) + ' MiB';
+        return (size / (1024 * 1024 * 1024)).toFixed(1) + ' GiB';
+    }
+            
+    function doUpdateState(items) {
+        var count = fileData.length;
+        var state = '';
+        
+        var focus = function() {
+            if(items.length != 0) {
+                items[items.length - 1].firstChild.focus();
+            }
+        }
+        
+        if(items.length == 0) {
+            state += polyglot.t('code.open_f', {smart_count:count});
+        } else
+        if(items.length == 1) {
+            var d = getSize(items[0]);
+            var n = getName(items[0]);
+            if(n.length > 20) {
+                n =  '...' + n.substr(n.length - 20);
+            }
+            sts[0].innerHTML = n + (d !== undefined ? ' (' + formatSize(d) + ')' : '');
+            focus();
+            return;
+        } else {
+            state += polyglot.t('code.open_s', {smart_count:items.length, count:count});
+        }
+        
+        focus();
+        sts[0].innerHTML = state;
+    }
+    
+    function state_set_load() {
+        sts[0].innerHTML = polyglot.t('main.load')  + '<div class="ui mini text active inline loader" style="margin-top: 18%;margin-left: 6px;"></div>'
+    } 
+    
+    probes_reset();
+    
+    $(document).one('cacheDestroy', function() {
+        $(document).off('probeChange', sub.probeChange);
+    });
+</script>
+<style>
+    .fileBox {
+        margin-top:10px !important;
+        padding: 0px !important;
+        border:1px solid #ddd;
+        border-radius:4px;
+    }
+            
+    .ov {   
+        overflow-y:hidden;
+        height:100%;
+        height:100%;
+        width:100%;
+    }
+    
+    .files {        
+        width: 197px;
+        height: 620px;
+        padding: 0;
+        margin: 0;
+        list-style-type:none;
+        -webkit-transform:rotate(-90deg) translateX(-200px);
+        -ms-transform:rotate(-90deg) translateX(-200px);
+        -webkit-transform:rotate(-90deg) translateX(-200px);
+        transform:rotate(-90deg) translateX(-200px);
+        -webkit-transform-origin:0 0;
+        -moz-transform-origin:0 0;
+        -ms-transform-origin:0 0;
+        -o-transform-origin:0 0;
+        transform-origin:0 0;
+    }
+    
+    .files li {        
+        width: 15px;
+        height: 220px;
+        float:right;
+        margin:5px;
+        -webkit-transform:rotate(90deg) translateY(-15px);
+        -ms-transform:rotate(90deg) translateY(-15px);
+        -webkit-transform:rotate(90deg) translateY(-15px);
+        transform:rotate(90deg) translateY(-15px);
+        -webkit-transform-origin:0 0;
+        -moz-transform-origin:0 0;
+        -ms-transform-origin:0 0;
+        -o-transform-origin:0 0;
+        transform-origin:0 0;
+    }
+    
+    .files li a {    
+        color: #000;
+        width: 220px;
+        height: 26px;
+        cursor: pointer;
+        display: inline-block;
+        line-height: 25px;
+    }   
+    
+    .files li a:hover { 
+        background:#3E93D8;
+        color:#FFF;
+    }
+    
+    .files li div {     
+        width: 199px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+        display: inline-block;
+        vertical-align: text-bottom;
+    }
+    
+    .files .sel a { 
+        background:#54a3e1;
+        color:#FFF;
+    }
+    
+    #theStatus {
+        float:right;   
+        height:1.2rem;
+        line-height: 2.2rem;
+    }
+    
+    .__any:before {
+        content:url('./img/page_white.png');
+        width:16px;
+        height:16px;
+        margin-right:5px;
+        vertical-align: baseline;
+    }
+    
+    .___d:before {
+        content:url('./img/dir.png');
+    }
+    
+
+    .__prot:before {
+        background:rgb(222, 170, 170);
+        background:rgba(222, 170, 170, 0.35);
+        border-radius:2px;
+    }
+    
+    .__php:before {
+        content:url('./img/page_white_php.png');
+    }
+    
+    .__pdf:before {
+        content:url('./img/page_white_acrobat.png');
+    }
+    
+    .ibtn {
+        float:right;
+    }
+    
+    .iclr {    
+        cursor: pointer !important;
+        pointer-events: initial !important;
+    }
+</style>
+<div sub="code_file_open" class="ui modal fileOpen" role="dialog" aria-modal="true"> 
+    <div class="ui header blue label">
+    {{l 'code.open'}}
+    </div>
+    <div class="content" style="padding-bottom:0;position:relative;">
+        <script always>
+            if(sub.lb) {
+                sub.lb.destroy();
+            }
+    	    sub.lb = new FloatLabels('.ui.modal.fileOpen .lower', {'style':1, customEvent:autofill});
+        </script>
+        <div class="description">
+            <p>{{l 'code.open_d'}}</p>
+            <div style="float:left;width:calc(70% - 10px);margin-right:10px;padding: 0 20px 20px 0;border-right: 1px solid #d9dadb;">
+                <div class="lower">
+                    <div style="width: calc(100% - 3 * 50px);display:inline-block;">
+                        <div class="ui input icon fl-wrap fullw">
+                            <i class="icon"></i>
+                            <label for="openPath">{{l 'code.open_p'}}</label>
+                            <input id="openPath" name="openPath" type="text">
+                        </div>
+                    </div>
+                    <button id="openReloadBtn" class="ui blue icon button ibtn">
+                        <i class="caret redo icon"></i>
+                    </button>
+                    <button id="openUpBtn" class="ui blue icon button ibtn">
+                        <i class="caret up icon"></i>
+                    </button>
+                    <button id="openPathBtn" class="ui blue icon button ibtn">
+                        <i class="caret right icon"></i>
+                    </button>
+                </div>
+                <div class="ui segment fileBox">
+                    <div class="ov">
+                        <ul id="theFiles" class="files" style="float:clear;">
+                        </ul>
+                    </div>
+                    <div id="theStatus">
+                    </div>
+                </div>
+            </div>
+            <div style="float:right;width:30%;" class="fl-form fl-style-1">
+                <div class="fullw fl-wrap fl-wrap-input upper">
+                    <label class="fl-label" style="z-index: 13;" for="openDef">{{l 'code.open_sp'}}</label>
+                    <div class="ui search selection dropdown activeselect fullw" style="margin-bottom:10px;">
+                        <input type="hidden" name="openDef" id="openDef" value="" autofocus="true">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">{{l 'code.open_sp'}}</div>
+                        <div class="menu" style="overflow-y:auto;max-height:15rem;">
+                        </div>
+                    </div>
+                </div>
+                <div class="ui checkbox">
+                    <input type="checkbox" id="openClear" name="openClear">
+                    <label>{{l 'code.open_c'}}</label>
+                </div>
+            </div>
+            <div class="doclear"></div>
+        </div>
+    </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue right accept labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

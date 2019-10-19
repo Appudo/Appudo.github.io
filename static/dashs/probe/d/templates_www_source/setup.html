@@ -1,0 +1,353 @@
+<style path="setup">
+    .setup {
+        padding:20px;
+        background:#FFF;
+        border:1px solid #f3f3f3;
+        box-shadow:0px 2px 2px rgba(0, 0, 0, 0.3);
+        display:inline-block;
+    }
+    .window {
+        vertical-align:top;
+        text-align:left;
+        margin-left:20px;
+        width:28em;
+    }
+    .window span {
+        float:right;       
+        display:inline-block;
+        width:4em;
+    }
+    .txt {
+        margin-top:15px;
+    }
+
+    .emodal {
+        padding-top:10em;
+        display:none;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        position:fixed;
+        z-index:99;
+        background-color:rgb(0,0,0);
+        background-color:rgba(0,0,0,0.4);
+        overflow:auto;
+    }
+    
+    .econtent {
+        margin:auto;
+        padding:2em;
+        width:80%;
+        border:1px solid #777;
+        background-color:#fdfdfd;
+    }
+    
+    .econtent > h2 {
+        float:left;    
+    }
+    
+    .econtent > p {
+        word-break: keep-all;
+        white-space: pre-wrap;
+    }
+    
+    .cbtn {
+        font-size:26px;
+        font-weight:bold;
+        color:#aaaaaa;
+        float:right;
+    }
+    
+    .cbtn:hover,
+    .cbtn:focus {
+        color:#000;
+        cursor:pointer;
+        text-decoration:none;
+    }
+</style>
+<script path="setup">
+    var p = search_params();
+    var b = document.getElementById('req');
+    var p = document.getElementById('checkVal');
+    var m = document.getElementById('errModal');
+    var eMsg = m.getElementsByTagName('p')[0];
+    var cbtn = m.getElementsByTagName('span')[0];
+    var h = m.getElementsByTagName('h2')[0];
+    var items = p.getElementsByTagName('span');
+    var count;
+    var err;
+
+    cbtn.onclick = function() {
+      m.style.display = "none";
+    }
+
+    window.onclick = function(e) {
+        if (e.target == m) {
+            m.style.display = "none";
+        }
+    }
+    
+    var check = function(idx, items) {
+        _post('/sys/check/', {"data":JSON.stringify({"cmd":0, "a":idx})}, function(d, e, s) {
+            if(s == 200) {
+                items[idx-1].innerHTML = '&#9989;';
+                items[idx-1].style.color = '#00EE00';
+            } else {
+                err++;
+                items[idx-1].innerHTML = '&#10007;';
+                items[idx-1].style.color = '#EE0000';
+                items[idx-1].style.cursor = 'pointer';
+                if(s == 404) {
+                    d = polyglot.t('setup.coff');
+                }
+                items[idx-1].onclick = function() {
+                    h.innerText = items[idx-1].previousSibling.innerText.substring(2);
+                    eMsg.innerText = d;
+                    m.style.display = "block";
+                }
+                
+            }
+            if(--count == 0) {
+                var i = 0;
+                var n = '';
+                var arr = b.className.split(' ');
+                for(i = 0; i < arr.length; i++) {
+                    if(arr[i].localeCompare('loading') != 0) {
+                        n += arr[i] + ' ';
+                    }
+                }
+                b.className = n;
+                b.disabled = false;
+                if(err == 0) {
+                    _post('/sys/check/', {"data":JSON.stringify({"cmd":1})}, function(d, err, s) {
+                        
+                    });
+                }
+            }
+        }, {responseType:'text'});
+    }
+    
+    var rbtn = function() {
+        for(var i = 0; i < items.length; i++) {
+            items[i].innerHTML = '?'
+            items[i].style.color = '#000';
+            items[i].style.cursor = 'default';
+            items[i].onclick = null;
+        }
+    }
+    
+    rbtn();
+    
+    this.validate = function() {
+        b.disabled = true;
+        count = 6;
+        err = 0;
+        var arr = b.className.split(' ');
+        if(arr.indexOf('loading') == -1) {
+            b.className += ' loading';
+        }
+        rbtn();
+        check(1, items);
+        check(2, items);
+        check(3, items);
+        check(4, items);
+        check(5, items);
+        check(6, items);
+    }
+    
+    this.mail = function() {
+        _post('/sys/init/', {"data":JSON.stringify({"cmd":1})}, function(d) {
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            if(r.r == 0) {
+                transition('login/login');
+            } else {
+                /* TODO */
+                if(r.a != -1) {
+                    login_error(0);
+                } else {
+                    login_error(1);
+                }
+            }
+        }, {responseType:'json'});
+    }
+    
+    this.login_init = function(ev, el_frm) {
+        ev.preventDefault();
+        if(!form_set_load(el_frm))
+            return;
+        login_error(-1, true);
+        
+        var frm = new FormData();
+        
+        if(form_get(el_frm, 'password') !== form_get(el_frm, 'rpassword')) {
+            login_error(2, false, el_frm);
+            return;
+        }
+        
+        var nm = form_get(el_frm, 'name');
+        var pwd = form_get(el_frm, 'password');
+        var data = {a:form_get(el_frm, 'mail')};
+        var add_exmpl = form_get(el_frm, 'add_exmpl');
+        frm.append('data', '{"cmd":0}');
+        frm.append('ext_data', JSON.stringify(data));
+        frm.append('name', nm);
+        frm.append('password', pwd);
+        _post('/sys/init/', frm, function(d) {
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            var after = function() {
+                el_frm.reset();
+                form_set_ready(el_frm);
+            }
+            var ok = function() {
+                after();
+                transition('login/login');
+            }
+            if(r.r == 0) {
+                if(add_exmpl) {
+                    frm = new FormData();
+                    frm.append('data', '{"cmd":1}');
+                    frm.append('ext_data', JSON.stringify('' + 0));
+                    frm.append('name', nm);
+                    frm.append('password', pwd);
+                    _post('/sys/server/', frm, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        var lo = r.r == 0;
+                        if(lo) {
+                            frm = new FormData();
+                            frm.append('data', '{"cmd":6}');
+                    		frm.append('parent', '');
+                    		frm.append('name', 'file');
+	                        frm.append('file', new Blob([''], {type : 'text/html'}));
+                            _post('/sys/upload/', frm, function(d) {
+                                var r = d.constructor === String ? JSON.parse(d) : d;
+                                if(r.r == 0) {
+                                    ok();
+                                } else {
+                                    // TODO error
+                                    ok();
+                                }
+                            }, {responseType:'json'});
+                        } else {
+                            // TODO error
+                            ok();
+                        }
+                    }, {responseType:'json'});
+                } else {
+                    ok();
+                }
+            } else {
+                after();
+                /* TODO */
+                if(r.a != -1) {
+                    login_error(0);
+                } else {
+                    login_error(1);
+                }
+            }
+        }, {responseType:'json'});
+    }
+    if(p.mail) {
+        this.mail();
+    }
+</script>
+<div path="setup" template attach="modal">
+    <div id="errModal" class="emodal">
+        <div class="econtent">
+            <h2></h2>
+            <span class="cbtn">&times;</span>
+            <div style="clear:both;"></div>
+            <p></p>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;"> 
+    <div style="display:inline-block;vertical-align:middle;"> 
+        <div style="display:flex;">
+            <div class="setup form-base">
+                <script>
+                    var logo = logo_get();
+                    var a = document.getElementsByClassName('l-logo')[0];
+                    var b = document.getElementsByClassName('login-title')[0];
+                    a.parentNode.replaceChild(logo[0], a);
+                    b.parentNode.replaceChild(logo[1], b);
+                </script>
+                <div class="l-logo"></div>
+                <div class="login-title"></div>
+                <div>
+                    <div class="ui small header form-row">{{l 'login.setup'}}</div>
+                    <div id="err">
+                        <div class="ui negative message form-row hide">
+                            <div class="header"></div>
+                            <p></p>
+                        </div>
+                    </div>
+                    <script always>
+                        var tr = this.path;
+                        if(this.lb) {
+                            this.lb.destroy();
+                        }
+                		var lb = this.lb = new FloatLabels('form', {'style':1, customEvent:autofill});
+                        tr._langAfter = function() {
+                            lb.rebuild();
+                        }
+                    </script>
+                    <form action="#" method="post" class="ui large form" page_submit="path.login_init(event, this);">
+                        <div class="form-row">
+                            <label for="name">{{l 'login.uname'}}</label>
+                            <input id="name" name="name" type="text" class="field" required="required" autocomplete="new-username">
+                        </div>
+                        <div class="form-row">
+                            <label for="mail">{{l 'login.smail'}}</label>
+                            <input id="mail" name="mail" type="email" class="field" required="required" autocomplete="new-mail">
+                        </div>
+                        <div class="form-row">
+                            <label for="password">{{l 'login.upwd'}}</label>
+                            <input id="password" name="password" type="password" class="field" required="required" autocomplete="new-password">
+                        </div>
+                        <div class="form-row">
+                            <label for="rpassword">{{l 'login.rpwd'}}</label>
+                            <input id="rpassword" name="rpassword" type="password" class="field" required="required" autocomplete="new-password">
+                        </div>
+                        <div class="form-row">
+                            <div class="ui checkbox" style="width:100%;text-align:left;">
+                                <input id="add_exmpl" name="add_exmpl" type="checkbox" tabindex="0" class="hidden" checked>
+                                <label for="add_exmpl">{{l 'main.addex'}}</label>
+                            </div>
+                        </div>
+                        <button id="submit" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'main.save'}}</button>     
+                    </form>
+                </div>
+            </div>
+            <div class="setup window form-base ui large form">
+                <div style="height: calc(100% - 48px);">
+                    <div class="ui small header form-row" style="text-align:center;">{{l 'setup.req'}}</div>
+                    <div id="checkVal" style="margin-top:40px;">
+                        <div class="form-row">
+                            <label>- {{l 'setup.make'}}:</label><span>?</span>
+                        </div>
+                        <div class="form-row">
+                            <label>- {{l 'setup.bison'}}:</label><span>?</span>
+                        </div>
+                        <div class="form-row">
+                            <label>- {{l 'setup.flex'}}:</label><span>?</span>
+                        </div>
+                        <div class="form-row">
+                            <label>- {{l 'setup.bc'}}:</label><span>?</span>
+                        </div>
+                        <div class="form-row">
+                            <label>- {{l 'setup.compc'}}:</label><span>?</span>
+                        </div>
+                        <div class="form-row">
+                            <label>- {{l 'setup.compcpp'}}:</label><span>?</span>
+                        </div>
+                    </div>
+                </div>
+                <button page_click="path.validate();event.preventDefault();" id="req" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'setup.check'}}</button> 
+            </div>
+        </div>
+    </div>
+    <div class="text-center txt" style="display: block; opacity: 1;">
+        <a page_click="path.mail();event.preventDefault();" href="#">{{l 'setup.mail'}}</a>
+    </div>
+</div>

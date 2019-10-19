@@ -1,0 +1,1967 @@
+<script sub="module">
+    var _this = this;
+    var sel = null;
+    var sel_inst = null;
+    var sel_data = null;
+    var sel_name;
+    var moduleCache = module_cache({});
+    var deferEdit = defer_init(1);
+    var Handlebars;
+    var minify;
+    var cssmin;
+    var do_minify = true;
+    var mini_opt = {
+                  parse: {
+                    bare_returns     : false,
+                    ecma             : 8,
+                    expression       : false,
+                    filename         : null,
+                    html5_comments   : true,
+                    shebang          : true,
+                    strict           : false,
+                    toplevel         : null
+                  },
+                  compress: {
+                    arrows           : true,
+                    booleans         : true,
+                    collapse_vars    : true,
+                    comparisons      : true,
+                    computed_props   : true,
+                    conditionals     : true,
+                    dead_code        : true,
+                    drop_console     : false,
+                    drop_debugger    : true,
+                    ecma             : 5,
+                    evaluate         : true,
+                    expression       : false,
+                    global_defs      : {},
+                    hoist_funs       : false,
+                    hoist_props      : true,
+                    hoist_vars       : false,
+                    ie8              : false,
+                    if_return        : true,
+                    inline           : true,
+                    join_vars        : true,
+                    keep_classnames  : false,
+                    keep_fargs       : true,
+                    keep_fnames      : false,
+                    keep_infinity    : false,
+                    loops            : true,
+                    negate_iife      : true,
+                    passes           : 1,
+                    properties       : true,
+                    pure_getters     : "strict",
+                    pure_funcs       : null,
+                    reduce_funcs     : true,
+                    reduce_vars      : true,
+                    sequences        : true,
+                    side_effects     : true,
+                    switches         : true,
+                    top_retain       : null,
+                    toplevel         : false,
+                    typeofs          : true,
+                    unsafe           : false,
+                    unsafe_arrows    : false,
+                    unsafe_comps     : false,
+                    unsafe_Function  : false,
+                    unsafe_math      : false,
+                    unsafe_methods   : false,
+                    unsafe_proto     : false,
+                    unsafe_regexp    : false,
+                    unsafe_undefined : false,
+                    unused           : true,
+                    warnings         : false
+                  },
+                  mangle: {
+                    eval             : false,
+                    ie8              : false,
+                    keep_classnames  : false,
+                    keep_fnames      : false,
+                    properties       : false,
+                    reserved         : [],
+                    safari10         : false,
+                    toplevel         : false
+                  },
+                  output: {
+                    ascii_only       : false,
+                    beautify         : false,
+                    bracketize       : false,
+                    comments         : /@license|@preserve|^!/,
+                    ecma             : 5,
+                    ie8              : false,
+                    indent_level     : 4,
+                    indent_start     : 0,
+                    inline_script    : true,
+                    keep_quoted_props: false,
+                    max_line_len     : false,
+                    preamble         : null,
+                    preserve_line    : false,
+                    quote_keys       : false,
+                    quote_style      : 0,
+                    safari10         : false,
+                    semicolons       : true,
+                    shebang          : true,
+                    source_map       : null,
+                    webkit           : false,
+                    width            : 80,
+                    wrap_iife        : false
+                  },
+                  wrap: false
+                };
+    
+    (function(){
+        raw_get('js/module_trans.js', {}, function(d, err) {
+            do_visible_path(sub, function() {
+                if(err) {
+                    
+                } else {
+                    domy.off(function() {
+                        module = exports = {};
+                        var head = document.getElementsByTagName("head")[0];
+                        var el = document.createElement('script');
+                        el.textContent = d;
+                        head.insertBefore(el, head.firstChild);
+                        head.removeChild(el);
+                        Handlebars = exports.exports;
+                        minify = exports.minify;
+                        cssmin = exports.cssmin;
+                        deferEdit.ready();
+                    });
+                }
+            });
+        });
+    })();
+    
+    (function(){
+        var r = /###.*?###/gm;
+        var load_dom = function(intxt, after) {
+            var wait = [];
+            
+            var fixTxt = function(tin) {
+                var pos = 0;
+                var out = "";
+                if(wait.length == 0) {
+                    return tin
+                }
+                for(var i = 0; i < wait.length; i++) {
+                    var w = wait[i];
+                    out += tin.slice(pos, w.index);
+                    out += w.data;
+                    pos = w.index + w.len + 6;
+                }
+                
+                out += tin.slice(pos);
+                return out;
+            }
+            
+            var dowait = function(idx, after) {
+                if(idx == wait.length) {
+                    after();
+                } else {
+                    wait[idx].w.then(function(data) {
+                        load_dom(data, function(r) {
+                            wait[idx].data = r;
+                            dowait(idx + 1, after);
+                        });
+                    });
+                }
+            }
+            
+            while((ma = r.exec(intxt)) != null) {
+                try {
+                    var t = ma[0].slice(3, -3);
+                    var d = JSON.parse(t);
+                    wait.push({index:ma.index,len:t.length,w:$.Deferred(function(dr) {
+                        raw_get(d.file, {}, function(v, err, status) {
+                            dr.resolve(v, err, status);
+                        });
+                    }).promise()});
+                } catch(e) {
+                }
+            }
+            
+            dowait(0, function() {
+                after(fixTxt(intxt));
+            });
+        };
+        
+        var jsonEscape = function(txt, start, end) {
+            var l = txt.length;
+            var i = start;
+            var o = "";
+            if(start != 0)
+                o = txt.substr(0, start);
+            for(;i < end; i++)
+            {
+                var c = txt.charCodeAt(i);
+                switch(c)
+                {
+                    case 34:
+                            o += '\\"';
+                    break;
+                    case 92:
+                            o += '\\\\';
+                    break;
+                    case 47:
+                            o += '\/';
+                    break;
+                    case 8:
+                            o += '\\b';
+                    break;
+                    case 12:
+                            o += '\\f';
+                    break;
+                    case 10:
+                            o += '\\n';
+                    break;
+                    case 13:
+                            o += '\\r';
+                    break;
+                    case 9:
+                            o += '\\t';
+                    break;
+                    default:
+                            o += String.fromCharCode(c);
+                    break;
+                }
+            }
+            if(end != l)
+                o += txt.substr(end, l - end);
+            return o;
+        };
+        
+        var patchNode = function(ctx, n) {
+            var children = n.childNodes || [];
+            var body = n.nodeName == 'BODY';
+            for(var i =0, l = children.length; i < l; i++) {
+                var c = children[i];
+                if(c) {
+                    if(c.nodeType == 3 && 
+                       !/\S/.test(c.nodeValue)) {
+                        n.replaceChild(document.createTextNode(''), c);
+                    } else {
+                        if(c.nodeName == 'STYLE') {
+                            if(do_minify) {
+                                c.textContent = cssmin(c.textContent);
+                            }
+                            
+                            var r = c.sheet.cssRules;
+                            if(r.length) {
+                                var m = '[';
+                                for(var j = 0; j < r.length; j++) {
+                                    var txt = r[j].cssText;
+                                    var ri = txt.indexOf('{');
+                                    var rl = txt.substr(0, ri).split(',');
+                                    var rlen = rl.length;
+                                    if(rlen != 1) {
+                                        var out = ''
+                                        for(var h = 0; h < rlen - 1; h++) {
+                                            out += '"' + jsonEscape(rl[h], 0, rl[h].length) + ',",';
+                                        }
+                                        m += out;
+                                        txt = rl[rlen - 1] + txt.substr(ri);
+                                    }
+                                    txt = jsonEscape(txt, 0, txt.length);
+                                    m += '"' + txt + '",';
+                                }
+                                m = m.slice(0, -1);
+                                m += ']';
+                                ctx.tmpl_data = 'addM(0,' + m + ');' + ctx.tmpl_data;
+                            }
+                            c.parentNode.removeChild(c);
+                            i--;
+                            l--;
+                        } 
+                        else if(c.nodeName == 'SCRIPT') {
+                            if(c.hasAttribute && c.hasAttribute('lang')) {
+                                try {
+                                    var txt = JSON.stringify(JSON.parse(c.textContent));
+                                    ctx.lang_data = 'addML("' + c.getAttribute('lang')  + '",function() { return ' + txt + ' });' + ctx.lang_data;
+                                } catch(e) {
+                                    console.log('lang:', e);
+                                }
+                            } else {
+                                if(do_minify) {
+                                    var m = minify(c.textContent, mini_opt);
+                                    if(!m.error) {
+                                        c.textContent = m.code;
+                                    }
+                                }
+                                ctx.tmpl_data = 'addM(1,function(ctx, lib) { ' + c.textContent + ' });' + ctx.tmpl_data;
+                            }
+                            c.parentNode.removeChild(c);
+                            i--;
+                            l--;
+                        } else {
+                            patchNode(ctx, c);
+                        
+                            if(c.hasAttribute && c.hasAttribute('module_submit')) {
+                                var submit = c.getAttribute('module_submit');
+                                c.setAttribute('onsubmit', "var t = this;(function(){var ctx=getMCtx(t),lib=ctx.lib,f=function(event) {" + submit + "};f.call(t, event)})()");
+                                c.removeAttribute('module_submit');
+                            }
+                            
+                            if(c.hasAttribute && c.hasAttribute('module_click')) {
+                                var submit = c.getAttribute('module_click');
+                                c.setAttribute('onclick', "var t = this;(function(){var ctx=getMCtx(t),lib=ctx.lib,f=function(event) {" + submit + "};f.call(t, event)})()");
+                                c.removeAttribute('module_click');
+                            }
+                        
+                            if(body) {
+                                var txt = c.outerHTML;
+                                txt = Handlebars.precompile(txt || '');
+                                ctx.tmpl_data = 'addM(2,' + txt + ');' + ctx.tmpl_data;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        var getDoc = function(iframe) {
+            var doc;
+            if(iframe.contentDocument)
+                    doc = iframe.contentDocument;
+            else
+            if(iframe.contentWindow)
+                    doc = iframe.contentWindow.document;
+            return doc;
+        };
+        
+        sub.genTmpl = function(intxt, result) {
+            var ifrm = $('<iframe style="display:hidden;">');
+            var node = ifrm[0];
+            var ctx = {tmpl_data:'',lang_data:''};
+            load_dom(intxt, function(r) {
+                try {
+                    node.srcdoc = r;
+                    node.onload = function() {
+                        var doc = getDoc(node);
+                        patchNode(ctx, doc);
+                        node.parentNode.removeChild(node);
+                        result(ctx.lang_data + ctx.tmpl_data);
+                    }
+                    ifrm.appendTo("body");
+                } catch(e) {
+                    result('');
+                    console.log(e);
+                }
+            });
+        }
+    })();
+    
+    this.moduleAdd = function() {
+        $('.ui.modal.moduleAdd').modal('show');
+        ctx['module_add'].onOpen(function(d) {
+            sub.onAddModule(d);
+            change.module_edit(d.id, d.n, 0);
+        });
+    };
+    
+    this.moduleUpld = function() {
+        $('.ui.modal.moduleUpld').modal('show');
+        ctx['module_upload'].onOpen(function(d) {
+            sub.onAddModule(d);
+            change.module_edit(d.id, d.n, 0);
+        });
+    };
+    
+    this.moduleInst = function() {
+        $('.ui.modal.moduleInst').modal('show');
+        ctx['module_install'].onOpen(function() {
+            
+        });
+    };
+    
+    var srcLabel = $('#moduleSrcLabel')[0];
+    var setupLabel = $('#moduleLabel')[0];
+    var cfgLabel = $('#moduleCfgLabel')[0];
+    var mFilter = search_filter('#moduleFilter', '#left'); 
+    var iFilter = search_filter('#moduleIFilter', '#center_middle');   
+    var uFilter = search_filter('#usesFilter', '#uses');
+    
+    var inst = {};
+    var lockInst = lock_post_init(inst);
+    
+    $('#topbar .ui.edit.dropdown').dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'hide'
+    });  
+    
+    var lock = lock_post_init(sub);
+    var psel = sel_ready_init();
+    (function(){
+        var clr = $('#mlogClear'); 
+        var txt = $('#mlogTxt'); 
+        clr.on('click', function() {
+            txt[0].textContent = '';
+        });
+        sub.onCompileError = function(e, id, kversion, machine, data) {
+            var t = txt[0].textContent += data.e;
+        }
+        $(document).on('onCompileError', sub.onCompileError);
+    })();
+    
+    (function(){
+        var bn;
+        var c = $('#right .ui.modulesel.dropdown');
+        var b = $('#right .ui.modulebtn.dropdown');
+        var r = $('#right');
+        var idx = -1;
+        
+        c.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           onChange: function(value, text, $choice) {
+                idx = $(c[0].firstChild).children().index($choice[0]);
+                b.children().first().text(polyglot.t('module.view_p') + text);
+                bn = {name:'', src:text.toLowerCase() + (idx < 3 ? '.html' : '')};
+                sub.onChangeSrc();
+           }
+        });
+        
+        sub.getIdx = function() {
+            return idx;
+        }
+        
+        sub.toSendIdx = function(idx) {
+            return idx > 2 ? idx + 61 : idx;
+        }
+        
+        sub.getSendSel = function() {
+            return idx > 2 ? sel_inst : sel;
+        }
+        
+        sub.onChangeSrc = function() {
+            if(sel) {
+                bn.name = sel_name;
+                srcLabel.innerText = polyglot.t('module.sedit', bn);
+                
+                do_visible_split(r, function() {
+                    psel.on_ready(function() {
+                        var oidx = idx;
+                        var cKey = sel;
+                        var d = JSON.stringify({a:sub.getSendSel(),b:sub.toSendIdx(idx)});
+                        if(oidx > 2) {
+                            if(sel_inst == null) {
+                                sub.setTextError(false, 'module.noinst');
+                                return;
+                            }
+                            cKey = sel + '_' + sel_inst;
+                        }
+                        sub.beginLoad();
+                        if(sel_data && (sel_data.p == -1 || hasPerm('MODULE_SOURCE_EDIT', sel_data.p, sel_data.u))) {
+                            b.addClass('disabled');
+                            b.addClass('nomouse');
+                            moduleCache.get(moduleCache.genKey(cKey, oidx), function(f) {
+                                lock.raw_post('/sys/server/', {data:JSON.stringify({cmd:70}), ext_data:d}, f);
+                            }).then(function(d, err, status) {
+                                b.removeClass('disabled');
+                                b.removeClass('nomouse');
+                                do_visible_path(sub, function() {
+                                    if(err) {
+                                        if(oidx > 2 && status == 404) {
+                                            sub.setText("");
+                                        } else {
+                                            sub.setTextError();
+                                        }
+                                    } else {
+                                        sub.setText(d);
+                                    }
+                                });
+                            });
+                        } else {
+                            sub.setTextError();
+                        }
+                    });
+                });
+            } else {
+                clear_visible_split(r);
+                bn.name = polyglot.t('main.nofile');
+                srcLabel.innerText = polyglot.t('module.sedit', bn);
+            }
+        }
+    
+        _this.moduleSel = function() {
+            c.css('margin-left', b.position().left + 'px');
+            c.css('width', b.outerWidth(true) + 'px');
+            c.click();
+        };
+        
+        c.dropdown('set selected', polyglot.t('module.view_r'));
+    })();
+    
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { 
+        switch(i) {
+            case 2:
+                return sub.pane_v(1)
+            case 6:
+                return sub.pane_v(2)
+            default:
+                return sub.pane(i > 2 ? i - 1 : i);
+        }
+    });
+    
+    (function(){
+        $('#right').css('display', 'none');
+        $('#uses').css('display', 'none');
+        $('#cfg').css('display', 'none');
+        $('#center_bottom').css('display', 'none');
+        
+        var _ctx = {};
+        var _sizes = [15, 20, 30, 20, 15];
+        var _fill =[5, 0, 0, 0, 5];
+        var _panes = ['#left', '#cfg', '#center','#right', '#uses'];
+        
+        var _ctx_v = {dir:'vertical'};
+        var _sizes_v = [40, 40, 20];
+        var _fill_v =[30, 0, 0];
+        var _panes_v = ['#center_top', '#center_middle', '#center_bottom'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        sub.pane_v = function(i) {
+            return _panes_v[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, _sizes, _ctx, ['#left', '#uses'], _fill);
+            doSplit(_panes_v, _sizes_v, _ctx_v, undefined, _fill_v);
+        }
+        
+        sub.split();
+        
+    })();
+    
+    (function() {
+        var editor = ace.edit('editor');
+        var cedit = $(editor.container);
+        var loader = loader_init(cedit);
+        var serr = error_init(cedit, polyglot.t('main.eh_load'), polyglot.t('module.e_load'));
+        
+        hide_init(cedit);
+        
+        editor.setTheme('ace/theme/textmate');
+        editor.session.setMode('ace/mode/c_cpp');
+        var err = $('.moudleSrcError');
+        
+        var differ = Differ(editor);
+        
+        var session = editor.getSession();
+        session.setValue('');
+        
+        
+        differ.onFocus = function(){};
+        differ.onBlur = function(){};
+        differ.textChanged = function(c){
+            var t = srcLabel.innerText;
+            if(t[0] == '*') {
+                t = t.substr(1);
+            }
+            srcLabel.innerText = (c ? '*' : '' ) + t;
+        };
+        differ.fullUndo = function(){
+            
+        };
+        differ.textSaved = function(d){
+		    var _this = this;
+            var fd = new FormData();
+            var oidx = sub.getIdx();
+			var blob = new Blob([d.r.getResult()], { type: 'application/octet-stream'});
+			var data = {cmd:3, id:sel, x:oidx};
+			var sn = sel_name;
+			var cKey = data.id;
+			var iid = sel_inst;
+			if(oidx > 2) {
+			    data.x -= 3;
+			    data.y = sel_inst;
+			    data.cmd += 1;
+                cKey = sel + '_' + sel_inst;
+                blob = new Blob([session.getValue()], {type:'text/plain'});
+			}
+			fd.append('data', JSON.stringify(data));
+			fd.append('parent', '');
+			fd.append('name', 'file');
+		    fd.append('file', blob);
+            loader.show();
+            // TODO transform html to template and save it too
+            lock.post('/sys/upload/', fd, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                loader.hide();
+                if(r.r == 0) {
+                    var after = function(err) {
+                        if(!err) {
+                            var v = session.getValue();
+                            change.module_edit(cKey, sn, 2);
+                            moduleCache.update(moduleCache.genKey(cKey, data.x), v).then(function() {
+                                $.event.trigger({ type: "sourceChange"}, [data.id, data.x, v]);
+                            });
+                            _this.finishSave();
+                        } else {
+                            _this.abortSave();
+                            serr.show();
+                        }
+                    }
+                    if(data.cmd == 3 && data.x < 3) {
+                        var v = session.getValue();
+                        deferEdit.then(function(){
+                            sub.genTmpl(v, function(m) {
+                                fd = new FormData();
+			                    blob = new Blob([m], { type: 'application/octet-stream'});
+                    			fd.append('data', JSON.stringify({cmd:3, id:data.id, x:oidx + 3}));
+                    			fd.append('parent', '');
+                    			fd.append('name', 'file');
+                    		    fd.append('file', blob);
+                                lock.post('/sys/upload/', fd, function(d) {
+                                    var r = d.constructor === String ? JSON.parse(d) : d;
+                                    loader.hide();
+                                    if(r.r == 0) {
+                                        moduleCache.update(moduleCache.genKey(cKey, oidx + 3), m).then(function() {
+                                            $.event.trigger({ type: "tmplChange"}, [data.id, iid, data.x, m]);
+                                        });
+                                    }
+                                    after(r.r != 0);
+                                });
+                            });
+                        });
+                    } else {
+                        after();
+                    }
+                } else {
+                    _this.abortSave();
+                    serr.show();
+                }
+            });
+        };
+        
+        _this.moduleSave = function() {
+            differ.save(); 
+        };
+        
+        sub.beginLoad = function() {
+            cedit.show();
+            editor.setReadOnly(true);
+            loader.show();
+            serr.hide();
+        };
+        
+        sub.setTextError = function(r, e) {
+            serr.hide();
+            cedit.hide();
+            e = !e ? (r ? polyglot.t('main.nofile') : polyglot.t('main.lerr')) : polyglot.t(e);
+            err.text(e);
+        };
+        
+        sub.setText = function(v) {
+            serr.hide();
+            cedit.show();
+            session.setValue(v);
+            editor.setReadOnly(false);
+            editor.session.setScrollTop(0);
+            loader.hide();
+        };
+    })();
+    
+    (function() {
+        var c = $('#center');
+        var s = $('#center_top .grid_c');
+        var e = $('#center_top .grid_e');
+        var ct = $('#center_top .content');
+        var loader = loader_init(s);
+        var serr = error_init(s, polyglot.t('main.eh_load'), polyglot.t('module.e_load'));
+        var k = null;
+        
+        hide_init(s);
+        var _cSetup = null;
+        
+        sub.tmplChange = function(e, id, iid, x, v) {
+            if(k === id && x == 0) {
+                var key;
+                if(_cSetup != null) {
+                    key = moduleCache.genKey(_cSetup, 3);
+                    moduleCache.remove(key);
+                    moduleCache.unload(key);
+                    _cSetup = null;
+                }
+                var d = JSON.stringify({a:id,b:3});
+                key = moduleCache.genKey(id, 3);
+                moduleCache.get(key, function(f) {
+                    loader.show();
+                    lock.raw_post('/sys/server/', {data:JSON.stringify({cmd:70}), ext_data:d}, f);
+                }).then(function(d, err) {
+                    loader.hide();
+                    do_visible_path(sub, function() {
+                        if(err) {
+                            serr.show();
+                        } else {
+                            _cSetup = id;
+                            moduleCache.load(key, d, ct, {prefix:'.moduleICtx ', ty:0, mid:id, iid:iid});
+                        }
+                    });
+                });
+            }
+        };
+        
+        $(document).on('tmplChange', sub.tmplChange);
+        
+        sub.getSetup = function(id, inst_id) {
+            k = id;
+            if(id !== null) {
+                serr.hide();
+                s.show();
+                e.text(polyglot.t('module.noinst'));
+                do_visible_split(c, function() {
+                    psel.on_ready(function() {
+                        var key;
+                        if(_cSetup != null) {
+                            key = moduleCache.genKey(_cSetup, 3);
+                            moduleCache.remove(key);
+                            moduleCache.unload(key);
+                            _cSetup = null;
+                        }
+                        var d = JSON.stringify({a:id,b:3});
+                        key = moduleCache.genKey(id, 3);
+                        if(sel_data && (sel_data.p == -1 || hasPerm('MODULE_SETUP', sel_data.p, sel_data.u))) {
+                            moduleCache.get(key, function(f) {
+                                loader.show();
+                                lock.raw_post('/sys/server/', {data:JSON.stringify({cmd:70}), ext_data:d}, f);
+                            }).then(function(d, err) {
+                                loader.hide();
+                                do_visible_path(sub, function() {
+                                    if(err) {
+                                        serr.show();
+                                    } else {
+                                        _cSetup = id;
+                                        moduleCache.load(key, d, ct, {prefix:'.moduleICtx ', ty:0, mid:id, iid:inst_id});
+                                    }
+                                });
+                            });
+                        } else {
+                            s.hide();
+                            e.text(polyglot.t('main.lerr'));
+                        }
+                    });
+                });
+            } else {
+                if(_cSetup != null) {
+                    key = moduleCache.genKey(_cSetup, 3);
+                    moduleCache.remove(key);
+                    moduleCache.unload(key);
+                    _cSetup = null;
+                }
+                s.hide();
+            }
+        }
+    })();
+        
+    (function() {
+        var cf = $('#cfg');
+        var c = $('#cfg .grid_c');
+        var s = $('#center_top .grid_c');
+        var e = $('#cfg .grid_e');
+        var b = c.find('button');
+        var i = $('#cfg .moduleInst');
+        var lbl = $('#cfg .moduleInstLbl');
+        var ct = {};      
+        var ch = false;
+        var wp = false;
+        var mDesc = $('#moduleDesc');
+        var mGID = $('#moduleGID');
+        var mUID = $('#moduleUID');
+        var mLock = $('#moduleLock');
+                            
+        var loader = loader_init(c);
+        var serr = error_init(c, polyglot.t('main.eh_save'), polyglot.t('module.e_csave'));
+        
+        hide_init(c);
+        hide_init(s);
+        
+        var oi = function() {
+            if(wp && !ch) {
+                ch = true;
+                b.attr('disabled', false);
+            }
+        };   
+        mDesc.on('input', oi);
+        mGID.on('input', oi);
+        mUID.on('input', oi);
+        mLock.closest('.ui.checkbox').checkbox({
+                onChecked:oi,
+                onUnchecked:oi});
+                
+        b.on('click', function() {
+            var d = post_get_val(sel_data,
+                                ['d', 'u', 'g', 'l'],
+                                ['a', 'o', 'p', 'q'],
+                                [mDesc, mUID, mGID, mLock]);
+            if(d) {
+                var c = d ? d.c : function() {};
+                d = d ? d.r : null;
+                loader.show();
+                d.m = sel;
+                var sn = sel_name;
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:65}), ext_data:JSON.stringify(d)}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        change.module_edit(d.m, sn, 2);
+                        c();
+                        ch = false;
+                        b.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        _this.getMInfo = function() {
+            serr.hide();
+            var d = {};
+            var v1 = false;
+            var v2 = false;
+            
+            if(sel_inst && ct.sel_inst != sel_inst) {
+                d.iid = sel_inst;
+                v2 = true;
+                i.show();
+            } else if(sel_inst == null) {
+                i.hide();
+            }
+            
+            if(sel && ct.sel != sel) {
+                d.mid = sel;
+                v1 = true;
+            } else if(sel == null) {
+                v2 = false;
+                c.hide();
+            }
+            
+            ct.sel = sel;
+            ct.sel_inst = sel_inst;
+            
+            if(v1 || v2) {
+                psel.set_ready(false);
+                var ov = sel_data;
+                var nv = {};
+                var id = sel;
+                sel_data = null;
+                wp = false;
+                ch = false;
+                b.attr('disabled', true);
+                loader.show();
+                c.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:61}), ext_data:JSON.stringify(d)}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    wp = true;
+                    loader.hide();
+                    sel_data = nv;
+                    if(r.r == 0) {
+                        c.show();
+                        var old = get_visible_split(cf); 
+                        if(v1) {
+                            $.extend(nv, r);
+                        } else {
+                            $.extend(nv, {d:ov.d,g:ov.g,u:ov.u,l:ov.l,p:ov.p});
+                        }
+                        if(v2) {
+                            $.extend(nv, r);
+                        } else {
+                            $.extend(nv, {});
+                        }
+                        do_visible_split(cf, function() {
+                            if(v1) {
+                                wp = sel_data.p == -1 || hasPerm('MODULE_EDIT', sel_data.p, sel_data.u);
+                                b.attr('disabled', true);
+                                c.show();
+                                label_set($('#moduleId'), id);
+                                label_set($('#moduleName'), r.n);
+                                label_set(mDesc, r.d);
+                                label_set(mGID, r.g);
+                                label_set(mUID, r.u);
+                                label_set(mLock, r.l);
+                            } else {
+                                if(old) {
+                                    old();
+                                }
+                            }
+                            if(v2) {
+                                label_set($('#moduleIId'), ct.sel_inst);
+                                label_set($('#moduleIName'), r.i);
+                                lbl.text(polyglot.t('module.icfg', {name:r.i}));
+                            }
+                        });
+                    } else {
+                        e.text(polyglot.t('main.lerr'));
+                        c.hide();
+                    }
+                    psel.set_ready(true);
+                });
+                
+                if(sel != null && sel_inst != null) {
+                    sub.getSetup(sel, sel_inst);
+                } else {
+                    sub.getSetup(null);
+                }
+            } else {
+                sub.getSetup(null);
+                clear_visible_split(cf);
+            }
+        };
+        
+        _this.onChange = function(o) {
+            var an = {name:polyglot.t('module.nomodule')};
+            var cn = {name:polyglot.t('module.nomodule')};
+            sub.clearInst();
+            if(o !== undefined) {
+                sel = o.id;
+                sel_name = o.n;
+                sub.requestUses();
+                sub.requestInst();
+                an.name = sel_name;
+                cn.name = sel_name;
+                s.show();
+            } else {
+                sel = null;
+                sub.clearUses();
+                s.hide();
+            }
+            cfgLabel.innerText = polyglot.t('module.mcfg', an);
+            setupLabel.innerText = polyglot.t('module.medit', cn);
+            sub.setTextError(true);
+            _this.onChangeInst();
+            _this.getMInfo();
+            sub.onChangeSrc();
+        };
+        
+        _this.onChangeInst = function(o) {
+            if(o !== undefined) {
+                sel_inst = o.id;
+                sel_inst_name = o.n;
+            } else {
+                sel_inst = null;
+                sub.unselectInst();
+            }
+            _this.getMInfo();
+            if(sub.getIdx() > 2) {
+                sub.onChangeSrc();
+            }
+        }
+    })();
+    
+    (function() {
+        var l = $('.moduleList');
+        var p = $('.modulePage');
+        var n = {page:'main/module',
+                 sub:'module',
+                 pg:'sub.requestModules(p)',
+                 kd:'sub.requestModules(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChange);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddModule = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetModules = function() {
+            paging_reset(n);
+            sub.requestModules();
+        }
+        
+        var s = list_search(mFilter, sub.resetModules);
+        
+        sub.lockList = function() {
+            if(nl == 0) {
+                mFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                mFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestModules = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChange();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:60}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('module.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:66}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.module_edit(o.id, o.n, 1);
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.ren', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="moduleRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="moduleRName" name="moduleRName" class="ui input" value="' + o.n + '" required></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('module.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:65}), ext_data:JSON.stringify({m:o.id, c:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            change.module_edit(o.id, nn, 2);
+                            o.n = nn;
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            sub.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                }
+            };
+        } 
+        
+        var ai = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.i_addi', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="moduleRIName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="moduleRIName" name="moduleRIName" class="ui input" value="" required></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('module.e_addi'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:73}), ext_data:JSON.stringify({n:o.id, a:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            change.module_edit(o.id, o.n, 2);
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            sub.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                }
+            };
+        }
+        
+        var pk = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.pkg', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="modulePName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="modulePName" name="modulePName" class="ui input" value="' + o.n + '.probem" required></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('module.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                if(nn !== '') {
+                    var xhr = lock.post('/sys/server/', {data:JSON.stringify({cmd:62}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d, err, status) {
+                        loader.remove();
+                        if(status == 200) {
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            sub.unlockList(); 
+                            lb.destroy();
+                            
+                            var fn = null;
+                            var ct = xhr.getResponseHeader("content-type");
+                            var cd = xhr.getResponseHeader("content-disposition");
+                            if(cd) {
+                                fn = cd.substring(cd.indexOf("=") + 1);
+                            } else {
+                                fn = "unnamed." + ct.substring(ct.indexOf("/") + 1);
+                            }
+                            
+                            if(window.navigator.msSaveOrOpenBlob) {
+                                window.navigator.msSaveOrOpenBlob(new Blob([d], {type: ct}), fn);
+                            } else {
+                                var _el = $('<a></a>').appendTo('body');
+                                var el = _el[0];
+                                el.href = window.URL.createObjectURL(d);
+                                el.download = fn;
+                                el.click();
+                                _el.remove();
+                            }
+                            
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    }, {responseType:'blob'});
+                }
+            };
+        } 
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.moduleList .item', 
+            callback:function(key, options) {
+                _this.onChange();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'addi':
+                        ai(this.o, this.it);
+                        break;
+                    case 'pack':
+                        pk(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'addi':{name:polyglot.t('module.addi'), icon:'add'},
+                'pack':{name:polyglot.t('module.pack'), icon:'add'},
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+
+    (function() {
+        var nl = 0;
+        var u = $('#center_middle');
+        var l = $('.moduleIList');
+        var p = $('.moduleIPage');
+        var n = {page:'main/module',
+                 sub:'module',
+                 pg:'sub.requestInst(p)',
+                 kd:'sub.requestInst(parseInt(this.value)-1, event)'
+        };
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChangeInst, true);
+        
+        sub.unselectInst = function() {
+            j();
+        }
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + (v.n !== '' ? v.n : polyglot.t('module.noname', {id:v.id})) + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.clearInst = function() {
+            clear_visible_split(u);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('module.nomodule') + '</div>');
+            sub.getSetup(null);
+        }
+        
+        sub.resetInst = function() {
+            paging_reset(n);
+            sub.requestInst();
+        }
+        
+        inst.lockList = function() {
+            if(nl == 0) {
+                iFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        inst.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                iFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        var s = list_search(iFilter, sub.resetInst);
+        
+        var ru = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i,id:sel}));
+                    iFilter.attr('disabled', '');
+                    l.addClass('nomouse_i');
+                    p.addClass('nomouse');
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:72}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        iFilter.attr('disabled', null);
+                        l.removeClass('nomouse_i');
+                        p.removeClass('nomouse');
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            },l, p, n, po);
+        }
+        
+        sub.requestInst = function(po, ev) {
+            do_visible_split(u, function() {
+                ru(po, ev);
+            });
+        }
+        
+        var rm = function(o, it) {
+            inst.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.i_rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                inst.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('module.e_rem'), function(r) { 
+                    r.remove();
+                    inst.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:74}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        inst.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            inst.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.i_ren', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="moduleIRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="moduleIRName" name="moduleIRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                inst.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('module.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    inst.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:65}), ext_data:JSON.stringify({n:o.id, d:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            o.n = nn;
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            inst.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                } 
+            };
+        } 
+        
+        var cn = function(o, it) {
+            inst.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/module'),sub=ctx['module'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('module.i_clone', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="moduleIRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="moduleIRName" name="moduleIRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                inst.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('module.e_clone'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    inst.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:73}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        var ni = $(m({id:r.d, n:nn})).prependTo(l);
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        inst.unlockList(); 
+                        lb.destroy();
+                        ni.click();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        } 
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.moduleIList .item', 
+            callback:function(key, options) {
+                _this.onChangeInst();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'clone':
+                        cn(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'clone':{name:polyglot.t('main.clone'), icon:'add'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    (function() {
+        var u = $('#uses');
+        var l = $('.usesList');
+        var p = $('.usesPage');
+        var n = {page:'main/module',
+                 sub:'module',
+                 pg:'sub.requestUses(p)',
+                 kd:'sub.requestUses(parseInt(this.value)-1, event)'
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.clearUses = function() {
+            clear_visible_split(u);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('module.nomodule') + '</div>');
+        }
+        
+        sub.resetUses = function() {
+            paging_reset(n);
+            sub.requestUses();
+        }
+        
+        var s = list_search(uFilter, sub.resetUses);
+        
+        var ru = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i,id:sel}));
+                    uFilter.attr('disabled', '');
+                    l.addClass('nomouse_i');
+                    p.addClass('nomouse');
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:63}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        uFilter.attr('disabled', null);
+                        l.removeClass('nomouse_i');
+                        p.removeClass('nomouse');
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        sub.requestUses = function(po, ev) {
+            do_visible_split(u, function() {
+                ru(po, ev)
+            });
+        }
+    })();
+    
+    sub.requestModules();
+    
+    $(document).one('cacheDestroy', function() {
+        $(document).off('tmplChange', sub.tmplChange);
+        $(document).off('onCompileError', sub.onCompileError);
+    });
+</script>
+<style>
+#editor {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+#right .ui.menu {
+    min-height:1.857143em;
+    margin: 0;
+    overflow:hidden;
+}
+
+#right .ui.menu .item {
+    padding:0.2rem 1rem 0.2rem 1rem;
+}
+
+#right .menu > .item:before {
+    background-color: #dedede;
+}
+
+#right .modulebtn.dropdown .icon {
+    color: #000;
+}
+
+#right .modulebtn.dropdown:not(.selection):hover .icon,
+#right .modulebtn.dropdown:not(.selection).active .icon {
+    color:#FFF;
+}
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/module_add.html"}###
+    ###{"file":"templates_www_source/module_upload.html"}###
+    ###{"file":"templates_www_source/module_install.html"}###
+</div>
+<div attach="topbar" template>
+    <div class="ui edit dropdown item MODULE_ADD">
+        <div class="text">{{l 'main.edit'}}</div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="header">{{l 'module.module'}}</div>
+            <div class="item" page_click="ctx.moduleAdd();">
+                {{l 'main.add'}}
+            </div>
+            <div class="item" page_click="ctx.moduleUpld();">
+                {{l 'main.upload'}}
+            </div>
+            <div class="item disabled" page_click="ctx.moduleInst();">
+                {{l 'main.install'}}
+            </div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlist" id="vlist" checked>
+                  <label for="vlist">{{l 'module.list'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vcfg" id="vcfg">
+                  <label for="vcfg">{{l 'module.cfg'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vinst" id="vinst" checked>
+                  <label for="vinst">{{l 'module.inst'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsetup" id="vsetup" checked>
+                  <label for="vsetup">{{l 'module.setup'}}</label>
+                </div>
+            </div>
+            <div class="item MODULE_SOURCE">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsrc" id="vsrc">
+                  <label for="vsrc">{{l 'module.source'}}</label>
+                </div>
+            </div>
+            <div class="item USER_EDIT">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vuses" id="vuses">
+                  <label for="vuses">{{l 'module.uses'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlog" id="vlog">
+                  <label for="vlog">{{l 'module.log'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="module" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'module.list'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="moduleFilter">{{l 'main.list_f'}}</label>
+                        <input id="moduleFilter" name="moduleFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist moduleList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu modulePage fullw"></div>
+    </div>
+    <div id="cfg" class="ui segment">
+        <div id="moduleCfgLabel" class="ui top attached blue label tov"></div>
+        <div></div>
+        <div class="grid_c hide">
+            <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                <div class="moduleInst cfgTop">
+                    <div class="ui header moduleInstLbl"></div>
+                    <div class="form-row">
+                        <label for="moduleIId">{{l 'main.id'}}</label>
+                        <input type="text" id="moduleIId" name="moduleIId" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="moduleIName">{{l 'main.name'}}</label>
+                        <input type="text" id="moduleIName" name="moduleIName" disabled>
+                    </div>
+                </div>
+                <div>
+                    <div class="ui header">{{l 'module.cfg'}}</div>
+                    <div class="form-row">
+                        <label for="moduleId">{{l 'main.id'}}</label>
+                        <input type="text" id="moduleId" name="moduleId" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="moduleName">{{l 'main.name'}}</label>
+                        <input type="text" id="moduleName" name="moduleName" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="moduleDesc">{{l 'main.desc'}}</label>
+                        <textarea id="moduleDesc" name="moduleDesc"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <label for="moduleUID">{{l 'main.uid'}}</label>
+                        <input type="text" id="moduleUID" name="moduleUID">
+                    </div>
+                    <div class="form-row">
+                        <label for="moduleGID">{{l 'main.gid'}}</label>
+                        <input type="text" id="moduleGID" name="moduleGID">
+                    </div>
+                    <div class="form-row">
+                        <div class="ui checkbox">
+                            <label for="moduleLock">{{l 'main.lock'}}</label>
+                            <input type="checkbox" id="moduleLock" name="moduleLock">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button">{{l 'main.save'}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="grid_e">{{l 'module.nomodule'}}</div>
+    </div>
+    <div id="center">
+        <div id="center_top">
+            <div class="ui segment moduleICtx" style="height:100%;padding:0;">
+                <div id="moduleLabel" class="ui top attached blue label tov"></div>
+                <div></div>
+                <div class="grid_c hide"><div class="content"></div></div>
+                <div class="grid_e">{{l 'module.noinst'}}</div>
+            </div>
+        </div>
+        <div id="center_middle">
+            <div class="ui segment fullw paging_outer">
+                <div class="ui top attached blue label" style="overflow:visible;">
+                    <div class="tov" style="float:left;width:calc(100% - 30px)">
+                        {{l 'module.inst'}}
+                    </div>
+                    <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                        <div class="ui search dropdown item">
+                            <i class="ui icon search"></i>
+                        </div>
+                    </div>
+                </div>
+                <div></div>
+                <div class="ui ins hide">
+                    <div class="filter fullw">
+                        <div class="ui icon input fl-wrap fullw tinput">
+                            <i class="angle up link toggl icon"></i>
+                            <label for="moduleIFilter">{{l 'main.list_f'}}</label>
+                            <input id="moduleIFilter" name="moduleIFilter" class="prompt search" type="text">
+                            <i class="search link icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui middle aligned celled selection list plist moduleIList paging_inner content"></div>
+            </div>
+            <div class="ui pagination menu moduleIPage fullw"></div>
+        </div>
+        <div id="center_bottom">
+            
+            <div class="ui segment" style="height:100%;padding:0;">
+                <div class="ui top attached blue label" style="overflow:visible;">
+                    <div class="tov" style="float:left;width:calc(100% - 30px)">
+                        {{l 'module.log'}}
+                    </div>
+                    <div class="dropdown" style="display:inline-block;float:right;widh:20px;">
+                        <i id="mlogClear" class="ui icon close" style="cursor:pointer;"></i>
+                    </div>
+                </div>
+                <div class="content grid_c" style="padding:5px;"><pre id="mlogTxt" style="display:block;height:100%;margin:0;"></pre></div>
+            </div>
+        </div>
+    </div>
+    <div id="right" class="MODULE_SOURCE">
+        <div class="ui segment fullw paging_outer">
+            <div id="moduleSrcLabel" class="ui top attached blue label tov"></div>
+            <div id="editor" class="hide grid_c editor"></div>
+            <div class="grid_e moudleSrcError">{{l 'main.nofile'}}</div>
+        </div>
+        <div class="ui modulesel dropdown item" style="display:block;">
+             <div class="menu" style="width:100%;">
+                <div class="item">{{l 'module.view_s'}}</div>
+                <div class="item">{{l 'module.view_c'}}</div>
+                <div class="item">{{l 'module.view_r'}}</div>
+                <div class="item">{{l 'module.view_bh'}}</div>
+                <div class="item">{{l 'module.view_bc'}}</div>
+                <div class="item">{{l 'module.view_uh'}}</div>
+                <div class="item">{{l 'module.view_uc'}}</div>
+            </div>
+        </div>
+        <div class="ui menu" style="position:relative;">
+            <a class="ui item" page_click="ctx.moduleSave();">{{l 'main.save'}}</a>
+            <a class="ui modulebtn dropdown item" page_click="ctx.moduleSel();">
+                <div class="text"></div><i class="dropdown icon"></i>
+            </a>
+        </div>
+    </div>
+    <div id="uses" class="USER_EDIT">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'module.uses'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="usesFilter">{{l 'main.list_f'}}</label>
+                        <input id="usesFilter" name="usesFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled list plist usesList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu usesPage fullw"></div>
+    </div>
+</div>

@@ -1,0 +1,492 @@
+<script sub="module_upload">
+    var _this = this;
+    var _canClose = true;
+    var _modal = $('.ui.modal.moduleUpld');
+    var _btn = _modal.find('.accept.button');
+    var _frm = _modal.find('.ui.form');
+    var sel = null;
+    var ct = _modal.find('.content');
+    var serr = error_init(ct, polyglot.t('module.eh_upld'), polyglot.t('module.e_ufile'));
+    
+    sub.progress = function(l, t, i) {
+        $(i).progress({percent:(l * 100) / t});
+    };
+    
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity:0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                    
+    $('#upld_name').on('input', onChange);
+                  
+    function onChange() {
+        var v = $('#upld_name').val();
+        if(v === '' || sub.getFile() == null) {
+            _btn.addClass('disabled');
+        } else {
+            _btn.removeClass('disabled');
+        }
+    } 
+                   
+    sub.onOpen = function(after) {
+        sub.after = after;
+        submit_err(-1, true);
+        var n = $('#upld_name');
+        label_reset(n);
+        $('#upldFilter')[0].reset();
+        label_reset($('#upld_desc'));
+        sub.clearFile();
+        $('#upld_lock').prop('checked', false);
+        sub.resetGroups();
+        n.focus();
+        _frm[0].reset();
+    };
+    
+    sub.onOk = function() {
+        if(!_canClose)
+            return;
+        var f = _modal.find('input.submit');
+        f.click();
+    }
+    
+    function submit_err(i, nofade) {
+        var el = _modal.find('.moduleUpldE')[0];
+        var d = el.firstChild;
+        var h = d.firstChild;
+        var p = h.nextSibling;
+        var hm;
+        var m;
+        switch(i) {
+            case 0:
+                hm = polyglot.t('main.eh_exist');
+                m = polyglot.t('module.e_exist');
+                break;
+            case 1:
+                hm = polyglot.t('main.eh_fail');
+                m = polyglot.t('module.e_upld');
+                break;
+            default:
+                if(nofade) {
+                    d.classList.add('hide');
+                } else {
+                    _fadeOut(d, 200, function() {
+                        d.classList.add('hide');
+                    });
+                }
+                return;
+        }
+        h.textContent = hm;
+        p.textContent = m;
+        _fadeIn(d, 200);
+        d.classList.remove('hide');
+    }
+    
+    this._module_upload = function(ev, el_frm) {
+        if(el_frm.checkValidity()) {
+            ev.preventDefault();
+        } else {
+            return;
+        }        
+        _canClose = false;
+        if(!form_set_load(el_frm)) {
+            _canClose = true;
+            return;
+        }
+        
+        submit_err(-1, true);
+        
+        var grid = _modal.find('.grid');
+        grid.addClass('nomouse');
+        _btn.addClass('loading');
+        
+        var frm = new FormData();
+        
+        var data = {n:form_get(el_frm, 'upld_name'), 
+                    d:form_get(el_frm, 'upld_desc'),
+                    l:form_get(el_frm, 'upld_lock')
+        };
+        
+        if(sel != null) {
+            data.g = sel;
+        }
+        
+        var loader = loader_init(ct, function() {
+            return '<div style="width:50%;">' +
+                        '<div class="ui active progress upldProg">' +
+                          '<div class="bar">' +
+                            '<div class="progress"></div>' +
+                          '</div>' +
+                          '<div class="label">' + polyglot.t('module.load') + '</div>' +
+                        '</div>' +
+                    '</div>';
+        });
+        loader.show();
+    
+        frm.append('data', '{"cmd":5}');
+		frm.append('parent', '');
+		frm.append('name', 'file');
+	    frm.append('file', sub.getFile());
+        frm.append('ext_data', JSON.stringify(data));
+        _post('/sys/upload/', frm, function(d) {
+            loader.hide();
+            form_set_ready(el_frm);
+            _canClose = true;
+            grid.removeClass('nomouse');
+            _btn.removeClass('loading');
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            if(r.r == 0) {
+                data.id = d.d;
+                sub.after(data);
+                _modal.modal('hide');
+            } else {
+                if(r.r == 14) {
+                    submit_err(0);
+                } else {
+                    submit_err(1);
+                }
+            }
+        }, {responseType:'json', noprogress:5000, 'upload.onprogress': function(ev) {
+                sub.progress(ev.loaded, ev.total, '.upldProg');
+        }});
+    };
+    
+    (function() {
+        var l = $('.uploadGroupList');
+        var p = $('.uploadGroupPage');
+        var n = {page:'main/module',
+                 sub:'module_upload',
+                 pg:'sub.requestGroups(p)',
+                 kd:'sub.requestGroups(parseInt(this.value)-1, event)'
+        };
+        
+        list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, function(o) {
+            sel = o.id;
+            onChange();
+        });
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        };
+        
+        sub.resetGroups = function() {
+            sel = null;
+            onChange();
+            paging_reset(n);
+            sub.requestGroups();
+        }
+        
+        var s = list_search($('#upldFilter'), sub.resetGroups);
+        
+        sub.requestGroups = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    post('/sys/server/', {data:JSON.stringify({cmd:15}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        render(r);
+                    });
+                }
+            }, l, p, n, po);
+        };
+    })();
+    
+    (function() {
+        var dropBox = $('#ubox');
+        var file = $('input[type="file"]');
+        var cu = null;
+        
+        sub.getFile = function() {
+            return cu;
+        }
+        
+        sub.clearFile = function() {
+            setFile(null);
+        }
+        
+        var setFile = function(file) {
+            cu = file;
+            if(file) {
+                dropBox.text(file.name);
+                dropBox.parent().addClass('fl-is-active');
+                dropBox.removeClass('empty');
+                Archive.init();
+                var archive = Archive.open(file, function(a) {
+                    a.extractSingleFile("minfo", function(f) {
+                        var rd = new FileReader();
+                        rd.onload = function() {
+                            try {
+                                var d = CBOR.decode(rd.result);
+                                if(d.m && d.m.n) {
+                                    var n = $('#upld_name');
+                                    if(n.val() == '') {
+                                        label_set(n, d.m.n);
+                                    }
+                                }
+                                if(d.m && d.m.d) {
+                                    var n = $('#upld_desc');
+                                    if(n.val() == '') {
+                                        label_set(n, d.m.d);
+                                    }
+                                }
+                                onChange();
+                            } catch(e) {
+                                // TODO error
+                            }
+                        };
+                        rd.readAsArrayBuffer(f);
+                    }, function() {
+                        // TODO error
+                    });
+                });        
+            } else {
+                dropBox.text(polyglot.t('module.dropp'));
+                dropBox.parent().removeClass('fl-is-active');
+                dropBox.addClass('empty');
+            }
+            onChange();
+        }
+        
+    	var handleFiles = function(items, idx) {
+    	    if(items) {
+    	        if(idx < items.length) {
+        	        var file = items[idx];
+        	        setFile(file);
+    	        }
+    	    } else {
+                serr.show();
+    	    }
+    	}
+    	
+        var parseFileList = function(list) {
+            var info = {};
+            var result = [];
+			for(var i = 0, len = list.length; i < len; i++) {
+				if(list[i].webkitGetAsEntry && list[i].kind=='file') {
+					var item = list[i].webkitGetAsEntry();
+					if(item) {
+						parseFiles(info, item,result);
+						if(info.error)
+						    return null;
+					}
+				}
+			}
+			return info.error ? null : result;
+		}
+		
+    	var parseFiles = function(info, item, result) {
+    	    if(info.error)
+    	        return;
+			if(item.isFile) {
+			    result.push(item);
+			} else 
+			if(item.isDirectory) {
+				var rd = item.createReader();
+		    	rd.readEntries(function(items, a) {
+					if(items.length != 0) {
+    					var l = [];
+    					for(var i = 0, len = items.length; i< len; i++) {
+    					    parseFiles(info, items[i], result);
+    					    if(info.error)
+    					        return;
+    					}
+					}
+				}, function(){
+				    info.error = true;
+				    /* doUploadEnd(info);  */
+				});
+			}
+		}
+        
+        file.on('change', function(e) {
+            handleFiles(file[0].files, 0);
+        });
+        dropBox.on('click', function() {
+            file.trigger('click');
+        });
+        
+        dropBox[0].ondrop = function(e) {
+            e.preventDefault();  
+            dropBox.removeClass('drop');
+            if(!e.dataTransfer) {
+                return false;
+            }
+            var items;
+            if ((items = e.dataTransfer.items)) {
+            } else 
+            if((items = e.dataTransfer.files)){
+            } else {
+                return false;
+            }
+            
+            var farr = parseFileList(items);
+            
+            var fileData = function(items, idx, result, after) {
+                if(idx < items.length) {
+    			    items[idx].file(function(file) {
+    			        result.push(file);
+					    fileData(items, idx + 1, result, after);
+					}, function(){
+					    after(null);
+					});
+                } else {
+                    after(result);
+                }
+            }
+            
+            fileData(farr, 0, [], function(r) {
+                handleFiles(r, 0);
+            });
+            
+        } 
+        
+        dropBox[0].ondragover = function(e) {
+            e.preventDefault();
+            dropBox.addClass('drop');
+        }
+        
+        dropBox[0].ondragleave = function(e) {
+            e.preventDefault();
+            dropBox.removeClass('drop');
+        }
+    })();
+</script>
+<style>
+    #ubox {
+        background: #fff;
+        border-radius: 0.285714rem;
+        border: 1px solid #dedede;
+        height: 40px;
+        font-size: 1em;
+        cursor: pointer;
+        padding: 0.67857143em 1em;
+        line-height: 1.21428571em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #ubox.empty {
+        color:#cacaca;
+    }
+    #ubox.drop {
+        background:#54a3e1;
+        color:#fff;
+    }
+</style>
+<div sub="module_upload" class="ui modal moduleUpld" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'module.upld'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.moduleUpld', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'module.upld_d'}}</p>
+        <div class="moduleUpldE">
+            <div class="ui negative message form-row hide" style="margin-bottom:5px;">
+                <div class="header"></div>
+                <p></p>
+            </div>
+        </div>
+        <div style="position:relative;height:100%;">
+            <div class="divide" style="left:57.5%;bottom: -25px;"></div>
+            <div class="ui grid" style="padding:20px;">
+                <div style="width:calc(60% - 2rem);margin:0;"> 
+                    <div class="ui small header">{{l 'module.acfg'}}</div>
+                    <div style="display:inline-block;vertical-align:middle;" class="form-base"> 
+                        <div>
+                            <form action="#" method="post" class="ui form" page_submit="ctx._module_upload(event, this);">
+                                <div class="form-row">
+                                    <label for="upld_name">{{l 'main.name'}}</label>
+                                    <input id="upld_name" name="upld_name" type="text" class="field" required="required">
+                                </div>         
+                                <div class="form-row">    
+                                    <div class="fl-wrap fl-wrap-input fl-is-required">
+                                        <label for="ubox" class="fl-label">{{l 'module.dropp'}}</label>
+                                        <div id="ubox" class="empty fl-input">
+                                            {{l 'module.dropp'}}
+                                        </div>
+                                    </div>
+                                    <input type="file" style="display: none">
+                                </div>
+                                <div class="form-row">
+                                    <label for="upld_desc">{{l 'main.desc'}}</label>
+                                    <textarea id="upld_desc" name="upld_desc" rows="5"></textarea>
+                                </div>   
+                                <div class="form-row">
+                                    <div class="ui checkbox">
+                                        <input id="upld_lock" name="upld_lock" type="checkbox" tabindex="0" class="hidden">
+                                        <label for="upld_lock">{{l 'main.lock'}}</label>
+                                    </div>
+                                </div>
+                                <input type="submit" class="submit hide">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:40%;margin:0 0 0 2rem;">
+                    <div class="ui small header">{{l 'main.agrp'}}</div>
+                    <div class="fullw" style="height:calc(100% - 2rem);">
+                        <div>
+                            <div class="ui icon input tinput fl-wrap fullw">
+                                <i class="angle up link toggl icon"></i>
+                                <label for="upldFilter">{{l 'main.list_f'}}</label>
+                                <input id="upldFilter" name="upldFilter" class="prompt fullw" type="text">
+                                <i class="search link icon"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment fullw tlist" style="height:calc(100% - 5rem);">
+                            <div class="ui middle aligned celled selection list uploadGroupList mlist fullw fullh">
+                            </div>
+                        </div>
+                        <div class="ui pagination menu uploadGroupPage fullw"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

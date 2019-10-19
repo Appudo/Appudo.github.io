@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html class="no-js" manifest2="probe.appcache">
+<head>
+    <meta charset="utf-8">
+    ###{"preload":"pub/img/logo.svg"}###
+    ###{"preload":"pub/img/title.svg"}###
+    <title>APPUDO Probe</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="APPUDO Probe">
+    <meta name="author" content="contact@appudo.com">
+    <meta name="viewport" content="width=1335">
+    <link rel="icon" href="img/logo.ico" type="image/x-icon">
+    <style id="fblock">
+        * { font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif !important; }
+    </style>
+    <style id="sem_part">###{"file":"template_css/semantic-part.css"}###</style>
+    <style>###{"file":"template_css/main.css"}### 
+           ###{"file":"template_css/float-labels-3.3.8.css"}###</style>
+    <style path="login" mpath="setup about" end>
+      ###{"file":"template_css/login.css"}###
+    </style>
+    <style path="login">
+        .form-base .dropdown {
+            display:none !important;
+        }
+    </style>
+    <style path="login/login" mpath="login/recover login/reset login/register">
+        .form-base .dropdown {
+            display:block !important;
+        }
+    </style>
+    <style path="login/wait" mpath="login/reset/ok login/register/ok login/recover/ok">
+        .form-base .dropdown {
+            display:none !important;
+        }
+        #lfrm form {
+            display:none;
+        }
+    </style>
+    <script inline>
+        ###{"file":"template_js/float-labels-3.3.8.min.js"}###
+        ###{"file":"template_js/fontfaceobserver.min.js"}###
+        (function() {
+            ###{"file":"template_js/polyglot.min.js"}###
+            this.polyglot = new Polyglot();
+        }).call(window);
+        
+        (function() {
+            var root = this;
+            ###{"file":"template_js/handlebars-4.4.1.runtime.min.js"}###  
+        }).call(window);
+        
+        Handlebars.registerHelper('l',
+            function(str){
+              return "";
+            }
+        );
+    </script>
+    <script inline>
+        var _lang_map = ['en', 'de'];
+        var _lang_data = {}
+        var _lang_idx = -1;
+        var _can_progress = 0;
+        var _lang_complete = 0;
+        var _font_complete = 0;
+        var _css_complete = 0;
+        var _html_complete = 0;
+        var _js_complete = 0;
+        var _page_state = {t:null};
+        var _page_ctx = {};
+        var _in_transition = false;
+        var _next_transition = null;
+        var _pop_wait = -1;
+        var _menu_active = null;
+        var _login_valid = null;
+        var _login_check = -1;
+        var _load_complete = false;
+        var _login_backoff = null;
+        var _search = {};
+        var _wsock = null;
+        var _name = null;
+        var _focus_jail = null;
+        var _step = 0;
+        var _perms = {
+            ADMIN_ALL:          1 << 0,
+            RUN_ADD:            1 << 1,
+            DISASSEMBLER_USE:   1 << 2,
+            PROBE_ADD:          1 << 3,
+            MODULE_ADD:         1 << 4,
+            MODULE_SHARE:       1 << 5,
+            USER_EDIT:          1 << 6,
+            SETTING_EDIT:       1 << 7,
+            ACCOUNT_EDIT:       1 << 8,
+            ACCOUNT_REMOVE:     1 << 9,
+            REPO_EDIT:          1 << 10,
+            CHAT_USE:           1 << 11,
+            MODULE_SOURCE:      1 << 12,
+            USER_CHANGE_LOGIN:  1 << 13,
+            REPO_ADD:           1 << 14
+        };
+        
+        function search_params() {
+            return _search;
+        }
+        
+        function login_admin() {
+            return (_login_valid.p & _perms.ADMIN_ALL) != 0;
+        }
+        
+        function perm_get_all() {
+            return $.extend({}, _perms);
+        }
+        
+        function perm_set(p) {
+            [].slice.call(document.body.classList).forEach(function(n) {
+                if(n.substr(0, 3) == 'NO_') {
+                    document.body.classList.remove(n);
+                }
+            });
+            var pn = Object.getOwnPropertyNames(_perms);
+            if((p & _perms.ADMIN_ALL) == 0) {
+                pn.forEach(function(n) {
+                    var l = _perms[n];
+                    if((p & l) == 0 && l > _perms.ADMIN_ALL) {
+                        document.body.classList.add('NO_' + n);
+                    }
+                });
+            }
+        }
+
+        function old_ie() {
+            return (navigator.userAgent.indexOf('MSIE')!==-1 || navigator.appVersion.indexOf('Trident/') > -1) && navigator.appVersion.indexOf("Edge") == -1;
+        }
+        
+        function animFindTransEvent() {
+            var e = document.createElement('elem');
+            var items = ['transition', 'OTransition', 'MozTransition', 'WebkitTransition'];
+            var res = ['transitionend', 'oAnimationEnd', 'transitionend', 'webkitTransitionEnd'];
+            
+            for(var i = 0; i < items.length; i++) {
+                if (e.style[items[i]] !== undefined) {
+                    return res[i];
+                }
+            }
+            
+            return '';
+        }
+        
+        var _transEv = animFindTransEvent();
+        
+        function _fadeOut(n, t, after) {
+            if(!n) {
+                return;
+            }
+            if(n.style.transition != '') {
+                setTimeout(function() {
+                    _fadeOut(n, t, after);
+                }, 50);
+                return;
+            }
+            n.style.opacity = 1;
+            n.style.transition = 'opacity ' + (t / 1000) + 's ease';
+            setTimeout(function() {
+                n.style.opacity = 0;
+                var after2 = function() {
+                    var style = window.getComputedStyle(n);
+                    if(style.opacity == 0) {
+                        n.style.transition = '';
+                        after();
+                    } else {
+                        (function() {
+                            var f = function() {
+                                n.removeEventListener(_transEv, f);
+                                n.style.transition = '';
+                                after();
+                            }
+                            n.addEventListener(_transEv, f);
+                        })();
+                    }
+                };
+                if(window.domy) {
+                    domy.defer(after2);
+                } else {
+                    after2();
+                }
+            }, 1);
+        }
+        
+        function fadeOut(n, t, after) {
+            _fadeOut(n, t, function() {
+                n.style.display = 'none';
+                after();
+            });
+        }
+        
+        function _fadeIn(n, t, after) { 
+            if(!n) {
+                return;
+            }
+            if(n.style.transition != '') {
+                setTimeout(function() {
+                    _fadeIn(n, t, after);
+                }, 50);
+                return;
+            }
+            n.style.opacity = 0;
+            n.style.transition = 'opacity ' + (t / 1000) + 's ease';
+            setTimeout(function() {
+                n.style.opacity = 1;
+                var after2 = function() {
+                    var style = window.getComputedStyle(n);
+                    if(style.opacity == 1) {
+                        n.style.transition = '';
+                        if(after) {
+                            after();
+                        }
+                    } else {
+                        (function() {
+                            var f = function() {
+                                n.removeEventListener(_transEv, f);
+                                n.style.transition = '';
+                                if(after) {
+                                    after();
+                                }
+                            }
+                            n.addEventListener(_transEv, f);
+                        })();
+                    }
+                };
+                if(window.domy) {
+                    domy.defer(after2);
+                } else {
+                    after2();
+                }
+            }, 1);
+        }
+        
+        function addS(path, id, val, end) {
+            var n = transition_path(path);
+            var el;
+            if(!n._elem)
+                n._elem = [];
+            n._elem.push(id);
+            if(val) {
+                var head = document.getElementsByTagName("head")[0];
+                el = document.createElement('style');
+                el.textContent = val;
+                if(end) {
+                    head.appendChild(el);
+                } else {
+                    head.insertBefore(el, head.firstChild);
+                }
+                el.id = id;
+            } else {
+                el = document.getElementById(id);
+            }
+            if(el) {
+                el.sheet.disabled = true;
+            }
+        }
+        
+        function addA(path, sub, f) {
+            var n = transition_path(path);
+            if(!n._always)
+                n._always = [];
+            if(sub !== '' && n._fn_ctx[sub] === undefined) {
+                n._fn_ctx[sub] = {};
+                n._tmpl_subs.push(sub);
+            }
+            n._always.push(function(load) {
+                f.call(n._fn_ctx, n._fn_ctx, n._fn_ctx.path, n._fn_ctx[sub], load || false); 
+            });
+        }
+        
+        function addJ(path, sub, f) {
+            var n = transition_path(path);
+            if(!n._js)
+                n._js = [];
+            if(sub !== '' && n._fn_ctx[sub] === undefined) {
+                n._fn_ctx[sub] = {};
+                n._tmpl_subs.push(sub);
+            }
+            var cb = function() {
+                f.call(n._fn_ctx, n._fn_ctx, n._fn_ctx.path, n._fn_ctx[sub]);
+            };
+            n._js.push(cb);
+            return cb;
+        }
+        
+        function getCtx(path) {
+            var n = transition_path(path);
+            return n._fn_ctx;
+        }
+        
+        function _clearCache(o) {
+            o._el_cache = {};
+            o._fn_ctx = {};
+            if(o._tmpl_subs) {
+                o._tmpl_subs.forEach(function(n) {
+                    o._fn_ctx[n] = {};
+                });
+            }
+            
+            var pn = Object.getOwnPropertyNames(o);
+            pn.forEach(function(n) {
+                if(n.substr(0, 1) != '_') {
+                    _clearCache(o[n]);
+                }
+            });
+        }
+        
+        function clearCache() {
+            if(window['$']){
+                window['$'].event.trigger({ type: "cacheDestroy"});
+            }
+            _clearCache(_page_ctx);
+        }
+        
+        function runAlways(n, load) {
+            if(n._always) {
+                n._fn_ctx.path = n;
+                n._always.forEach(function(f) {
+                    (f)(load);
+                });
+                delete n._fn_ctx.path;
+            }
+        }
+        
+        function addTmpl(path, id, val, dpl) {
+            var el = document.getElementById(id);
+            var n = transition_path(path);
+            if(dpl == '') {
+                dpl = 'block';
+            }
+            if(!n._tmpl_ids) {
+                n._tmpl_ids = [];
+                n._tmpl_subs = [];
+                n._el_cache = {};
+                n._fn_ctx = {};
+                
+                n._tmplLoad = function(rst) {
+                    var cache = true;
+                    for(var i = 0; i < n._tmpl_ids.length; i++) {
+                        var id = n._tmpl_ids[i];
+                        var el = document.getElementById(id);
+                        
+                        if(rst || !n._el_cache[id]) {
+                            var res = n._tmpl[id]();
+                            el.innerHTML = res;
+                            n._el_cache[id] = null;
+                            cache = false;
+                        } else {
+                            n._el_cache[id].forEach(function(n) {
+                                el.appendChild(n);
+                            });
+                        }
+                        
+                        if(window.WeakMap) {
+                            (function() {
+                                var m = n._tmpl[id]._map
+                                var s = n._tmpl[id]._store; 
+                                var l = (s || []).length;
+                                for(var i = 0; i < l; i++) {
+                                    var it = s[i];
+                                    if(!m.has(it)) {
+                                        s.splice(i, 1);
+                                        i--;
+                                        l--;
+                                        continue;
+                                    }
+                                    (function() {
+                                        var el = it;
+                                        var update = function() {
+                                            var targetTop = el._scrollTop;
+                                            var targetLeft = el._scrollLeft;
+                                            var snap = el.hasAttribute('scrollsnap') && el._snap;
+                                            if(snap) {
+                                                if(el._snapfix) {
+                                                    el._snapfix();
+                                                    return;
+                                                }
+                                                targetTop = el.offsetHeight;
+                                            }
+                                            
+                                            if(window.domy) {
+                                                domy.off(function() {
+                                                    el.scrollTop = targetTop;
+                                                    el.scrollLeft = targetLeft;
+                                                })
+                                            } else {
+                                                    el.scrollTop = targetTop;
+                                                    el.scrollLeft = targetLeft;
+                                            }
+                                            
+                                            setTimeout(function() {
+                                                domy.defer(function() {
+                                                    if((el.scrollTop == 0 && !(el.scrollHeight - el.offsetHeight - el.scrollTop < 1)) ||
+                                                       (el.scrollLeft == 0 && !(el.scrollWidth - el.offsetWidth - el.scrollLeft < 1))) {
+                                                        setTimeout(function() {
+                                                            update();
+                                                        }, 10);
+                                                    }
+                                                });
+                                            }, 10);
+                                        };
+                                        update();
+                                    })();
+                                }
+                                
+                                m = n._tmpl[id]._map = new WeakMap();
+                                s = n._tmpl[id]._store = [];  
+                                n._tmpl[id]._scb = function(e) {
+                                    var t = e.target;
+                                    if(!m.has(t)) {
+                                        m.set(t, true);
+                                        s.push(t);
+                                    }
+                                }
+                                el.addEventListener('scroll', n._tmpl[id]._scb, true);
+                            })();
+                        }
+                                
+                        if(n._elem) {
+                            n._elem.forEach(function(u) {
+                                var sl = document.getElementById(u);
+                                if(sl && sl.tagName === 'STYLE') {
+                                    sl.sheet.disabled = false;
+                                }
+                            });
+                        }
+                        el.style.display = dpl;
+                        _fadeIn(el, 200);
+                    }
+                    n._tmpl_subs.forEach(function(u) {
+                        var c = n._fn_ctx[u];
+                        c.__visible = true;
+                        if(c.onLoadOnce) {
+                            var l = c.onLoadOnce;
+                            c.onLoadOnce = null;
+                            l()
+                        }
+                    });
+                    runAlways(n, true);
+                    if(!cache && n._js) {
+                        n._fn_ctx.path = n;
+                        n._js.forEach(function(f) {
+                            (f)();
+                        });
+                        delete n._fn_ctx.path;
+                    }
+                }
+                n._tmplUnLoad = function(after) {
+                    var j = n._tmpl_ids.length;
+                    n._tmpl_subs.forEach(function(u) {
+                        var c = n._fn_ctx[u];
+                        c.__visible = false;
+                        if(c.onUnLoadOnce) {
+                            c.onUnLoadOnce()
+                            c.onUnLoadOnce = null;
+                        }
+                    });
+                    var m = j;
+                    for(var i = 0; i < j; i++) {
+                        (function() {
+                            var id = n._tmpl_ids[i];
+                            var el = document.getElementById(id);
+                            if(!el) {
+                                return;
+                            }
+                            var after2 = function() {
+                                if(window.WeakMap) {
+                                    (function() {
+                                        var m = n._tmpl[id]._map;
+                                        var s = n._tmpl[id]._store; 
+                                        el.removeEventListener('scroll', n._tmpl[id]._scb, true);
+                                        n._tmpl[id]._scb = null;
+                                        
+                                        var l = s.length;
+                                        for(var i = 0; i < l; i++) {
+                                            var it = s[i];
+                                            it._scrollTop = it.scrollTop;
+                                            it._scrollLeft = it.scrollLeft;
+                                            if(it.hasAttribute('scrollsnap')) {
+                                                it._snap = it.scrollHeight - it.offsetHeight - it.scrollTop < 1;
+                                            }
+                                        }
+                                    })();
+                                }
+                                    
+                                fadeOut(el, 200, function() {
+                                    var a = n._el_cache[id] = [];
+                                    var c = el.firstChild;
+                                    
+                                    while(c) {
+                                        var _c = c;
+                                        c = c.nextSibling;
+                                        el.removeChild(_c);
+                                        a.push(_c);
+                                    }
+                                    if(n._elem) {
+                                        n._elem.forEach(function(u) {
+                                            el = document.getElementById(u);
+                                            if(el && el.tagName === 'STYLE') {
+                                                el.sheet.disabled = true;
+                                            }
+                                        });
+                                    }
+                                    
+                                    if(--m == 0) {
+                                        after();
+                                    }
+                                });
+                            };
+                            if(window.domy) {
+                                domy.defer(after2)
+                            } else {
+                                after2();
+                            }
+                        })();
+                    }
+                }
+            }
+            if(!n._tmpl) {
+                n._tmpl = {};
+            }
+            n._tmpl[id] = Handlebars.template(val);
+            n._tmpl_ids.push(id);
+        }
+        
+        function search_parse(str) {
+            if(!str)
+                str = window.location.search;
+            var a = str.replace(/=/g,'":"').split(/[\?,&]+/);
+            if(a[0] == "") {
+                a.shift();
+            }
+            try {
+                for (var i in a) {
+                    a[i] = decodeURIComponent(a[i]);
+                }
+                return JSON.parse('{"'+ a.join('","')+'"}');
+            } catch(e) {
+                return {};
+            }
+        }
+        
+        function _load(url, d, after, ty, opt) {
+            var n;
+            if(url.slice(-3) == '.js') {
+                if(url.slice(-7) == 'html.js') {
+                    n = 0;
+                } else {
+                    n = 1;
+                }
+            } else 
+            if(url.slice(-4) == '.css') {
+                n = 2;
+            }
+            
+            d._count[n]++;
+            
+            var a = function() {
+                after.apply(this, arguments);
+                if(--d._count[n] == 0) {
+                    switch(n) {
+                        case 0:
+                            _html_complete = 1;
+                            break;
+                        case 1:
+                            _js_complete = 1;
+                            break;
+                        case 2:
+                            _css_complete = 1;
+                            break;
+                    }
+                    step_progress();
+                }
+            }
+            
+            return _nload(url, d, a, ty, opt);
+        }
+        
+        function _xhr_response(xhr, opt) {
+            var r = xhr.response;
+            if(r !== undefined && r != null && opt && opt.responseType == 'json' && r.constructor === String) {
+                r = JSON.parse(r);
+            }
+            return r;
+        }
+        
+        function _xhr_opt(xhr, opt) {
+            var pn = Object.getOwnPropertyNames(opt);
+            pn.forEach(function(n) {
+                if(n == 'noprogress') {
+                    var pg = -1;
+                    xhr.addEventListener('progress', function(e) {
+                        clearInterval(pg);
+                        if(e.loaded != e.total) {
+                            pg = setInterval(function() {
+                                xhr.abort();
+                            }, opt[n]);
+                        }
+                    });
+                } else if(n == 'upload.onprogress') {
+                    xhr.upload.onprogress = opt[n];
+                } else if(n == 'hdr') {
+                    var hdrs = opt[n];
+                    var hd = Object.getOwnPropertyNames(hdrs);
+                    hd.forEach(function(n) {
+                        xhr.setRequestHeader(n, hdrs[n]);
+                    });
+                } else {
+                    xhr[n] = opt[n];
+                }
+            });
+        }
+        
+        function _nload(url, d, after, ty, opt) {
+            var xhr = new XMLHttpRequest();
+            var n = d.num;
+            xhr.onload = function() { 
+                if(xhr.readyState === 4) {
+                    after(_xhr_response(xhr, opt) || {}, ty, n); 
+                }
+            };
+            xhr.onerror = xhr.ontimeout = function(e) {
+                after({r:-1}, ty, n);
+            };
+            xhr.open('GET', url, true);
+            if(opt) {
+                _xhr_opt(xhr, opt);
+            }
+            xhr.send(null);
+            d.num++;
+            return xhr;
+        }
+        
+        function _xhr(ty, url, d, after, opt) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function(e) {
+                if(xhr.readyState === 4) {
+                    after(_xhr_response(xhr, opt), xhr.status != 200, xhr.status);
+                }
+            };
+            xhr.onerror = xhr.ontimeout = function(e) {
+                after({r:-1}, true, xhr.status);
+            };
+            xhr.open(ty, url, true);
+            if(opt) {
+                _xhr_opt(xhr, opt);
+            }
+            xhr.send(d);
+            return xhr;
+        }
+        
+        function _get(url, d, after, opt) {
+            if(d.constructor !== String) {
+                var item = d
+                var d = ''
+                for(var key in item) {
+                    d += encodeURIComponent(key) + '=' + encodeURIComponent(item[key]) + '&';
+                }
+                if(d != '') {
+                    d = d.slice(0, -1);
+                    url += '?' + d;
+                    d = null;
+                }
+            }
+            return _xhr('GET', url, d, after, opt);
+        }
+        
+        function _post(url, d, after, opt) {
+            if(d.constructor !== String && d.constructor !== FormData) {
+                var item = d
+                var d = new FormData();
+                for(var key in item) {
+                    d.append(key, item[key]);
+                }
+            }
+            return _xhr('POST', url, d, after, opt);
+        }
+        
+        function raw_get(url, d, after, opt) {
+            return _get(url, d, after, opt);
+        }
+        
+        function raw_post(url, d, after, opt) {
+            return _post(url, d, after, opt);
+        }
+        
+        function post(url, d, after, opt) {
+            return _post(url, d, function(r, e, s) {
+                after(r || {}, e, s);
+            }, opt);
+        }
+        
+        function preLoad(after) {
+            var i = 0;
+            var d = [];
+            var a = function(v, ty, idx) {
+                if(ty == 1 || ty == 2) {
+                    d[idx] = function() {
+                        var head = document.getElementsByTagName("head")[0];
+                        var el = document.createElement(ty == 1 ? 'script' : 'style');
+                        el.textContent = v;
+                        head.insertBefore(el, head.firstChild);
+                    };
+                }
+                if(i == d.num - 1) {
+                    d.forEach(function(n) {
+                        n();
+                    });
+                    after();
+                } else {
+                   i++;
+                }
+            }
+            
+            d.num = 0;
+            d._count = [0 ,0, 0];
+            setTimeout(function() {
+                _load('js/jquery-3.3.1.min.js', d, a, 1);
+                _load('js/jquery-ui-1.12.1.min.js', d, a, 1);
+                _load('js/jquery.ui.position-2.8.min.js', d, a, 1);
+                _load('js/jquery.contextMenu-2.8.min.js', d, a, 1);
+                _load('css/jquery.contextMenu-2.8.min.css', d, a, 2);
+                
+                _load('js/jquery.ztree.core.min.js', d, a, 1);
+                _load('js/jquery.ztree.exedit.min.js', d, a, 1);
+                _load('js/jquery.ztree.exhide.min.js', d, a, 1);
+                _load('css/zTreeStyle.css', d, a, 2);
+                
+                _load('js/underscore-1.9.1.min.js', d, a, 1);
+                _load('css/gridstack-0.4.0.min.css', d, a, 2);
+                _load('js/grindstack-0.4.0.min.js', d, a, 1);
+                _load('js/gridstack-0.4.0.jQueryUI.min.js', d, a, 1);
+                _load('js/knockout-3.5.0.min.js', d, a, 1);
+                
+                _load('css/vis-4.21.0.min.css', d, a, 2);
+                _load('js/vis-4.21.0-min.js', d, a, 1);
+                
+                _load('js/split-1.5.min.js', d, a, 1);
+                
+                _load('css/semantic-2.4.1.css', d, a, 2);
+                _load('js/semantic-2.4.1.min.js', d, a, 1);
+                
+                _load('css/toast-2.7.2.min.css', d, a, 2);
+                _load('js/toast-2.7.2.min.js', d, a, 1);
+                
+                _load('js/ace-1.4.3.min.js', d, a, 1);
+                _load('js/ace/mode-c_cpp.js', d, a, 1);
+                _load('js/ace/theme-textmate.js', d, a, 1);
+                _load('js/ace/ext-searchbox.js', d, a, 1);
+                
+                _load('css/main.css', d, a, 2);
+                
+                _load('js/picomatch.min.js', d, a, 1);
+                
+                _load('js/differ.min.js', d, a, 1);
+                
+                _load('js/cbor-01.0.min.js', d, a, 1);
+                
+                _load('css/rickshaw.1.6.6.min.css', d, a, 2);
+                _load('js/d3-5.11.0.min.js', d, a, 1);
+                _load('js/rickshaw-1.6.6.min.js', d, a, 1);
+                
+                _load('js/libarchive-1.3.0.min.js', d, a, 1);
+                
+                _load('js/html.js', d, function(v, ty, idx) { 
+                    a(v, ty, idx);
+                    _load_complete = true;
+                }, 1);
+            }, 1);
+        }
+        
+        function login_needed(s, v) {
+            return s.substr(0, 6) !== 'login/' && s != 'about' && s != 'setup' && s != '404' && (!_login_valid || v);
+        }
+        
+        function loaderRem() {
+            var load = document.getElementsByClassName('loader');
+            load[0].setAttribute('style', 'display:none;');
+        }
+        
+        function hash_parse(h) {
+            var m = h.split('?');
+            _search = search_parse(m[1]);
+            return m[0];
+        }
+        
+        function logo_get() {
+            var n = transition_path('login');
+            var res = n._tmpl['main']();
+            var div = document.createElement('div');
+            div.innerHTML = res;
+            var r = [ div.querySelector('.l-logo'),
+                     div.querySelector('.login-title') ];
+            return r;
+        }
+        
+        function preInit() {
+            if(location.protocol !== 'https:') {
+                window.location = location.href.replace('http:', 'https:')
+                return;
+            }
+                     
+            window.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch (String.fromCharCode(e.which).toLowerCase()) {
+                    case 's':
+                        var el = document.activeElement;
+                        if(!el.classList.contains('ace_text-input')) {
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }
+                        break;
+                    }
+                }
+            }, true);
+            
+            window.addEventListener('popstate', function(e){
+                var s = e.state;
+            
+                if(s == null) {
+                    var l = window.location;
+                    s = l.hash ? l.hash.substr(1) : 'login/login';
+                }
+                
+                s = hash_parse(s);
+                
+                clearTimeout(_pop_wait);
+                _pop_wait = setTimeout(function() {
+                    if(login_needed(s)) {
+                        transition('login/login', false, true);
+                    } else {
+                        if(s == 'login/login' && _login_valid) {
+                            s = 'main/welcome';
+                            transition(s, false, true);
+                        } else {
+                            transition(s, true);
+                        }
+                    }
+                }, 200);
+            });
+            
+            window.findArrayIndex = function(arr, fn) {
+                if(arr.findIndex) { 
+                    return arr.findIndex(fn);
+                } else {
+                    var idx = -1;
+                    for (var i = 0; i < arr.length; ++i) {
+                        if(fn(arr[i])) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                    return idx;
+                }
+            };
+            
+            var tr = transition_path('login');
+            tr._langInit = function() {
+                var cl = document.getElementById('clang').childNodes;
+                for(var i = 0, j = 0; i < cl.length; i++) {
+                    if(cl[i].nodeName == 'A') {
+                        cl[i]._idx = j++;
+                        var c = cl[i];
+                        if(!_lang_data[_lang_map[i]]) {
+                            _lang_data[_lang_map[i]] = {};
+                        }
+                        var d = _lang_data[_lang_map[i]];
+                        d.img = c.firstChild.getAttribute("src");
+                        d.lbl = c.innerText;
+                    }
+                }
+            };
+            
+            tr._langBefore = function(idx, ctx) {
+                var orig_in = document.getElementsByTagName('input');
+                var orig = [];
+                for(var i = 0; i < orig_in.length; i++) {
+                    var o = {value:orig_in[i].value,type:orig_in[i].type};
+                    orig.push(o);
+                    if(o.type == 'checkbox') {
+                        o.value = orig_in[i].checked;
+                    }
+                }
+                ctx.form_restore = function() {
+                    var new_in = document.getElementsByTagName('input');
+                    for(var i = 0; i < orig.length; i++) {
+                        if(orig[i].type == 'text' || orig[i].type == 'password' || orig[i].type == 'checkbox') {
+                            if(orig[i].type == 'checkbox') {
+                                var v = orig[i].value ? true : false
+                                new_in[i].checked = v;
+                            } else {
+                                new_in[i].value = orig[i].value;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            tr._langAfter = function(idx, ctx) {
+                var sl = document.getElementById('slang');
+                var ld = _lang_data[_lang_map[idx]];
+                sl.value = ld.lbl;
+                sl.style.backgroundImage = "url('" + ld.img + "')";
+                sl.style.backgroundPosition = "6% center";
+                _lang_idx = idx
+                localStorage.setItem('loginLang', _lang_idx);
+                if(_login_valid) {
+                    _login_valid.l = _lang_idx;
+                }
+                if(ctx.form_restore) {
+                    ctx.form_restore();
+                }
+            };
+            
+            tr._always = []
+            tr._always.push(function() {
+                if(_login_backoff) {
+                    _login_backoff.e.value = _login_backoff.l;
+                    clearTimeout((_login_backoff || {}).t);
+                    _login_backoff = null;
+                }
+                
+                login_error(-1);
+            });
+            
+            for(var l = 0; l < _lang_map.length; l++) {
+                if(!_lang_data[_lang_map[l]]) {
+                    _lang_data[_lang_map[l]] = {};
+                }
+            }
+            
+            var next = function(after) {
+                setTimeout(function(){
+                    var lng = _search['lang'] || navigator.language || navigator.userLanguage;
+                    var lidx = findArrayIndex(_lang_map, function(n){
+                        return lng.indexOf(n) != -1;
+                    }) || 0;
+                    
+                    var sl = localStorage.getItem('loginLang');
+                    if(sl) {
+                        lidx = parseInt(sl);
+                    }
+                    
+                    langUpdate(lidx);
+                    
+                    var link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = old_ie() ? 'css/font-ie.css' : 'css/font.css';
+                    var f = true;
+                    link.onreadystatechange = link.onload = function() {
+                        if(f && (!this.readyState || this.readyState == 'complete')) {
+                            f = false;
+                            var l1 = new FontFaceObserver('Lato', {  weight: 400 });
+                            var l2 = new FontFaceObserver('Lato', {  weight: 700 });
+                            var l3 = new FontFaceObserver('Icons', {  weight: 300 });
+                            var l4 = new FontFaceObserver('Step', {  weight: 300 });
+                            var i = 4;
+                            var r = function() {
+                                if(--i == 0) {
+                                    var fblock = document.getElementById("fblock");
+                                    fblock.parentNode.removeChild(fblock);
+                                    _font_complete = 1;
+                                    step_progress();
+                                }
+                            };
+                            l1.load().then(r).catch(r);
+                            l2.load().then(r).catch(r);
+                            l3.load().then(r).catch(r);
+                            l4.load().then(r).catch(r);
+                        }
+                    };
+                    document.head.appendChild(link);   
+                    
+                    
+                    preLoad(function(){
+                        if(after) {
+                            after();
+                        }
+                        console.log('onload');
+                    });
+                }, 0);
+            }
+            
+            var l = window.location;
+            var t = l.hash ? l.hash.substr(1) : 'login/login';
+            
+            t = hash_parse(t);
+            
+            var afterLoad = function() {
+                var s = document.getElementById('sem_part');
+                s.sheet.disabled = true;
+            };
+            
+            if(ie_check(12)) {
+                langLoad(0, function() {
+                    transition('noie', false, true);
+                });
+                return;
+            }
+            
+            post('/sys/server/', {data:JSON.stringify({cmd:8})}, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                var lo = r.r == 0;
+                if(lo) {
+                    _can_progress = 2;
+                    if(window.domy) {
+                        domy.init();
+                    }
+                    login_add_check();
+                    _login_valid = {id:r.d, p:r.p, l:_lang_idx, r:login_extract(r.c)};
+                    _login_valid.admin = login_admin();
+                    perm_set(r.p);
+                    var c = {l:'',t:r.d,k:r.c,p:0};
+                    window.ws_connect = function() {
+                        wsock_open(JSON.stringify(c));
+                    }
+                    _name = localStorage.getItem('loginName');
+                    if(window['$']){
+                        window['$'].event.trigger({ type: "nameChange"}, [_name]);
+                    }
+                }
+                var needed = login_needed(t, true);
+                if(needed && !lo) {
+                    t = 'login/login';
+                    needed = false;
+                } else
+                if(!needed && lo) {
+                    if(!l.hash || t === 'login/login') {
+                        t = 'main/welcome';
+                        needed = true;
+                    }
+                }
+                
+                if(needed) {
+                    transition('login/wait');
+                    next(function() {
+                        transition(t, false, true);
+                        afterLoad();
+                    });
+                } else {
+                    transition(t, false, true);
+                    next(function() {
+                        afterLoad();
+                    });
+                }
+            }, {responseType:'json'});
+        }
+        
+        function login_current() {
+            return _login_valid;
+        }
+        
+        function login_logout(nr, data) {
+            if(window.domy) {
+                domy.deinit();
+            }
+            if(window.$) {
+                $('body').dimmer('hide');
+            }
+            if(window.onHiddenModal) {
+                window.onHiddenModal();
+            }
+            clearTimeout(_login_check);
+            _login_check = -1;
+            _login_valid = null;
+            perm_set(0);
+            _name = null;
+            wsock_close();
+            window.ws_connect = function() {};
+            if(!nr) {
+                var pd = {data:JSON.stringify({cmd:2})};
+                if(data) {
+                    pd.ext_data = data;
+                }
+                post('/sys/server/', pd, function(d) {
+                    clearCache();
+                    transition('login/login');
+                });
+            } else {
+                clearCache();
+                transition('login/login');
+            }
+        }
+        
+        function login_add_check() {
+            clearTimeout(_login_check);
+            _login_check = setTimeout(function() {
+                login_check();
+            }, 4*60*1000);
+        }
+        
+        function login_check() {
+            post('/sys/server/', {data:JSON.stringify({cmd:8})}, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                var lo = r.r == 0;
+                if(!lo) {
+                    login_logout(true);
+                } else {
+                    login_add_check();
+                }
+            });
+        }
+        
+        function login_error(i, nofade, frm) {
+            var el = document.getElementById('err');
+            var d = el.firstChild;
+            var h = d.firstChild;
+            var p = h.nextSibling;
+            var hm;
+            var m;
+            if(frm) {
+                form_set_ready(frm);
+            }
+            switch(i) {
+                case 0:
+                    hm = polyglot.t('login.eh_fail');
+                    m = polyglot.t('login.e_fail');
+                    break;
+                case 1:
+                    hm = polyglot.t('login.eh_exist');
+                    m = polyglot.t('login.e_exist');
+                    break;
+                case 2:
+                    hm = polyglot.t('login.eh_pwdm');
+                    m = polyglot.t('login.e_pwdm');
+                    break;
+                case 3:
+                    hm = polyglot.t('login.eh_ticket');
+                    m = polyglot.t('login.e_ticket');
+                    break;
+                case 4:
+                    hm = polyglot.t('login.eh_ename');
+                    m = polyglot.t('login.e_ename');
+                    break;
+                case 5:
+                    hm = polyglot.t('login.eh_nname');
+                    m = polyglot.t('login.e_nname');
+                    break;
+                default:
+                    if(nofade) {
+                        d.classList.add('hide');
+                    } else {
+                        _fadeOut(d, 200, function() {
+                            d.classList.add('hide');
+                        });
+                    }
+                    return;
+            }
+            h.textContent = hm;
+            p.textContent = m;
+            _fadeIn(d, 200);
+            d.classList.remove('hide');
+        }
+        
+        function login_time(v) {
+            var date = new Date(null);
+            date.setSeconds(v);
+            return date.toISOString().substr(11, 8);
+        }
+        
+        function login_backoff(v, c) {
+            var s = !_login_backoff || c;
+            if(s) {
+                var el = document.getElementById('submit');
+                if(el) {
+                    if(!_login_backoff) {
+                        _login_backoff = {v:v || 1, d:Date.now(), e:el, l:polyglot.t('login.sin')};
+                    }
+                    if(_login_backoff.v > 0) {
+                        el.innerText = login_time(_login_backoff.v);
+                        _login_backoff.t = setTimeout(function() {
+                            var nd = Date.now();
+                            var d = Math.floor((nd - _login_backoff.d)/1000);
+                            _login_backoff.d = nd;
+                            _login_backoff.v -= d;
+                            login_backoff(0, true);
+                        }, 1000);
+                    } else {
+                        el.innerText = _login_backoff.l;
+                        _login_backoff = null;
+                    }
+                }
+            } else if(v) {
+                _login_backoff.v = v || 1;
+                _login_backoff.d = Date.now();
+            }
+        }
+    
+        function form_set_load(frm) {
+            if(frm.disabled) {
+                return false;
+            }
+            frm.disabled = true;
+            frm.classList.add('nomouse');
+            var btn = frm.getElementsByTagName('button')[0];
+            if(btn) {
+                btn.classList.add('loading');
+            }
+            return true;
+        }
+    
+        function form_set_ready(frm) {
+            frm.disabled = false;
+            frm.classList.remove('nomouse');
+            var btn = frm.getElementsByTagName('button')[0];
+            if(btn) {
+                btn.classList.remove('loading');
+            }
+        }
+            
+        function login_reset(ev, el_frm) {
+            ev.preventDefault();
+            if(!form_set_load(el_frm))
+                return;
+            login_error(-1, true);
+            
+            var frm = new FormData();
+            var data = {a:form_get(el_frm, 'name')};
+            frm.append('data', '{"cmd":5}');
+            frm.append('ext_data', JSON.stringify(data));
+            post('/sys/server/', frm, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                el_frm.reset();
+                form_set_ready(el_frm);
+                if(r.r == 0) {
+                    transition('login/reset/ok');
+                } else {
+                    /* TODO */
+                    if(r.a != -1) {
+                        login_error(0);
+                    } else {
+                        login_error(1);
+                    }
+                }
+            }, {responseType:'json'});
+        }
+        
+        function login_recover(ev, el_frm) {
+            ev.preventDefault();
+            if(!form_set_load(el_frm))
+                return;
+            login_error(-1, true);
+            
+            var frm = new FormData();
+            
+            if(form_get(el_frm, 'password') !== form_get(el_frm, 'rpassword')) {
+                login_error(2, false, el_frm);
+                return;
+            }
+            
+            var data = {a:form_get(el_frm, 'name'), b:form_get(el_frm, 'ticket')};
+            frm.append('data', '{"cmd":6}');
+            frm.append('ext_data', JSON.stringify(data));
+            frm.append('password', form_get(el_frm, 'password'));
+            post('/sys/server/', frm, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                el_frm.reset();
+                form_set_ready(el_frm);
+                if(r.r == 0) {
+                    transition('login/recover/ok');
+                } else {
+                    /* TODO */
+                    if(r.a != -1) {
+                        login_error(0);
+                    } else {
+                        login_error(1);
+                    }
+                }
+            }, {responseType:'json'});
+        }
+        
+        function login_register(ev, el_frm) {
+            ev.preventDefault();
+            if(!form_set_load(el_frm))
+                return;
+            login_error(-1, true);
+            
+            var frm = new FormData();
+            
+            if(form_get(el_frm, 'password') !== form_get(el_frm, 'rpassword')) {
+                login_error(2, false, el_frm);
+                return;
+            }
+            
+            var data = {a:form_get(el_frm, 'name'),b:form_get(el_frm, 'ticket'),c:form_get(el_frm, 'mail')};
+            frm.append('data', '{"cmd":0}');
+            frm.append('ext_data', JSON.stringify(data));
+            frm.append('password', form_get(el_frm, 'password'));
+            post('/sys/server/', frm, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                el_frm.reset();
+                form_set_ready(el_frm);
+                if(r.r == 0) {
+                    transition('login/register/ok');
+                } else {
+                    /* TODO */
+                    if(r.a != -1) {
+                        login_error(0);
+                    } else {
+                        login_error(1);
+                    }
+                }
+            }, {responseType:'json'});
+        }
+        
+        function host_get() {
+            return window.location.hostname;
+        }
+        
+        function wsock_open(c) {
+            if(_wsock) {
+                wsock_close();
+            }
+            _wsock = new WebSocket('wss://' + host_get() + '/sys/ws/?' + c);
+            _wsock.binaryType = 'arraybuffer';
+            var w = _wsock;
+            var open = -1;
+            function onOpen() {
+                if(window['$']) {
+                    window['$'].event.trigger({ type: "wsock_open" });
+                } else {
+                    open = setTimeout(function() {
+                        onOpen();
+                    }, 200);
+                }
+            }
+            _wsock.onopen = function () {
+                onOpen();
+            };
+            
+            _wsock.onerror = function (error) {
+              console.log('WebSocket Error ' + error);
+            };
+            
+            var patch = function(e) {
+                if(window.onMessage) {
+                    _wsock.onmessage = window.onMessage;
+                    window.onMessage(e);
+                } else {
+                    setTimeout(function() {
+                        patch(e);
+                    }, 200);
+                }
+            };
+            
+            _wsock.onmessage = patch;
+            
+            _wsock.onclose = function(e) {
+                clearTimeout(open);
+                open = -1;
+                if(window['$']) {
+                    window['$'].event.trigger({ type: "wsock_close" });
+                }
+                setTimeout(function() {
+                    if(_wsock == w) {
+                        wsock_open(c);
+                    }
+                }, 1000);
+            };
+            
+            window.wss = function(v) {
+                try {
+                    if(_wsock.readyState === _wsock.OPEN) {
+                        _wsock.send(v);
+                    } else {
+                        return false;
+                    }
+                } catch(e) {
+                    return false;
+                }
+                return true
+            }
+        }
+        
+        function wsock_close() {
+            if(_wsock) {
+                _wsock.onopen = _wsock.onerror = _wsock.onmessage = _wsock.onclose = function () {
+                };
+                _wsock.close();
+                _wsock = null;
+                if(window.message_clear){
+                    window.message_clear();
+                }
+                window.wss = function() {
+                    return false;
+                }
+            }
+        }
+        
+        function form_get(el_frm, name) {
+            var n = el_frm.querySelectorAll('[name=' + name + ']')[0];
+            if(n.getAttribute('type') === 'checkbox') {
+                return n.matches(':checked') ? 1 : 0;
+            }
+            return n.value;
+        }
+        
+        function login_extract(v) {
+            var s = v.indexOf('"n":') + 4;
+            var e = v.indexOf(',', s);
+            return v.substring(s, e);
+        }
+            
+        function login_post(ev, el_frm) {
+            clearCache();
+            ev.preventDefault();
+            if(_login_backoff) {
+                login_error(-1, true);
+                login_error(0);
+                return;
+            }
+            if(!form_set_load(el_frm))
+                return;
+            login_error(-1, true);
+            var frm = new FormData();
+            var k = document.getElementById('keep');
+            var name = form_get(el_frm, 'name');
+            frm.append('data', '{"cmd":1}');
+            frm.append('ext_data', JSON.stringify('' + (k.checked ? 1 : 0)));
+            frm.append('name', name);
+            frm.append('password', form_get(el_frm, 'password'));
+            post('/sys/server/', frm, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                el_frm.reset();
+                form_set_ready(el_frm);
+                if(r.r == 0) {
+                    var c = {l:'',t:r.d,k:r.c,p:0};
+                    if(window.domy) {
+                        domy.init();
+                    }
+                    login_add_check();
+                    _login_valid = {id:r.d, p:r.p, l:_lang_idx, s:r.s, r:login_extract(r.c)};
+                    _login_valid.admin = login_admin();
+                    perm_set(r.p);
+                    _name = name;
+                    window.ws_connect = function() {
+                        wsock_open(JSON.stringify(c));
+                    }
+                    if(window['$']){
+                        window['$'].event.trigger({ type: "nameChange"}, [_name]);
+                    }
+                    localStorage.setItem('loginName', _name);
+                    
+                    var go = function(v) {
+                        if(v && _step != 4) {
+                            transition('login/wait');
+                        }
+                        if(_step != 4) {
+                            setTimeout(go, 500);
+                        } else {
+                            transition('main/welcome');
+                        }
+                    }
+                    go(1);
+                } else {
+                    if(r.a != -1) {
+                        login_error(0);
+                        login_backoff(r.l || 0);
+                    } else {
+                        login_error(1);
+                    }
+                }
+            }, {responseType:'json'});
+        }
+        
+        function redirect(t, e, s) {
+            var start = Date.now(); 
+            var go = function(r) {
+                if(r.i == -1) {
+                    e.textContent = '';
+                    return;
+                }
+                var d = Math.floor((Date.now() - start)/1000);
+                e.textContent = s - d;
+                if(d >= s) {
+                    e.textContent = '';
+                    clearInterval(r.i);
+                    r.i = -1;
+                    transition(t, false, true);
+                }
+            }
+            var r = {};
+            r.i = setInterval(function() {
+                go(r);
+            }, 1000);
+            go(r);
+            return r;
+        }
+        
+        function transition_path(to) {
+            var a = to.split('/');
+            var c = _page_ctx;
+            for(var i = 0; i < a.length; i++) {
+                var l = a[i];
+                if(!c[l]) {
+                    c[l] = {};
+                }
+                c = c[l];
+            }
+            return c;
+        }
+        
+        function menu_unset() {
+            var a = _menu_active;
+            $(a).removeClass('active');
+            var sm = $('.sidebar .content.active');
+            sm.removeClass('active');
+            sm.prev().removeClass('active');
+            var parent = a ? $(a.parentNode) : null;
+            if(parent && parent.hasClass('content')) {
+                parent.removeClass('active');
+                parent.prev().removeClass('active');
+            }
+            _menu_active = null;
+        }
+        
+        function menu_set(a) {
+            _menu_active = a;
+            $(a).addClass('active');
+            var parent = a ? $(a.parentNode) : null;
+            if(parent && parent.hasClass('content')) {
+                parent.addClass('active');
+                parent.prev().addClass('active');
+            }
+        }
+        
+        function menu_update(o, n) {
+            if(!window["$"]) {
+                return;
+            }
+            var k = n.join('/');
+            menu_unset();
+            var r = $("a[onclick*='" + k + "']");
+            r = r.filter(function(n) {
+                return $(r[n]).attr('onclick').indexOf("'" + k + "'") != -1;
+            });
+            menu_set(r[0]);
+        }
+        
+        function mtrans(to, item) {
+            transition(to);
+            menu_unset();
+            menu_set(item);
+        }
+        
+        function ie_check(i) {
+            var n = navigator.userAgent.toLowerCase();
+            var ie = n.indexOf('trident') != -1 ? 11 : 0;
+            ie = ie || ((n.indexOf('msie') != -1) ? parseInt(n.split('msie')[1]) : false);
+            
+            return ie && ie < i;
+        }
+      
+        function page_notfound(p, i) {
+            p.length = i;
+            _page_state.t = p.join('/');
+            _in_transition = false;
+            _next_transition = null;
+            transition('404', true);
+        }
+
+        function transition(to, nopush, needPush) {
+            var p = to.split('/');
+            var c = _page_ctx;
+            var i = 0;
+            var n;
+            if(_in_transition) {
+                _next_transition = function() {
+                    transition(to, nopush, needPush);
+                };
+                return;
+            }
+            if(window.$) {
+                $('.context-menu-list').trigger('contextmenu:hide');
+            }
+            _in_transition = true;
+            var atrans = function() {
+                var f = _next_transition;
+                _in_transition = false;
+                if(f) {
+                    _next_transition = null;
+                    f();
+                }
+            }
+            if(_page_state.t != to) {
+                var old = _page_state.t;
+                var op = old ? old.split('/') : [];
+                var end = function() {
+                    if(p[0] == 'main') {
+                        menu_update(op, p);
+                    }
+                    if((old || needPush) && !nopush) {
+                        try {
+                            window.history.pushState(null, "", "#" + to);
+                        } catch (err) {
+                            alert(err.message);
+                        }
+                    }
+                    atrans();
+                }
+                _page_state.t = to;
+                while(p[i] == op[i]) {
+                    n = c[p[i]];
+                    c = n;
+                    i++;
+                    if(n) {
+                        runAlways(n, true);
+                    }
+                }
+                var k = c;
+                var t = [];
+                var j = i;
+                for(; j < op.length; j++) {
+                    n = k[op[j]];
+                    k = n;
+                    t.push(n);
+                }
+                t.reverse();
+                var afterUnload = function() {
+                    var la = [];
+                    if(_lang_idx == -1) {
+                        end();
+                        return;
+                    }
+                    for(; i < p.length; i++) {
+                        n = c[p[i]];
+                        if(!n) {
+                            page_notfound(p, i);
+                            return;
+                        }
+                        if(n._load) {
+                            n._load();
+                        }
+                        if(n._tmplLoad) {
+                            n._tmplLoad();
+                        }
+                        if(n._langInit) {
+                            n._langInit();
+                        }
+                        if(n._langAfter) {
+                            la.push(n);
+                        }
+                        runAlways(n);
+                        c = n;
+                    }
+                    for(i = 0; i < la.length; i++) {
+                        la[i]._langAfter(_lang_idx, {});
+                    }
+                    end();
+                }
+                var unload = function(idx) {
+                    if(idx < t.length) {
+                        var next = function() {
+                            unload(idx + 1);
+                        }
+                        n = t[idx];
+                        if(!n) {
+                            next();
+                            return;
+                        }
+                        if(n._unload) {
+                            n._unload();
+                        }
+                        if(n._tmplUnLoad) {
+                            n._tmplUnLoad(next);
+                        } else {
+                            next();
+                        }
+                    } else {
+                        afterUnload();
+                    }
+                }
+                unload(0);
+            } else {
+                for(; i < p.length; i++) {
+                    n = c[p[i]];
+                    if(!n) {
+                        page_notfound(p, i);
+                        return;
+                    }
+                    runAlways(n, true);
+                    c = n;
+                }
+                if(needPush && !nopush) {
+                    try {
+                        window.history.pushState(null, "", "#" + to);
+                    } catch (err) {
+                        alert(err.message);
+                    }
+                }
+                atrans();
+            }
+        }
+        
+        function langReset(idx) {
+            if(!_page_state.t) {
+                setTimeout(function() {
+                    langReset(idx);
+                }, 50);
+                return;
+            }
+            if(_lang_idx == idx) {
+                return;
+            }
+            var p = _page_state.t.split('/');
+            var c = _page_ctx;
+            var pctx = [];
+            var n;
+            var la = [];
+            for(var i = 0; i < p.length; i++) {
+                n = c[p[i]];
+                var ctx = {};
+                pctx.push(ctx);
+                if(n._langBefore) {
+                    n._langBefore(idx, ctx);
+                }
+                c = n;
+            }
+            c = _page_ctx;
+            for(i = 0; i < p.length; i++) {
+                n = c[p[i]];
+                
+                if(n._tmplLoad) {
+                    n._tmplLoad(true);
+                }
+                
+                if(n._langInit) {
+                    n._langInit();
+                }
+                
+                if(n._langAfter) {
+                    la.push({n:n, ctx:pctx[i]});
+                }
+                c = n;
+            }
+            for(i = 0; i < la.length; i++) {
+                c = la[i];
+                c.n._langAfter(idx, c.ctx);
+            }
+        }
+        
+        function langLoad(idx, after) {
+            var ln = _lang_map[idx];
+            var ld = _lang_data[ln];
+            if(ld.data) {
+                polyglot.locale(ln);
+                polyglot.extend(ld.data);
+                langReset(idx);
+                after();
+            } else {
+                _nload('lang/' + ln + '.json', {}, function(d){
+                    ld.data = d;
+                    var il = _lang_idx == -1;
+                    if(il) {
+                        Handlebars.registerHelper('l',
+                            function(str){
+                              return polyglot.t(str);
+                            }
+                        );
+                    }
+                    polyglot.locale(ln);
+                    polyglot.extend(ld.data);
+                    langReset(idx);
+                    after();
+                    if(il) {
+                        loaderRem();
+                    }
+                }, 0, {responseType:'json'});
+            }
+        }
+        
+        function langUpdate(idx) {
+            _lang_complete = 0;
+            step_progress();
+            langLoad(idx, function() {
+                _lang_idx = idx;
+                _lang_complete = 1;
+                localStorage.setItem('loginLang', _lang_idx);
+                if(_login_valid) {
+                    _login_valid.l = _lang_idx;
+                }
+                step_progress();
+            });
+        }
+        
+        function langOpen() {
+            var dl = document.getElementById('dlang');
+            var il = document.getElementById('ilang');
+            var lb = dl.previousSibling;
+            dl.classList.toggle('show');
+            lb.classList.toggle('hide');
+            var d = {n:0};
+            var rem = function() {
+                window.removeEventListener('click', d.f);
+                dl.classList.toggle('show');
+                lb.classList.toggle('hide');
+                var ov = il.value;
+                if(ov != '')  {
+                    il.value = '';
+                    langFilter();
+                }
+            }
+            d.f = function(e) {
+                if(d.n == 1) {
+                    var p =  e.target || e.srcElement;
+                    while(p && p != dl)
+                        p = p.parentNode;
+                    if(p != dl) {
+                        rem();
+                    } else {
+                        p = e.target || e.srcElement;
+                        if(p.nodeName == 'A') {
+                            rem();
+                            langUpdate(p._idx);
+                        }
+                    }
+                } else {    
+                    d.n += 1;
+                }
+            };
+            window.addEventListener('click', d.f);
+            il.focus();
+        }
+        
+        function langFilter() {
+            var input = document.getElementById('ilang');
+            var ct = document.getElementById('dlang');
+            var se = input.value.toLowerCase();
+            var a = ct.getElementsByTagName('a');
+            for(var i = 0; i < a.length; i++) {
+                var v = a[i].textContent || a[i].innerText;
+                if(v.toLowerCase().indexOf(se) == -1) {
+                    a[i].style.display = 'none';
+                } else {
+                    a[i].style.display = '';
+                }
+            }
+        }
+        
+        function autofill(el) {
+            var i = this;
+            (function() {
+                var f = function() {
+                    el.removeEventListener(_transEv, f);
+                    var s = window.getComputedStyle(el);
+                    var ne = document.createElement('div');
+                    ne.style.backgroundColor = '#FFF';
+                    setTimeout(function() {
+                        if((el.disabled && el.value != '') || (!el.disabled && ((s.backgroundColor != ne.style.backgroundColor || 
+                           el.value != '')))) {
+                            el.parentNode.classList.add('fl-is-active');
+                        } else {
+                            el.parentNode.classList.remove('fl-is-active');
+                        }
+                    }, 1);
+                }
+                el.addEventListener(_transEv, f);
+            })();
+        }
+        
+        function focus_jail(el) {
+            if(_focus_jail) {
+                _focus_jail.release();
+                _focus_jail = null;
+            }
+            if(el) {
+                var f = el.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if(f.length == 0) {
+                    return;
+                }
+                var body = $('body')[0];
+                var first = f[0];
+                var last = f[f.length - 1];
+    
+                _focus_jail = {};
+                
+                var general = function(e) {
+                    if(e.keyCode === 9) {
+                        first.focus();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+                
+                var down = function(e) {
+                    if(e.keyCode === 9 && e.shiftKey) {
+                        last.focus();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+                
+                var up = function(e) {
+                    if(e.keyCode === 9) {
+                        first.focus();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+                
+                _focus_jail.release = function() {
+                    body.removeEventListener('keydown', general);
+                    last.removeEventListener('keydown', up);
+                    if(first !== last) {
+                        first.removeEventListener('keydown', down);
+                    }
+                }
+    
+                body.addEventListener('keydown', general);
+                last.addEventListener('keydown', up);
+                if(first !== last) {
+                    first.addEventListener('keydown', down);
+                }
+            }
+        }
+        
+        function login_get_name() {
+            return _name;
+        }
+        
+        function step_progress() {
+            var st = document.getElementsByClassName('steps');
+            if(st.length == 0) {
+                return;
+            }
+            if(_can_progress == 0) { 
+                setTimeout(function() {
+                    step_progress();   
+                }, 200); 
+                return;
+            } 
+            if(_can_progress != 1) {
+                return;
+            }
+                    
+            if(!_lang_complete) {
+                if(_step == 4) {
+                    var t = st[0];
+                    _fadeIn(t, 200);
+                } else {
+                    step_render(_step + 1, 0);
+                }
+                _step = 0;
+                step_render(4, 0);
+            }
+            
+            step_render(1);
+            step_render(2);
+            step_render(3);
+            step_render(4);
+            
+            while(true)
+            {
+                var n = 1;
+                switch(_step) {
+                    case 0:
+                        if(_lang_complete && _font_complete) {
+                            n = 2;
+                            _step++;
+                        }
+                        step_render(1, n);
+                        break;
+                    case 1:
+                        if(_html_complete) {
+                            n = 2;
+                            _step++;
+                        }
+                        step_render(2, n);
+                        break;
+                    case 2:
+                        if(_css_complete) {
+                            n = 2;
+                            _step++;
+                        }
+                        step_render(3, n);
+                        break;
+                    case 3:
+                        if(_js_complete) {
+                            n = 2;
+                            _step++;
+                            var t = st[0];
+                            _fadeOut(t, 5000, function() {});
+                        }
+                        step_render(4, n);
+                        break;
+                }
+                if(n != 2) {
+                    break;
+                }
+            }
+        }
+        
+        function step_render(i, n) {
+            var desc = ['login.lang', 'login.html', 'login.css', 'login.js'];
+            var icon = ['world', 'cubes',  'file alternate', 'file code'];
+            var html;
+            var idx = i - 1;
+            var st = document.getElementsByClassName('steps');
+            if(st.length == 0) {
+                return;
+            }
+            var t = st[0];
+            if(!_can_progress) { 
+                setTimeout(function() {
+                    step_render(i, n);   
+                }, 200); 
+                return;
+            }
+            t = t.getElementsByClassName('s' + i)[0];
+            var div = document.createElement('div');
+            var title = polyglot.t('login.step', {idx:i});
+            if(n === undefined) {
+                n = parseInt(t.getAttribute('s') || '0');
+            }
+            
+            if(n == 2)
+                title = polyglot.t(desc[idx]);
+            
+            var s = ['disabled', 'active', 'completed'];
+            
+            html = '<div class="step ' + s[n] + ' s' + i +'" s="' + n + '">' +
+                        (_font_complete ? '<i class="' + icon[idx] + ' disabled icon" style="opacity: 0.8;"></i>' : '') +
+                        '<div class="content">' +
+                            '<div class="title">' + title + '</div>' +
+                            (n == 1 ? '<div class="description">' + polyglot.t(desc[idx]) + '</div>' : '') +
+                        '</div>' +
+                        (n == 1 ? '<div class="ui active small inline loader" style="margin-left: 20px;"></div>' : '' ) +
+                    '</div>';
+            div.innerHTML = html;
+            t.parentNode.replaceChild(div.firstChild, t);
+        }
+    </script>
+</head>
+<body>
+    <div path="login" template attach="modal"><div style="position:fixed;top:0;right:0.5em;z-index: 99"><a target="_blank" href="#about">{{l 'menu.about'}}</a></div></div>
+    <div id="modal"></div>
+    <div class="loader">loading APPUDO Probe...</div>
+    <div id="main" class="ui fheight">
+    </div>
+    <div path="about" template attach="main">
+        ###{"file":"templates_www_source/about.html"}###
+    </div>
+    <div path="setup" template attach="main">
+        ###{"file":"templates_www_source/setup.html"}###
+    </div>
+    <div path="404" template attach="main">
+        ###{"file":"templates_www_source/404.html"}###
+    </div>
+    <div path="noie" template attach="main">
+        ###{"file":"templates_www_source/noiesupport.html"}###
+    </div>
+    <div path="login" template attach="main">
+        <script>
+            _can_progress = 1;
+            if(_step == 4) {
+                var t = document.getElementsByClassName('steps')[0];
+                t.classList.add('hide');
+            }
+            step_progress();
+        </script>
+        <div style="text-align:center;">   
+            <div style="display:inline-block;vertical-align:middle;" class="form-base login-form">  
+                <div style="display:inline-block;width:100%;min-height: 247px;">
+            		<div class="l-logo" style="min-height:60px;"><img class="logo" src="img/logo.svg" width="26%" height="26%" inline/></div>
+                	<div class="login-title" style="min-height:58px;"><img src="img/title.svg" title="APPUDO Probe" width="90%" inline/></div> 
+                    <div id="hdr"></div>
+                    <div id="err" style="margin-bottom: 15px;">
+                        <div class="ui negative message form-row hide">
+                            <div class="header"></div>
+                            <p></p>
+                        </div>
+                    </div>
+                	<div class="ui large form fl-form fl-style-1">
+                        <div class="form-row">
+                            <div class="dropdown">
+                                <div class="fl-wrap fl-wrap-input fl-is-required fl-is-active">
+                                    <label for="slang" class="fl-label">{{l 'login.lang'}}</label>
+                                </div>
+                                <div id="dlang" class="dropdown-content">
+                                    <input id="ilang" type="text" placeholder="{{l 'login.find'}}" class="db ui dropdown selection no-label" oninput="langFilter()">
+                                    <div id="clang" class="dropdown-inner">
+                                        <a><img src="img/lang/gb.png" alt="gb"/>{{l 'login.len'}}</a>
+                                        <a><img src="img/lang/de.png" alt="de"/>{{l 'login.lde'}}</a>
+                                    </div>
+                                </div>
+                                <i class="dropdown icon" style="position:absolute;top:1rem;right:0.3rem;z-index:20;"></i>
+                                <input type="button" id="slang" onclick="langOpen();" class="db  ui dropdown selection" value="X">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="lfrm"></div>
+                    <div path="login/wait" attach="lfrm" template>
+                        <div attach="hdr" template>
+                            <div class="ui small header form-row">{{l 'login.wait'}}</div>
+                        </div>
+                    </div> 
+                    <div path="login/register" attach="lfrm" template>
+                        <script always>
+                            if(_search['ticket']) {
+                                var el = document.getElementById("ticket");
+                                el.value = _search['ticket'];
+                            }
+                            if(_search['mail']) {
+                                var el = document.getElementById("mail");
+                                el.value = _search['mail'];
+                            }
+                        </script>
+                        <div attach="hdr" template>
+                            <div class="ui small header form-row">{{l 'login.register'}}</div>
+                        </div>
+                        <div id="msg">
+                        </div>
+                        <div path="login/register/ok" attach="msg" template>
+                            {{l 'login.reg_ok'}}
+                            <div id="rd">
+                            </div>
+                            <script always>
+                                var tr = this.path;
+                                if(tr._unload) {
+                                    tr._unload();
+                                }
+                                var el = document.getElementById('rd');
+                                var r = redirect('login/login', el, 5);
+                                tr._unload = function() {
+                                    clearInterval(r.i);
+                                    r.i = -1;
+                                }
+                            </script>
+                        </div>
+                        <script always>
+                            var tr = this.path;
+                            if(this.lb) {
+                                this.lb.destroy();
+                            }
+                    		var lb = this.lb = new FloatLabels('form', {'style':1, customEvent:autofill});
+                            tr._langAfter = function() {
+                                lb.rebuild();
+                            }
+                        </script>
+                        <form action="#" method="post" class="ui large form" onsubmit="login_register(event, this);">
+                            <div class="form-row">
+                                <label for="ticket">{{l 'login.ticket'}}</label>
+                                <input id="ticket" name="ticket" type="text" class="field" placeholder="{{l 'login.ticket'}}" required="required">
+                            </div>
+                            <div class="form-row">
+                                <label for="name">{{l 'login.uname'}}</label>
+                                <input id="name" name="name" type="text" class="field" placeholder="{{l 'login.uname'}}" required="required" autocomplete="new-username">
+                            </div>
+                            <div class="form-row">
+                                <label for="password">{{l 'login.upwd'}}</label>
+                                <input id="password" name="password" type="password" class="field" placeholder="{{l 'login.upwd'}}" required="required" autocomplete="new-password">
+                            </div>
+                            <div class="form-row">
+                                <label for="rpassword">{{l 'login.rpwd'}}</label>
+                                <input id="rpassword" name="rpassword" type="password" class="field" placeholder="{{l 'login.rpwd'}}" required="required" autocomplete="new-password">
+                            </div>
+                            <input id="mail" name="mail" type="hidden">
+                            <button id="submit" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'login.sreg'}}</button>
+                        </form>
+                    </div>
+                    <div path="login/reset" attach="lfrm" template>
+                        <div attach="hdr" template>
+                            <div class="ui small header form-row">{{l 'login.reset'}}</div>
+                        </div>
+                        <div id="msg">
+                        </div>
+                        <div path="login/reset/ok" attach="msg" template>
+                            {{l 'login.rst_ok'}}
+                            <div id="rd">
+                            </div>
+                            <script always>
+                                var tr = this.path;
+                                if(tr._unload) {
+                                    tr._unload();
+                                }
+                                var el = document.getElementById('rd');
+                                var r = redirect('login/recover', el, 5);
+                                tr._unload = function() {
+                                    clearInterval(r.i);
+                                    r.i = -1;
+                                }
+                            </script>
+                        </div>
+                        <script always>
+                            var tr = this.path;
+                            if(this.lb) {
+                                this.lb.destroy();
+                            }
+                    		var lb = this.lb = new FloatLabels('form', {'style':1, customEvent:autofill});
+                            tr._langAfter = function() {
+                                lb.rebuild();
+                            }
+                        </script>
+                        <form action="#" method="post" class="ui large form" onsubmit="login_reset(event, this);">
+                            <div class="form-row">
+                                <label for="name">{{l 'login.uname'}}</label>
+                                <input id="name" name="name" type="text" class="field" placeholder="{{l 'login.uname'}}" required="required" autocomplete="username">
+                            </div>
+                            <button id="submit" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'login.srst'}}</button>    
+                        </form>	
+                    </div>
+                    <div path="login/recover" attach="lfrm" template>
+                        <script always>
+                            if(_search['ticket']) {
+                                var el = document.getElementById("ticket");
+                                el.value = _search['ticket'];
+                            }
+                            if(_search['name']) {
+                                var el = document.getElementById("name");
+                                el.value = _search['name'];
+                            }
+                        </script>
+                        <div attach="hdr" template>
+                            <div class="ui small header form-row">{{l 'login.recover'}}</div>
+                        </div>
+                        <div id="msg">
+                        </div>
+                        <div path="login/recover/ok" attach="msg" template>
+                            {{l 'login.rec_ok'}}
+                            <div id="rd">
+                            </div>
+                            <script always>
+                                var tr = this.path;
+                                if(tr._unload) {
+                                    tr._unload();
+                                }
+                                var tr = this.path;
+                                var el = document.getElementById('rd');
+                                var r = redirect('login/login', el, 5);
+                                tr._unload = function() {
+                                    clearInterval(r.i);
+                                    r.i = -1;
+                                }
+                            </script>
+                        </div>
+                        <script always>
+                            var tr = this.path;
+                            if(this.lb) {
+                                this.lb.destroy();
+                            }
+                    		var lb = this.lb = new FloatLabels('form', {'style':1, customEvent:autofill});
+                            tr._langAfter = function() {
+                                lb.rebuild();
+                            }
+                        </script>
+                        <form action="#" method="post" class="ui large form" onsubmit="login_recover(event, this);">
+                            <div class="form-row">
+                                <label for="password">{{l 'login.upwd'}}</label>
+                                <input id="password" name="password" type="password" class="field" placeholder="{{l 'login.upwd'}}" required="required" autocomplete="new-password">
+                            </div>
+                            <div class="form-row">
+                                <label for="rpassword">{{l 'login.rpwd'}}</label>
+                                <input id="rpassword" name="rpassword" type="password" class="field" placeholder="{{l 'login.rpwd'}}" required="required" autocomplete="new-password">
+                            </div>
+                            <input id="ticket" name="ticket" type="hidden" required="required">
+                            <input id="name" name="name" type="hidden" required="required" autocomplete="new-username">
+                            <button id="submit" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'login.srecv'}}</button>      
+                        </form>	
+                    </div>
+                    <div path="login/login" attach="lfrm" template>
+                        <script always>
+                            var tr = this.path;
+                            if(this.lb) {
+                                this.lb.destroy();
+                            }
+                    		var lb = this.lb = new FloatLabels('form', {'style':1, customEvent:autofill});
+                            tr._langAfter = function() {
+                                lb.rebuild();
+                            }
+                        </script>
+                        <form action="#" method="post" class="ui large form" onsubmit="login_post(event, this);">
+                            <div class="form-row">
+                                <label for="name">{{l 'login.uname'}}</label>
+                                <input id="name" name="name" type="text" class="field" placeholder="{{l 'login.uname'}}" required="required" autocomplete="username">
+                            </div>
+                            <div class="form-row">
+                                <label for="password">{{l 'login.upwd'}}</label>
+                                <input id="password" name="password" type="password" class="field" placeholder="{{l 'login.upwd'}}" required="required" autocomplete="current-password">
+                            </div>
+                            <div class="form-row large clearfix ui checkbox">
+                                <input id="keep" type="checkbox"><label class="checkbox-inline nosel" for="keep" >{{l 'login.expr'}}</label>
+                                <a href="javascript:transition('login/reset')" class="forgot-link">{{l 'login.lost'}}</a>
+                            </div>
+                            <button id="submit" type="submit" class="ui large button btn btn-primary btn-block btn-lg">{{l 'login.sin'}}</button>    
+                        </form>			
+                    </div>
+                </div>
+            </div>
+            <div path="login/login" id="lrf" template class="text-center txt">{{l 'login.inv'}} <a href="javascript:transition('login/register')">{{l 'login.creat'}}</a></div>
+            <br> 
+            <div style="display:inline-block;">    
+                <div style="margin-top:2em;min-height: 75px;" class="ui steps tablet unstackable">
+                    <div class="s1"></div>
+                    <div class="s2"></div>
+                    <div class="s3"></div>
+                    <div class="s4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script inline>window.onload = function() {preInit();}</script>
+</body>
+</html>

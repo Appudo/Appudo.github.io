@@ -1,0 +1,480 @@
+<script sub="setting">
+    console.log('setting');
+    var _this = this;
+            
+    $('#topbar .ui.edit.dropdown').dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'hide'
+    });  
+    
+    this.settAddR = function() {
+        $('.ui.modal.settingAddRepo').modal('show');
+        ctx['setting_add_repo'].onOpen(function(d) {
+            sub.onAddRepo(d);
+        });
+    };
+    
+    var lock = lock_post_init(sub);
+    var rFilter = $('#repoFilter');
+    var cFilter = $('#crossFilter');
+    
+    search_filter('#repoFilter', '#right');   
+    search_filter('#crossFilter', '#center');   
+    
+
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { return sub.pane(i); });
+    
+    (function(){
+        $('#center').css('display', 'none');
+        var _ctx = {};
+        var _sizes = [50, 25, 25];
+        var _panes = ['#left', '#center', '#right'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, _sizes, _ctx);
+        }
+        
+        sub.split();
+    })();
+
+    (function() {
+        _this.onChange = function() {
+            
+        };
+    })();
+
+    (function() {
+        var l = $('.repoList');
+        var p = $('.repoPage');
+        var n = {page:'main/setting',
+                 sub:'setting',
+                 pg:'sub.requestRepos(p)',
+                 kd:'sub.requestRepos(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChange);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddRepo = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetRepos = function() {
+            paging_reset(n);
+            sub.requestRepos();
+        }
+        
+        var s = list_search(rFilter, sub.resetRepos);
+        
+        sub.lockList = function() {
+            if(nl == 0) {
+                rFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                rFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestRepos = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChange();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:120}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/setting'),sub=ctx['setting'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('setting.rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('setting.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:123}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.repoList .item', 
+            callback:function(key, options) {
+                _this.onChange();
+                j()
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    
+
+    (function() {
+        var c = $('#center');
+        var l = $('.crossList');
+        var p = $('.crossPage');
+        var n = {page:'main/setting',
+                 sub:'setting',
+                 pg:'sub.requestCross(p)',
+                 kd:'sub.requestCross(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChange);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddCross = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetCross = function() {
+            paging_reset(n);
+            sub.requestCross();
+        }
+        
+        var s = list_search(cFilter, sub.resetCross);
+        
+        sub.lockList = function() {
+            if(nl == 0) {
+                cFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                cFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        var rc = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChange();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:140}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        sub.requestCross = function(po, ev) {
+            do_visible_split(c, function() {
+                rc(po, ev)
+            });
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/setting'),sub=ctx['setting'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('setting.rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('setting.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:143}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.crossList .item', 
+            callback:function(key, options) {
+                _this.onChange();
+                j()
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    sub.requestRepos();
+    sub.requestCross();
+</script>
+<style>
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/setting_add_repo.html"}###
+</div>
+<div attach="topbar" template>
+    <div class="ui edit dropdown item">
+        <div class="text">{{l 'main.edit'}}</div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="header">{{l 'setting.repo'}}</div>
+            <div class="item" page_click="ctx.settAddR();">
+                {{l 'main.add'}}
+            </div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsett" id="vsett" checked>
+                  <label for="vsett">{{l 'setting.setting'}}</label>
+                </div>
+            </div>
+            <div class="item ADMIN_ALL">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vcross" id="vcross">
+                  <label for="vcross">{{l 'setting.cross'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vrepo" id="vrepo" checked>
+                  <label for="vrepo">{{l 'setting.repos'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="setting" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left" class="ui segment">
+        <div class="ui top attached blue label" style="overflow:visible;">
+            <div class="tov" style="float:left;width:calc(100% - 30px)">
+                {{l 'setting.setting'}}
+            </div>
+        </div>
+    </div>
+    <div id="center">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'setting.cross'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="crossFilter">{{l 'main.list_f'}}</label>
+                        <input id="crossFilter" name="crossFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist crossList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu crossPage fullw"></div>
+    </div>
+    <div id="right">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'setting.repos'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="repoFilter">{{l 'main.list_f'}}</label>
+                        <input id="repoFilter" name="repoFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist repoList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu repoPage fullw"></div>
+    </div>
+</div>

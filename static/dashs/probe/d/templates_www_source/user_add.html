@@ -1,0 +1,244 @@
+<script sub="user_add">
+
+    var _canClose = true;
+    var _modal = $('.ui.modal.userAdd');
+    var mail = $('#add_mail');
+    var _btn = _modal.find('.accept.button');
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity:0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                   
+    mail.on('input', function() {
+        if(mail.val() == '') {
+            _btn.addClass('disabled');
+        } else {
+            _btn.removeClass('disabled');
+        }
+    });
+                   
+    sub.onOpen = function(after) {
+        submit_err(-1, true);
+        sub.after = after;
+        sub.resetPerm();
+        label_reset(mail);
+        _btn.addClass('disabled');
+        $('input.search').val('');
+    };
+    
+    sub.onOk = function() {
+        if(!_canClose)
+            return;
+        var f = _modal.find('input.submit');
+        f.click();
+    }
+    
+    function submit_err(i, nofade) {
+        var el = _modal.find('.userAddE')[0];
+        var d = el.firstChild;
+        var h = d.firstChild;
+        var p = h.nextSibling;
+        var hm;
+        var m;
+        switch(i) {
+            case 0:
+                hm = polyglot.t('main.eh_exist');
+                m = polyglot.t('user.e_exist');
+                break;
+            case 1:
+                hm = polyglot.t('main.eh_fail');
+                m = polyglot.t('user.e_add');
+                break;
+            default:
+                if(nofade) {
+                    d.classList.add('hide');
+                } else {
+                    _fadeOut(d, 200, function() {
+                        d.classList.add('hide');
+                    });
+                }
+                return;
+        }
+        h.textContent = hm;
+        p.textContent = m;
+        _fadeIn(d, 200);
+        d.classList.remove('hide');
+    }
+    
+     this._user_add = function(ev, el_frm) {
+        if(el_frm.checkValidity()) {
+            ev.preventDefault();
+        } else {
+            return;
+        }        
+        _canClose = false;
+        if(!form_set_load(el_frm)) {
+            _canClose = true;
+            return;
+        }
+        
+        submit_err(-1, true);
+        
+        var grid = _modal.find('.grid');
+        grid.addClass('nomouse');
+        _btn.addClass('loading');
+        
+        var frm = new FormData();
+        
+        var n = form_get(el_frm, 'add_mail');
+        var data = {a:n, l:sub.getPerm()};
+        
+        frm.append('data', '{"cmd":9}');
+        frm.append('ext_data', JSON.stringify(data));
+        _post('/sys/server/', frm, function(d) {
+            form_set_ready(el_frm);
+            _canClose = true;
+            grid.removeClass('nomouse');
+            _btn.removeClass('loading');
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            if(r.r == 0) {
+                data.id = d.d;
+                data.m = 1;
+                data.n = n;
+                sub.after(data);
+                _modal.modal('hide');
+            } else {
+                if(r.r == 14) {
+                    submit_err(0);
+                } else {
+                    submit_err(1);
+                }
+            }
+        }, {responseType:'json'});
+    };
+    
+    (function(){
+        var d = _modal.find('.ui.dropdown');
+        var m = d.find('.menu');
+        var u = _modal.find('.upper');
+        var _perms = perm_get_all();
+        var pn = Object.getOwnPropertyNames(_perms);
+        var r = 0;
+        
+        pn.forEach(function(n) {
+            m.append('<div class="item" data="' + n + '">' + polyglot.t('perm.' + n) + '</div>');
+        });
+         
+        sub.getPerm = function() {
+            return r;
+        };
+         
+        sub.resetPerm = function() {
+            d.dropdown('clear');
+            r = 0;
+        };
+        
+        var a = function(v) {
+            if(v) {
+                u.addClass('fl-is-active');
+            } else {
+                u.removeClass('fl-is-active');
+            }
+        }; 
+        
+        var s = {
+            forceSelection:false,
+            selectOnKeydown:false,
+            clearable:true,
+            onAdd:function(addedValue, addedText, $addedChoice) {
+                r |= _perms[$addedChoice.attr('data')];
+            },
+            onRemove:function(removedValue, removedText, $removedChoice) {
+                r &= ~_perms[$removedChoice.attr('data')];
+                a(!m.hasClass('visible') && r != 0);
+            },
+            onShow:function() {
+                a(false);
+            },
+            onHide:function() {
+                a(true && r != 0);
+            }
+        };
+        
+        d.dropdown(s);
+    })();
+</script>
+<style>
+</style>
+<div sub="user_add" class="ui modal userAdd" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'user.add'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.userAdd', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'user.add_d'}}</p>
+        <div class="userAddE">
+            <div class="ui negative message form-row hide" style="margin-bottom:5px;">
+                <div class="header"></div>
+                <p></p>
+            </div>
+        </div>
+        <div style="position:relative;height:100%;">
+            <div class="ui grid" style="padding:20px;">
+                <div class="ui small header">{{l 'user.acfg'}}</div>
+                <div style="display:inline-block;vertical-align:middle;" class="form-base"> 
+                    <div>
+                        <form action="#" method="post" class="ui large form" page_submit="ctx._user_add(event, this);">
+                            <div class="form-row">
+                                <label for="add_mail">{{l 'main.mail'}}</label>
+                                <input id="add_mail" name="add_mail" type="email" class="field" required="required" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$">
+                            </div>
+                            <div class="form-row">
+                                <div class="fullw fl-wrap fl-wrap-input upper">
+                                    <label class="fl-label" style="z-index: 13;" for="add_perm">{{l 'user.add_p'}}</label>
+                                    <div class="ui multiple search selection dropdown activeselect fullw" style="margin-bottom:10px;">
+                                        <input type="hidden" name="add_perm" id="add_perm" value="" autofocus="true">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">{{l 'user.add_p'}}</div>
+                                        <div class="menu" style="overflow-y:auto;max-height:15rem;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                            <input type="submit" class="submit hide">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

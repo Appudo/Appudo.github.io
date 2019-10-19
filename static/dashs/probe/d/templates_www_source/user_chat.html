@@ -1,0 +1,959 @@
+<script sub="user_chat">
+    var uFilter = search_filter('#chatFilter', '#center');
+    var uDir = uFilter.parent().find('.toggl');   
+    var cBtn = $('#center .button');   
+    var sBtn = $('#left .button');
+    var iBtn = $('#right .invite.button');
+    var jBtn = $('#right .join.button');
+    var ign = $('#inviteIgnore');
+    var jign = $('#joinIgnore');
+    var iName = $('#inviteName');
+    var jName = $('#joinName');
+    var lbl = $('#center .chatLabel');
+    var msg = $('#left input');
+    var txt = $('#left .txt');
+    var chat_owner = "";
+    var users = []; // sort idx to userId
+    var users_data = {}
+    var renderLock = false;
+    var needRender = false;
+    var admin = false;
+    txt.attr('snapScroll', '1');
+    
+    lbl.text(polyglot.t('chat.usrs'));
+    
+    $(document).keydown(function() {
+        do_visible_path(sub, function() {
+            var a = document.activeElement;
+            if(a != iName[0] && a != jName[0] && a != uFilter[0]) {
+                msg.focus(); 
+            }
+        });
+    });
+    
+    (function(){
+        var l = $('#center .chatList');
+        var chatId = 0;
+        var c = false;
+        var iInv = false;
+        var iJn = false;
+        var s = false;
+        
+        sub.wsock_open = function() {
+            connected(false);
+        };
+        
+        $(document).on('wsock_open', sub.wsock_open);
+        
+        function ignoreInv(v) {
+            iInv = v;
+        }
+        
+        function ignoreJn(v) {
+            iJn = v;
+        }
+    
+        ign.closest('.ui.checkbox').checkbox({
+                onChecked:function() { ignoreInv(true); },
+                onUnchecked:function() { ignoreInv(false); }});
+                
+        jign.closest('.ui.checkbox').checkbox({
+                onChecked:function() { ignoreJn(true); },
+                onUnchecked:function() { ignoreJn(false); }});
+                
+        function connected(v) {
+            c = v;
+            if(s != v) {
+                s = v;
+                if(v) {
+                    addCon();
+                } else {
+                    addDisc();
+                }
+            }
+            var d = !v;
+            cBtn.text(polyglot.t(d ? 'main.creat' : 'main.disc'));
+            sBtn.attr('disabled', msg.val() == '' || d);
+            iBtn.attr('disabled', iName.val() == '' || d);
+            jBtn.attr('disabled', jName.val() == '' || c);
+            jName.attr('disabled', c);
+            iName.attr('disabled', d);
+            msg.attr('disabled', d);
+            if(d) {
+                admin = false;
+                reset();
+            }
+        }
+        
+        sub.join = function(id, nm) {
+            client_socket(function(s) {
+                var o = {
+                    onResult:function(d) {
+                        txt.text('');
+                        chatId = id;
+                        connected(true);
+                        change.chat_inv(nm, 1);
+                    },
+                    onError:function(d) {
+                        addError(polyglot.t('chat.e_join'));
+                    },
+                    p:{s:s}
+                };;
+                var d = {t:22, x:id, data:''};
+                if(request(d, o)) {
+                }
+            });
+        };
+        
+        sub.scrollfix = function() {
+            txt.scrollTop(txt[0].scrollHeight);
+        };
+        
+        function clean(ns) {
+            var n = txt.children().length;
+            while(n >= 9999) {
+                n--;
+                $(txt[0].firstChild).remove();
+            }
+
+            if(ns) {
+                sub.scrollfix();
+            }
+        }
+        
+        function addCon() {
+            var d = new Date();    
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.con') + '</span></div>');
+            clean(ns);
+        }
+        
+        function addDisc() {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.disc') + '</span></div>');
+            clean(ns);
+        }
+        
+        function addInvited(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.invd', {name:n}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addJoinRequested(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.joind', {name:n}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addError(v) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="error"><span class="date">' + date_format(d) + '</span><span>' + v + '</span></div>');
+            clean(ns);
+        }
+        
+        sub.addError = addError;
+        
+        function addLeft(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.left', {name:n.n}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addJoin(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            txt.append('<div class="info"><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.join', {name:n.n}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addJoinRequest(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user_chat'),sub=ctx['user_chat'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            txt.append('<div class="invite" onclick=' + cl('sub.invite(\'' + n.n + '\');') + '><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.joinr', {name:n.n}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addInvite(n) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user_chat'),sub=ctx['user_chat'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            txt.append('<div class="invite" onclick=' + cl('sub.join(' + n.d + ',' + n.s + ');') + '><span class="date">' + date_format(d) + '</span><span>' + polyglot.t('chat.invr', {name:n.s}) + '</span></div>');
+            clean(ns);
+        }
+        
+        function addMsg(n, o) {
+            var d = new Date();
+            var ns = txt[0].scrollHeight - txt[0].offsetHeight - txt[0].scrollTop < 1;
+            var u = users_data[n.s];
+            if(!o && !u) {
+                return;
+            }
+            
+            var p = '';
+            if(n.p) {
+                p = ' (' + polyglot.t('chat.priv') + ') ';
+            }
+            
+            txt.append('<div ' + (o ? 'class="me"' : '') + '><span class="date">' + date_format(d) + '</span>' + p + (n.p && o ? polyglot.t('chat.to', {name:u.n}) + ': ' : '') + (o ? '' : '<span class="name">' + u.n + ':</span>') + '<pre>' + n.d + '</pre>' + '</div>');
+            clean(ns);
+        }
+        
+        function filter() {
+            var f = uFilter.val();
+            var d = uDir.hasClass('up') ? 1 : 0;
+            var r = f != '' ? users.filter(function(n) {
+               return users_data[n].n.indexOf(f) != -1; 
+            }) : users;
+            
+            r.sort(function(a, b) {
+                var n = users_data[a].n.localeCompare(users_data[b].n);
+                return d == 1 ? n : -n; 
+            }); 
+            
+            return r;
+        }
+        
+        function addUser(u) {
+            var idx = users.indexOf(u.i);
+            if(idx != -1) {
+                users.splice(idx, 1);
+                delete users_data[u.i];
+            }
+            users.push(u.i);
+            users_data[u.i] = u; 
+            render();
+        }
+        
+        function removeUser(u) {
+            var idx = users.indexOf(u.i);
+            if(idx != -1) {
+                users.splice(idx, 1);
+                delete users_data[u.i];
+                render();
+                return true;
+            }
+            return false;
+        }
+        
+        sub.renderItem = function(n) {
+            var u = users_data[n];
+            return u ? '<div n="' + n + '" class="item' + (u.v ? ' invited' : '') + (u.a ? ' admin' : '') + '" data="' + u.i + '"><span class="text">' + u.n + '</span></div>' : null;
+        };
+        
+        function render() {
+            if(renderLock) {
+                needRender = true;
+                return;
+            }
+            sub.resetSel();
+            var f = $(document.createDocumentFragment());
+            filter().forEach(function(n) {
+                f.append(sub.renderItem(n));
+            });
+            l.html('');
+            l.append(f);
+        }
+        
+        sub.render = render;
+        
+        function reset() {
+            users = [];
+            users_data = {};
+            render();
+        }
+        
+        sub.onChat = function(e, n) {
+            switch(n.m) {
+                case 1: // user left
+                    if(n.a) {
+                        var u = users_data[n.a];
+                        if(u) {
+                            u.a = true;
+                        }
+                    }
+                    if(n.cn) {
+                        chat_owner = n.cn;
+                        lbl.text(polyglot.t('chat.usrsn', {name:chat_owner}));
+                    }
+                    var d = users_data[n.d];
+                    if(d === undefined) {
+                        var lin = login_current();
+                        if(lin.id == n.d) {
+                            connected(false);
+                        }
+                    }
+                    if(d && removeUser(d)) {
+                        addLeft(d);
+                    }
+                    chatId = n.c;
+                    break;
+                case 2: // admin change
+                    var u = users_data[n.d];
+                    if(u) {
+                        u.a = n.a == 1;
+                    }
+                    var lin = login_current();
+                    if(n.d == lin.id) {
+                        admin = n.a == 1;
+                    }
+                    render();
+                    break;
+                case 3: // invitation
+                    if(!iInv) {
+                        addInvite(n);
+                    }
+                    break;
+                case 4: // message
+                    addMsg(n);
+                    break;
+                case 5: // user joined
+                    var d = {i:n.d,n:n.n};
+                    addJoin(d);
+                    addUser(d);
+                    break;
+                case 6: // user list
+                    chat_owner = n.cn;
+                    lbl.text(polyglot.t('chat.usrsn', {name:chat_owner}));
+                    users = [];
+                    users_data = {};
+                    n.d.forEach(function(n) {
+                        users.push(n.i);
+                        users_data[n.i] = n;
+                    });
+                    render();
+                    break;
+                case 7: // join request
+                    if(!iJn) {
+                        var d = {i:n.d,n:n.s};
+                        addJoinRequest(d);
+                    }
+                    break;
+            }
+        };
+        
+        $(document).on('onChat', sub.onChat);
+        
+        cBtn.on('click', function() {
+            cBtn.attr('disabled', true);
+            iBtn.attr('disabled', true);
+            msg.attr('disabled', true);
+            iName.attr('disabled', true);
+            reset();
+            client_socket(function(s) {
+                var o = {
+                    onResult:function(d) {
+                        var lin = login_current();
+                        chatId = c ? 0 : lin.id;
+                        connected(!c);
+                        if(c) {
+                            admin = true;
+                            chat_owner = login_get_name();
+                            lbl.text(polyglot.t('chat.usrsn', {name:chat_owner}));
+                        } else {
+                            chat_owner = ''
+                            lbl.text(polyglot.t('chat.usrs'));
+                        }
+                    },
+                    onError:function(d) {
+                        connected(false);
+                        addError(polyglot.t('chat.e_con'));
+                    },
+                    p:{s:s}
+                };;
+                var d = {t:(c ? 23 : 20), data:''};
+                if(request(d, o)) {
+                }
+            });
+        });
+    
+        var ins = false;
+        sub.sendMsg = function() {
+            var m = msg.val();
+            var sl = sub.getSel();
+            if(ins || m == '') {
+                return;
+            }
+            ins = true;
+            client_socket(function(s) {
+                var o = {
+                    onResult:function(d) {
+                        var md = {d:m};
+                        if(sl != null) {
+                            md.p = 1;
+                            md.s = sl;
+                        }
+                        addMsg(md, true);
+                        msg.val('');
+                        msg.attr('disabled', false);
+                        msg.focus();
+                        ins = false;
+                    },
+                    onError:function(d) {
+                        sBtn.attr('disabled', false);
+                        msg.attr('disabled', false);
+                        msg.focus();
+                        ins = false;
+                        addError(polyglot.t('chat.e_msg'));
+                    },
+                    p:{s:s}
+                };
+                var d = {t:24, x:chatId};
+                if(sl != null) {
+                    d.y = sl;
+                }
+                if(request(d, o, m)) {
+                    sBtn.attr('disabled', true);
+                    msg.attr('disabled', true);
+                }
+            });
+        };
+    
+        sBtn.on('click', sub.sendMsg);
+        
+        sub.invite = function(n, onBegin, onOk, onErr) {
+            client_socket(function(s) {
+                var o = {
+                    onResult:function(d) {
+                        if(onOk) {
+                            onOk();
+                        }
+                        addInvited(n);
+                        addUser({i:d.d,n:n,a:false,v:true});
+                        change.chat_inv(n, 0);
+                    },
+                    onError:function(d) {
+                        addError(polyglot.t('chat.e_invite'));
+                        if(onErr) {
+                            onErr();
+                        }
+                    },
+                    p:{s:s}
+                };;
+                var d = {t:21, x:chatId, data:n};
+                if(request(d, o)) {
+                    if(onBegin) {
+                        onBegin();
+                    }
+                }
+            });
+        }
+        
+        var in_inv = false;
+        sub.do_invite = function() {
+            if(in_inv) {
+                return false;
+            }
+            in_inv = true;
+            sub.invite(iName.val(), function() {
+                iBtn.attr('disabled', true);
+            }, function() {
+                iName.val('');
+                in_inv = false;
+            }, function() {
+                in_inv = false;
+                iBtn.attr('disabled', false);
+            })
+        }
+    
+        iBtn.on('click', sub.do_invite);
+        
+        var in_join = false
+        sub.do_join = function() {
+            if(in_join) {
+                return false;
+            }
+            in_join = true;
+            var n = jName.val();
+            client_socket(function(s) {
+                var o = {
+                    onResult:function(d) {
+                        jName.val('')
+                        addJoinRequested(n);
+                        in_join = false;
+                    },
+                    onError:function(d) {
+                        jBtn.attr('disabled', false);
+                        addError(polyglot.t('chat.e_joinr'));
+                        in_join = false;
+                    },
+                    p:{s:s}
+                };;
+                var d = {t:26, data:n};
+                if(request(d, o)) {
+                    jBtn.attr('disabled', true);
+                }
+            });
+        };
+        
+        jBtn.on('click', sub.do_join);
+    })();
+    
+    msg.on('input', function() {
+        sBtn.attr('disabled', msg.val() == '');
+    });
+    
+    msg.on('keydown', function(e) {
+        if(e.keyCode == 13) {
+            sub.sendMsg();
+        }
+    });
+    
+    iName.on('input', function() {
+        iBtn.attr('disabled', iName.val() == '');
+    });
+    
+    iName.on('keydown', function(e) {
+        if(e.keyCode == 13) {
+            sub.do_invite();
+        }
+    });
+    
+    jName.on('input', function() {
+        jBtn.attr('disabled', jName.val() == '');
+    });
+    
+    jName.on('keydown', function(e) {
+        if(e.keyCode == 13) {
+            sub.do_join();
+        }
+    });
+
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { return sub.pane(i); });
+    
+    (function(){
+        $('#right').css('display', 'none');
+        
+        var _ctx = {};
+        var _sizes = [60, 20, 20];
+        var _minSize = [250, 250, 250];
+        var _panes = ['#left', '#center', '#right'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, {sizes:_sizes,minSize:_minSize}, _ctx, ['#center', '#right']);
+        }
+        
+        sub.split();
+    })();
+    
+    (function() {
+        var sel = null;
+        var l = $('.chatList');
+        var _this = this; 
+        var nl = 0;
+        
+        function filter() {
+            sub.render();
+        }
+        
+        sub.getSel = function() {
+            return sel;
+        }
+        sub.resetSel = function() {
+            sel = null;
+        }
+        
+        _this.onChange = function(n) {
+            if(n === undefined || sel == n.id) {
+                sel = null;
+            } else {
+                sel = n.id;
+            } 
+        };
+        
+        var s = list_search(uFilter, filter);
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChange, true);
+                
+        sub.lockList = function() {
+            if(nl == 0) {
+                renderLock = true;
+                uFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                renderLock = false;
+                uFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                if(needRender) {
+                    needRender = false;
+                    sub.render();
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        var disabled = function() {
+            return !admin;
+        };
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var id = o.id;
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user_chat'),sub=ctx['user_chat'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('chat.u_drop', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                var r = sub.renderItem(id);
+                if(r) {
+                    it = it.replaceFrom(r, 'active');
+                    j.reset(it);
+                } else {
+                    it.remove();
+                }
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                client_socket(function(s) {
+                    var o = {
+                        onResult:function(d) {
+                            if(sub.unlockList()) {
+                                sub.render();
+                            }
+                        },
+                        onError:function(d) {
+                            sub.abort();
+                            sub.addError(polyglot.t('chat.e_drop'));
+                        },
+                        p:{s:s}
+                    };
+                    var d = {t:25, x:id, y:2, data:''};
+                    if(request(d, o)) {
+                    }
+                });
+            };
+        }
+        
+        var up = function(o, it, a) {
+            sub.lockList();
+            var id = o.id;
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user_chat'),sub=ctx['user_chat'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t(a ? 'chat.u_adm_r' : 'chat.u_adm_a', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                var r = sub.renderItem(id);
+                if(r) {
+                    it = it.replaceFrom(r, 'active');
+                    j.reset(it);
+                } else {
+                    it.remove();
+                }
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                client_socket(function(s) {
+                    var o = {
+                        onResult:function(d) {
+                            if(sub.unlockList()) {
+                                sub.render();
+                            }
+                        },
+                        onError:function(d) {
+                            sub.abort();
+                            sub.addError(polyglot.t('chat.e_admin'));
+                        },
+                        p:{s:s}
+                    };
+                    var d = {t:25, x:id, y:(a ? 0 : 1), data:''};
+                    if(request(d, o)) {
+                    }
+                });
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            selector:'.chatList .item', 
+            className:'chatListC',
+            callback:function(key, options) {
+                _this.onChange();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'admin':
+                        up(this.o, this.it, this.v);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('chat.drop'), icon:'delete', disabled:disabled},
+                'admin':{name:'', icon:'edit', disabled:disabled}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    this.v = it.hasClass('admin');
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    this.v = null;
+                    j.reset();
+                }
+            }
+        });
+        
+        l.on('contextmenu', function(e){
+            var it = $(e.target).closest('.item');
+            var c = $('.context-menu-list.context-menu-root.chatListC')[0].childNodes;
+            $(c[1]).find('span').text(polyglot.t(it.hasClass('admin') ? 'chat.adm_r' : 'chat.adm_a'));
+        }); 
+    })();    
+    
+    $.event.trigger({
+    	type: "chatReady"
+    });
+    
+    $(document).one('cacheDestroy', function() {
+        $(document).off('wsock_open', sub.wsock_open);
+        $(document).off('onChat', sub.onChat);
+    });
+</script>
+<style>
+
+.ui.input.cinput {
+    margin:0;
+    padding:0;
+    height:1.8rem;
+    width:calc(100% - 10rem);
+    float:left;
+}
+
+.ui.segment.lsegment,
+.ui.button.lbutton,
+.ui.button.cbutton {
+    margin:0;
+    padding:0;
+    height:1.8rem;
+    line-height: 1.8rem;
+    width:9.7rem;
+    float:right;
+}
+
+.ui.button.lbutton {
+    float:left;
+}
+
+.ui.segment.lsegment {
+    width:calc(100% - 10rem);
+}
+
+#left .txt > div {    
+    padding: 0.2rem;
+    border-bottom: 1px solid #dedede;
+}
+
+#left .txt .me {
+    color:#9e9e9e;
+}
+
+#left .txt .invite,
+#left .txt .info {
+    color:#23a742;
+}
+
+#left .txt .error {
+    color:#FF0000;
+}
+
+#left .txt .invite {
+    cursor:pointer;
+}
+
+#left .txt pre {
+    display:inline-block;
+    margin:0;
+}
+
+#left .date {
+    color:#607d8b;   
+    margin-right: 10px;
+}
+
+#left .name {
+    color:#A56742;
+    margin-right: 10px;
+}
+
+#center .item.invited {
+    color:#9e9e9e;
+}
+
+#center .item.admin {
+    color:#f2711c;
+}
+
+#center .item.admin.active,
+#center .item.invited.active,
+#center .item.admin:hover,
+#center .item.invited:hover {
+    color:#FFF;
+}
+
+</style>
+<div attach="topbar" template>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlist" id="vchat" checked>
+                  <label for="vchat">{{l 'chat.chat'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsett" id="vuser" checked>
+                  <label for="vuser">{{l 'chat.usrs'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vinvite" id="vsett">
+                  <label for="vinvite">{{l 'chat.invnj'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="user_chat" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov">
+                    {{l 'chat.chat'}}
+                </div>
+            </div>
+            <div></div>
+            <div class="content txt paging_inner"></div>
+        </div>
+        <div class="ui input cinput">
+            <input type="text" placeholder="{{l 'chat.msg'}}" disabled>
+        </div>
+        <button class="ui blue button cbutton" disabled>{{l 'main.send'}}</button>
+    </div>
+    <div id="center">
+        <div class="ui segment paging_outer" style="height: calc(100% - 2.08rem);">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov chatLabel" style="float:left;width:calc(100% - 30px)">
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="chatFilter">{{l 'main.list_f'}}</label>
+                        <input id="chatFilter" name="chatFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist paging_inner chatList content"></div>
+        </div>
+        <div class="ui segment lsegment"></div>
+        <div class="ui blue button lbutton">{{l 'main.creat'}}</div>
+    </div>
+    <div id="right" class="ui segment">
+        <div class="ui top attached blue label" style="overflow:visible;">
+            <div class="tov" style="float:left;width:calc(100% - 30px)">
+                {{l 'chat.invnj'}}
+            </div>
+        </div>
+         <div></div>
+            <div class="content grid_c">
+                <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                    <div class="ui header">{{l 'main.setting'}}</div>
+                    <div class="form-row">
+                        <div class="ui checkbox">
+                            <label for="inviteIgnore">{{l 'chat.igninv'}}</label>
+                            <input type="checkbox" id="inviteIgnore" name="inviteIgnore">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="ui checkbox">
+                            <label for="joinIgnore">{{l 'chat.ignjn'}}</label>
+                            <input type="checkbox" id="joinIgnore" name="joinIgnore">
+                        </div>
+                    </div>
+                    <div class="ui header">{{l 'main.invite'}}</div>
+                    <div class="form-row">
+                        <label for="inviteName">{{l 'main.name'}}</label>
+                        <input type="text" id="inviteName" name="inviteName" disabled>
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button invite" disabled>{{l 'main.send'}}</button>
+                    </div>
+                    <div class="ui header">{{l 'main.join'}}</div>
+                    <div class="form-row">
+                        <label for="joinName">{{l 'main.name'}}</label>
+                        <input type="text" id="joinName" name="joinName">
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button join" disabled>{{l 'main.send'}}</button>
+                    </div>
+                    <div class="doclear"></div>
+                </form>
+            </div>
+    </div>
+</div>

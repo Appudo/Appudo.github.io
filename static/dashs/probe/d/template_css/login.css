@@ -1,0 +1,164 @@
+html {
+    background-color:#ececec;
+}
+
+body {
+    background:url("img/concrete_seamless.png") repeat fixed;
+    overflow-x:auto;    
+    position: relative;
+    min-height: 678px;
+}
+
+.form-base {
+    width:350px;
+}
+
+@media screen and (max-width: 1366px) {
+    body {
+        min-height: 658px;
+    }
+    .form-base {
+        width:300px;
+    }
+}
+ 
+@media screen and (max-width: 1280px) {
+    body {
+        min-height: 678px;
+    }
+    .form-base {
+        width:350px;
+    }
+}
+
+.txt {
+    font-size: 1rem;
+}
+
+body > #main {
+    margin:auto;
+    position:absolute;
+    bottom:50%;
+    width: 100%;
+    transform:perspective(1px) translateY(50%);
+}
+
+body > #main > div {
+    min-width: 668px;
+}
+
+.form-base .forgot-link {
+    float:right;
+}
+
+.login-form > div {
+    margin-bottom:15px;
+    color:#434343;
+    border:1px solid #f3f3f3;
+    border-radius:1px;
+    background:#fff;
+    padding:30px;
+    box-shadow:0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.login-form .form-row {
+    margin-bottom:1em;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .login-title { 
+        height:58px;
+    }
+    
+    .l-logo svg,
+    .login-title svg { 
+       width:100%;
+       height:100%;
+    }
+    
+    .l-logo {
+        height:60px;
+    }
+}
+
+.login-title {
+    color:#000022;
+    font-size:2em;
+    text-align:center;
+    margin-top:0.3em;
+    margin-bottom:0.3em;
+    padding: 20px 0 15px 0;
+    text-shadow:0px 2px #F2F2F2;
+}
+
+#ilang {
+    background-image:url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%2354A3E1' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");;
+    background-position:4% center;
+    background-repeat:no-repeat;
+    border-box:box-sizing;    
+    background-clip: padding-box;
+    padding-left:16%;
+}
+
+.ui .dropdown .db {
+    background-image:url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%2354A3E1' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");;
+    background-position:6% center;
+    background-repeat:no-repeat;
+    background-clip: padding-box;
+    border-box:box-sizing;
+    padding-left:16%;
+}
+
+.dropdown {
+    display:inline-block;
+    position:relative;
+    width:100%;
+}
+
+.dropdown-content {
+    display:none;
+    position:absolute;
+    min-width:100%;
+    text-align:left;
+    z-index:999;
+}
+
+.dropdown-inner {
+    max-height:200px;
+    border:1px solid #ddd;
+    border-radius:3px;
+    background-color:#FFF;
+    margin-top:1px;
+    overflow-y:auto;
+    text-align:left;
+    box-shadow:0 1px 4px -1px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-inner img {
+    margin-right:1em;
+    vertical-align:baseline;
+}
+
+.dropdown-inner {
+    cursor:pointer;
+}
+
+.ui .dropdown .dropdown-content input {
+    cursor:text;
+}
+
+.dropdown-content a {
+    display:block;
+    text-decoration:none;
+    padding:12px 16px;
+    color:#000;
+}
+
+.dropdown-content a:hover {
+    color:#FFF;
+    background-color:#2185D0;
+}
+
+.show {
+    display:block;
+}

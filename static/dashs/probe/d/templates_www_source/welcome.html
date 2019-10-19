@@ -1,0 +1,254 @@
+<script sub="welcome">
+
+    (function() {
+        var grid = ctx.grid = $('.wGrid');
+        var tables = $('.wGrid table');
+        var tidx = ctx.tidx = ['run', 'probe', 'dasm', 'src', 'module', 'chat', 'user'];
+        var _tables = {};
+        sub.getTables = function() { return _tables; };
+        
+        var ctable_init = function(t, ctx) {
+            t = $(t);
+            var h = t.find('thead');
+            var b = t.find('tbody');
+            var th = h.find('th');
+            var o = true;
+            var lbl =$('<label></label>').appendTo(th);
+            var btn = $('<i class="icon caret up" style="float:right;"></i>').appendTo(th);
+            lbl.each(function(i, it) { 
+                var toggle = function(s, v, after) {
+                    if(v !== undefined && v != o) {
+                        return;
+                    }
+                    s = s.constructor === String ? s : 'fast';
+                    if(o) {
+                        b.fadeOut(s, function() {
+                            domy.off(function() {
+                                btn.removeClass('up');
+                                btn.addClass('down');
+                                t.addClass('closed');
+                                if(after) {
+                                    after();
+                                }
+                            });
+                        });
+                    } else {
+                        domy.off(function() {
+                            t.removeClass('closed');
+                        });
+                        b.fadeIn(s);
+                        btn.addClass('up');
+                        btn.removeClass('down');
+                    }
+                    o = !o;
+                }; 
+                var s = function(v) {
+                    $(th[i]).off('click', toggle);
+                    if(v) {
+                        $(th[i]).removeClass('empty');
+                        $(th[i]).css('cursor', '');
+                        $(btn[i]).css('display', '');
+                        $(th[i]).on('click', toggle);
+                    } else {
+                        $(th[i]).addClass('empty');
+                        $(th[i]).css('cursor', 'initial');
+                        $(btn[i]).css('display', 'none');
+                    }
+                };
+                var ln = $(th[i]).attr('ln');
+                $(it).text(polyglot.t(ln, {num:0}));
+                s(false);
+                _tables[tidx[ctx.j++]] = {t:$(b[i]), l:$(it), ln:ln, s:s};
+                toggle('fastest', true);
+            });
+        };
+        
+        var tctx = {j:0};
+        tables.each(function(i, it) { 
+            ctable_init(it, tctx);
+        });
+    })();
+
+    (function() {
+        var tidx = ctx.tidx;
+        var user = $('.wGrid .wlcm_lbl');
+        var num_probes = $('.wGrid .wlcm_num');
+        var tables = sub.getTables();
+        var max = 5;
+        
+        sub.onProbeChange = function() {
+            num_probes.text(probes_count());
+        }
+        sub.onNameChange = function() {
+            user.text(polyglot.t('wlcm.wlcm', {name:login_get_name()}));
+        }
+        
+        var _changes = {};
+        
+        tidx.forEach(function(it) { _changes[it] = null; });
+        
+        var dmf = function(v) {
+            var t = new Date(parseInt(v) * 1000);
+            return date_format(t, true);
+        }
+        
+        sub.onWlcmChange = function(e, d, c, fkt) {
+            var go = function(t, f) {
+                if(c[t] != _changes[t]) {
+                    _changes[t] = c[t];
+                    var tb = tables[t];
+                    var tbl = tb.t;
+                    var lbl = tb.l;
+                    var ln = tb.ln;
+                    var values = fkt.sort(d[t]);
+                    tbl.html('');
+                    lbl.text(polyglot.t(ln, {num:values.length > max ? max : values.length}));
+                    tb.s(values.length != 0);
+                    values.forEach(function(it, i) {
+                        if(i < max) {
+                            f.call(values, tbl, it);
+                        }
+                    });
+                }
+            }
+            go('run', function(t, it) {
+                $('<tr><td>' + it.n + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('probe', function(t, it) {
+                $('<tr><td>' + it.n + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('dasm', function(t, it) {
+                $('<tr><td>' + it.key + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('src', function(t, it) {
+                $('<tr><td>' + it.key + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('module', function(t, it) {
+                $('<tr><td>' + it.n + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('chat', function(t, it) {
+                $('<tr><td>' + it.n + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+            go('user', function(t, it) {
+                $('<tr><td>' + it.n + '</td><td>' + dmf(it.t) + '</td></tr>').appendTo(t);
+            });
+        };
+        
+        $(document).on('probeChange', sub.onProbeChange);
+        $(document).on('nameChange', sub.onNameChange);
+        $(document).on('wlcmChange', sub.onWlcmChange);
+        
+        sub.onProbeChange();
+        sub.onNameChange();
+        
+        change.update(null, function() {
+            
+        });
+    })();
+    
+    $(document).one('cacheDestroy', function() {
+        $(document).off('probeChange', sub.onProbeChange);
+        $(document).off('nameChange', sub.onNameChange);
+        $(document).off('wlcmChange', sub.onWlcmChange);
+    });
+</script>
+<style>
+    .wGrid .ui.table th {
+        cursor:pointer;
+    }
+    
+    .wGrid .ui.table.closed th,
+    .wGrid .ui.table th.empty {
+        border-radius:0.28571429rem !important;
+    }
+    
+    .wGrid .ui.table td:last-child {
+        text-align:right;
+    }
+    
+    div.ui.wGrid  {
+        padding:10px;
+        width:100%;
+        margin-left:0;
+    }
+
+    .wGrid .column > div {
+        margin: 1em 0em;
+    }
+
+    .wGrid .column > div:first-child {
+        margin-top: 0em;
+    }
+</style>
+<div>
+    <div class="ui stackable grid wGrid load">
+        <div class="eight wide column">
+            <table class="ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.run"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="ui secondary segment">
+                <div class="ui grey small horizontal">
+                    <h3 class="label">{{l 'wlcm.pact' }}<label class="wlcm_num" style="float:right;"></label></h3>
+                </div>
+            </div>
+            <table class="ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.probe"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table class="DISASSEMBLER_USE ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.dism"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.src"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="eight wide column">
+            <div class="ui secondary segment">
+                <div class="ui grey small horizontal">
+                    <h3 class="label wlcm_lbl"></h3>
+                </div>
+            </div>
+            <table class="ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.module"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table class="CHAT_USE ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.chat"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table class="USER_EDIT ui small very compact unstackable selectable table">
+                <thead>
+                    <tr>
+                        <th colspan="2" ln="wlcm.user"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>

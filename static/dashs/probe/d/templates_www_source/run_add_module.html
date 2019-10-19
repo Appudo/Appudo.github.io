@@ -1,0 +1,263 @@
+<script sub="run_add_module">
+    var _this = this;
+    var _canClose = true;
+    var _modal = $('.ui.modal.runAddModule');
+    var _btn = _modal.find('.accept.button');
+    var sel = null;
+    var sel_data;
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity:0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                    
+    $('#add_inst_name').on('input', onChange);
+    $('#add_run_name').on('input', onChange);
+                  
+    function onChange() {
+        var v = $('#add_inst_name').val();
+        if(v === '' || sel == null) {
+            _btn.addClass('disabled');
+        } else {
+            _btn.removeClass('disabled');
+        }
+    } 
+                   
+    sub.onOpen = function(o, after) {
+        sub.after = after;
+        submit_err(-1, true);
+        var n = $('#add_inst_name');
+        label_reset(n);
+        $('#runAddIFilter')[0].reset();
+        label_set($('#add_run_name'), o.n);
+        sub.resetInsts();
+        n.focus();
+        sel_data = o;
+    };
+    
+    sub.onOk = function() {
+        if(!_canClose)
+            return;
+       var f = _modal.find('form'); 
+       f.submit();
+    }
+    
+    function submit_err(i, nofade) {
+        var el = _modal.find('.runAddModuleE')[0];
+        var d = el.firstChild;
+        var h = d.firstChild;
+        var p = h.nextSibling;
+        var hm;
+        var m;
+        switch(i) {
+            case 0:
+                hm = polyglot.t('main.eh_exist');
+                m = polyglot.t('run.e_existG');
+                break;
+            case 1:
+                hm = polyglot.t('main.eh_fail');
+                m = polyglot.t('run.e_addI');
+                break;
+            default:
+                if(nofade) {
+                    d.classList.add('hide');
+                } else {
+                    _fadeOut(d, 200, function() {
+                        d.classList.add('hide');
+                    });
+                }
+                return;
+        }
+        h.textContent = hm;
+        p.textContent = m;
+        _fadeIn(d, 200);
+        d.classList.remove('hide');
+    }
+    
+    this._run_add_module = function(ev, el_frm) {
+        _canClose = false;
+        ev.preventDefault();
+        if(!form_set_load(el_frm)) {
+            _canClose = true;
+            return;
+        }
+        
+        submit_err(-1, true);
+        
+        var grid = _modal.find('.grid');
+        grid.addClass('nomouse');
+        _btn.addClass('loading');
+        
+        var frm = new FormData();
+        
+        var data = {a:form_get(el_frm, 'add_inst_name')
+        };
+        
+        data.n = sel_data.id;
+        data.m = sel;
+        
+        frm.append('data', '{"cmd":89}');
+        frm.append('ext_data', JSON.stringify(data));
+        _post('/sys/server/', frm, function(d) {
+            form_set_ready(el_frm);
+            _canClose = true;
+            grid.removeClass('nomouse');
+            _btn.removeClass('loading');
+            if(d.r == 0) {
+                data.id = d.d;
+                data.mid = d.m;
+                sub.after(data);
+                _modal.modal('hide');
+            } else {
+                if(d.r == 14) {
+                    submit_err(0);
+                } else {
+                    submit_err(1);
+                }
+            }
+        }, {responseType:'json'});
+    };
+    
+    (function() {
+        var l = $('.runIListA');
+        var p = $('.runIPageA');
+        var n = {page:'main/run',
+                 sub:'run_add_module',
+                 pg:'sub.requestInsts(p)',
+                 kd:'sub.requestInsts(parseInt(this.value)-1, event)'
+        };
+        
+        list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, function(o) {
+            sel = o.id;
+            onChange();
+        });
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        };
+        
+        sub.resetInsts = function() {
+            sel = null;
+            onChange();
+            paging_reset(n);
+            sub.requestInsts();
+        }
+        
+        var s = list_search($('#runAddIFilter'), sub.resetInsts);
+        
+        sub.requestInsts = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    post('/sys/server/', {data:JSON.stringify({cmd:72}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        render(r);
+                    });
+                }
+            }, l, p, n, po);
+        };
+    })();
+</script>
+<style>
+</style>
+<div sub="run_add_module" class="ui modal runAddModule" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'run.addI'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.runAddModule', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'run.addI_d'}}</p>
+        <div class="runAddModuleE">
+            <div class="ui negative message form-row hide" style="margin-bottom:5px;">
+                <div class="header"></div>
+                <p></p>
+            </div>
+        </div>
+        <div style="position:relative;height:100%;">
+            <div class="divide" style="left:57.5%;bottom: -25px;"></div>
+            <div class="ui grid" style="padding:20px;">
+                <div style="width:calc(60% - 2rem);margin:0;min-height:17rem;"> 
+                    <div class="ui small header">{{l 'run.aicfg'}}</div>
+                    <div style="display:inline-block;vertical-align:middle;" class="form-base"> 
+                        <div>
+                            <form action="#" method="post" class="ui form" page_submit="ctx._run_add_module(event, this);">
+                                <div class="form-row">
+                                    <label for="add_run_name">{{l 'run.rname'}}</label>
+                                    <input id="add_run_name" name="add_run_name" type="text" class="field" disabled>
+                                </div>
+                                <div class="form-row">
+                                    <label for="add_inst_name">{{l 'run.iname'}}</label>
+                                    <input id="add_inst_name" name="add_inst_name" type="text" class="field" required="required">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:40%;margin:0 0 0 2rem;">
+                    <div class="ui small header">{{l 'run.ilist'}}</div>
+                    <div class="fullw" style="height:calc(100% - 2rem);">
+                        <div>
+                            <div class="ui icon input tinput fl-wrap fullw">
+                                <i class="angle up link toggl icon"></i>
+                                <label for="runAddIFilter">{{l 'main.list_f'}}</label>
+                                <input id="runAddIFilter" name="runAddIFilter" class="prompt fullw" type="text">
+                                <i class="search link icon"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment fullw tlist" style="height:calc(100% - 5rem);">
+                            <div class="ui middle aligned celled selection list runIListA mlist fullw fullh">
+                            </div>
+                        </div>
+                        <div class="ui pagination menu runIPageA fullw"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

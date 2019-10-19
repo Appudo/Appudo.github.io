@@ -1,0 +1,2250 @@
+<script sub="run">
+    console.log('run');
+    
+    var _this = this;
+    var grid;
+    var cont;
+    var sel = null;
+    var defer = defer_init(2);
+    var deferList = defer_init(1);
+    var deferRender = defer_init(1);
+    var deferAdd = defer_init(1);
+    var sel_name;
+    var cfgLabel = $('#runCfgLabel')[0];
+    var mode;
+    var lock = lock_post_init(sub);
+    var moduleCache = module_cache({});
+    
+    deferAdd.ready();
+    
+    cfgLabel.innerText = polyglot.t('run.option_s', {name:polyglot.t('run.norun')});
+    
+    sub.tmplChange = function(e, id, x, v) {
+        // TODO find run instances based on module and call chande mode
+    };
+    
+    sub.onProbeChange = function(e, probes) {
+        var a = _this.getActive();
+        if(a != null) {
+            _this.startProbes(a);
+        }
+    };
+    
+    $(document).on('tmplChange', sub.tmplChange);
+    $(document).on('probeChange', sub.onProbeChange);
+        
+    $('#topbar .ui.edit.dropdown').dropdown({
+       transition:'fade up',
+       context:'body',
+       action:'hide'
+    });
+    
+    this.runAdd = function() {
+        $('.ui.modal.runAdd').modal('show');
+        ctx['run_add'].onOpen(function(d) {
+            sub.onAddRun(d);
+            change.run_edit(d.id, d.n, 0);
+        });
+    };
+    
+    _need_reset = {};
+    
+    this.runAddModule = function(o) {
+        var rid = sel;
+        $('.ui.modal.runAddModule').modal('show');
+        ctx['run_add_module'].onOpen(o, function(it) {
+            var e = {id:it.id,mid:it.mid,n:it.a};
+            var cfg = sub.getCfg();
+            var d = sub.getInst().d;
+            var pos = cfg.o.pos || {};
+            deferAdd.reset();
+            var ni = sub.renderWidget(pos, e);
+            ni.item = e;
+            deferAdd.ready();
+            d.push(e);
+            sub.sortInst();
+            sub.resetInsts();
+            sub.resetModules();
+            _need_reset[rid] = true;
+        });
+    };
+    
+    this.runSave = function() {
+        sub.savePos();
+    };
+    
+    (function(){
+        btn = $('#center .clrToggle');
+        _this.updateClear = function() {
+            if(sel != null && _need_reset[sel]) {
+                btn.addClass('active');
+            } else {
+                btn.removeClass('active');
+            }
+        } 
+        _this.runClear = function() {
+            if(sel != null) {
+                if(_need_reset[sel]) {
+                    delete _need_reset[sel];
+                } else {
+                    _need_reset[sel] = true;
+                }
+            }
+            _this.updateClear();
+        };
+    })();
+    
+    var rFilter = search_filter('#runFilter', '#left');  
+    var iFilter = search_filter('#runIFilter', '#inst'); 
+    var uFilter = search_filter('#usesFilter', '#uses');
+    
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { return sub.pane(i); });
+    
+    
+    (function(){
+        var l = $('#content > .errHolder .errList');
+        var b = $(' #content > .errHolder .errBar');
+        var btn = $('#content > .errHolder .errBtn');
+        var clr = $('#content > .errHolder .errClr');
+        var edrg = $('#content > .errHolder .errDrag');
+        var sb = b.find('.sidebar');
+        var num = 0;
+        var o = false;
+        var n = '50%';
+        var limit = 9999;
+        var close = function(after) {
+            domy.off(function(f){
+                btn.css('visibility', 'hidden');
+                b.animate({width:'0%'}, 300, f);
+            }, this, function() {
+                btn.css('visibility', '');
+                if(after) {
+                    after();
+                }
+            });
+        }
+        var rf = function() {
+            if(num == 0) {
+                close(function() {
+                    b.css('display', '');
+                });
+            }
+            domy.off(function() {
+                btn.text('' + num);
+                setTimeout(function() {
+                    var w = btn.outerWidth();
+                    btn.css('left', (-w + 10) + 'px');
+                });
+            });
+        }
+        
+        var didx = -1;
+        var me;
+        var dragEnd = function() {
+            clearInterval(didx);
+            btn.css('visibility', '');
+            sb.css('box-shadow','');
+        };
+        
+        edrg.on('drag', function(e) {
+            me = e;
+        });
+    
+        edrg.on('dragstart', function(e) {
+            me = e;
+            btn.css('visibility', 'hidden');
+            sb.css('box-shadow','none');
+            didx = setInterval(function() {
+                domy.off(function(f){
+                    var w = $(window).width();
+                    var p = me.pageX;
+                    if(p < 300) { p = 300; }
+                    p = Math.floor(((w - p)* 100) / w);
+                    n =  p + '%';
+                    b.animate({width:n}, 80, f);
+                }, this, function() {
+                });
+            }, 100);
+        });
+        edrg.on('dragend', dragEnd);
+        edrg.on('drop', dragEnd);
+        
+        clr.on('click', function() {
+            l.html('');
+            num = 0;
+            o = false;
+            rf();
+        });
+        btn.on('click', function() {
+           if(o) {
+               close();
+           } else {
+                domy.off(function(f) {
+                    btn.css('visibility', 'hidden');
+                    b.animate({width:n}, 300, f);
+                }, this, function() {
+                    btn.css('visibility', '');
+                });
+           }
+           o = !o;
+        });
+        ctx.addError = function(ty, msg) {
+            domy.off(function() {
+                var first = num == 0;
+                num++;
+                var ns = l[0].scrollHeight - l[0].offsetHeight - l[0].scrollTop < 1;
+                if(l[0].childElementCount >= limit) {
+                    l.children.slice(0, l[0].childElementCount - limit).remove();
+                    num = limit;
+                }
+                rf();
+                
+                var frag = document.createDocumentFragment();
+                var item = $('<div class="item"></div>').appendTo(frag);
+                $('<div>' + ty + ':</div>').appendTo(item);
+                var msgel = $('<pre style="white-space: pre-wrap;word-break: keep-all;"></pre>').appendTo(item);
+                msgel.text(msg);
+                
+                l.append(frag);
+                
+                
+                if(ns) {
+                    l.scrollTop(l[0].scrollHeight);
+                }
+                
+                if(first) {
+                    b.css('display', 'block');
+                }  
+            });
+        };
+        lib_set_error(ctx.addError);
+    })();
+    
+    function request_prepare(s, pr, o) {
+        var pi = {id:pr.id, s:s};
+        o.p = pi;
+        if(pr.n) {
+            pi.idn = pr.n;
+        }
+        return pr;
+    }
+    
+    function request_compile(id, kversion, machine, flags, after) {
+        var o = {
+            onResult:function(d) {
+                if(after) {
+                    after();
+                }
+            },
+            onError:function(d) {
+                if(d.e) {
+                    $.event.trigger({
+                    	type: "onCompileError"
+                    }, [id, kversion, machine, d]);
+                    ctx.addError('request_compile', d.e);
+                    this.hasError = true;
+                } else {
+                    if(!this.hasError) {
+                        ctx.addError('request_compile', 'request_compile error');
+                    }
+                }
+                if(after) {
+                    after(true, d.e);
+                }
+            }
+        };
+        var d = {t:40, x:id + ((flags || 0) * 4294967296), y:machine, data:''+kversion};
+        request_client(d, o);
+    }
+    
+    function request_run(id, s, pr, flags, after) {
+        var o = {
+            onResult:function(d) {
+                if(after) {
+                    after();
+                }
+            },
+            onError:function(d) {
+                if(d.e) {
+                    ctx.addError('request_run', d.e);
+                    this.hasError = true;
+                } else {
+                    if(!this.hasError) {
+                        ctx.addError('request_run', 'request_run');
+                    }
+                }
+                if(after) {
+                    after(true);
+                }
+            }
+        };
+        var pr = request_prepare(s, pr, o);
+        var d = {t:41, p:o.p, x:pr.t, y:id + ((flags || 0) * 4294967296), data:login_current().r};
+        request(d, o);
+    }
+    
+    function request_stop(after) {
+        var o = {
+            onResult:function(d) {
+                if(after) {
+                    after();
+                }
+            },
+            onError:function(d) {
+                if(d.e) {
+                    ctx.addError('request_stop', d.e);
+                    this.hasError = true;
+                } else {
+                    if(!this.hasError) {
+                        ctx.addError('request_stop', 'request_stop');
+                    }
+                }
+                if(after) {
+                    after(true);
+                }
+            }
+        };
+        var flags = 0;
+        var d = {t:43, y:flags, data:''};
+        request_client(d, o);
+    }
+    
+    function request_attach(rid, ty, after) {
+        var o = {
+            onResult:function(d) {
+                if(after) {
+                    after();
+                }
+            },
+            onError:function(d) {
+                if(d.e) {
+                    ctx.addError('request_attach', d.e);
+                    this.hasError = true;
+                } else {
+                    if(!this.hasError) {
+                        ctx.addError('request_attach', 'request_attach');
+                    }
+                }
+                if(after) {
+                    after(true);
+                }
+            }
+        };
+        var d = {t:44, x:rid, y:ty ? 1 : 0, data:''};
+        request_client(d, o);
+    }
+    
+    function request_version(s, pr, after) {
+        var o = {
+            onResult:function(d) {
+                if(after) {
+                    after(false, d);
+                }
+            },
+            onError:function(d) {
+                if(d.e) {
+                    ctx.addError('request_version', d.e);
+                    this.hasError = true;
+                } else {
+                    if(!this.hasError) {
+                        ctx.addError('request_version', 'request_version');
+                    }
+                }
+                if(after) {
+                    after(true);
+                }
+            }
+        };
+        var pr = request_prepare(s, pr, o);
+        var d = {t:42, p:o.p, x:pr.t, data:''};
+        if(request(d, o)) {
+            
+        }
+    }
+    
+    (function(){
+        var c = $('#center .ui.runsel.dropdown');
+        var b = $('#center .ui.runbtn.dropdown');
+        var idx = -1;
+        
+        c.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           onChange: function(value, text, $choice) {
+                idx = $(c[0].firstChild).children().index($choice[0]);
+                b.children().first().text(polyglot.t('run.rmode') + text);
+           }
+        });
+        
+        sub.isActive = function() {
+            return idx != 1;
+        }
+        
+        _this.runSel = function() {
+            c.css('margin-left', b.position().left + 'px');
+            c.css('width', b.outerWidth(true) + 'px');
+            c.click();
+        };
+        
+        c.dropdown('set selected', polyglot.t('main.act'));
+    })();
+    
+    
+    function play() {
+        return _this.updateCtrl(true);
+    }
+    
+    function stop() {
+        return _this.updateCtrl();
+    }
+    
+    (function(){
+        var bptn = $('#topbar .ui.play .item');
+        var p = $(bptn[0]);
+        var s = $(bptn[1]);
+        var a = s;
+        var sv = $('#topbar .runSavePos');
+        
+        sub.setCtrlView = function(i) {
+            var t = i == 0 ? p : s;
+            bptn.removeClass('sel');
+            t.addClass('sel');
+            a = t;
+        }
+        
+        function t(e) {
+            var t = $(e.target).closest('.item');
+            var i = t[0] == p[0] ? 0 : 1;
+            if(i == 0) {
+                if(!play()) 
+                    return;
+            } else {
+                if(!stop()) 
+                    return;
+            }
+            sub.setCtrlView(i);
+        }
+        p.on('click', t);
+        s.on('click', t);
+        
+        sub.setPlay = function(v) {
+            if(v) {
+                p.removeClass('inactive');
+            } else {
+                p.addClass('inactive');
+            }
+        }
+        
+        sub.setStop = function(v) {
+            if(v) {
+                s.removeClass('inactive');
+            } else {
+                s.addClass('inactive');
+            }
+        }
+        
+        sub.setSave = function(v) {
+            if(v) {
+                sv.removeClass('disabled');
+            } else {
+                sv.addClass('disabled');
+            }
+        }
+        
+        
+    })();
+    
+    (function(){
+        $('#center').css('display', 'none');
+        $('#uses').css('display', 'none');
+        $('#inst').css('display', 'none');
+        
+        var _ctx = {};
+        var _sizes = [20, 20, 15, 25, 20];
+        var _fill = [0, 10, 5, 5, 0];
+        var _panes = ['#left', '#center', '#inst', '#right', '#uses'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, _sizes, _ctx,  ['#left', '#inst', '#uses'], _fill);
+        }
+    
+        sub.split();
+    })();
+    
+    (function() {
+        var rt = $('#right');
+        var g = rt.find('.grid_c');
+        var e = rt.find('.grid_e');
+        var loader = loader_init(g);
+        var lerr = error_init(g, polyglot.t('main.eh_load'), polyglot.t('run.e_load'));
+        var serr = error_init(g, polyglot.t('main.eh_save'), polyglot.t('run.e_csave'));
+        var i_data = null;
+        
+        hide_init(g);
+        
+        sub.setInstEmpty = function() {
+            e.text(polyglot.t('main.list_empty'));
+        };
+        
+        sub.setInstNoRun = function() {
+            e.text(polyglot.t('run.norun'));
+            sub.clearInst(true);
+        };
+        
+        sub.getInst = function() {
+            return i_data;
+        };
+        
+        sub.sortInst = function() {
+            i_data.d.sort(function(a, b) {
+                return a.id - b.id;
+            });
+        };
+        
+        sub.loadInst = function(id) {
+            if(id != null) {
+                g.show();
+                loader.show();
+                post('/sys/server/', {data:JSON.stringify({cmd:88}), ext_data:JSON.stringify({id:id})}, function(d) {
+                    do_visible_path(sub, function() { 
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.hide();
+                        if(r.r == 0) {
+                            r.id = id;
+                            i_data = r;
+                            sub.sortInst();
+                            sub.resetInsts();
+                        } else {
+                            i_data = null;
+                            lerr.show();
+                        }
+                        defer.ready();
+                    });
+                });
+            } else {
+                g.hide();
+                defer.ready();
+            }
+        };
+        
+        sub.getInstEl = function() {
+            return {g:g,l:loader,le:lerr,se:serr};
+        };
+        
+        function destroy() {
+            sub.deleteAllWidgets();
+        };
+        
+        sub.renderWidget = function(pos, n) { 
+            var i = pos[n.id] || {};
+            var x = i.x || 0;
+            var y = i.y || 0;
+            var w = i.w || 2;
+            var h = i.h || 2;
+            return sub.addWidget(n.id, n.n, x, y, w, h);
+        }
+        
+        sub.resetModules = function() {
+            if(i_data.d.length == 0) {
+                sub.setInstEmpty();
+                g.hide();
+            } else {
+                g.show();
+            }
+        };
+        
+        sub.renderModules = function() {
+            destroy();
+            if(sel != null) {
+                loader.show();
+                defer.then(function() {
+                    if(i_data.d.length == 0) {
+                        sub.setInstEmpty();
+                        g.hide();
+                        deferRender.update(1);
+                        deferRender.ready();
+                    } else {
+                        g.show();
+                        var num = 0;
+                        var cfg = sub.getCfg();
+                        var pos = cfg.o.pos || {};
+                        var hidx = 0;
+                        var h = pos.h || [];
+                        var hidden = function(id) {
+                            var hid = h[hidx];
+                            while(hid !== undefined && hid < id) {
+                                hid = h[++hidx];
+                            }
+                            return hid === id;
+                        }
+                        i_data.d.forEach(function(n) {
+                            if(hidden(n.id)) {
+                                n.hidden = true;
+                            }
+                            if(pos.m === n.id) {
+                                n.max = true;
+                            }
+                            if(!n.hidden) {
+                                num++;
+                                var ni = sub.renderWidget(pos, n);
+                                ni.item = n;
+                            }
+                        });
+                        if(pos.m !== undefined) {
+                            var i = cont.find('.grid-stack-item[data-gs-id="' + pos.m + '"]');
+                            ctx.maximize(i[0]);
+                        }
+                    }
+                    deferRender.update(num);
+                    deferList.ready();
+                    loader.hide();
+                });
+            }
+        };
+    })();
+    
+    (function() {
+        var ct = $('#center');
+        var g = ct.find('.grid_c');
+        var a = $('.runActiveFrm input');
+        var sBtn = g.find('.button');
+        var rId = g.find('#runId');
+        var rName = g.find('#runName');
+        var rDesc = g.find('#runDesc');
+        var rUID = g.find('#runUID');
+        var rGID = g.find('#runGID');
+        var frm = $('.runActiveFrm');
+        var st = sub.getInstEl().g;
+        var loader = loader_init(g);
+        var lerr = error_init(g, polyglot.t('main.eh_load'), polyglot.t('run.e_load'));
+        var serr = error_init(g, polyglot.t('main.eh_save'), polyglot.t('run.e_csave'));
+        
+        var r_data = null;
+        
+        var ch = false;
+        var wp = false;
+        
+        var oi = function() {
+            if(wp && !ch) {
+                ch = true;
+                sBtn.attr('disabled', false);
+            }
+        };
+        
+        hide_init(g);
+        
+        rDesc.on('input', oi);
+        rUID.on('input', oi);
+        rGID.on('input', oi);
+        
+        sBtn.on('click', function() {
+            var d = post_get_val(r_data,
+                                ['n', 'd', 'u', 'g'],
+                                ['c', 'a', 'n', 'o'],
+                                [rName, rDesc, rUID, rGID]);
+            if(d) { 
+                loader.show();
+                var c = d.c;
+                d = d.r;
+                var pd = {data:JSON.stringify({cmd:85})};
+                d.m = sel;
+                pd.ext_data = JSON.stringify(d);
+                var sn = sel_name;
+                post('/sys/server/', pd, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        change.run_edit(d.m, sn, 2);
+                        c();
+                        ch = false;
+                        sBtn.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        sub.getCfg = function() {
+            return r_data;
+        }
+        
+        var loadCfg = function(id) {
+            sBtn.attr('disabled', true);
+            if(id != null) {
+                g.show();
+                wp = false;
+                ch = false;
+                loader.show();
+                post('/sys/server/', {data:JSON.stringify({cmd:82}), ext_data:JSON.stringify({id:id})}, function(d) {
+                    do_visible_path(sub, function() { 
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.hide();
+                        if(r.r == 0) {
+                            r.id = id;
+                            do_visible_split(ct, function() {
+                                label_set(rId, r.id);
+                                label_set(rName, r.n);
+                                label_set(rDesc, r.d);
+                                label_set(rGID, r.g);
+                                label_set(rUID, r.u);
+                            });
+                            r_data = r;
+                        } else {
+                            r_data = null;
+                            lerr.show();
+                        }
+                        wp = true;
+                        defer.ready();
+                    });
+                });
+            } else {
+                g.hide();
+                clear_visible_split(ct);
+                defer.ready();
+            }
+        }
+        
+        _this.onChangeMode = function(m) {
+            if(mode !== m) {
+                mode = m;
+                deferRender.reset();
+                deferRender.update(1);
+                _this.updateActive();
+                if(cont) {
+                    if(m == 1) {
+                        cont.removeClass('config');
+                    } else {
+                        cont.addClass('config');
+                    }
+                    sub.setWidgetMode(m);
+                } else {
+                    deferRender.ready();
+                }
+            }
+        };
+        
+        var num_probes = 0;
+        var run;
+        var lbl = $('#topbar .ui.play .plbl');
+        _this.updatePending = function() {
+            lbl.text(num_probes == 0 ? '' : num_probes);
+        }
+        
+        var _spCtx = {};
+        _this.startProbes = function(rid, rst) {
+                _spCtx.stopped = true;
+                var spCtx = _spCtx = {};
+                var compile = {};
+                var pending = [];
+                var deferCompile = defer_init(1);
+                deferCompile.ready();
+                var active = sub.isActive();
+                
+                probes_each(function(k, v) {
+                    if(v.run != run) {
+                        var kversion = v.kv;
+                        var machine = v.m;
+                        var key = kversion + '/' + machine;
+                        var c = compile[key];
+                        v.run = run;
+                        num_probes++;
+                        _this.updatePending();
+                        if(!c) {
+                            (function() {
+                                var flags;
+                                var ci = c = compile[key] = {k:kversion, m:machine, d:defer_init(1)};
+                                var f = function(err) {
+                                    if(err) {
+                                        return;
+                                    }
+                                    deferCompile.reset();
+                                    request_compile(rid, kversion, machine, flags, function(err) {
+                                        deferCompile.ready(flags != 0 && err);
+                                        ci.d.ready(err);
+                                    });
+                                };
+                                if(rst) {
+                                    rst = undefined;
+                                    flags = 2;
+                                    f(false);
+                                } else {
+                                    pending.push(f);
+                                    deferCompile.then(function(err) {
+                                        pending.pop()(err);
+                                    });
+                                }
+                            })();
+                        }
+                        
+                        (function() {
+                            var pk = v;
+                            c.d.then(function(err) {
+                                var after = function(err) {
+                                    if(num_probes-- < 0) {
+                                        num_probes = 0;
+                                    }
+                                    _this.updatePending();
+                                };
+                                if(!err && !spCtx.stopped) {
+                                    if(active) {
+                                        request_run(rid, parseInt(k), pk, 0, after);
+                                    } else {
+                                        request_attach(rid, 1, after);
+                                    }
+                                    
+                                    
+                                } else {
+                                    after();
+                                }
+                            }); 
+                        })();
+                    }
+                });
+        }
+        
+        var _active = null;
+        _this.getActive = function() {
+            return _active;
+        }
+        
+        _this.updateCtrl = function(v) {
+            if(v) {
+                if(sel == null) {
+                    return false;
+                }
+                
+                module_cache_unset();
+                
+                run = {};
+                _active = sel;
+                var rst = _need_reset[_active] ? 1 : 0;
+                delete _need_reset[_active];
+                change.run_start(_active, sel_name);
+                _this.updateActive();
+                _this.onChangeActive({n:sel_name});
+                _this.startProbes(_active, rst);
+            } else {
+                if(_active == null) {
+                    return false;
+                }
+                if(sub.isActive()) {
+                    request_stop();
+                } else {
+                    request_attach(-1, 0, function(err) {
+                    });
+                }
+                
+                _active = null;
+                _this.onChangeActive();
+            }
+            
+            _this.updateCtrlView();
+            
+            return true;
+        }
+        
+        _this.updateCtrlView = function() {
+            sub.setSave(sel != null);
+            sub.setPlay(_active == null || sel != _active);
+            sub.setStop(_active != null);
+            
+            sub.setCtrlView(_active == null || sel != _active ? 1 : 0);
+        }
+        
+        _this.onChangeActive = function(o) {
+            var l = $(frm.children()[0]);
+            if(o) {
+                a.val(o.n);
+                l.addClass('fl-is-active');
+                frm.css('margin-top', '0.4rem');
+            } else {
+                a.val('');
+                l.removeClass('fl-is-active');
+                frm.css('margin-top', '');
+            }
+        }
+        
+        _this.updateActive = function() {
+            if(sel == _active && mode == 1) {
+                deferRender.then(function() {
+                    module_cache_share();
+                });
+            } else {
+                module_cache_unshare();
+            }
+        }
+        
+        _this.onChangeRun = function(o) {
+            var sn = {name:polyglot.t('run.norun')};
+            sub.resetMax();
+            deferRender.reset();
+            if(o) {
+                sn.name = o.n;
+                sel = o.id;
+                sel_name = o.n;
+                sub.requestUses();
+                st.show();
+                _this.updateActive();
+            } else {
+                sel = null;
+                sub.clearUses();
+                st.hide();
+                sub.setInstNoRun();
+                module_cache_unshare();
+            }
+            _this.updateClear();
+            deferList.reset();
+            defer.reset();
+            loadCfg(sel);
+            sub.loadInst(sel);
+            sub.renderModules();
+            cfgLabel.innerText = polyglot.t('run.option_s', sn);
+            _this.updateCtrlView();
+        };
+    })();
+    
+    (function(){
+        var c = $('#topbar .ui.config.dropdown');
+        var m = c.find('.menu');
+        c.dropdown({
+           transition:'fade up',
+           context:'body',
+           onChange:function(value, text, $choice) {
+               c.children().first().text(polyglot.t('run.view_p') + text);
+               _this.onChangeMode(m.children().index($choice[0]));
+           }
+        });
+        
+        c.dropdown('set selected', polyglot.t('run.view_r'));
+    
+    })();
+
+    (function() {
+        var l = $('.runList');
+        var p = $('.runPage');
+        var n = {page:'main/run',
+                 sub:'run',
+                 pg:'sub.requestRuns(p)',
+                 kd:'sub.requestRuns(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChangeRun);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddRun = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetRuns = function() {
+            paging_reset(n);
+            sub.requestRuns();
+        }
+        
+        var s = list_search(rFilter, sub.resetRuns);
+        
+        sub.lockList = function() {
+            if(nl == 0) {
+                rFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                rFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestRuns = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChangeRun();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:81}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/run'),sub=ctx['run'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('run.rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('run.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:86}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.run_edit(o.id, o.n, 1);
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        };
+        
+        var rn = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/run'),sub=ctx['run'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('run.ren', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="groupRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="groupRName" name="groupRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('run.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:85}), ext_data:JSON.stringify({m:o.id, c:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.run_edit(o.id, nn, 2);
+                        o.n = nn;
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        sub.unlockList(); 
+                        lb.destroy();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.runList .item', 
+            callback:function(key, options) {
+                if(key != 'addm') {
+                    _this.onChangeRun();
+                    j();
+                }
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'addm':
+                        _this.runAddModule(this.o);
+                        break;
+                }
+            },
+            items:{
+                'addm':{name:polyglot.t('run.addm'), icon:'add'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    (function() {
+        var u = $('#inst');
+        var l = $('.runIList');
+        var iDir = iFilter.parent().find('.toggl');   
+        var nl = 0;
+        
+        function filter() {
+            var items = sub.getInst().d;
+            var f = iFilter.val();
+            var d = iDir.hasClass('up') ? 1 : 0;
+            var r = f != '' ? items.filter(function(n) {
+               return n.n.indexOf(f) != -1; 
+            }) : items.slice(0);
+            
+            r.sort(function(a, b) {
+                var n = a.n.localeCompare(b.n);
+                return d == 1 ? n : -n; 
+            }); 
+            
+            return r;
+        }
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, function() {});
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };        
+        
+        sub.lockIList = function() {
+            if(nl == 0) {
+                iFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+            }
+            nl++;
+        }
+        
+        sub.unlockIList = function() {
+            nl--;
+            if(nl == 0) {
+                iFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+            }
+        }
+        
+        var render = function(d) {
+            deferList.then(function() {
+                var f = $(document.createDocumentFragment());
+                var i = d.d || [];
+                i.forEach(function(v) {
+                    var k = $(m(v)).appendTo(f);
+                    if(v.hidden) {
+                        k.addClass('_hidden');
+                    }
+                    if(v.max) {
+                        k.addClass('_max');
+                    }
+                });
+                l.html('');
+                l.append(f);
+            });
+        }
+        
+        sub.clearInst = function(v) {
+            clear_visible_split(u);
+            l.html('<div class="list_e">' + polyglot.t(v ? 'run.norun' : 'main.list_empty') + '</div>');
+        }
+        
+        sub.resetInsts = function() {
+            j();
+            var d = sub.getInst();
+            if(!d || d.d.length == 0) {
+                sub.clearInst(d == null);
+            } else {
+                render({d:filter()});
+            }
+        }
+        
+        var s = list_search(iFilter, sub.resetInsts);
+        
+        var hd = function(o, it) {
+            if(it.hasClass('_hidden')) {
+                var d = sub.getInst();
+                var cfg = sub.getCfg();
+                var pos = cfg.o.pos || {};
+                var it = d.d.find(function(n) {
+                    return n.id == o.id;
+                });
+                var ni = sub.renderWidget(pos, it);
+                ni.item = it;
+                delete ni.item.hidden;
+                sub.resetInsts();
+            } else {
+                var i = cont.find('.grid-stack-item[data-gs-id="' + o.id + '"]');
+                ctx.close(i);
+            }
+        }
+        
+        var mx = function(o, it) {
+            var i = cont.find('.grid-stack-item[data-gs-id="' + o.id + '"]');
+            ctx.maximize(i);
+        }
+        
+        var rn = function(o, it) {
+            sub.lockIList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/run'),sub=ctx['run'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('run.renI', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="groupRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="groupRName" name="groupRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockIList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('run.e_renI'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockIList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:91}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        o.n = nn;
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        sub.unlockIList(); 
+                        lb.destroy();
+                        var dit = sub.getInst().d.find(function(n) {
+                            return n.id == o.id;
+                        });
+                        dit.n = nn;
+                        sub.renderModules();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        };
+        
+        var rm = function(o, it) {
+            sub.lockIList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/run'),sub=ctx['run'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('run.remI', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockIList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('run.e_remI'), function(r) { 
+                    r.remove();
+                    sub.unlockIList();
+                });
+                loader.show();
+                var rid = sel;
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:90}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        sub.unlockIList();
+                        
+                        var di = sub.getInst().d;
+                        var dit = di.find(function(n) {
+                            return n.id == o.id;
+                        });
+                        var idx = di.indexOf(dit);
+                        di.splice(idx, 1);
+                        sub.renderModules();
+                        _need_reset[rid] = true;
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        };
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.runIList .item', 
+            className:'runIListC',
+            callback:function(key, options) {
+                j();
+                switch(key) {
+                    case 'hide':
+                        hd(this.o, this.it);
+                        break;
+                    case 'max':
+                        mx(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'hide':{name:polyglot.t('main.hide'), icon:'edit'},
+                'max':{name:polyglot.t('main.max'), icon:'edit', disabled:function(){
+                    return this.it.hasClass('_hidden');
+                }},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+        
+        l.on('contextmenu', function(e){
+            var it = $(e.target).closest('.item');
+            var c = $('.context-menu-list.context-menu-root.runIListC')[0].childNodes;
+            $(c[0]).find('span').text(polyglot.t(it.hasClass('_hidden') ? 'main.show' : 'main.hide'));
+            $(c[1]).find('span').text(polyglot.t(it.hasClass('_max') ? 'main.min' : 'main.max'));
+        }); 
+        
+        sub.clearInst(true);
+    })();
+    
+    (function() {
+        var u = $('#uses');
+        var l = $('.usesList');
+        var p = $('.usesPage');
+        var n = {page:'main/run',
+                 sub:'run',
+                 pg:'sub.requestUses(p)',
+                 kd:'sub.requestUses(parseInt(this.value)-1, event)'
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function(n) {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.clearUses = function() {
+            clear_visible_split(u);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('run.norun') + '</div>');
+        }
+        
+        sub.resetUses = function() {
+            paging_reset(n);
+            sub.requestUses();
+        }
+        
+        var s = list_search(uFilter, sub.resetUses);
+        
+        var ru = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i,id:sel}));
+                    uFilter.attr('disabled', '');
+                    l.addClass('nomouse_i');
+                    p.addClass('nomouse');
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:87}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        uFilter.attr('disabled', null);
+                        l.removeClass('nomouse_i');
+                        p.removeClass('nomouse');
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        sub.requestUses = function(po, ev) {
+            do_visible_split(u, function() {
+                ru(po, ev)
+            });
+        }
+    })();
+    
+    (function() {
+        var _max = null;
+        var controller = {widgets:function() {return [];}};
+        var soptions = {
+                            auto:false,
+                            draggable:{
+                                handle:'.label.tov',
+                            },
+                            resizable:{
+                                handles:'e, se, s, sw, w'
+                            },
+                            verticalMargin:'10px',
+                            float:true
+                        };  
+                        
+        sub.resetMax = function() {
+            _max = null;
+            cont.removeClass('maxed');
+        }
+        
+        ctx.maximize = function(el, rorender) {
+            var p = $(el).closest('.grid-stack-item');
+            var icon = p.find('.grid-stack-item-content > .top.label .icon.caret');
+            var max = p.hasClass('maxed');
+            var it = ko.dataFor(p[0]);
+            if(_max != null) {
+                var i = cont.find('.grid-stack-item[data-gs-id="' + _max + '"]');
+                _max = null;
+                ctx.maximize(i[0], true);
+            }
+            if(!it) {
+                return;
+            }
+            
+            if(max) {
+                icon.removeClass('down');
+                icon.addClass('up');
+                p.removeClass('maxed');
+                cont.removeClass('maxed');
+                _max = null;
+                delete it.item.max;
+            } else {
+                icon.removeClass('up');
+                icon.addClass('down');
+                p.addClass('maxed');
+                cont.addClass('maxed');
+                cont.scrollTop(0);
+                _max = it.id;
+                it.item.max = true;
+            }
+            if(!rorender) {
+                sub.resetInsts();
+            }
+            grid.movable(p[0], max && mode == 0);
+            grid.resizable(p[0], max && mode == 0);
+            
+            if(!rorender) {
+                module_resized(it.id);
+            }
+        }
+        
+        ctx.close = function(el) {
+            var p = $(el).closest('.grid-stack-item');
+            var data = ko.dataFor(p[0]);
+            if(data.id == _max) {
+                var i = cont.find('.grid-stack-item[data-gs-id="' + _max + '"]');
+                ctx.maximize(i[0]);
+            }
+            data.item.hidden = true;
+            sub.deleteWidget(data);
+            sub.resetInsts();
+        }
+        
+        sub.sync = function() {
+            var g = $('.container-fluid .grid-stack');
+            g[0].childNodes.forEach(function(el) {
+                var e = $(el);
+                var data = ko.dataFor(el);
+                data.x = parseInt(e.attr('data-gs-x'));
+                data.y = parseInt(e.attr('data-gs-y'));
+                data.width = parseInt(e.attr('data-gs-width'));
+                data.height = parseInt(e.attr('data-gs-height'));
+            });
+        };
+        
+        sub.savePos = function() {
+            console.log('save');
+            var pos = {};
+            var els = sub.getInstEl();
+            var loader = els.l;
+            var serr = els.se;
+            loader.show();
+            sub.sync();
+            
+            var i = sub.getInst();
+            var a = [].slice.call(controller.widgets(), 0);
+            a.sort(function(a, b) {
+                return a.id - b.id;
+            });
+            var iidx = 0;
+            var h = [];
+            var check = function(id) {
+                var n = i.d[iidx];
+                while(n && n.id != id) {
+                    h.push(n.id);
+                    n = i.d[++iidx];
+                }
+                iidx++;
+            };
+            a.forEach(function(item) {
+                var id = item.id;
+                var i = pos[id];
+                if(!i) {
+                    i = pos[id] = {};
+                }
+                i.x = item.x;
+                i.y = item.y;
+                i.w = item.width;
+                i.h = item.height;
+                check(id);
+            });
+            check(null);
+            
+            var c = sub.getCfg();
+            c.o.pos = pos;
+            
+            if(_max != null) {
+               pos.m = _max; 
+            }
+            
+            if(h.length != 0) {
+                pos.h = h;
+            }
+            
+            post('/sys/server/', {data:JSON.stringify({cmd:85}), ext_data:JSON.stringify({m:sel,b:JSON.stringify(c.o)})}, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                if(r.r == 0) {
+                    
+                } else {
+                    serr.show();
+                }
+                loader.hide();
+            });
+        };
+        
+        var templ = $('#gridstack-template');
+        cont = $('.stack-container');
+        templ[0].parentNode.removeChild(templ[0]);
+        _this.onChangeMode(mode);
+        
+        sub.updateWidgetMode = function(i, m, after) { 
+            deferList.then(function() {
+                var maxed = cont.hasClass('maxed');
+                var data = ko.dataFor(i).item;
+                var ct = $(i).find('.grid-stack-item-content > .content');
+                ct.addClass('run_' + data.id);
+                
+                grid.movable(i, !maxed && m == 0);
+                grid.resizable(i, !maxed && m == 0);
+                
+                var mode = m + 4;
+                var d = JSON.stringify({a:data.mid,b:mode});
+                
+                if(i.unload) {
+                    i.unload();
+                    i.unload = null;
+                }
+                var key = moduleCache.genKey(data.mid, mode);
+                moduleCache.get(key, function(f) {
+                    //loader.show();
+                    lock.raw_post('/sys/server/', {data:JSON.stringify({cmd:70}), ext_data:d}, f);
+                }).then(function(d, err) {
+                    //loader.hide();
+                    key = '/' + data.id + key;
+                    if(!err) {
+                        i.unload = function() {
+                            moduleCache.unload(key);
+                        };
+                        if(after){
+                            after.ready()
+                        }
+                    }
+                    do_visible_path(sub, function() {
+                        var after = function() {
+                            deferRender.ready();
+                        }
+                        if(err) {
+                            //serr.show();
+                            after();
+                        } else {
+                            moduleCache.load(key, d, ct, {prefix:'.run_' + data.id + ' ', ty:mode - 3, rid:data.id, iid:data.iid}).then(after);
+                        }
+                    });
+                });
+                
+            });
+        };
+    
+        ko.components.register('dashboard-grid', {
+            viewModel: {
+                createViewModel: function (controller, componentInfo) {
+                    grid = $('.container-fluid .grid-stack').gridstack(soptions).data('gridstack');
+                    var ViewModel = function (controller, componentInfo) {
+                        this.widgets = controller.widgets;
+                        this.afterAddWidget = function (items) {
+                            var item = items.find(function (i) { return i.nodeType == 1 });
+                            grid.addWidget(item);
+                            var added = defer_init(1);
+                            deferAdd.then(function() {
+                                sub.updateWidgetMode(item, mode, added);
+                            });
+                            ko.utils.domNodeDisposal.addDisposeCallback(item, function () {
+                                grid.removeWidget(item);
+                                added.then(function() {
+                                    item.unload();
+                                });
+                            });
+                        };
+                    };
+                    return new ViewModel(controller, componentInfo);
+                }
+            },
+            template: { element: templ[0] }
+        });
+        
+        $(function () {
+            var Controller = function (widgets) {
+                var self = this;
+                this.widgets = ko.observableArray(widgets);
+                this.addWidget = function (id, lbl, x, y, width, height, apos) {
+                    var it = {
+                        id:id,
+                        lbl:lbl,
+                        x:x,
+                        y:y,
+                        width:width,
+                        height:height,
+                        auto_position:apos === undefined ? false : apos
+                    };
+                    self.widgets.push(it);
+                    
+                    return it;
+                };
+                this.deleteWidget = function (item) {
+                    self.widgets.remove(item);
+                    return false;
+                };
+                this.deleteAll = function () {
+                    self.widgets.removeAll();
+                    return false;
+                };
+            };
+            controller = new Controller([]);
+            ko.applyBindings(controller, cont[0]);
+            sub.addWidget = controller.addWidget;
+            sub.deleteWidget = controller.deleteWidget;
+            sub.deleteAllWidgets = controller.deleteAll;
+            sub.setWidgetMode = function(m) {
+                controller.widgets().forEach(function(w) {
+                    var i = cont.find('.grid-stack-item[data-gs-id="' + w.id + '"]');
+                    sub.updateWidgetMode(i[0], m);
+                });
+            }
+            
+            do_visible_split($('#left'), function() {
+                sub.requestRuns();
+            });
+        });
+        
+        $(document).one('cacheDestroy', function() {
+            $(document).off('tmplChange', sub.tmplChange);
+            $(document).off('probeChange', sub.onProbeChange);
+            ko.removeNode(cont[0]);
+            ko.components.unregister('dashboard-grid');
+        });
+    })();
+</script>
+<style>
+    .grid-stack-item-content.ui.segment {
+        padding:0;
+        height:100%;
+    }
+    
+    .grid-stack-item-content .pad {
+        padding:1em;
+        height:100%;
+    }
+    
+    .grid-stack-item-content .pad:after {
+        content:"";
+        display:block;
+        height:4em;
+        width:100%;
+    }
+    
+    .grid-stack-item-content.ui.segment .content {
+        overflow:auto;    
+        height: calc(100% - 2.3em);
+    }
+    
+    .grid-stack-item-content > .top.label a { 
+        outline: 0;
+    }  
+    
+    .grid-stack-item-content > .top.label a:active { 
+        outline: none; 
+        
+    }  
+    
+    .grid-stack-item-content > .top.label a:focus {
+        -moz-outline-style: none; 
+    }
+    
+    .grid-stack-item-content > .top.label .icon {
+        padding:0 0.8rem 0 0.8rem;    
+    }
+    
+    .grid-stack-item-content > .top.label .close {
+        display:none;
+    }
+    
+    .stack-container.config .grid-stack-item-content > .top.label .close {
+        display:initial;
+    }
+    
+    .container-fluid {
+        padding-bottom:10px;
+        border: 2px dashed #dedede;
+    }
+    
+    #right .grid_c + .grid_e {
+        top:0 !important;
+    }
+    
+    #right .grid_c {
+        padding:0 !important;
+        height:100% !important;
+    }
+    
+    .stack-container {  
+        position:relative; 
+        overflow:auto;    
+        height:100%;
+    }
+    
+    .stack-container.maxed { 
+        overflow:hidden;
+    }
+    
+    #right .grid-stack .grid-stack-placeholder > .placeholder-content {
+        left:0px;
+    }
+    
+    #right .grid-stack > .grid-stack-item > .grid-stack-item-content {
+        left:-1px;
+    }
+    
+    #right .grid-stack > .grid-stack-item.maxed .grid-stack-item-content {
+        right:0px;
+    }
+
+    .stack-container,
+    .container-fluid,
+    div.grid-stack {
+        width:100%;
+    }
+    
+    div.grid-stack {
+        position:static;
+        overflow:hidden;
+    }
+    
+    .grid-stack div.grid-stack-item.maxed {    
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        height:calc(100% + 4px);
+        width:100%;
+        z-index:2;
+    }
+    
+    .grid-stack div.grid-stack-item {
+        margin-top:-2px;
+    }
+    
+    #topbar .ui.play .icon {
+        vertical-align:middle;
+    }
+    
+    #topbar .ui.play div {
+        display:inline-flex;
+        padding-right:0.73rem;    
+        height:100%;
+        cursor:pointer;
+    }
+    
+    #topbar .ui.play .plbl {
+        position:absolute;
+        bottom:0;
+        left:0;
+        line-height:10px;
+        font-size:10px;
+    }
+    
+    #topbar .ui.play div.sel {
+        background:#54a3e1;
+        color:#FFF;
+    }
+    
+    #topbar .ui.play div:hover {
+        background:#3E93D8;
+        color:#FFF;
+    }
+    
+    #topbar .ui.play div.item.inactive {
+        pointer-events:none;
+        opacity:0.3;
+        background:none;
+    }
+    
+    #topbar .ui.play div.item.inactive:hover,
+    #topbar .ui.play div.item.inactive.sel {
+        background:#54a3e1;
+        opacity:0.7;
+    }
+    
+    #center .ui.menu {
+        min-height:1.857143em;
+        margin: 0;
+        overflow:hidden;
+    }
+    
+    #center .ui.menu .item {
+        padding:0.2rem 1rem 0.2rem 1rem;
+    }
+    
+    #center .menu > .item:before {
+        background-color: #dedede;
+    }
+    
+    #center .runbtn.dropdown .icon {
+        color: #000;
+    }
+    
+    #center .runbtn.dropdown:not(.selection):hover .icon,
+    #center .runbtn.dropdown:not(.selection).active .icon {
+        color:#FFF;
+    }
+    
+    #content > .errHolder {
+        width:0px;
+        float:right;
+    }
+    
+    #content > .errHolder .errBar {
+        position:absolute;
+        top:0;
+        bottom:0;
+        right:0;
+        width:0px;
+        display:none;
+    }
+    
+    #content > .errHolder .ui.sidebar {
+        background:#fff;
+        border:1px solid #dfdee6;
+        border-top-left-radius:4px !important;
+        border-bottom-left-radius:4px !important;
+        position:relative;    
+        width:100%;
+        padding:20px;
+        top:-42px;
+    }
+    
+    #content > .errHolder .errBtn {
+        position:relative;
+        top:20px;
+        z-index:999;
+    }
+    
+    #content > .errHolder .errList {
+        position:absolute;
+        overflow:auto;
+        top:35px;
+        bottom:55px;
+        right:0;
+        left:20px;
+    }
+    
+    #content > .errHolder .errDrag {
+        height:100%;
+        width:4px;
+        position:absolute;
+        cursor:col-resize;
+        z-index: 998;
+    }
+    
+    #content > .errHolder .errList .item {
+        border-top:1px solid #FFBDBB;
+        padding:10px 0;
+    }
+    
+    #content > .errHolder .errList .item:first-child {
+        border-top:none;
+    }
+    
+    #content > .errHolder .errClr {
+        position:absolute;
+        bottom:20px;
+        right:20px;
+    }
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/run_add.html"}###
+    ###{"file":"templates_www_source/run_add_module.html"}###
+</div>
+<script always>
+    if(!load) {
+        module_viewed();
+    }
+</script>
+<div attach="topbar" sub="topbar" template>
+    <div class="ui edit dropdown item">
+        <div class="text">{{l 'main.edit'}}</div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="header">{{l 'run.run'}}</div>
+            <div class="item RUN_ADD" page_click="ctx.runAdd();">
+                {{l 'main.add'}}
+            </div>
+            <div class="item runSavePos" page_click="ctx.runSave();">
+                {{l 'run.saver'}}
+            </div>
+        </div>
+    </div>
+    <div class="item" style="padding:0.2rem;">
+        <script always>
+            if(sub.lb) {
+                sub.lb.destroy();
+            }
+            sub.lb = new FloatLabels('.runActiveFrm', {'style':1, customEvent:autofill});
+        </script>
+        <div class="ui form runActiveFrm">
+            <label for="runActive">{{l 'run.active'}}</label>
+            <input style="height:2.3rem;" class="ui input" type="text" id="runActive" name="runActive" readonly>
+        </div>
+    </div>
+    <div class="ui play item" style="padding:0;">
+        <div class="item">
+            <i class="play icon"></i>
+            <label class="plbl"></label>
+        </div>
+        <div class="item sel">
+            <i class="stop icon"></i>
+        </div>
+    </div>
+    <div class="ui config dropdown item">
+        <div class="text"></div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">{{l 'run.view_c'}}</div>
+            <div class="item">{{l 'run.view_r'}}</div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlist" id="vlist" checked>
+                  <label for="vlist">{{l 'run.list'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vedit" id="vedit">
+                  <label for="vedit">{{l 'run.option'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vinst" id="vinst">
+                  <label for="vinst">{{l 'run.inst'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vdiss" id="vdiss" checked>
+                  <label for="vdiss">{{l 'run.view'}}</label>
+                </div>
+            </div>
+            <div class="item USER_EDIT">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vdiss" id="vuses">
+                  <label for="vuses">{{l 'run.uses'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="errHolder">
+    <div class="errBar">
+        <div class="errDrag" draggable="true"></div>
+        <div class="ui red button errBtn"></div>
+        <div class="ui right vertical labeled icon visible overlay sidebar">
+            <div><h4>{{l 'main.errs'}}</h4></div>
+            <div class="ui divided list errList"></div>
+            <div class="ui red button errClr">{{l 'main.clr'}}</div>
+        </div>
+    </div>
+</div>
+<div sub="run" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'run.list'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="runFilter">{{l 'main.list_f'}}</label>
+                        <input id="runFilter" name="runFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist runList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu runPage fullw"></div>
+    </div>
+    <div id="center">
+        <div class="ui segment fullw paging_outer">
+            <div id="runCfgLabel" class="ui top attached blue label tov"></div>
+            <div></div>
+            <div class="grid_c hide">
+                <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                    <div class="form-row">
+                        <label for="runId">{{l 'main.id'}}</label>
+                        <input type="text" id="runId" name="runId" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="runName">{{l 'main.name'}}</label>
+                        <input type="text" id="runName" name="runName" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="runDesc">{{l 'main.desc'}}</label>
+                        <textarea id="runDesc" name="runDesc"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <label for="runUID">{{l 'main.uid'}}</label>
+                        <input type="text" id="runUID" name="runUID">
+                    </div>
+                    <div class="form-row">
+                        <label for="runGID">{{l 'main.gid'}}</label>
+                        <input type="text" id="runGID" name="runGID">
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button">{{l 'main.save'}}</button>
+                    </div>
+                    <div class="doclear"></div>
+                </form>
+            </div>
+            <div class="grid_e">{{l 'run.norun'}}</div>
+        </div>
+        <div class="ui runsel dropdown item" style="display:block;">
+             <div class="menu" style="width:100%;">
+                <div class="item">{{l 'main.act'}}</div>
+                <div class="item">{{l 'main.psv'}}</div>
+            </div>
+        </div>
+        <div class="ui menu" style="position:relative;">
+            <a class="ui item clrToggle" page_click="ctx.runClear();">{{l 'run.rclear'}}</a>
+            <a class="ui runbtn dropdown item" page_click="ctx.runSel();">
+                <div class="text"></div><i class="dropdown icon"></i>
+            </a>
+        </div>
+    </div>
+    <div id="inst">
+        <div class="ui segment fullw paging_outer" style="height:100%;">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'run.inst'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="runIFilter">{{l 'main.list_f'}}</label>
+                        <input id="runIFilter" name="runIFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist runIList paging_inner content"></div>
+        </div>
+    </div>
+    <div id="right" class="container-fluid">
+        <div class="grid_c hide">
+            <div class="stack-container" data-bind="component: {name: 'dashboard-grid', params: $data}"></div>
+        </div>
+        <div class="grid_e">{{l 'run.norun'}}</div>
+    </div>
+    <div id="uses" class="USER_EDIT">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'run.uses'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="usesFilter">{{l 'main.list_f'}}</label>
+                        <input id="usesFilter" name="usesFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled list plist usesList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu usesPage fullw"></div>
+    </div>
+</div>
+<div id="gridstack-template" class="hide">
+    <div class="grid-stack" data-bind="foreach: {data: widgets, afterRender: afterAddWidget}">
+       <div class="grid-stack-item" data-bind="attr: {'data-gs-id': $data.id, 'data-gs-x': $data.x, 'data-gs-y': $data.y, 'data-gs-width': $data.width, 'data-gs-height': $data.height, 'data-gs-auto-position': $data.auto_position}">
+           <div class="grid-stack-item-content ui segment">
+               <div class="ui top attached blue label tov"><span data-bind="text: $data.lbl" style="float:left;"></span>
+                   <a href="javascript:void(0);" page_click="ctx.close(this);"><i class="icon close" style="float:right;"></i></a>
+                   <a href="javascript:void(0);" page_click="ctx.maximize(this);"><i class="icon caret up" style="float:right;"></i></a>
+               </div>
+               <div></div>
+               <div class="content"></div>
+            </div>
+       </div></div><!-- NO SPACE BETWEEN THESE CLOSING TAGS -->
+</div>

@@ -1,0 +1,106 @@
+
+html, body {
+    width:100%;
+    height:100%;
+    font-weight:normal;
+    font-size:1em;
+}
+
+@media screen and (max-width: 1366px) {
+    html, body {
+        font-size:0.8em;
+    }
+}
+ 
+@media screen and (max-width: 1280px) {
+    html, body {
+        font-size:1em;
+    }
+}
+
+body > .loader {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:20px;
+    font-size:30px;
+    color:#25529c;
+    font-family:arial;
+    background:#FFF;
+    z-index:999;
+    cursor:wait;
+}
+
+body.NO_RUN_ADD .RUN_ADD,
+body.NO_DISASSEMBLER_USE .DISASSEMBLER_USE,
+body.NO_PROBE_ADD .PROBE_ADD,
+body.NO_MODULE_ADD .MODULE_ADD,
+body.NO_MODULE_SHARE .MODULE_SHARE,
+body.NO_USER_EDIT .USER_EDIT,
+body.NO_SETTING_EDIT .SETTING_EDIT,
+body.NO_ACCOUNT_EDIT .ACCOUNT_EDIT,
+body.NO_ACCOUNT_REMOVE .ACCOUNT_REMOVE,
+body.NO_REPO_EDIT .REPO_EDIT,
+body.NO_CHAT_USE .CHAT_USE,
+body.NO_MODULE_SOURCE .MODULE_SOURCE,
+body.NO_USER_CHANGE_LOGIN .USER_CHANGE_LOGIN,
+body.NO_REPO_ADD .REPO_ADD,
+.hide {
+    display:none !important;
+}
+
+.nosel {
+    -moz-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+
+.nomouse {
+    pointer-events:none !important;
+}
+
+.form-base .logo {
+    margin-bottom:-1em;
+}
+
+.form-base .form-row {
+    width:100%;
+    margin-bottom:0.7em;
+}
+
+.form-base .btn {
+    color:#FFF;
+    min-height:40px;
+    border-radius:4px; 
+    transition:all 0.5s;
+}
+
+.form-base .btn {
+    width:100%;
+    line-height:normal;
+    border:none;
+    background:#3E93D8;
+}
+
+.form-base .btn:hover {
+  background:#54A3E1;
+  color:#FFF;
+  text-decoration: none;
+}
+
+.ui .form-base .checkbox-inline {
+    float:left;
+    cursor:pointer;
+}
+
+.form-base input[type="checkbox"] {
+    margin-top:2px;
+}
+
+.ui .form-row input:hover {
+    border:1px solid #bbb;    
+}

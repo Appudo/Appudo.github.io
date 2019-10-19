@@ -1,0 +1,2483 @@
+<script path="main">
+if(!window.domy) {
+    var module = {};
+    ###{"file":"template_js/domy.js"}###
+    module = {};
+    if(!ie_check(12)) {
+        ###{"file":"template_js/domy-attach.js"}###
+    } else {
+        window.strictdom = {enable:function() {},disable:function(){}};
+    }
+    
+    console.log('main');
+    var use_domy = true;
+    var _strictdom = strictdom;
+    domy.init = function() {
+        if(use_domy) {
+            _strictdom.enable();
+        }
+    }
+    
+    domy.deinit = function() {
+        _strictdom.disable();
+    }
+    
+    domy.off = function(f, ctx, m) {
+        var ds = _strictdom.disable();
+        if(!m) {
+            f.call(ctx);
+            if(ds) {
+                _strictdom.enable();
+            }
+        } else {
+            f.call(ctx, function() {
+                if(ds) {
+                    _strictdom.enable();
+                }
+                m.apply(this, arguments);
+            });
+        }
+    }
+    delete window.strictdom;
+    domy.init();
+    //$.site('enable debug');
+    
+    var pf = jQuery.Animation.prefilters;
+    var slideUp = jQuery.fn.slideUp;
+    if(slideUp) {
+        jQuery.fn.slideUp = function() {
+            var aidx = arguments.length == 3 ? 2 : 1;
+            var a = arguments[aidx];
+            
+            arguments[aidx] = function() {
+                domy.off(function() {
+                    $(this).css('display', 'none');
+                }, this);
+                if(a) {
+                    a.apply(this, arguments);
+                }
+            }
+            slideUp.apply(this, arguments);
+        }
+    }
+    if(pf) {
+        var f = pf[0];
+        pf[0] = function() {
+            var a = arguments;
+            domy.off(function() {
+                f.apply(this, a);
+            }, this);
+        }
+    }
+}
+</script>
+<script path="main">
+    var _socket;
+    var _socket_pending = null;
+    var w = window;
+    var _mctx;
+    var _mprefix;
+    var _chatMsgs = [];
+    var _eperms = {
+        RUN_EDIT:               1 << 0,
+        PROBE_EDIT:             1 << 1,
+        PROBE_VIEW_KEY:         1 << 2,
+        MODULE_EDIT:            1 << 3,
+        MODULE_SOURCE_EDIT:     1 << 4,
+        MODULE_SETUP:           1 << 5,
+        REPO_EDIT:              1 << 6
+    };
+    
+    (function() {
+        var tidx = ['run', 'probe', 'dasm', 'src', 'module', 'chat', 'user'];
+        var kty =  [0,     0,       1,      1,      0,       1,      0];
+        var fkt = {};
+        fkt.size = window.Map ? function(o) {
+            return o.size;
+        } : function(o) {
+            return Object.getOwnPropertyNames(o).length;
+        }
+        
+        fkt.im = window.Map ? function() {
+            return  new Map();
+        } : function() {
+            return {};
+        }
+        
+        fkt.set = window.Map ? function(m, k, v) {
+            m.set(k, v);
+        } : function(m, k, v) {
+            m[k] = v;
+        }
+        
+        fkt.unset = window.Map ? function(m, k) {
+            m.delete(k);
+        } : function(m, k) {
+            delete m[k];
+        }
+        
+        fkt.get = window.Map ? function(m, k) {
+            return m.get(k);
+        } : function(m, k) {
+            return m[k];
+        }
+        
+        fkt.sort = function(o) {
+            var values = [];
+            var f = function(it) {
+                var k = $.extend({}, this.get(o, it));
+                k.key = it;
+                values.push(k);
+            };
+            if(window.Map) {
+                var keys = o.keys();
+                while(true) {
+                    var k = keys.next();
+                    if(!k.done) {
+                        f.call(this, k.value);
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                var keys = Object.getOwnPropertyNames(o);
+                keys.forEach(f);
+            }
+            values.sort(function(a, b) {
+                return b.t - a.t;
+            });
+            return values;
+        }
+        
+        fkt.rm = function(o, max) {
+            if(this.size(o) > max) {
+                var values = [];
+                var f = function(it) {
+                    var k = $.extend({}, this.get(o, it));
+                    k.key = it;
+                    values.push(k);
+                };
+                if(window.Map) {
+                    var keys = o.keys();
+                    while(true) {
+                        var k = keys.next();
+                        if(!k.done) {
+                            f.call(this, k.value);
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    var keys = Object.getOwnPropertyNames(o);
+                    keys.forEach(f);
+                }
+                values.sort(function(a, b) {
+                    return b.t - a.t;
+                });
+                this.unset(o, values[values.length-1].key);
+            }
+        }
+        
+        _welcome_change = {
+            _max:10,
+            _data : {},
+            _changes : {},
+            _time : function() {
+                return Math.floor(Date.now() / 1000);
+            },
+            _pending : false,
+            _change : function(n) {
+                this._changes[n] = {};  
+            },
+            _stringify : function() {
+                return JSON.stringify(this._data, function(n, v) {
+                    var r = v;
+                    if(v) {
+                        if(v.constructor === window.Map) {
+                            r = {};
+                            v.forEach(function(va, k, m) {
+                                r[k] = va;
+                            });
+                        }
+                    }
+                    return r;
+                });
+            },
+            _validate : function() {
+                var _this = this;
+                var v = function(n, kty) {
+                    if(!this._data[n]) {
+                        this._data[n] = fkt.im();
+                    }
+                    if(window.Map && this._data[n].constructor !== Map) {
+                        var entries = Object.entries(this._data[n]);
+                        if(kty == 0) {
+                            entries.forEach(function(it){
+                               it[0] = parseInt(it[0]); 
+                            });
+                        }
+                        this._data[n] = new Map(entries);
+                    }
+                };
+                tidx.forEach(function(it, i) {
+                    v.call(_this, it, kty[i]);
+                });
+            },
+            _after : function(n) {
+                fkt.rm(this._data[n], this._max);
+                this._change(n);
+                this._fire();
+            },
+            _fire : function() {
+                if(this._pending) {
+                    return;
+                }
+                this._pending = true;
+                domy.defer(function() {
+                    this._pending = false;
+                    localStorage.setItem('changeData', this._stringify());
+                    $.event.trigger({
+                    	type: "wlcmChange"
+                    }, [this._data, this._changes, fkt]);  
+                }, this);
+            },
+            run_start : function(rid, name) {
+                fkt.set(this._data.run, rid, {t:this._time(), n:name});
+                this._after('run');
+            },
+            run_edit : function(rid, name, ty) {
+                if(ty == 1) {
+                    fkt.unset(this._data.run, rid);
+                } else
+                if(ty == 2) {
+                    var d = fkt.get(this._data.run, rid);
+                    if(d) {
+                        fkt.set(this._data.run, rid, {t:d.t, n:name, ty:ty});
+                    }
+                }
+                this._after('run');
+            },
+            dasm_open : function(d, pname) {
+                fkt.set(this._data.dasm, d, {t:this._time(), n:pname});
+                this._after('dasm');
+            },
+            src_open : function(s) {
+                fkt.set(this._data.src, s, {t:this._time()});
+                this._after('src');
+            },
+            probe_edit : function(pid, name, ty) {
+                if(ty == 1) {
+                    fkt.unset(this._data.probe, pid);
+                } else {
+                    fkt.set(this._data.probe, pid, {t:this._time(), n:name, ty:ty});
+                }
+                this._after('probe');
+            },
+            module_edit : function(mid, name, ty) {
+                if(ty == 1) {
+                    fkt.unset(this._data.module, mid);
+                } else {
+                    fkt.set(this._data.module, mid, {t:this._time(), n:name, ty:ty});
+                }
+                this._after('module');
+            },
+            chat_inv : function(u, ty) {
+                fkt.set(this._data.chat, u, {t:this._time(), ty:ty});
+                this._after('chat');
+            },
+            user_edit : function(uid, name, ty) {
+                if(ty == 1) {
+                    fkt.unset(this._data.user, uid);
+                } else {
+                    fkt.set(this._data.user, uid, {t:this._time(), n:name, ty:ty});
+                }
+                this._after('user');
+            },
+            save : function(after) {
+                var d = JSON.stringify(this._data);
+                // TODO post
+            },
+            clear : function() {
+                localStorage.removeItem('changeData');
+                tidx.forEach(function(it) {
+                    this._data[it] = fkt.im();
+                }, this);
+            },
+            update : function(d, after) {
+                if(d) {
+                    this._data = d;
+                    localStorage.setItem('changeData', this._stringify());
+                } else {
+                    var t = localStorage.getItem('changeData');
+                    if(t) {
+                        this._data = JSON.parse(t);
+                    }
+                }
+                tidx.forEach(function(it) {
+                    _welcome_change._changes[it] = {};
+                });
+                this._validate();
+                this._fire();
+            },
+            data : function() {
+                return this._stringify();
+            }
+        };
+        
+        tidx.forEach(function(it) {
+            _welcome_change._data[it] = fkt.im();
+            _welcome_change._changes[it] = {};
+        });
+        
+        w.change = _welcome_change;
+        
+        var upd = function() {
+            if(!window.domy) {
+                setTimeout(function() {
+                    upd();
+                }, 50);
+                return;
+            }
+            change.update(login_current().s, function() {
+                delete login_current().s;
+            });
+        };
+        upd();
+    })();
+    
+    (function ($) {
+        var originalVal = $.fn.val;
+        $.fn.lbl_data_val = function (v) {
+            var e = $(this);
+            var p = e.closest('.fl-wrap');
+            var l = p.find('.fl-label');
+            if(v !== '') {
+                l.css('transition', 'none');
+                p.addClass('fl-is-active');
+                domy.defer(function() {
+                    l.css('transition', '');
+                });
+            } else {
+                l.css('display', 'none');
+                p.removeClass('fl-is-active');
+                domy.defer(function() {
+                    l.css('display', '');
+                });
+            }
+            if(v == '0') {
+                e.val(polyglot.t('main.never'));
+            } else {
+                var t = new Date(parseInt(v) * 1000);
+                e.val(date_format(t, true));
+            }
+        }
+        
+        $.fn.lbl_val = function (v) {
+            var e = $(this);
+            switch(e.attr('type')) {
+                case 'checkbox':
+                    e.prop('checked', v ? true : false);
+                default:
+                    var p = e.closest('.fl-wrap');
+                    var l = p.find('.fl-label');
+                    if(v !== '') {
+                        l.css('transition', 'none');
+                        p.addClass('fl-is-active');
+                        domy.defer(function() {
+                            l.css('transition', '');
+                        });
+                    } else {
+                        l.css('display', 'none');
+                        p.removeClass('fl-is-active');
+                        domy.defer(function() {
+                            l.css('display', '');
+                        });
+                    }
+                    e.val(v);
+                    break;
+            }
+        };
+    })(jQuery);
+    
+    ws_connect();
+    
+    Handlebars.registerHelper('t',
+        function(str){
+          return _mctx.pg.t(str);
+        }
+    );
+    
+    function clear_socket() {
+        if(_socket != 0) {
+            ticket_clear(_socket);
+        }
+        _socket = 0;
+    }
+    
+    this.onResize = function(e) {
+        $.each(_riid_map, function(k, v) {
+            if(v._onViewChange) {
+                v._onViewChange(0);
+            }
+        });
+        if(_riid_map != _active_riid_map) {
+            $.each(_active_riid_map, function(k, v) {
+                if(v._onViewChange) {
+                    v._onViewChange(0);
+                }
+            });
+        }
+    };
+    
+    w.module_viewed = function() {
+        $.each(_riid_map, function(k, v) {
+            if(v._onViewChange) {
+                v._onViewChange(1);
+            }
+        });
+        if(_riid_map != _active_riid_map) {
+            $.each(_active_riid_map, function(k, v) {
+                if(v._onViewChange) {
+                    v._onViewChange(1);
+                }
+            });
+        }
+    }
+    
+    w.module_resized = function(rid) {
+        var m = _riid_map[rid];
+        if(m && m._onViewChange) {
+            m._onViewChange(0);
+        }
+        if(_riid_map != _active_riid_map) {
+            m = _active_riid_map[rid];
+            if(m && m._onViewChange) {
+                m._onViewChange(0);
+            }
+        }
+    }
+    
+    $(window).on('resize', this.onResize);
+    
+    this.chatReady = function() {
+        _chatMsgs.forEach(function(n) {
+            $.event.trigger({
+            	type: "onChat"
+            }, [n]);
+        });
+        _chatMsgs = null
+    };
+    
+    $(document).one('chatReady', this.chatReady);
+    
+    this.wsock_open = function() {
+        clear_socket();
+        _socket_pending = [];
+    };
+    
+    $(document).on('wsock_open', this.wsock_open);
+    
+    this.wsock_close = function() {
+        clear_socket();
+        ticket_clear_all();
+        _probes = window.Map ? new Map() : {};
+        probe_change(); 
+    }
+    
+    $(document).on('wsock_close', this.wsock_close);
+    
+    ctx.logout = function() {
+        login_logout(false, change.data());
+        change.clear();
+        var loader = loader_init($('#main'), function() {
+            return '<div class="ui text loader"></div>';
+        });
+        loader.show();
+    }
+    
+    w.date_format = function(d, secs) {
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var mm = d.getMonth() + 1;
+        var dd = d.getDate();
+        var ss = d.getSeconds();
+        h = h <= 9 ? '0' + h : h;
+        m = m <= 9 ? '0' + m : m;
+        mm = mm <= 9 ? '0' + mm : mm;
+        dd = dd <= 9 ? '0' + dd : dd;
+        ss = ss <= 9 ? '0' + ss : ss;
+        var s = h + ':' + m + (secs ? (':' + ss) : '');
+        return dd + "/" + mm + "/" + d.getFullYear() + " - " + s;
+    }
+    
+    w.gperm_get_all = function() {
+        return $.extend({}, _eperms);
+    }
+    
+    w.isAdmin = function() {
+        var c = login_current();
+        return c.admin;
+    };
+    
+    w.hasPerm = function(v, n, uid) {
+        var c = login_current();
+        if(c.admin || uid === c.id) {
+            return true;
+        }
+        if(_eperms[v] !== undefined) {
+            return (n & _eperms[v]) != 0;
+        }
+        return false;
+    };
+
+    $(".openbtn").on("click", function() {
+    $("#main > .ui.sidebar").toggleClass("very thin icon smallmenu");
+    $(".mbar").toggleClass("smallbar");
+    $(".main_content").toggleClass("noleft");
+    $(".ui.accordion").toggleClass("displaynone");
+    
+    $(".logo").find('img').toggle();
+     
+    });
+    
+    $('.ui.accordion').accordion({
+                                    selector: {
+                                    
+                                    }
+                                    });
+    
+    var _theModal = null;
+    var _messages = [];
+    var _msg_timeout = -1;
+    var _probes = window.Map ? new Map() : {};
+    
+    $('#mainName').text(login_get_name());
+    
+    this.nameChange = function(e, name) {
+        $('#mainName').text(name);
+    };
+    
+    $(document).on('nameChange', this.nameChange);
+    
+    w.onVisibleModal = function() {
+        _theModal = $(".ui.modal:visible")[0];
+        focus_jail(_theModal);
+    }
+    
+    w.onHiddenModal = function() {
+        _theModal = null;
+        focus_jail(null);
+    }
+    
+    w.onShowModal = function() {
+        $('#main').css('overflow', 'hidden');
+    }
+    
+    w.onHideModal = function() {
+        setTimeout(function() {
+            $('#main').css('overflow', 'auto');
+        }, 1500);
+    }
+    
+    var _cache_init = function(data) {
+        data.get = function(k, f, c) {
+            return cache_get(_files, k, f, c);
+        };
+        
+        data.update = function(k, v) {
+            return cache_get(_files, k, function(f) {
+                 f(v, false);
+            }, true);
+        };
+        
+        data.remove = function(k) {
+            delete _files[k];
+        };
+        
+        data.genKey = function(m, ty) {
+            return '/' + m + '/' + ty + '/';
+        };
+    
+        return data;
+    };
+    
+    var _files = {};
+    var _fc = _cache_init({});
+    
+    w.file_cache = function(data) { 
+        data.get = _fc.get;
+        data.update = _fc.update;
+        data.remove = _fc.remove;
+        data.genKey = _fc.genKey;
+    
+        return data;
+    };
+    
+    w.addML = function(lang, d) {
+        if(lang == _mctx.pg.locale()) {
+            _mctx.pg.extend(d());
+        }
+    }
+    
+    w.getMCtx = function(el) {
+        while(true) {
+            el = el.parentNode;
+            if(!el) 
+                return null;
+            if(el.hasAttribute('module')) {
+                return el._ctx;
+            }
+        }
+    } 
+    
+    w.addM = function(ty, d) {
+        switch(ty) {
+        case 0:
+            var head = document.getElementsByTagName("head")[0];
+            var el = document.createElement('style');
+            el.textContent = _mprefix + d.join(_mprefix);
+            head.insertBefore(el, head.firstChild);
+            if(_mctx._s == undefined) {
+                _mctx._s = [];
+            }
+            _mctx._s.push(el);
+            break;
+        case 1:
+            if(_mctx._f == undefined) {
+                _mctx._f = [];
+            }
+            _mctx._f.push(d);
+            break;
+        case 2:
+            _mctx._ct.html(Handlebars.template(d));
+            break;
+        }
+    }
+    
+    var _ef = function(ty, msg) {
+        
+    }
+    w.lib_set_error = function(f) {
+        _ef = f;
+    }
+    var _lib = {
+        add_error:function(rid, v) {
+            _ef('rid: ' + rid, v);
+        },
+        add_setup_error:function(mid, v) {
+            _ef('mid: ' + mid, v);
+        },
+        fetch:function(o, p, set) {
+            p = p.split('/');
+            try {
+                p.forEach(function(it) {
+                    var idx;
+                    if(it.endsWith(']')) { 
+                        var b = it.indexOf('[');
+                        var e = it.indexOf(']');
+                        idx = parseInt(it.substring(b + 1, e));
+                        it = it.substring(0, b);
+                    }
+                    if(o[it] !== undefined) {
+                        if(idx !== undefined) {
+                            o = o[it][idx];
+                        } else {
+                            o = o[it];
+                        }
+                    } else {
+                        throw it;
+                    }
+                });
+            } catch(e) {
+                return;
+            }
+            set(o);
+        },
+        load_mod:function(mid, p) {
+            if(p !== undefined) {
+                // TODO   
+            }
+            return $.Deferred(function(d) {
+                post('/sys/server/', {data:JSON.stringify({cmd:-1}), ext_data:JSON.stringify({a:id, b:ty})}, function(v, err, status) {
+                    d.resolve(v, err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        load_minst:function(id, ty, p) {
+            if(p !== undefined) {
+                // TODO   
+            }
+            return $.Deferred(function(d) {
+                post('/sys/server/', {data:JSON.stringify({cmd:75}), ext_data:JSON.stringify({a:id, b:ty})}, function(v, err, status) {
+                    d.resolve(v, err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        load_rinst:function(rid, p) {
+            if(p !== undefined) {
+                // TODO   
+            }
+            return $.Deferred(function(d) {
+                post('/sys/server/', {data:JSON.stringify({cmd:93}), ext_data:JSON.stringify({id:rid})}, function(v, err, status) {
+                    d.resolve(v, err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        save_mod:function(mid, v, p) {
+            if(p !== undefined) {
+                // TODO   
+            }
+            return $.Deferred(function(d) {
+                post('/sys/server/', {data:JSON.stringify({cmd:-1}), ext_data:JSON.stringify({a:id, b:ty})}, function(v, err, status) {
+                    d.resolve(v, err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        save_minst:function(iid, v, p) {
+            return $.Deferred(function(d) {
+                if(p !== undefined) {
+                    // TODO   
+                }
+                post('/sys/server/', {data:JSON.stringify({cmd:65}), ext_data:JSON.stringify({n:iid, e:v})}, function(v, err, status) {
+                    d.resolve(err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        save_rinst:function(rid, v, p) {
+            return $.Deferred(function(d) {
+                if(p !== undefined) {
+                    // TODO   
+                }
+                post('/sys/server/', {data:JSON.stringify({cmd:91}), ext_data:JSON.stringify({m:rid, b:v})}, function(v, err, status) {
+                    d.resolve(err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        },
+        save_gen_code:function(mid, iid, v, ty) {
+            ty = ty || 0;
+            return $.Deferred(function(d) {
+                var fd = new FormData();
+                var blob = new Blob([v], { type: 'application/octet-stream'});
+                var data = {cmd:4, id:mid, x:ty, y:iid};
+                fd.append('data', JSON.stringify(data));
+                fd.append('parent', '');
+                fd.append('name', 'file');
+                fd.append('file', blob);
+                
+                post('/sys/upload/', fd, function(v, err, status) {
+                    d.resolve(err || v.r != 0, status);
+                }, {responseType:'json'});
+            }).promise();
+        }
+    };
+    
+    var _riid_map = {};
+    var _active_riid_map = {};
+    
+    w.module_cache_unshare = function() {
+        if(_active_riid_map == _riid_map) {
+            _active_riid_map = $.extend({}, _riid_map);
+        }
+    }
+    
+    w.module_cache_share = function() {
+        _active_riid_map = _riid_map;
+    }
+    
+    w.module_cache_unset = function() {
+        _active_riid_map = {};
+    }
+    
+    w.module_cache = function(ctx) {
+        var c = w.file_cache(ctx);
+        ctx._m = {};
+        c.load = function(key, v, ct, opt) {
+            var mctx = {_ct:ct};
+            var pg = mctx.pg = new Polyglot();
+            var lib = {pg:pg};
+            var copyOld;
+            var deferLoad;
+            if(opt.ty == 0) {
+                lib.save_gen_code = function(v, ty) {
+                    return _lib.save_gen_code(opt.mid, opt.iid, v, ty);
+                };
+                lib.load_mod = function(p) {
+                    return _lib.load_mod(opt.mid, p);
+                };
+                lib.save_mod = function(v, p) {
+                    return _lib.save_mod(opt.mid, v, p);
+                };
+            }
+            if(opt.ty == 0 || opt.ty == 1) {
+                lib.save_minst = function(v, p) {
+                    return _lib.save_minst(opt.iid, v, p);
+                };
+                lib.add_error = function(v) {
+                    return _lib.add_setup_error(opt.mid, v);
+                };
+            }
+            if(opt.ty == 1 || opt.ty == 2) {
+                lib.save_rinst = function(v, p) {
+                    return _lib.save_rinst(opt.rid, v, p);
+                };
+                lib.load_rinst = function(p) {
+                    return _lib.load_rinst(opt.rid, p);
+                };
+                lib.add_error = function(v) {
+                    return _lib.add_error(opt.rid, v);
+                };
+            }
+            if(opt.ty == 0 || opt.ty == 1 || opt.ty == 2) {
+                lib.load_minst = function(p) {
+                    var id = opt.iid;
+                    var ty = 0;
+                    if(id === undefined) {
+                        id = opt.rid;
+                        ty = 1;
+                    }
+                    return _lib.load_minst(id, ty, p);
+                };
+            }
+            lib.fetch = _lib.fetch;
+            if(opt.ty != 0 && opt.rid !== undefined) {
+                var old = _active_riid_map[opt.rid];
+                if(old) {
+                    copyOld = old._copyData;
+                }
+                _riid_map[opt.rid] = mctx;
+                mctx.rid = opt.rid;
+            }
+            _mprefix = opt.prefix;
+            _mctx = ctx._m[key] = mctx;
+            var head = document.getElementsByTagName("head")[0];
+            var el = document.createElement('script');
+            el.textContent = v;
+            pg.locale(polyglot.locale());
+            head.insertBefore(el, head.firstChild);
+            head.removeChild(el);
+            if(mctx._f) {
+                mctx._fctx = {prefix:opt.prefix};
+                mctx._f.forEach(function(i) {
+                    i(mctx._fctx, lib);
+                });
+                if(opt.ty != 0) {
+                    if(mctx._fctx.onData) {
+                        if(mctx._fctx.onLoad) {
+                            deferLoad = mctx._fctx.onLoad;
+                        }
+                    
+                        mctx._onData = mctx._fctx.onData;
+                    }
+                    if(mctx._fctx.onViewChange) {
+                        mctx._onViewChange = mctx._fctx.onViewChange;
+                    }
+                    if(mctx._fctx.copyData) {
+                        mctx._copyData = mctx._fctx.copyData;
+                    }
+                }
+            }
+            ct.attr('module', '');
+            ct[0]._ctx = mctx._fctx || {prefix:opt.prefix};
+            _mctx = null;
+            
+            if(deferLoad) {
+                deferLoad = deferLoad();
+            }
+            
+            if(copyOld && mctx._onViewChange) {
+                var after = function() {
+                    copyOld(mctx._onViewChange);
+                };
+                if(deferLoad) {
+                    deferLoad.then(after);
+                } else {
+                    after();
+                }
+            }
+            return deferLoad || $.Deferred(function(d) { d.resolve(); });
+        }
+        
+        c.unload = function(key) {
+            var mctx = ctx._m[key];
+            if(mctx._s) {
+                mctx._s.forEach(function(i) {
+                    i.parentNode.removeChild(i);
+                });
+            }
+            
+            if(mctx.rid !== undefined) {
+                delete _riid_map[mctx.rid];
+            }
+            mctx._ct[0]._ctx = null;
+            mctx._ct.html('');
+            delete ctx._m[key];
+            return mctx;
+        }
+        return c;
+    }
+    
+    w.cache_get = function(o, n, f, c) {
+        if(c) {
+            delete o[n];
+        }
+        if(!o[n]) {
+            var def = $.Deferred(function(d) {
+                f(function(v, err, status) {
+                    if(err && o[n] == def) {
+                        delete o[n];
+                    }
+                    d.resolve(v, err, status);
+                });
+            }).promise();
+            o[n] = def;
+        }
+        return o[n];
+    };
+    
+    w.defer_init = function(num) {
+        var d = {i:0,n:num,d:$.Deferred()};
+        d.then = function(resolve, reject) {
+            return d.d.then(resolve, reject);
+        }
+        d.once = function(resolve, reject) {
+            return d.d.then(function(v) {
+                if(!d.f) {
+                    d.f = true;
+                    resolve(v);
+                }
+            }, function(v) {
+                if(!d.f) {
+                    d.f = true;
+                    reject(v);
+                }
+            });
+        }
+        d.ready = function(err) {
+            if(++d.i >= d.n) {
+                d.d.resolve(err);
+            } 
+        }
+        d.abort = function(e) {
+            d.d.reject(e);
+        }
+        d.update = function(n){
+            d.n = n;
+        }
+        d.reset = function() {
+            d.i = 0;
+            delete d.f;
+            d.d = $.Deferred();
+        }
+        return d;
+    }
+    
+    w.probes_each = w.Map ? function(f) {
+        _probes.forEach(function(v, k) {
+           f(k, v);
+        });
+    } : function(f) {
+        $.each(_probes, f);
+    }
+    
+    w.probes_count = w.Map ? function() {
+        return _probes.size;
+    } : function() {
+        return Object.getOwnPropertyNames(_probes).length;
+    }
+     
+    w.probes_get_all = function() {
+        return _probes;
+    }
+    
+    var pget = w.probes_get = w.Map ? function(s) {
+        return _probes.get(s);
+    } : function(s) {
+        return _probes[s];
+    }
+    
+    var pset = w.Map ? function(k, v) {
+        _probes.set(k, v);
+        return v;
+    } : function(k, v) {
+        return _probes[k] = v;
+    }
+    
+    var prem = w.Map ? function(s) {
+        _probes.delete(s);
+    } : function(s) {
+        delete _probes[s];
+    }
+    
+    function ticket_clear(s) {
+        var ts = _tickets_per_socket[s];
+        if(ts) {
+            ts.forEach(function(t) {
+                _tickets[t].onError({});
+            });
+        }
+    }
+    
+    function ticket_clear_all() {
+        probes_each(function(k, v) {
+            ticket_clear(k);
+        });
+        _tickets_per_socket = {};
+        _tickets = {};
+    }
+    
+    function probe_add(d) {
+        var p = {id:d.id, t:d.time, kv:d.kv, v:d.v, m:d.m};
+        if(d.i !== '') {
+            p.n = d.i;
+        }
+        return pset(d.s, p);
+    }
+    
+    function probe_rem(d) {
+        var p = pget(d.s);
+        prem(d.s);
+        ticket_clear(d.s);
+        return p;
+    }
+    
+    w.client_socket = function(after) {
+        if(_socket_pending != null) {
+            _socket_pending.push(after);
+        } else {
+            after(_socket);
+        }
+    }
+    
+    w.message_clear = function() {
+        clearTimeout(_msg_timeout);
+        _msg_timeout = -1;
+        _messages = [];
+    }
+    
+    function message_handle() {
+        var p_add = [];
+        var p_rem = [];
+        var probeChange = false;
+        var time = Math.ceil(new Date().getTime() / 1000);
+        _messages.forEach(function(n, i) {
+            switch(n.t) {
+                case 0: // probe disconnect
+                    p_rem.push(probe_rem(n));
+                    break;
+                case 1: // probe connect
+                    n.time = time;
+                    p_add.push(probe_add(n));
+                    break;
+                case 3: // probe forward
+                    var o = _tickets[n.n];
+                    var rf;
+                    if(o !== undefined && pget(o.p.s).t <= n.w) {
+                        if(n.r !== undefined) {
+                            ticket_remove(n.n);
+                        }
+                        if(n.r === undefined || n.r === 0) {
+                            rf = o.onResult;
+                        } else {
+                            rf = o.onError;
+                        }
+                        if(!o.killed) {
+                            rf.call(o, n);
+                        }
+                    } 
+                    break;
+                case 4: // client connect
+                    clear_socket();
+                    _socket = n.s;
+                    if(_socket_pending != null) {
+                        _socket_pending.forEach(function(n, i) {
+                            n(_socket);
+                        });
+                        _socket_pending = null;
+                    }
+                    break;
+                case 5: // client result
+                    var o = _tickets[n.n];
+                    var rf;
+                    if(o !== undefined) {
+                        if(n.r !== undefined && n.r == 0) {
+                            ticket_remove(n.n);
+                            rf = o.onResult;
+                        } else {
+                            rf = o.onError;
+                        }
+                        if(!o.killed) {
+                            rf.call(o, n);
+                        }
+                    }
+                    break;
+                case 6: // chat messages
+                    if(_chatMsgs != null) {
+                        _chatMsgs.push(n);
+                    } else {
+                        $.event.trigger({
+                        	type: "onChat"
+                        }, [n]);
+                    }
+                    break;
+                case 7: // pending ready
+                    $.event.trigger({
+                    	type: "onPendingReady"
+                    }, [n]);
+                    break;
+                case 8: // probe run change
+                    $.event.trigger({
+                    	type: "onRunChange"
+                    }, [n]);
+                    break;
+                case 9: // run data
+                    var mctx = _active_riid_map[n.i];
+                    if(mctx && mctx._onData) {
+                        var p = w.probes_get(n.p);
+                        if(p) {
+                            mctx._onData(n, p, _riid_map == _active_riid_map ? 0 : 1);
+                        }
+                    }
+                    break;
+            }
+        });
+        _messages = [];
+        
+        if(p_rem.length) {
+            var m = p_rem.length == 1 ? polyglot.t('probe.disc_name', {name: probe_label(p_rem[0])}) : polyglot.t('probe.disc_multi', {smart_count:p_rem.length});
+            $('body').toast({
+                title:polyglot.t('probe.disc'),
+                class:'info',
+                message:m
+            });
+            probeChange = true;
+        }
+        
+        if(p_add.length) {
+            var m = p_add.length == 1 ? polyglot.t('probe.con_name', {name: probe_label(p_add[0])}) : polyglot.t('probe.con_multi', {smart_count:p_add.length});
+            $('body').toast({
+                title:polyglot.t('probe.con'),
+                class:'info',
+                message:m
+            });
+            probeChange = true;
+        }
+        
+        if(probeChange) {
+            probe_change();
+        }
+    }
+    
+    w.probe_has_label = function(o) {
+        return !(o.n === undefined || o.n === '');
+    }
+    
+    w.probe_label = function(o) {
+        if(o.n === undefined || o.n === '') {
+            return '#' + polyglot.t('probe.noname') + '@id=[' + o.id + ']';
+        } 
+        return o.n;
+    }
+    
+    function probe_change() {
+        $.event.trigger({
+        	type: "probeChange"
+        }, [_probes]);
+    }
+    
+    w.onMessage = function(e) {
+        var d = null;
+            try {
+                if(e.data.constructor === String) {
+                    d = JSON.parse(e.data);
+                } else {
+                    d = CBOR.decode(e.data);
+                }
+                _messages.push(d);
+            } catch(e) {
+                d = {};
+            }
+        
+        if(_messages.length >= 1024) {
+            message_handle();
+        }
+        clearTimeout(_msg_timeout);
+        setTimeout(message_handle, 200);
+    };
+    
+    var _sbw = 0;
+    var _sbh = 0;
+    
+    function sbInit() {
+        var d = document.createElement("div");
+        d.className = "sb-test";
+        document.body.appendChild(d);
+        
+        _sbw = d.offsetWidth - d.clientWidth;
+        _sbh = d.offsetHeight - d.clientHeight;
+        
+        document.body.removeChild(d);
+        
+    }
+    
+    var _tickets = {};
+    var _tickets_per_socket = {};
+    
+    function ticket_remove(t) {
+        var n = _tickets[t];
+        delete _tickets[t];
+        if(t.constructor === String)
+            t = parseInt(t);
+        var a = _tickets_per_socket[n.p.s];
+        var i = a.indexOf(t);
+        a.splice(i, 1);
+    }
+    
+    function ticket_new(o, s) { 
+        if(o.p) {
+            s = o.p.s;
+        } else {
+            o.p = {s:s};
+        }
+        if(s !== undefined) {
+            do {
+                var t = Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER - 1));
+                if(_tickets[t] === undefined) {
+                    o.t = t;
+                    _tickets[t] = o;
+                    if(!_tickets_per_socket[s]) {
+                        _tickets_per_socket[s] = [];
+                    }
+                    _tickets_per_socket[s].push(t);
+                    return t;
+                }
+            } while(true);
+        }
+        return null;
+    }
+    
+    w.get_visible_split = function(e) {
+        return e[0].onLoadOnce;
+    };
+    
+    w.clear_visible_split = function(e) {
+        e[0].onLoadOnce = null;
+    };
+    
+    w.do_visible_split = function(e, f) {
+        if(in_dom(e.children().first()[0])) {
+            f();
+            return true;
+        } else {
+            e[0].onLoadOnce = f;
+            return false;
+        }
+    };
+    
+    function subAddLoad(sub, f) {
+        if(sub.onLoadOnce) {
+            var of = sub.onLoadOnce;
+            sub.onLoadOnce = function() {
+                of();
+                f();
+            }
+        } else {
+            sub.onLoadOnce = f
+        }
+    }
+            
+    w.do_visible_path = function(sub, f) {
+        if(sub) {
+            if(sub.__visible) {
+                f();
+            } else {
+                subAddLoad(sub, f);
+            }
+        } else {
+            f();
+        }
+    }
+    
+    w.doSplit = function(panes, sizes, ctx, fixed, fill) {
+        domy.defer(function() {
+            var num = 0;
+            var p = [];
+            var s = [];
+            var o = 0;
+            var opt = {};
+            
+            if(!Array.isArray(sizes)) {
+                opt = sizes;
+                sizes = opt.sizes;
+            }
+            
+            if(!Array.isArray(fixed)) 
+                fixed = fixed !== undefined ? [fixed] : [];
+            
+            if(ctx.split) {
+                ctx.split.destroy();
+            }
+            $.each(panes, function(i, n) {
+                if($(n).css('display') != 'none') {
+                    p.push(n);
+                    s.push(sizes[i]);
+                } else {
+                    o += sizes[i];
+                    
+                    var k = fixed.indexOf(n);
+                    if(k != -1) {
+                        fixed.splice(k, 1);
+                    }
+                }
+            });
+            
+            if(p.length == 0) {
+                return;
+            }
+            
+            if(p.length == fixed.length) {
+                fixed = [];
+            }
+            
+            if(p.length != sizes.length && fill) {
+                $.each(fill, function(i, n) {
+                    var idx;
+                    if(n && (idx = p.indexOf(panes[i])) != -1) {
+                        o -= n;
+                        s[idx] += n;
+                    }
+                });
+            }
+            
+            var pl = p.length;
+            pl -= fixed.length;
+            
+            for(var i = 0; i < p.length; i++) {
+                if(fixed.indexOf(p[i]) == -1) {
+                    s[i] += o / pl;
+                }
+            }
+            
+            o = {
+                gutter: function (index, direction) {
+                    var gutter = document.createElement('div')
+                    gutter.className = 'gutter gutter-' + direction;
+                    return gutter
+                },
+                gutterSize: 4,
+                sizes: s,
+            }
+            
+            if(opt.minSize) {
+                o.minSize = opt.minSize;
+            }
+            
+            if(ctx.dir) {
+                o.direction = ctx.dir;
+            }
+            
+            ctx.split = Split(p, o);
+            
+        });
+    }
+    
+    w.request_kill = function(t) {
+        var n = _tickets[t];
+        if(t.constructor === String)
+            t = parseInt(t);
+        if(n && !n._killed) {
+            var pr = probes_get(n.p.s)
+            var d = {t:3, data:"", p:n.p, r:t, x:pr.t};
+            n.killed = true;
+            return n._killed = wss(JSON.stringify(d));
+        }
+        return false;
+    };
+    
+    w.toast = function(t, m, c) {
+        $('body').toast({
+            title:t,
+            class:c,
+            message:m
+        });
+    };
+    
+    function toHex(i, l){
+        var r = i.toString(16);
+        return "0".repeat(l - r.length) + r;
+    }
+    
+    function _request(t, d, o, a) {
+        d.r = t;
+        var msg = JSON.stringify(d);
+        if(a !== undefined) {
+            if(d.data !== undefined) {
+                return false;
+            }
+            var len = msg.length + 14; // ',"data"="XXXX"'
+            msg = msg.slice(0, -1);
+            msg += ',"data":"' + toHex(len, 4) + '"}';
+            msg += a.constructor === String ? a : JSON.stringify(a);
+        }
+        if(wss(msg)) {
+            return true;
+        }
+        ticket_remove(t);
+        o.onError({});
+        return false;
+    };
+    
+    w.request = function(d, o, a) {
+        var t = ticket_new(o);
+        if(!t)
+            return false;
+        return _request(t, d, o, a);
+    };
+    
+    w.request_client = function(d, o, a) {
+        client_socket(function(s) {
+            var t = ticket_new(o, s);
+            if(!t) {
+                o.onError({});
+            } else {
+                return _request(t, d, o, a);
+            }
+        });
+        return true;
+    }
+    
+    w.sbw = function() {
+        return _sbw;
+    };
+    
+    w.sbh = function() {
+        return _sbh;
+    };
+    
+    function val(v) {
+        if(!v.attr) return v;
+        switch(v.attr('type')) {
+            case 'checkbox':
+                return v.prop('checked') ? 1 : 0;
+            default:
+                break;
+        }
+        return v.val();
+    }
+    
+    function convert(iv, otv, noint) {
+        if(otv.constructor === iv.constructor) {
+            return iv;
+        }
+        switch(otv.constructor) {
+            case String:
+               return iv;
+            case Boolean:
+               return iv ? 1 : 0;
+            case Number:
+                if(noint) {
+                    return Number.parseFloat(iv);
+                }
+                return parseInt(iv);
+            default:
+                return JSON.stringify(iv);
+        }
+    }
+    
+    w.post_get_val = function(o, s, t, i) {
+        var r = {};
+        var hit = false;
+        if(s.length != t.length || t.length != i.length)
+        {
+            return null;
+        }
+        for(var k = 0, len = s.length; k < len; k++) {
+            var ov = o[s[k]];
+            var nv = convert(val(i[k]), ov);
+            if(ov !== nv) {
+                r[t[k]] = nv;
+                hit = true;
+            }
+        }
+        return hit ? {r:r,c:function() {
+            for(var k = 0, len = s.length; k < len; k++) {
+                var ov = o[s[k]];
+                var nv = convert(val(i[k]), ov);
+                if(ov !== nv) { 
+                    o[s[k]] = nv;
+                }
+            }
+        }} : null;
+    };
+    
+    w.list_select = function(l, a, f, u) {
+        var s = null;
+        var t = null;
+        var sel = function(it) {
+            var n = undefined;
+            if(t) {
+                t.removeClass('active');
+                t = null;
+            }
+            if(s) {
+                s.removeClass('active');
+            }
+            if(it) {
+                if(!u || !s || s[0] != it[0]) {
+                    s = it;
+                    s.addClass('active');
+                    n = a(it);
+                } else {
+                    s = null;
+                }
+                f(n);
+            } else {
+                s = null;
+            }
+            return n;
+        }
+        l.click(function(e) {
+            var it = $(e.target).closest('.item');
+            if(it.length != 0 && !it.hasClass('noselect')) {
+                sel(it);
+            }
+        });
+        sel.temp = function(n) {
+            if(s) {
+                s.removeClass('active');
+            }
+            if(n) {
+                n.addClass('active');
+                t = n;
+            }
+            return a(n);
+        };
+        sel.reset = function(n) {
+            if(t) {
+                t.removeClass('active');
+                t = null;
+            }
+            if(n && n.hasClass('active')) {
+                s = n;
+            }
+            if(s) {
+                s.addClass('active');
+            }
+        };
+        return sel;
+    };
+    
+    w.list_search = function(e, f) {
+        var p = e.parent();
+        var t = p.find('.toggl');
+        var s = p.find('.search.icon');
+        t.click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            t.toggleClass('up');
+            t.toggleClass('down');
+        }); 
+        s.click(function(e) { 
+            e.preventDefault();
+            e.stopPropagation();
+            f(e);
+        });
+        e.on('keydown', function(ev) {
+            if(ev.keyCode == 13) {
+                f();
+            }
+        });
+        e[0].reset = function() {
+            label_reset(e);
+        }
+        return function(o) {
+            if(o) {
+                e.parent().addClass('nomouse_i');
+                delete o.f1;
+                delete o.f2;
+                o.o = t.hasClass('up') ? 1 : 0;
+                v = e.val();
+                if(v !== '') {
+                    v = v.split('|');
+                    if(v.length == 1) {
+                       o.f1 = v[0]; 
+                    } else {
+                       o.f1 = v[0]; 
+                       o.f2 = v[1]; 
+                    }
+                }
+                return o;
+            } else {
+                e.parent().removeClass('nomouse_i');
+            }
+        };
+    };
+    
+    w.label_reset = function(e) {
+        e.val('');
+        e.closest('.fl-wrap').removeClass('fl-is-active');
+    };
+    
+    w.label_set_date = function(e, v) {
+        e.lbl_data_val(v);
+    }
+    
+    w.label_set = function(e, v) {
+        e.lbl_val(v);
+    };
+    
+    w.paging_reset = function(l) {
+        l.s = undefined;
+        l.e = undefined;
+        l.max = undefined;
+    };
+    
+    w.in_dom = function(e) {
+        var r = e.getBoundingClientRect();
+        return (r.top || r.bottom || r.height || r.width) ? true : false;
+    };
+    
+    w.search_filter = function(m, k) {
+        var f = $(m);
+        
+        f[0].onclick = function(e) { e.stopPropagation(); }; 
+        
+        var ld = $(k + ' .ui.search.dropdown');
+        ld.on('click', function() {
+            var p = f.parents('.filter').parent();
+            p.toggleClass('hide');
+            var l = $(k + ' .page_outer');
+            var c = l.children();
+            p.insertAfter(p.hasClass('hide') ? c.last() : c.first());
+            $(k + ' .content').toggleClass('shortFilter');
+            f.focus();
+        });
+        f.ld = ld;
+        return f;
+    };
+    
+    w.lock_post_init = function(sub) {
+        var o = {};
+        o.post = function(url, d, after, rty) {
+            sub.lockList();
+            return post(url, d, function(r, e, s) {
+                after(r, e, s);
+                sub.unlockList();
+            }, rty)
+        }
+        
+        o.raw_post = function(url, d, after, rty) {
+            sub.lockList();
+            return raw_post(url, d, function(r, e, s) {
+                after(r, e, s);
+                sub.unlockList();
+            }, rty)
+        }
+        return o;
+    };
+    
+    w.sel_ready_init = function() {
+        var o = {};
+        o._psel = [];
+        o._selr = false;
+        o.on_ready = function(f) {
+            if(o._selr) {
+                f();
+            } else {
+                o._psel.push(f);
+            }
+        };
+        
+        o.set_ready = function(v) {
+            o._selr = v;
+            if(v) {
+                o._psel.forEach(function(f) {
+                    f();
+                });
+                o._psel = [];
+            }
+        };
+        
+        return o;
+    };
+
+    w.visibility_init = function(sub, d, p){
+        d.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           action:'nothing'
+        });
+        
+        var onView = function() {
+            subAddLoad(sub, function() {
+                d.find('.checkbox').each(function(i, v) {
+                    if($(v).hasClass('checked')) {
+                        var n = $(p(i));
+                        var el = n[0];
+                        if(el.onLoadOnce) {
+                            var l = el.onLoadOnce;
+                            el.onLoadOnce = null;
+                            l();
+                        }
+                    }
+                });
+                onView();
+            });
+        };
+    
+        onView();
+    
+        d.find('.checkbox').each(function(i, v) {
+            var e = $(v);
+            if(e.find('input')[0].hasAttribute("checked")) {
+                e.addClass('checked');
+            }
+            e.checkbox({
+                onChecked: function() {
+                    var n = $(p(i));
+                    var el = n[0];
+                    el.style.opacity = 0;
+                    n.css('display', 'block');
+                    domy.defer(function() {
+                        sub.split();
+                        _fadeIn(el, 200);
+                        if(el.onLoadOnce) { 
+                            var l = el.onLoadOnce;
+                            el.onLoadOnce = null;
+                            l();
+                        }
+                    });
+                },
+                onUnchecked: function() {
+                    fadeOut($(p(i))[0], 200, function() {
+                        domy.defer(function() {
+                            sub.split();
+                        });
+                    });
+                }
+            });
+        });
+    };
+    
+    w.loader_init = function(c, f) {
+        var  r = $('<div class="ui active inverted dimmer hide">' + (!f ? '<div class="ui loader"></div>' : f()) + '</div>').appendTo(c);
+        var rem = r.remove;      
+        var p = r.closest('.grid_c');
+        
+        r.show = function() {
+            c.addClass('noscroll');
+            r.removeClass('hide');
+            r.attr('style','top:' + p.scrollTop() + 'px !important;');
+        }
+        
+        r.hide = function() {
+            c.removeClass('noscroll');
+            r.addClass('hide');
+            r.attr('style','');
+        }
+        
+        r.remove = function() {
+            c.removeClass('noscroll');
+            rem.call(this);
+        }
+        return r;
+    };
+    
+    w.error_set_text = function(e, hdr, msg, noclose) {
+        var h = e.find('.header');
+        var p = e.find('p');
+        var c = e.find('.close');
+        h.text(hdr);
+        p.text(msg);
+        if(noclose) {
+            c.addClass("hide");
+        } else {
+            c.removeClass("hide");
+        }
+    };
+    
+    w.hide_init = function(r) {
+        r.show = function() {
+            r.removeClass('hide');
+        }
+        
+        r.hide = function() {
+            r.addClass('hide');
+        }
+    }
+    
+    w.error_init = function(c, h, m, a) {
+        var r = $('<div class="ui active inverted dimmer hide"><div class="ui red message transition"><i class="close icon"></i><div class="header">' + 
+                         h + '</div><p>' +
+                         m + '</p></div></div>').appendTo(c);
+           
+        r.click(function(e) {e.stopPropagation();});              
+        var p = r.closest('.grid_c');
+        
+        r.show = function() {
+            p.addClass('werror');
+            r.removeClass('hide');
+            r.attr('style','top:' + p.scrollTop() + 'px !important;');
+        }
+        
+        r.hide = function() {
+            p.removeClass('werror');
+            r.addClass('hide');
+            r.attr('style','');
+            if(a) {
+                a(r);
+            }
+        }
+        
+        r.find('.close').on('click', function() {
+            var _this = $(this);
+            
+            var msg = _this
+              .closest('.message');
+            msg.transition('fade', function() {
+                    r.hide();
+                  msg.removeClass('hidden');
+              });
+            ;
+        });
+        
+        return r;
+    };
+    
+    jQuery.fn.replaceFrom = function(v, cls) {
+        var o = $(this[0])
+        
+        if(cls && !o.hasClass(cls)) {
+            cls = undefined;
+        }
+    
+        o.hide();
+        var it = $(v).insertAfter(o);
+        o.remove();
+        
+        if(cls !== undefined) {
+            it.addClass(cls);
+        }
+    
+        return it;
+    };
+    
+    w.paging_render = function(after, c, p, l, po, d) {
+        domy.defer(function() {
+            domy.off(function() {
+                var h = c.height();
+                var w = p.width();
+                var m = undefined;
+                var pg = function(p, v) {
+                    return "\"var t = this;(function(){var ctx=getCtx('" + l.page + "'),sub=ctx['" + l.sub + "'],f=function(event,p) {" + l[v ? v : 'pg'] + "};f.call(t, event, " + p + ")})()\"" 
+                };
+                var ov = function(e) {
+                    return (e.scrollWidth >= e.clientWidth) + (e.scrollWidth == e.clientWidth);
+                };
+                var ovv;
+                
+                if(po < 0) {
+                    po = 0;
+                }
+                
+                if(l.max !== undefined && po > l.max) {
+                    po = l.max;
+                }
+                
+                if(l.lw != w) {
+                    l.lw = w;
+                    l.iv = true;
+                }
+                
+                if(l.lh != h) {
+                    if(l.d) {
+                        l.d.remove();
+                        l.d = null;
+                    }
+                    var ih = 0;
+                    l.lh = h;
+                    l.iv = true;
+                    var gh = function() {
+                        var n = $('<div class="item">&nbsp</div>').appendTo(c);
+                        return n.outerHeight(true);
+                    };
+                    if(!c[0].hasChildNodes()) {
+                        ih = gh();
+                        c.html('');
+                    } else {
+                        var f = c.children().first();
+                        if(f.hasClass('item')) {
+                            ih = f.outerHeight(true);
+                        } else {
+                            var h = c.html();
+                            c.html('');
+                            ih = gh();
+                            c.html(h);
+                        }
+                    }
+                
+                    var oi = l.i;
+                    var on = oi * l.max;
+                    l.i = Math.floor(c.height() / ih);
+                    if(l.i > oi && po * l.i >= on) {
+                        po = Math.floor(on / l.i);
+                    }
+                }
+                
+                if(d) {
+                    p.removeClass('nomouse');
+                    l.d = null;
+                    c.html('');
+                    m = d.m;
+                    if(d.r != 0) {
+                        l.iv = false;
+                        c.append('<div style="padding:10px;">' + polyglot.t('main.lerr') + '</div>')
+                        l.s = 0;
+                        l.e = 0;
+                        p.html('');
+                        return;
+                    } else
+                    if(!d.d || d.d.length == 0) {
+                        l.iv = false;
+                        c.append('<div style="padding:10px;">' + polyglot.t('main.list_empty') + '</div>')
+                        l.s = 0;
+                        l.e = 0;
+                        p.html('');
+                        return;
+                    }
+                } else {
+                    p.addClass('nomouse');
+                    if(!l.d) {
+                        l.d = $('<div class="ui active inverted dimmer"><div class="ui loader"></div></div>').appendTo(c);
+                    }
+                }
+                
+                if(l.po === po && !l.iv) {
+                    return;
+                }
+                
+                po = po || 0;
+                l.po = po;
+                
+                if(m === undefined) {
+                    var s = l.s || 0;
+                    var e = l.e || 0;
+                    var i;
+                    var k = (po >= s && po <= e && !(s == 0 && po == e));
+                    l.iv = true;
+                    if(k) {
+                        po = s;
+                    }
+                    
+                    var clone = p.clone();
+                    clone.css("visibility", "hidden");
+                    p.parent().append(clone);
+                    clone.html('');
+                    $('<a class="item">&lt;&lt;</a>').appendTo(clone);
+                    $('<a class="item">&gt;&gt;</a>').appendTo(clone);
+                    if(po - e == 1 || k) {
+                        // move right
+                        l.s = po;
+                        i = po;
+                        while(true) {
+                            $('<div class="item active"><span class="pitem">' + (i + 1) + '</span></div>').appendTo(clone);
+                            ovv = ov(clone[0]);
+                            if(ovv) {
+                                if(ovv == 1)
+                                    i--;
+                                else 
+                                    i++;
+                                break
+                            }
+                            i++;
+                        }
+                        l.e = i;
+                    } else
+                    if(s - po == 1) {
+                        // move left
+                        l.e = po;
+                        i = po;
+                        while(true) {
+                            $('<div class="item active"><span class="pitem">' + (i + 1) + '</span></div>').appendTo(clone);
+                            ovv = ov(clone[0]);
+                            if(ovv) {
+                                if(ovv == 1)
+                                    i++;
+                                else 
+                                    i--;
+                                break
+                            }
+                            i--;
+                        }
+                        if(i < 0) {
+                            l.e += -i;
+                            i = 0;
+                        }
+                        l.s = i;
+                    } else {
+                        // try to have it in the middle
+                        i = po;
+                        var k = po + 1;
+                        var left = false;
+                        $('<div class="item active"><span class="pitem">1</span></div>').appendTo(clone);
+                        if(!ov(clone[0])) {
+                            while(true) {
+                                left = !left && i != 0; 
+                                $('<div class="item active"><span class="pitem">' + ((left ? i : k) + 1) + '</span></div>').appendTo(clone);
+                                ovv = ov(clone[0]);
+                                if(ovv) {
+                                    if(ovv == 1) {
+                                        k--;
+                                    } else {
+                                        if(left) { 
+                                            i--;
+                                        } else {
+                                            k++;
+                                        }
+                                    }
+                                    break
+                                }
+                                if(left) { 
+                                    i--;
+                                } else {
+                                    k++;
+                                }
+                            }
+                        }
+                        l.s = i;
+                        l.e = k;
+                    }
+                    clone.remove();
+                } else {
+                    l.iv = false;
+                    var r = $(document.createDocumentFragment());
+                    var le = l.e;
+                    if(l.po != 0) {
+                        $('<a class="item" onclick=' + pg(l.po - 1) + '><span class="pitem">&lt;&lt;</span></a>').appendTo(r);
+                    } else {
+                        l.e++;
+                    }
+                     
+                    var max = l.po + Math.ceil(m / l.i) - (m != 0);
+                    
+                    l.max = max;
+                    
+                    for(i = l.s; i <= l.e && i <= max; i++) {
+                        if(i == l.po) {
+                            $('<div class="item active"><span class="pitem"><input class="pinput" value="' + (i + 1) + '" onkeydown=' + pg(0, 'kd') + '></span></div>').appendTo(r);
+                        } else {
+                            $('<a class="item" onclick=' + pg(i) + '><span class="pitem">' + (i + 1) + '</span></a>').appendTo(r);
+                        }
+                    }
+                    
+                    var f = r.children().first();
+                    if(l.po < max) {
+                        $('<a class="item" onclick=' + pg(l.po + 1) + '><span class="pitem">&gt;&gt;</span></a>').appendTo(r);
+                    } else {
+                        if(l.s > 0) {
+                            $('<a class="item" onclick=' + pg(l.s - 1) + '><span class="pitem">' + l.s + '</span></a>').insertAfter(f);
+                            l.s--;
+                        }
+                    }
+                    
+                    // see if we can add more to the front
+                    for(var k = l.s - 1;i <= l.e && k >= 0; i++, k--) {
+                        $('<a class="item" onclick=' + pg(k) + '><span class="pitem">' + (k + 1) + '</span></a>').insertAfter(f);
+                    }
+                    
+                    p.html('');
+                    p.append(r);
+                }
+            
+            });
+            after(l);
+        });
+    };
+    
+    w.vlist_init = function(p, c) {
+        var o = {
+                    nr:c.numRows,
+                    nc:c.numCacheRows || 3,
+                    rg:c.rowCreator,
+                    ly:NaN,
+                    ls:NaN,
+                    snap:c.snap,
+                    sih:c.itemHeight,
+                    ccls:c.containerClass ? c.containerClass : 'ccls',
+                    scls:c.scrollerClass ? c.scrollerClass : 'scls',
+                    hcls:c.holderClass ? c.holderClass : 'hcls',
+                    icls:c.itemClass ? c.itemClass : 'icls',
+                    ib:c.itemBase || function(i, cls) { return '<div ln="' + i + '" class="' + this.icls + '"></div>'; },
+                    br:c.beforeRender || function(b, e) { return null },
+                    ar:c.afterRender || function(ctx, b, e, commit) { commit(); }
+                 };
+    
+        domy.off(function() {
+            p.html('');
+            o.b = c.containerBase || $('<div class="' + o.ccls + '"></div>').appendTo(p);
+            o.s = c.scrollBase ||  $('<div class="' + o.scls + '"></div>').appendTo(o.b);
+            o.c = c.holderBase || $('<div class="' + o.hcls + '"></div>').appendTo(o.b);
+        
+        });
+    
+        function rm() {
+            domy.defer(function() {
+                if(Date.now() - o.ls > 120) {
+                    var rem = o.c.find('.' + o.icls + '.removed');
+                    rem.remove();
+                     o.ls = NaN;
+                }
+            });
+        }
+        
+        var ri;
+    
+        function r(s) {
+            var ori = ri = {}; 
+            var c = o.c;
+            var l = s + o.ci;
+            if(l > o.nr) {
+                l = o.nr;
+                if(s > o.nr) {
+                    s = o.nr;
+                }
+            }
+    
+            var f = document.createDocumentFragment();
+            var ctx;
+                
+            ctx = o.br(s, l);
+            
+            domy.off(function() {
+                c[0].style.marginTop = (o.dr * s * o.rh) + 'px';
+            });
+            
+            for(var i = s; i < l; i++) {
+                var item = $(o.ib(i, o.icls)).appendTo(f);
+                item.html(o.rg(ctx, item, s, i));
+            }
+                
+            c.children().addClass('removed');
+            
+            o.ar(ctx, s, l, function() {
+                if(ori == ri) {
+                    c[0].appendChild(f);
+                }
+            });
+        }
+    
+        var rt = function(t, hs) {
+            t = (t / o.sh) * o.fh;
+            if(isNaN(o.ly) || Math.abs(t - o.ly) > o.mb) {
+                var f = parseInt(t / o.rh) - o.il;
+                if(isNaN(o.ls)) {
+                    o.ls = Date.now();
+                }
+                o.ly = t;
+                r(f < 0 ? 0 : f);
+                rm();
+                doSnap(hs);
+            }
+        }
+        
+        var hasSnap = function() {
+            return o.snap && o.b[0].scrollHeight - o.b[0].offsetHeight - o.b[0].scrollTop < 1;
+        }
+        var doSnap = function(hs) {
+            if(hs) {
+                domy.defer(function() {
+                    domy.off(function() {
+                        o.b.scrollTop(o.s[0].offsetHeight);
+                    });
+                });
+            }
+        }
+    
+        var pending = false;
+        var s = function(e) {
+            e.preventDefault();
+            if(pending) {
+                return;
+            } else {
+                pending = true;
+            }
+            domy.defer(function() {
+                var st;
+                var hs;
+                pending = false;
+                domy.off(function() {
+                    st = o.b.scrollTop();
+                    hs = hasSnap();
+                });
+                rt(st, hs);
+            });
+        };
+        
+        o.b.on('scroll', s);
+        
+        o.scrollTo = function(idx) {
+            var t = (idx * o.rh / o.fh) * o.sh;
+            o.b.scrollTop(t); 
+        }
+        
+        o.destroy = function() {
+            o.b.off('scroll', s);
+            o.b.remove();
+        }
+        
+        var pending_update = null;
+        var _hs;
+        o.update = function(nr, snap) {
+            if(pending_update == null) {
+                pending_update = nr;
+                _hs = snap || hasSnap();
+            } else {
+                pending_update = nr;
+                return;
+            }
+                   
+            domy.defer(function() {
+                var truncp = function(n) {
+                    return n < 0 ? 0 : n;   
+                }
+                var hs;
+                nr = pending_update;
+                pending_update = null;
+                domy.off(function() {
+                    hs = _hs;
+                    if(nr < o.nr || 
+                       nr <= o.ci) {
+                        o.ly = NaN;
+                    } else
+                    if(nr > o.nr) {
+                        var a = truncp(parseInt(o.ly / o.rh));
+                        if(nr >= a && a + o.ci >= o.nr) {
+                        o.ly = NaN;
+                        }
+                    }
+                    o.nr = nr; 
+                    var h = (o.rh * o.nr);
+                    o.s.css('height', h + 'px');
+                    o.sh = o.b[0].scrollHeight;
+                    o.fh = (o.rh * o.nr); 
+                    o.dr = o.sh / o.fh;
+                    st = o.b.scrollTop();
+                });
+                rt(st, hs);
+            });
+        }
+        
+        var pending_resize = false;
+        o.onResize = function() {
+            if(pending_resize) {
+                return;
+            } else {
+                pending_resize = true;
+            }
+            domy.defer(function() {
+                var st;
+                var hs;
+                pending_resize = false;
+                domy.off(function() {
+                    hs = hasSnap();
+                    if(o.sih) {
+                        o.rh = o.sih;
+                    } else {
+                        var it = $(o.ib(0, o.icls)).appendTo(o.c);
+                        o.rh = it.height();
+                        it.remove();
+                    }
+                    o.cl = o.b.height();
+                    o.il = Math.ceil(o.cl / o.rh);
+                    o.ci = o.il * o.nc;
+                    o.mb = o.il * o.rh;
+                    o.s.css('height', (o.rh * o.nr) + 'px');
+                    o.sh = o.b[0].scrollHeight;
+                    o.fh = (o.rh * (o.nr + 2)); 
+                    o.dr = o.sh / o.fh;
+                    st = o.b.scrollTop();
+                });
+                rt(st);
+            });
+        };
+    
+        o.onResize();
+    
+        return o;
+    };
+    
+    sbInit();
+    
+    $(document).one('cacheDestroy', function() {
+        $(window).off('resize', this.onResize);
+        $(document).off('chatReady', this.chatReady);
+        $(document).off('wsock_open', this.wsock_open);
+        $(document).off('wsock_close', this.wsock_close);
+        $(document).off('nameChange', this.nameChange);
+    });
+</script>
+<style path="main">
+    body {
+        background-color:#F6F5FD !important;
+    }
+    
+    div.ui  .smallmenu {
+        height:0px !important;
+    }
+ 
+    .smallbar {
+        padding-left:60px !important;
+        margin-left:0px;
+    }
+    
+    .noleft {
+        padding-left:0px !important;
+        margin-left:0px;
+    }
+    
+    .displaynone {
+        display:none !important;
+    }
+    
+    .displayblock {
+        display:block !important;
+    }
+    
+    #main > .sidebar .item i {
+        font-size:24px;
+        margin-top:-5px !important;
+    }
+    
+    .logo {
+        height:48px !important;
+        padding:8px !important;
+        text-align:center;
+    }
+    
+    .logo img {
+        width:38px !important;
+        height:38px !important;
+    }
+    
+    .title.item {
+        padding:.92857143em 1.14285714em !important;
+    }
+    
+    .dropdown .menu .header {
+        padding-top:3.9px !important;
+        padding-bottom:3.9px !important;
+    }
+    
+    .bigov {
+         overflow:auto;
+         height:calc(100% - 48px); 
+    }
+    
+    .fheight {
+        height:100vh;
+        padding-top:51px;
+    }
+
+    #main > .fixed.menu {
+        height:48px !important;
+    }
+    
+    .sb-test {
+    	position:absolute;
+    	overflow:scroll;
+    	top:-99999px;
+    	width:200px;
+    	height:200px;
+    }
+    
+    .sgrid .gutter-vertical {
+        cursor:ns-resize;
+        width:100%;
+    }
+    
+    .sgrid .gutter-vertical:after {   
+        content:"";
+        position:relative;
+        display:block;
+        width:20px;
+        height:4px;
+        border:solid 1px #BBB;
+        background-color:white;
+        left:50%;
+    }
+    
+    .sgrid .gutter-horizontal {
+        float:left;
+        cursor:ew-resize;
+        height:100%;
+        
+    }
+    
+    .sgrid .gutter-horizontal:after {   
+        content:"";
+        position:relative;
+        display:block;
+        width:4px;
+        height:20px;
+        border:solid 1px #BBB;
+        background-color:white;
+        -webkit-transform:translateX(0px) translateY(-50%);
+        -ms-transform:translateX(0px) translateY(-50%);
+        transform:translateX(0px) translateY(-50%);
+        top:50%;
+    }
+        
+    .sgrid {
+        height:100%;
+    }
+
+    .ui .sgrid > div {
+        float:left;    
+        height:100%;
+        margin:0;
+        padding:0;
+    }
+</style>
+<div path="main" template attach="main">
+<div class="ui sidebar vertical left menu overlay visible noshadow" style="display:table;-webkit-transition:width 0.3s !important; transition:width 0.3s !important; overflow:visible !important;position:absolute;">
+  <div class="item logo openbtn">
+    <img src="img/logo.svg" /><img src="img/logo.svg" style="display:none" />
+  </div>
+  <div nolinks class="ui accordion">
+    <a class="item" onclick="mtrans('main/welcome', this);">{{l 'menu.welcome'}}</a>
+    <a class="item" onclick="mtrans('main/run', this);">{{l 'menu.run'}}</a>
+    <a class="item DISASSEMBLER_USE" onclick="mtrans('main/code', this);">{{l 'menu.code'}}</a>
+    <a class="item" onclick="mtrans('main/probe', this);">{{l 'menu.probe'}}</a>
+    <a class="item" onclick="mtrans('main/module', this);">{{l 'menu.module'}}</a>
+    <a class="item CHAT_USE" onclick="mtrans('main/user_chat', this);">{{l 'menu.chat'}}</a>
+    <a class="item USER_EDIT" onclick="mtrans('main/user', this);">{{l 'menu.user'}}</a>
+    <a class="item" onclick="mtrans('main/user_account', this);">{{l 'menu.account'}}</a>
+    <a class="item" onclick="mtrans('main/setting', this);">{{l 'main.setting'}}</a>
+    <a class="item" target="_blank" href="#about">{{l 'menu.about'}}</a>
+    <div class="menuend"></div>
+  </div>
+</div>
+<div class="ui menu fixed mbar" style="padding-left:260px;border-radius:0!important; border:0;-webkit-transition-duration:0.1s;padding-right:calc(20px - (100vw - 100%))">
+    <div id="topbar">
+    </div>
+    <div class="right menu item">
+        <span class="ui item icon">
+            <span id="mainName"></span>
+            <i class="ui icon user" style="margin-left:10px;"></i>
+        </span>
+        <a class="ui item" style="padding:1em;" page_click="ctx.logout();">{{l 'bar.logout'}}</a>
+    </div>
+</div>
+<div class="main_content" style="padding-left:260px;position:fixed;width:100%;height:calc(100% - 51px);-webkit-transition:padding-cleft 0.3s !important; transition:padding-left 0.3s !important;">
+    <div id="content" class="pusher" style="overflow-y:auto;height:100%;">
+        <div path="main/welcome" attach="content" template>###{"file":"templates_www_source/welcome.html"}###</div>
+        <div path="main/run" attach="content" template>###{"file":"templates_www_source/run.html"}###</div>
+        <div path="main/code" attach="content" template>###{"file":"templates_www_source/code.html"}###</div>
+        <div path="main/probe" attach="content" template>###{"file":"templates_www_source/probe.html"}###</div>
+        <div path="main/module" attach="content" template>###{"file":"templates_www_source/module.html"}###</div>
+        <div path="main/user_chat" attach="content" template>###{"file":"templates_www_source/user_chat.html"}###</div>
+        <div path="main/user" attach="content" template>###{"file":"templates_www_source/user.html"}###</div>
+        <div path="main/user_account" attach="content" template>###{"file":"templates_www_source/user_account.html"}###</div>
+        <div path="main/setting" attach="content" template>###{"file":"templates_www_source/setting.html"}###</div>
+    </div>
+</div>
+</div>

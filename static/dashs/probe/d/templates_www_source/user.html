@@ -1,0 +1,1338 @@
+<script sub="user">
+    var _this = this;
+    var sel = null;
+    var sel_grp = null;
+    var sel_data = null;
+    var sel_grp_data = null;
+    var sel_name;
+    var sel_grp_name;
+    
+    var cfgLabel = $('#userCfgLabel')[0];
+    
+    var uFilter = $('#userFilter');
+    var gFilter = $('#groupFilter');
+    
+    var lock = lock_post_init(sub);
+    
+    function lock_post(url, d, after, rty) {
+        sub.lockList();
+        post(url, d, function(r, e, s) {
+            after(r, e, s);
+            sub.unlockList();
+        }, rty)
+    }
+    
+    this.userAddU = function() {
+        $('.ui.modal.userAdd').modal('show');
+        ctx['user_add'].onOpen(function(d) {
+            sub.onAddUser(d);
+            change.user_edit(d.id, user_name(d), 0);
+        });
+    };
+    
+    this.userAddG = function() {
+        $('.ui.modal.userAddG').modal('show');
+        ctx['user_add_group'].onOpen(function(d) {
+            sub.onAddGroup(d);
+        });
+    };
+    
+    search_filter('#userFilter', '#left');   
+    search_filter('#groupFilter', '#center'); 
+    
+    $('#topbar .ui.edit.dropdown').dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'hide'
+    });  
+    
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { return sub.pane(i); });
+    
+    (function(){
+        $('#center').css('display', 'none');
+        
+        var _ctx = {};
+        var _sizes = [20, 20, 60];
+        var _panes = ['#left', '#center', '#right'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, _sizes, _ctx, ['#left', '#center']);
+        }
+        
+        sub.split();
+    })();
+    
+    
+    (function(){
+        var g = $('#right .grid_c');
+        var uS = g.find('.userS');
+        var m = uS.find('.menu');
+        var d = uS.find('.ui.dropdown');
+        var u = uS.find('.upper');
+        var r = 0;
+        var c = function() {};
+        
+        var _perms = perm_get_all();
+        var pn = Object.getOwnPropertyNames(_perms);
+        
+        pn.forEach(function(n, i) {
+            m.append('<div class="item" data-value="' + i + '" data="' + n + '">' + polyglot.t('perm.' + n) + '</div>');
+        });
+         
+        sub.getUPerm = function() {
+            return r;
+        };
+         
+        sub.resetUPerm = function() {
+            d.dropdown('clear');
+            r = 0;
+        };
+        
+        sub.setOnUPerm = function(f) {
+            c = f;
+        };
+        
+        var s = {
+            forceSelection:false,
+            selectOnKeydown:false,
+            clearable:true,
+            onAdd:function(addedValue, addedText, $addedChoice) {
+                r |= _perms[$addedChoice.attr('data')];
+                c();
+            },
+            onRemove:function(removedValue, removedText, $removedChoice) {
+                r &= ~_perms[$removedChoice.attr('data')];
+                a(!m.hasClass('visible') && r != 0);
+                c();
+            },
+            onShow:function() {
+                a(false);
+            },
+            onHide:function() {
+                a(true && r != 0);
+            }
+        };
+        
+        var a = function(v) {
+            if(v) {
+                u.addClass('fl-is-active');
+            } else {
+                u.removeClass('fl-is-active');
+            }
+        }; 
+         
+        sub.setUPerm = function(v) {
+            var l = d.parent().find('.fl-label');
+            l.css('transition', 'none');
+            d.dropdown('clear');
+            r = v;
+            pn.forEach(function(n, i) {
+                if(((1 << i) & v) != 0) {
+                    d.dropdown('set selected', '' + i);
+                }
+            });
+            d.dropdown('refresh');
+            a(true && r != 0);
+            domy.defer(function() {
+                l.css('transition', '');
+            });
+        };
+        
+        d.dropdown(s);
+    })();
+    
+    (function(){
+        var g = $('#right .grid_c');
+        var gP = g.find('.groupP');
+        var m = gP.find('.menu');
+        var d = gP.find('.ui.dropdown');
+        var u = gP.find('.upper');
+        var r = 0;
+        var c = function() {};
+        
+        var _gperms = gperm_get_all();
+        var pn = Object.getOwnPropertyNames(_gperms);
+        
+        pn.forEach(function(n, i) {
+            m.append('<div class="item" data-value="' + i + '" data="' + n + '">' + polyglot.t('perm.' + n) + '</div>');
+        });
+         
+        sub.getGPerm = function() {
+            return r;
+        };
+         
+        sub.resetGPerm = function() {
+            d.dropdown('clear');
+            r = 0;
+        };
+         
+        sub.setOnGPerm = function(f) {
+            c = f;
+        };
+        
+        var a = function(v) {
+            if(v) {
+                u.addClass('fl-is-active');
+            } else {
+                u.removeClass('fl-is-active');
+            }
+        }; 
+        
+        var s = {
+            forceSelection:false,
+            selectOnKeydown:false,
+            clearable:true,
+            onAdd:function(addedValue, addedText, $addedChoice) {
+                r |= _gperms[$addedChoice.attr('data')];
+                c();
+            },
+            onRemove:function(removedValue, removedText, $removedChoice) {
+                r &= ~_gperms[$removedChoice.attr('data')];
+                a(!m.hasClass('visible') && r != 0);
+                c();
+            },
+            onShow:function() {
+                a(false);
+            },
+            onHide:function() {
+                a(true && r != 0);
+            }
+        };
+        
+        sub.setGPerm = function(v) {
+            var l = d.parent().find('.fl-label');
+            l.css('transition', 'none');
+            d.dropdown('clear');
+            r = v;
+            pn.forEach(function(n, i) {
+                if(((1 << i) & v) != 0) {
+                    d.dropdown('set selected', '' + i);
+                }
+            });
+            d.dropdown('refresh');
+            a(true && r != 0);
+            domy.defer(function() {
+                l.css('transition', '');
+            });
+        };
+        
+        d.dropdown(s);
+    })();
+    
+    (function() {
+        var rt = $('#right');
+        var g = rt.find('.grid_c');
+        var uS = g.find('.userS');
+        var gS = g.find('.groupS');
+        var gP = g.find('.groupP');
+        var gC = g.find('.groupCfg');
+        var uB = uS.find('button');
+        var gB = gC.find('button');
+        
+        var uId = uS.find('#userId');
+        var uName = uS.find('#userName');
+        var uLogin = uS.find('#userLogin');
+        var uPwd = uS.find('#userPwd');
+        var uMail = uS.find('#userMail');
+        var uLock = uS.find('#userLock');
+        var gId = gS.find('#groupId');
+        var gName = gS.find('#groupName');
+        var gDesc = gS.find('#groupDesc');
+        
+        var loader = loader_init(g);
+        var last_sel = null;
+        var last_sel_grp = null;
+        var lerr = error_init(g, polyglot.t('main.eh_load'), polyglot.t('user.e_load'));
+        var serr = error_init(g, polyglot.t('main.eh_save'), polyglot.t('probe.e_csave'));
+        
+        var uch = false;
+        var uwp = false;
+        
+        var gch = false;
+        var gwp = false;
+        
+        var uoi = function() {
+            if(uwp && !uch) {
+                uch = true;
+                uB.attr('disabled', false);
+            }
+        };   
+        
+        var goi = function() {
+            if(gwp && !gch) {
+                gch = true;
+                gB.attr('disabled', false);
+            }
+        };   
+        
+        uPwd.on('input', uoi);
+        uMail.on('input', uoi);
+        uLock.closest('.ui.checkbox').checkbox({
+                onChecked:uoi,
+                onUnchecked:uoi});
+        sub.setOnUPerm(uoi);
+        
+        gDesc.on('input', goi);
+        sub.setOnGPerm(goi);
+        
+        hide_init(g);
+        hide_init(uS);
+        hide_init(gS);
+        hide_init(gP);
+        hide_init(gC);
+        
+        uB.on('click', function() {
+            var d = post_get_val(sel_data,
+                                ['m', 'l', 'p'],
+                                ['b', 'o', 'n'],
+                                [uMail, uLock, sub.getUPerm()]);
+            var hp = uPwd.val() != '';
+            if(d || hp) { 
+                loader.show();
+                var c = d ? d.c : function() {};
+                d = d ? d.r : null;
+                var pd = {data:JSON.stringify({cmd:19})};
+                if(hp) {
+                    d = d == null ? {} : d;
+                    pd.password = uPwd.val();
+                }
+                d.m = sel;
+                var sn = sel_name;
+                pd.ext_data = JSON.stringify(d);
+                lock.post('/sys/server/', pd, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        change.user_edit(d.m, sn, 2);
+                        c();
+                        uch = false;
+                        uB.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        gB.on('click', function() {
+            var d = post_get_val(sel_grp_data,
+                                ['d', 'p'],
+                                ['b', 'o'],
+                                [gDesc, sub.getGPerm()]);
+            if(d) {
+                var c = d ? d.c : function() {};
+                d = d ? d.r : null;
+                loader.show();
+                var pd = {data:JSON.stringify({cmd:14})};
+                d.m = sel_grp;
+                if(sel != null && d.o !== undefined) {
+                    d.n = sel;
+                }
+                pd.ext_data = JSON.stringify(d);
+                lock.post('/sys/server/', pd, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        c();
+                        gch = false;
+                        gB.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        function _onChange() {
+            var an = {};
+            lerr.hide();
+            if(sel != null || sel_grp != null) {
+                g.show();
+                
+                do_visible_path(sub, function() { 
+                    do_visible_split(rt, function() {
+                        var c = 0;
+                    
+                        if(last_sel != sel && sel != null) {
+                            uB.attr('disabled', '');
+                            last_sel = sel;
+                            uwp = false;
+                            uch = false;
+                            c++;
+                            lock_post('/sys/server/', {data:JSON.stringify({cmd:18}), ext_data:JSON.stringify({id:sel})}, function(d) {
+                                var r = d.constructor === String ? JSON.parse(d) : d;
+                                if(--c == 0) {
+                                    loader.hide();
+                                }
+                                if(r.r == 0) {
+                                    label_set(uId, r.id);
+                                    label_set(uName, r.n);
+                                    label_set_date(uLogin, r.t);
+                                    label_set(uMail, r.m);
+                                    label_set(uLock, r.l);
+                                    label_set(uPwd, '');
+                                    sub.setUPerm(r.p);
+                                    uS.show();
+                                    sel_data = r;
+                                } else {
+                                    lerr.show();
+                                }
+                                uwp = true;
+                            });
+                        } else if(sel == null) {
+                            last_sel = null;
+                            uS.hide();
+                        }
+                        
+                        var d = {m:sel_grp};
+                        var s = sel;
+                        if(s) {
+                            d.n = s;
+                        }
+                        if(last_sel_grp != sel_grp && sel_grp != null) {
+                            gB.attr('disabled', '');
+                            last_sel_grp = sel_grp;
+                            gwp = false;
+                            gch = false;
+                            c++;
+                            lock_post('/sys/server/', {data:JSON.stringify({cmd:13}), ext_data:JSON.stringify(d)}, function(d) {
+                                var r = d.constructor === String ? JSON.parse(d) : d;
+                                if(--c == 0) {
+                                    loader.hide();
+                                }
+                                if(r.r == 0) {
+                                    label_set(gId, r.id);
+                                    label_set(gName, r.n);
+                                    label_set(gDesc, r.d);
+                                    sub.setGPerm(r.p);
+                                    gS.show();
+                                    gC.show();
+                                    if(s) {
+                                        gP.show();
+                                    } else {
+                                        gP.hide();
+                                    }
+                                    sel_grp_data = r;
+                                } else {
+                                    lerr.show();
+                                }
+                                gwp = true;
+                            });
+                        } else if(sel_grp == null) {
+                            last_sel_grp = null;
+                            gC.hide();
+                        }
+                        
+                        if(c != 0) {
+                            loader.show();
+                        }
+                        
+                    });
+                });
+            } else {
+                g.hide();
+            }
+            if(sel != null) {
+                an.name = sel_name;
+            } else {
+                an.name = polyglot.t('user.nousr')
+            }
+            if(sel_grp != null) { 
+                an.gname = sel_grp_name;
+            }
+            var cn = 'user.ucfg';
+            if(sel != null && sel_grp != null) {
+                cn = 'user.ugcfg';
+            } else if(sel_grp != null) {
+                cn = 'user.gcfg';
+            }
+            cfgLabel.innerText = polyglot.t(cn, an);
+        }
+        
+        _this.onChange = function(o, s) {
+            if(o !== undefined) {
+                sel = o.id;
+                sel_name = o.n;
+                if(sub.getIdx() == 0) {
+                    sub.requestGroups();
+                }
+            } else {
+                sel = null;
+                if(sub.getIdx() == 0) {
+                    sub.clearGroups();
+                }
+            }
+            if(!s && sub.getIdx() == 1 && sel_grp != null) {
+                sub.unselGroup();
+            }
+            _onChange();
+        };
+        _this.onChangeGrp = function(o, s) {
+            if(o !== undefined) {
+                sel_grp = o.id;
+                sel_grp_name = o.n;
+            } else {
+                sel_grp = null;
+            }
+            if(!s && sub.getIdx() == 1 && sel != null) {
+                sub.unselUser();
+            }
+            _onChange();
+        }
+    })();
+    
+    function user_name(v) {
+        if(v.m) {
+            return polyglot.t('user.noname', {mail:v.n});
+        }
+        return v.n;
+    }
+    
+    
+    (function() {
+        var l = $('.userList');
+        var p = $('.userPage');
+        var n = {page:'main/user',
+                 sub:'user',
+                 pg:'sub.requestUsers(p)',
+                 kd:'sub.requestUsers(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            var d = {id:parseInt(it.attr('n')), n:it.attr('nm')};
+            if(it.attr('m')) {
+                d.m = 1;
+            }
+            return d;
+        }, _this.onChange);
+        
+        sub.unselUser = function() {
+            _this.onChange(undefined, true);
+            j();
+        };
+        
+        var m = function(v) {
+            return '<div class="item" nm="' + v.n + '" n="' + v.id + '" ' + (v.m ? 'm="1"' : '') + '><div class="content"><span class="text">' + user_name(v) + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddUser = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetUsers = function() {
+            paging_reset(n);
+            sub.requestUsers();
+        }
+        
+        var s = list_search(uFilter, sub.resetUsers);
+        
+        sub.lockUList = function() {
+            if(nl == 0) {
+                uFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockUList = function() {
+            nl--;
+            if(nl == 0) {
+                uFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestUsers = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChange();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    lock_post('/sys/server/', {data:JSON.stringify({cmd:3}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('user.rem', {name:user_name(o)}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('user.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:4}), ext_data:JSON.stringify({a:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.user_edit(o.id, user_name(o), 1);
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('user.ren', {name:user_name(o)}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="userRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="userRName" name="userRName" class="ui input" value="' + (o.m ? '' : o.n) + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('user.e_csave'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:19}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.user_edit(o.id, nn, 2);
+                        o.n = nn;
+                        delete o.m;
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        sub.unlockList(); 
+                        lb.destroy();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        } 
+        
+        var iv = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('user.invite', {name:user_name(o)}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_invite'), polyglot.t('user.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:10}), ext_data:JSON.stringify({a:o.id,l:login_current().l + 1})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.replaceWith(m(o));
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.userList .item', 
+            callback:function(key, options) {
+                _this.onChange();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'invite':
+                        iv(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'invite':{name:polyglot.t('main.invite'), icon:'invite'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    (function() {
+        var ct = $('#center');
+        var l = $('.groupList');
+        var p = $('.groupPage');
+        var n = {page:'main/user',
+                 sub:'user',
+                 pg:'sub.requestGroups(p)',
+                 kd:'sub.requestGroups(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChangeGrp, true);
+        
+        sub.unselGroup = function() {
+            _this.onChangeGrp(undefined, true);
+            j();
+        };
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddGroup = function(d) {
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.clearGroups = function() {
+            sub.unselGroup();
+            clear_visible_split(ct);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('user.nousr') + '</div>');
+        }
+        
+        sub.resetGroups = function() {
+            if(sub.getIdx() != 0 || sel != null) {
+                paging_reset(n);
+                sub.requestGroups();
+            } else {
+                render({r:0,d:[]});
+            }
+        }
+        
+        var s = list_search(uFilter, sub.resetGroups);
+        
+        sub.lockGList = function() {
+            if(nl == 0) {
+                uFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockGList = function() {
+            nl--;
+            if(nl == 0) {
+                uFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestGroups = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            do_visible_split(ct, function() {
+                _this.onChangeGrp(undefined, true);
+                paging_render(function(n) {
+                    if(n.iv) {
+                        var d = s({i:n.i,p:(n.po || 0)*n.i});
+                        if(sub.getIdx() == 0) {
+                            d.id = sel;
+                        }
+                        lock_post('/sys/server/', {data:JSON.stringify({cmd:15}), ext_data:JSON.stringify(d)}, function(d) {
+                            var r = d.constructor === String ? JSON.parse(d) : d;
+                            s();
+                            do_visible_path(sub, function() { render(r); });
+                        });
+                    }
+                }, l, p, n, po);
+            });
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            var rnl = polyglot.t('user.remG', {name:o.n});
+            if(sub.getIdx() == 0) {
+                rnl = polyglot.t('user.remGU', {name:o.n, user:sel_name});
+            }
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + rnl + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('user.e_remG'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                var rnb = {m:o.id};
+                if(sub.getIdx() == 0) {
+                    rnb.n = sel;
+                }
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:17}), ext_data:JSON.stringify(rnb)}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var gd = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('user.addGU', {name:o.n, user:sel_name}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_add'), polyglot.t('user.e_addGU'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:16}), ext_data:JSON.stringify({m:o.id, n:sel})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    it.replaceWith(m(o));
+                    if(r.r == 0) {
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/user'),sub=ctx['user'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('user.renG', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="groupRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="groupRName" name="groupRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('user.e_csaveG'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock_post('/sys/server/', {data:JSON.stringify({cmd:14}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        o.n = nn;
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        sub.unlockList(); 
+                        lb.destroy();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+    
+        function disabled(key, opt) {
+            return sub.getIdx() == 0 ? (key == 'add_to_group') : (key == 'add_to_group' && sel == null);
+        }
+    
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.groupList .item', 
+            callback:function(key, options) {
+                _this.onChangeGrp(undefined, true);
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'add_to_group':
+                        gd(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete', disabled:disabled},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit', disabled:disabled},
+                'add_to_group':{name:polyglot.t('main.add'), icon:'add', disabled:disabled}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    (function(){
+        var bn;
+        var c = $('#center .ui.groupsel.dropdown');
+        var b = $('#center .ui.groupbtn.dropdown');
+        var r = $('#center');
+        var idx = -1;
+        c.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           onChange: function(value, text, $choice) {
+                idx = $(c[0].firstChild).children().index($choice[0]);
+                b.children().first().text(polyglot.t('user.view_p') + text);
+                bn = {name:'', src:text.toLowerCase() + '.html'};
+                sub.resetGroups();
+           }
+        });
+        
+        sub.getIdx = function() {
+            return idx;
+        }
+    
+        _this.groupSel = function() {
+            c.css('width', b.outerWidth(true) + 'px');
+            c.click();
+        };
+        
+        c.dropdown('set selected', polyglot.t('user.view_s'));
+    })();
+    
+    
+    sub.lockList = function() {
+        sub.lockUList();
+        sub.lockGList();
+    };
+    
+    sub.unlockList = function() {
+        sub.unlockUList();  
+        sub.unlockGList();  
+    };
+    
+    sub.requestUsers();
+
+</script>
+<style>
+#center .ui.menu {
+    min-height:1.857143em;
+    margin: 0;
+    overflow:hidden;
+}
+
+#center .ui.menu .item {
+    padding:0.2rem 1rem 0.2rem 1rem;
+}
+
+#center .menu > .item:before {
+    background-color: #dedede;
+}
+
+#center .groupbtn.dropdown .icon {
+    color: #000;
+}
+
+#center .groupbtn.dropdown:not(.selection):hover .icon,
+#center .groupbtn.dropdown:not(.selection).active .icon {
+    color:#FFF;
+}
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/user_add.html"}###
+    ###{"file":"templates_www_source/user_add_group.html"}###
+</div>
+<div attach="topbar" template>
+    <div class="ui edit dropdown item">
+        <div class="text">{{l 'main.edit'}}</div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="header">{{l 'user.usr'}}</div>
+            <div class="item" page_click="ctx.userAddU();">
+                {{l 'main.add'}}
+            </div>
+            <div class="divider"></div>
+            <div class="header">{{l 'user.grp'}}</div>
+            <div class="item" page_click="ctx.userAddG();">
+                {{l 'main.add'}}
+            </div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlist" id="vlist" checked>
+                  <label for="vlist">{{l 'user.list'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vgrp" id="vgrp">
+                  <label for="vgrp">{{l 'main.group'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vopt" id="vopt" checked>
+                  <label for="vopt">{{l 'main.setting'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="user" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'user.list'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="userFilter">{{l 'main.list_f'}}</label>
+                        <input id="userFilter" name="userFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist userList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu userPage fullw"></div>
+    </div>
+    <div id="center">
+        <div class="ui segment fullw paging_outer" style="height: calc(100% - 4.16rem);">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'main.group'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="groupFilter">{{l 'main.list_f'}}</label>
+                        <input id="groupFilter" name="groupFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist groupList paging_inner content"></div>
+        </div>
+        <div class="ui groupsel dropdown item" style="display:block;width:14.4rem;">
+             <div class="menu" style="width:100%;">
+                <div class="item">{{l 'user.view_s'}}</div>
+                <div class="item">{{l 'user.view_c'}}</div>
+            </div>
+        </div>
+        <div class="ui menu" style="margin-bottom:0.22rem;">
+            <a class="ui groupbtn dropdown item" page_click="ctx.groupSel();">
+                <div class="text"></div><i class="dropdown icon"></i>
+            </a>
+        </div>
+        <div class="ui pagination menu groupPage fullw"></div>
+    </div>
+    <div id="right" class="ui segment">
+        <div id="userCfgLabel" class="ui top attached blue label tov"></div>
+        <div></div>
+        <div class="grid_c hide">
+            <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                <div class="groupCfg">
+                    <div class="groupS cfgTop">
+                        <div class="ui header">{{l 'user.cfgG'}}</div>
+                        <div class="form-row">
+                            <label for="groupId">{{l 'main.id'}}</label>
+                            <input type="text" id="groupId" name="groupId" disabled>
+                        </div>
+                        <div class="form-row">
+                            <label for="groupName">{{l 'main.name'}}</label>
+                            <input type="text" id="groupName" name="groupName" disabled>
+                        </div>
+                        <div class="form-row">
+                            <label for="groupDesc">{{l 'main.desc'}}</label>
+                            <textarea id="groupDesc" name="groupDesc"></textarea>
+                        </div>
+                    </div>
+                    <div class="groupP">
+                        <div style="margin:20px 0 20px 0">{{l 'user.ugperm'}}</div>
+                        <div class="form-row">
+                            <div class="fullw fl-wrap fl-wrap-input upper">
+                                <label class="fl-label" style="z-index: 13;" for="groupPerm">{{l 'user.group_p'}}</label>
+                                <div class="ui multiple search selection dropdown activeselect fullw" style="margin-bottom:10px;">
+                                    <input type="hidden" name="groupPerm" id="groupPerm" value="" autofocus="true">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text">{{l 'user.group_p'}}</div>
+                                    <div class="menu" style="overflow-y:auto;max-height:15rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button">{{l 'main.save'}}</button>
+                    </div>
+                    <div class="doclear"></div>
+                </div>
+                <div class="userS">
+                    <div class="ui header">{{l 'user.cfgU'}}</div>
+                    <div class="form-row">
+                        <label for="userId">{{l 'main.id'}}</label>
+                        <input type="text" id="userId" name="userId" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="userName">{{l 'main.name'}}</label>
+                        <input type="text" id="userName" name="userName" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="userLogin">{{l 'user.login'}}</label>
+                        <input type="text" id="userLogin" name="userLogin" disabled>
+                    </div>
+                    <div class="form-row">
+                        <label for="userPwd">{{l 'login.upwd'}}</label>
+                        <input type="password" id="userPwd" name="userPwd" autocomplete="new-upassword">
+                    </div>
+                    <div class="form-row">
+                        <label for="userMail">{{l 'main.mail'}}</label>
+                        <input type="text" id="userMail" name="userMail">
+                    </div>
+                    <div class="form-row">
+                        <div class="fullw fl-wrap fl-wrap-input upper">
+                            <label class="fl-label" style="z-index: 13;" for="userPerm">{{l 'user.user_p'}}</label>
+                            <div class="ui multiple search selection dropdown activeselect fullw" style="margin-bottom:10px;">
+                                <input type="hidden" name="userPerm" id="userPerm" value="" autofocus="true">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">{{l 'user.user_p'}}</div>
+                                <div class="menu" style="overflow-y:auto;max-height:15rem;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="ui checkbox">
+                            <label for="userLock">{{l 'main.lock'}}</label>
+                            <input type="checkbox" id="userLock" name="userLock">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button class="ui right blue button">{{l 'main.save'}}</button>
+                    </div>
+                    <div class="doclear"></div>
+                </div>
+            </form>
+        </div>
+        <div class="grid_e">{{l 'user.nousr'}}</div>
+    </div>
+</div>

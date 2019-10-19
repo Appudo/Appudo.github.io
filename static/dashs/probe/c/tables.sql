@@ -1,0 +1,17 @@
+1	probe_compiler_options	\N	5002	\N	f
+2	probe_compilers	\N	5002	\N	f
+3	probe_settings	\N	5002	\N	f
+4	probe_runs	\N	5002	\N	f
+5	probe_run_instances	\N	5002	\N	f
+6	probe_module_instances	\N	5002	\N	f
+7	probe_groups	\N	5002	\N	f
+8	probe_users_goups	\N	5002	\N	f
+9	probe_users_register	\N	5002	\N	f
+10	probe_users	\N	5002	\N	f
+11	probe_modules	\N	5002	\N	f
+12	probe_probes_settings	\N	5002	\N	f
+13	probe_probes	\N	5002	\N	f
+14	probe_probes_active	\N	5002	\N	f
+15	probe_repositories	\N	5002	\N	f
+16	probe_disassembly_files	\N	5002	\N	f
+17	probe_disassembly	\N	5002	\N	f

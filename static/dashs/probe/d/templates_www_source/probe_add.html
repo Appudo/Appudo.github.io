@@ -1,0 +1,270 @@
+<script sub="probe_add">
+    var _this = this;
+    var _canClose = true;
+    var _modal = $('.ui.modal.probeAdd');
+    var _btn = _modal.find('.accept.button');
+    var sel = null;
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity:0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                    
+    $('#add_login').on('input', onChange);
+    $('#add_key').on('input', onChange);
+                  
+    function onChange() {
+        var v = $('#add_login').val();
+        var v1 = $('#add_key').val();
+        if(v === '' || v1 === '') {
+            _btn.addClass('disabled');
+        } else {
+            _btn.removeClass('disabled');
+        }
+    } 
+                   
+    sub.onOpen = function(after) {
+        sub.after = after;
+        submit_err(-1, true);
+        var n = $('#add_login');
+        label_reset(n);
+        $('#addFilter')[0].reset();
+        label_reset($('#add_desc'));
+        label_reset($('#add_key'));
+        sub.resetGroups();
+        n.focus();
+    };
+    
+    sub.onOk = function() {
+        if(!_canClose)
+            return;
+       var f = _modal.find('form'); 
+       f.submit();
+    }
+    
+    function submit_err(i, nofade) {
+        var el = _modal.find('.probeAddE')[0];
+        var d = el.firstChild;
+        var h = d.firstChild;
+        var p = h.nextSibling;
+        var hm;
+        var m;
+        switch(i) {
+            case 0:
+                hm = polyglot.t('main.eh_exist');
+                m = polyglot.t('probe.e_exist');
+                break;
+            case 1:
+                hm = polyglot.t('main.eh_fail');
+                m = polyglot.t('probe.e_add');
+                break;
+            default:
+                if(nofade) {
+                    d.classList.add('hide');
+                } else {
+                    _fadeOut(d, 200, function() {
+                        d.classList.add('hide');
+                    });
+                }
+                return;
+        }
+        h.textContent = hm;
+        p.textContent = m;
+        _fadeIn(d, 200);
+        d.classList.remove('hide');
+    }
+    
+    this._probe_add = function(ev, el_frm) {
+        _canClose = false;
+        ev.preventDefault();
+        if(!form_set_load(el_frm)) {
+            _canClose = true;
+            return;
+        }
+        
+        submit_err(-1, true);
+        
+        var grid = _modal.find('.grid');
+        grid.addClass('nomouse');
+        _btn.addClass('loading');
+        
+        var frm = new FormData();
+        
+        var data = {n:form_get(el_frm, 'add_login'), 
+                    d:form_get(el_frm, 'add_desc')
+        };
+        
+        if(sel != null) {
+            data.g = sel;
+        }
+        
+        frm.append('data', '{"cmd":41}');
+        frm.append('password', form_get(el_frm, 'add_key'));
+        frm.append('ext_data', JSON.stringify(data));
+        _post('/sys/server/', frm, function(d) {
+            form_set_ready(el_frm);
+            _canClose = true;
+            grid.removeClass('nomouse');
+            _btn.removeClass('loading');
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            if(r.r == 0) {
+                data.id = d.d;
+                sub.after(data);
+                _modal.modal('hide');
+            } else {
+                if(r.r == 14) {
+                    submit_err(0);
+                } else {
+                    submit_err(1);
+                }
+            }
+        }, {responseType:'json'});
+    };
+    
+    (function() {
+        var l = $('.probeGroupList');
+        var p = $('.probeGroupPage');
+        var n = {page:'main/probe',
+                 sub:'probe_add',
+                 pg:'sub.requestGroups(p)',
+                 kd:'sub.requestGroups(parseInt(this.value)-1, event)'
+        };
+        
+        list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, function(o) {
+            sel = o.id;
+            onChange();
+        });
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        };
+        
+        sub.resetGroups = function() {
+            sel = null;
+            onChange();
+            paging_reset(n);
+            sub.requestGroups();
+        }
+        
+        var s = list_search($('#addFilter'), sub.resetGroups);
+        
+        sub.requestGroups = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    post('/sys/server/', {data:JSON.stringify({cmd:15}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        render(r);
+                    });
+                }
+            }, l, p, n, po);
+        };
+    })();
+</script>
+<style>
+</style>
+<div sub="probe_add" class="ui modal probeAdd" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'probe.add'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.probeAdd', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'probe.add_d'}}</p>
+        <div class="probeAddE">
+            <div class="ui negative message form-row hide" style="margin-bottom:5px;">
+                <div class="header"></div>
+                <p></p>
+            </div>
+        </div>
+        <div style="position:relative;height:100%;">
+            <div class="divide" style="left:57.5%;bottom: -25px;"></div>
+            <div class="ui grid" style="padding:20px;">
+                <div style="width:calc(60% - 2rem);margin:0;"> 
+                    <div class="ui small header">{{l 'probe.acfg'}}</div>
+                    <div style="display:inline-block;vertical-align:middle;" class="form-base"> 
+                        <div>
+                            <form action="#" method="post" class="ui form" page_submit="ctx._probe_add(event, this);">
+                                <div class="form-row">
+                                    <label for="add_login">{{l 'main.login'}}</label>
+                                    <input id="add_login" name="add_login" type="text" class="field" required="required">
+                                </div>
+                                <div class="form-row">
+                                    <label for="add_key">{{l 'main.key'}}</label>
+                                    <textarea id="add_key" name="add_key" rows="3" required="required"></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <label for="add_desc">{{l 'main.desc'}}</label>
+                                    <textarea id="add_desc" name="add_desc" rows="2"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:40%;margin:0 0 0 2rem;">
+                    <div class="ui small header">{{l 'main.agrp'}}</div>
+                    <div class="fullw" style="height:calc(100% - 2rem);">
+                        <div>
+                            <div class="ui icon input tinput fl-wrap fullw">
+                                <i class="angle up link toggl icon"></i>
+                                <label for="addFilter">{{l 'main.list_f'}}</label>
+                                <input id="addFilter" name="addFilter" class="prompt fullw" type="text">
+                                <i class="search link icon"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment fullw tlist" style="height:calc(100% - 5rem);">
+                            <div class="ui middle aligned celled selection list probeGroupList mlist fullw fullh">
+                            </div>
+                        </div>
+                        <div class="ui pagination menu probeGroupPage fullw"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

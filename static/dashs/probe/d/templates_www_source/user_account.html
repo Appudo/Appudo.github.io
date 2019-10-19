@@ -1,0 +1,292 @@
+<script sub="user_account">
+    
+    (function() {
+        var b = $('body')
+        var g = $('#left .grid_c');
+        var d = g.find('.ui.dropdown');
+        var m = g.find('.menu');
+        var u = g.find('.upper');
+        var sBtn = g.find('.button.save');
+        var rBtn = g.find('.button.remove');
+        var aId = g.find('#accountId');
+        var aName = g.find('#accountName');
+        var aLogin = g.find('#accountLogin');
+        var aPwd = g.find('#accountPwd');
+        var aMail = g.find('#accountMail');
+        var aRem = g.find('.accountRemove');
+        var aEdit = g.find('.accountEdit');
+        var confirm = g.find('.accountConfirm');
+        var remBtn = g.find('.accountRemBtn');
+        
+        var a_data = null;
+        
+        var loader = loader_init(g);
+        var lerr = error_init(g, polyglot.t('main.eh_load'), polyglot.t('account.e_load'));
+        var serr = error_init(g, polyglot.t('main.eh_save'), polyglot.t('account.e_save'));
+        var rerr = error_init(g, polyglot.t('main.eh_rem'), polyglot.t('account.e_rem'));
+        var lin = login_current();
+        
+        var _perms = perm_get_all();
+        var pn = Object.getOwnPropertyNames(_perms);
+        var admin = login_admin();
+        var can_edit = !b.hasClass('NO_ACCOUNT_EDIT') || admin;
+        var can_change_login = !b.hasClass('NO_USER_CHANGE_LOGIN') || admin;
+        var can_remove = !b.hasClass('NO_ACCOUNT_REMOVE') || admin;
+        var c = function() {};
+        
+        sBtn.attr('disabled', true);
+        
+        if(!can_remove) {
+            aRem.addClass('hide');   
+        }
+        
+        aName.attr('disabled', !can_change_login || !can_edit);
+        aPwd.attr('disabled', !can_change_login || !can_edit);
+        
+        aMail.attr('disabled', !can_edit);
+        
+        if(!can_edit) {
+            aEdit.addClass('hide');
+        }
+        
+        pn.forEach(function(n, i) {
+            m.append('<div class="item" data-value="' + i + '" data="' + n + '">' + polyglot.t('perm.' + n) + '</div>');
+        });
+         
+        sub.getPerm = function() {
+            return r;
+        };
+         
+        sub.resetPerm = function() {
+            d.dropdown('clear');
+            r = 0;
+        };
+        
+        sub.setOnPerm = function(f) {
+            c = f;
+        };
+        
+        var s = {
+            forceSelection:false,
+            selectOnKeydown:false,
+            clearable:true,
+            onAdd:function(addedValue, addedText, $addedChoice) {
+                r |= _perms[$addedChoice.attr('data')];
+                c();
+            },
+            onRemove:function(removedValue, removedText, $removedChoice) {
+                r &= ~_perms[$removedChoice.attr('data')];
+                a(!m.hasClass('visible') && r != 0);
+                c();
+            },
+            onShow:function() {
+                a(false);
+            },
+            onHide:function() {
+                a(true && r != 0);
+            }
+        };
+        
+        var a = function(v) {
+            if(v) {
+                u.addClass('fl-is-active');
+            } else {
+                u.removeClass('fl-is-active');
+            }
+        }; 
+         
+        sub.setPerm = function(v) {
+            var l = d.parent().find('.fl-label');
+            l.css('transition', 'none');
+            d.dropdown('clear');
+            r = v;
+            pn.forEach(function(n, i) {
+                if(((1 << i) & v) != 0) {
+                    d.dropdown('set selected', '' + i);
+                }
+            });
+            d.dropdown('refresh');
+            a(true && r != 0);
+            domy.defer(function() {
+                l.css('transition', '');
+            });
+        };
+        
+        d.dropdown(s);
+        
+        var ch = false;
+        var wp = false;
+        
+        var oi = function() {
+            if(wp && !ch) {
+                ch = true;
+                sBtn.attr('disabled', false);
+            }
+        };
+        
+        aName.on('input', oi);
+        aPwd.on('input', oi);
+        aMail.on('input', oi);
+        
+        sBtn.on('click', function() {
+            var d = post_get_val(a_data,
+                                ['n', 'm'],
+                                ['a', 'b'],
+                                [aName, aMail]);
+            var hp = aPwd.val() != '';
+            if(d || hp) { 
+                loader.show();
+                var c = d ? d.c : function() {};
+                d = d ? d.r : null;
+                var pd = {data:JSON.stringify({cmd:19})};
+                if(hp) {
+                    d = d == null ? {} : d;
+                    pd.password = aPwd.val();
+                }
+                d.m = lin.id;
+                pd.ext_data = JSON.stringify(d);
+                post('/sys/server/', pd, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        c();
+                        ch = false;
+                        sBtn.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        sub.rem_abort = function() {
+            confirm.addClass('hide');
+            remBtn.removeClass('hide');
+        }
+        
+        sub.rem_do = function() {
+            loader.show();
+            post('/sys/server/', {data:JSON.stringify({cmd:4}), ext_data:JSON.stringify({a:lin.id})}, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                loader.hide();
+                if(r.r == 0) {
+                    login_logout();
+                } else {
+                    rerr.show();
+                }
+            });
+        }
+        
+        rBtn.on('click', function() {
+            confirm.removeClass('hide');
+            remBtn.addClass('hide');
+        });
+        
+        sub.load = function() {
+            wp = false;
+            ch = false;
+            loader.show();
+            post('/sys/server/', {data:JSON.stringify({cmd:18}), ext_data:JSON.stringify({id:lin.id})}, function(d) {
+                var r = d.constructor === String ? JSON.parse(d) : d;
+                loader.hide();
+                if(r.r == 0) {
+                    label_set(aId, r.id);
+                    label_set(aName, r.n);
+                    label_set_date(aLogin, r.t);
+                    label_set(aMail, r.m);
+                    label_set(aPwd, '');
+                    sub.setPerm(r.p);
+                    a_data = r;
+                } else {
+                    a_data = null;
+                    lerr.show();
+                }
+                wp = true;
+            });
+        }
+    })();
+</script>
+<style>
+</style>
+<div sub="user_account" class="sgrid">
+    <script always>
+        function l() {
+            if(!sub.load) {
+                setTimeout(l, 200);
+            } else {
+                sub.load();
+            }
+        }
+        if(load) {
+            l();
+        }
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left" class="ui segment" style="width:100%;">
+        <div class="ui top attached blue label" style="overflow:visible;">
+            <div class="tov" style="float:left;width:calc(100% - 30px)">
+                {{l 'account.setting'}}
+            </div>
+        </div>
+        <div></div>
+        <div class="grid_c">
+            <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                <div class="form-row">
+                    <label for="accountId">{{l 'main.id'}}</label>
+                    <input type="text" id="accountId" name="accountId" disabled>
+                </div>
+                <div class="form-row">
+                    <label for="accountName">{{l 'main.name'}}</label>
+                    <input type="text" id="accountName" name="accountName">
+                </div>
+                <div class="form-row">
+                    <label for="accountLogin">{{l 'user.login'}}</label>
+                    <input type="text" id="accountLogin" name="accountLogin" disabled>
+                </div>
+                <div class="form-row">
+                    <label for="accountPwd">{{l 'login.upwd'}}</label>
+                    <input type="password" id="accountPwd" name="accountPwd" autocomplete="new-apassword">
+                </div>
+                <div class="form-row">
+                    <label for="accountMail">{{l 'main.mail'}}</label>
+                    <input type="text" id="accountMail" name="accountMail">
+                </div>
+                <div class="form-row">
+                    <div class="fullw fl-wrap fl-wrap-input upper">
+                        <label class="fl-label" style="z-index: 13;" for="accountPerm">{{l 'user.user_p'}}</label>
+                        <div class="ui multiple search selection dropdown activeselect fullw disabled" style="margin-bottom:10px;">
+                            <input type="hidden" name="accountPerm" id="accountPerm" value="" autofocus="true">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">{{l 'user.user_p'}}</div>
+                            <div class="menu" style="overflow-y:auto;max-height:15rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row accountEdit">
+                    <button class="ui right blue button save">{{l 'main.save'}}</button>
+                </div>
+                <div class="doclear"></div>
+                <div class="ACCOUNT_REMOVE accountRemove">
+                    <div class="ui header">{{l 'account.rem'}}</div>
+                    <div class="form-row accountRemBtn">
+                        <button class="ui left blue button remove">{{l 'main.rem'}}</button>
+                    </div>
+                    <div class="form-row accountConfirm frame hide" style="width:30rem;padding:2rem;">
+                        <div style="min-height:3rem;">
+                            <span class="text">{{l 'account.drem'}}</span>
+                        </div>
+                        <div style="float:right;display:inline-block;">
+                            <button class="ui blue deny button" onclick="var t = this;(function(){var ctx=getCtx('main/user_account'),sub=ctx['user_account'],f=function(event) { sub.rem_abort(); };f.call(t, event)})()">{{l 'dialog.cancel'}}</button>
+                            <button class="ui blue accept button" onclick="var t = this;(function(){var ctx=getCtx('main/user_account'),sub=ctx['user_account'],f=function(event) { sub.rem_do(); };f.call(t, event)})()">{{l 'dialog.accept'}}</button>
+                        </div>
+                        <div class="doclear"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

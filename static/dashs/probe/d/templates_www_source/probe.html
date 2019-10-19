@@ -1,0 +1,1075 @@
+<script sub="probe">
+    var _this = this;
+    var sel = null;
+    var sel_cfg = null;
+    var sel_data = null;
+    var sel_name;
+    var sel_con = false;
+    
+    var pFilter = search_filter('#probeFilter', '#left');
+    var uFilter = search_filter('#usesFilter', '#uses');
+    var cFilter = search_filter('#pcfgFilter', '#center_bottom');
+    
+    var cfg = {};
+    var cfgLabel = $('#probeCfgLabel')[0];
+    var psel = sel_ready_init();
+    var lock = lock_post_init(sub);
+    var lockCfg = lock_post_init(cfg);
+    
+    this.probeAdd = function() {
+        $('.ui.modal.probeAdd').modal('show');
+        ctx['probe_add'].onOpen(function(d) {
+            sub.onAddProbe(d);
+        });
+    }
+    
+    $('#topbar .ui.edit.dropdown').dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'hide'
+    });  
+    
+    (function(){
+        var c = $('#topbar .ui.config.dropdown');
+        var m = c.find('.menu');
+        c.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           onChange: function(value, text, $choice) {
+               c.children().first().text(polyglot.t('probe.view_p') + text);
+               var old = sel_con;
+               sel_con = m.children().index($choice[0]) != 0;
+               if(old != sel_con && sub.resetProbes) {
+                sub.resetProbes();
+               }
+           }
+        });
+        
+        c.dropdown('set selected', polyglot.t('probe.view_r'));
+    
+    })();
+    
+    (function() {
+        var c = $('#center_top .grid_c');
+        var e = $('#center_top .grid_e');
+        var i = $('#center_top .probeCfg');
+        var lbl = $('#center_top .probeCfgLbl');
+        var b = c.find('button');
+        var pDesc = $('#probeDesc');
+        var pGID = $('#probeGID');
+        var pUID = $('#probeUID');
+        var pKey = $('#probeKey');
+        var ct = {};      
+        var ch = false;
+        var wp = false;
+        var loader = loader_init(c);
+        var serr = error_init(c, polyglot.t('main.eh_save'), polyglot.t('probe.e_csave'));
+        hide_init(c);
+        
+        var oi = function() {
+            if(wp && !ch) {
+                ch = true;
+                b.attr('disabled', false);
+            }
+        };   
+        
+        pDesc.on('input', oi);
+        pGID.on('input', oi);
+        pUID.on('input', oi);
+        pKey.on('input', oi);
+                
+        b.on('click', function() {
+            var d = post_get_val(sel_data,
+                                ['d', 'g', 'u', 'k'],
+                                ['b', 'p', 'o', 'c'],
+                                [pDesc, pGID, pUID, pKey]);
+            if(d) {
+                loader.show();
+                var c = d ? d.c : function() {};
+                d = d ? d.r : null;
+                var pd = {data:JSON.stringify({cmd:43})};
+                if(d.c) {
+                    pd.password = d.c;
+                    delete d.c;
+                }
+                d.m = sel;
+                var nm = sel_name;
+                if(sel_cfg) {
+                    d.n = sel_cfg;
+                }
+                pd.ext_data = JSON.stringify(d);
+                lock.post('/sys/server/', pd, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.hide();
+                    if(r.r == 0) {
+                        change.probe_edit(d.m, nm, 2);
+                        c();
+                        ch = false;
+                        b.attr('disabled', true);
+                    } else {
+                        serr.show();
+                    }
+                });
+            }
+        });
+        
+        sub.getCfg = function() {
+            serr.hide();
+            var d = {};
+            var v1 = false;
+            var v2 = false;
+            
+            if(sel_cfg && ct.sel_cfg != sel_cfg) {
+                d.sid = sel_cfg;
+                v2 = true;
+                i.show();
+            } else if(sel_cfg == null) {
+                i.hide();
+            }
+            
+            if(sel && ct.sel != sel) {
+                d.pid = sel;
+                v1 = true;
+            } else if(sel == null) {
+                v2 = false;
+                c.hide();
+            }
+            
+            ct.sel = sel;
+            ct.sel_cfg = sel_cfg;
+            
+            if(v1 || v2) {
+                var ov = sel_data;
+                var nv = {};
+                sel_data = null;
+                wp = false;
+                ch = false;
+                b.attr('disabled', true);
+                loader.show();
+                c.show();
+                post('/sys/server/', {data:JSON.stringify({cmd:42}), ext_data:JSON.stringify(d)}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    wp = true;
+                    loader.hide();
+                    sel_data = nv;
+                    if(r.r == 0) {
+                        c.show();
+                        if(v1) {
+                            $.extend(nv, r);
+                            label_set($('#probeId'), ct.sel);
+                            label_set($('#probeName'), r.n);
+                            label_set(pDesc, r.d);
+                            label_set(pGID, r.g);
+                            label_set(pUID, r.u);
+                            label_set(pKey, r.k);
+                        } else {
+                            $.extend(nv, {d:ov.d,g:ov.g,u:ov.u,k:ov.k});
+                        }
+                        if(v2) {
+                            $.extend(nv, r);
+                            label_set($('#probeCfgId'), ct.sel_cfg);
+                            label_set($('#probeIdent'), r.i);
+                            lbl.text(polyglot.t('probe.icfg', {name:probe_label({n:r.i,id:sel_cfg})}));
+                        } else {
+                            $.extend(nv, {});
+                        }
+                    } else {
+                        e.text(polyglot.t('main.lerr'));
+                        c.hide();
+                    }
+                });
+            }
+        };
+        
+        _this.onChange = function(o) {
+            var an = {name:polyglot.t('probe.nosetting')};
+            if(o !== undefined) {
+                sel = o.id;
+                sel_name = o.n;
+                sub.requestUses();
+                sub.requestCfg();
+                an.name = sel_name;
+            } else {
+                sel = null;
+                sub.clearUses();
+                sub.clearCfg();
+            }
+            _this.onChangeCfg();
+            cfgLabel.innerText = polyglot.t('probe.pcfg', an);
+        };
+        _this.onChangeCfg = function(o) {
+            if(o !== undefined) {
+                sel_cfg = o.id;
+                sel_cfg_name = o.n;
+            } else {
+                sel_cfg = null;
+            }
+            sub.getCfg();
+        }
+    })();
+    
+    (function() {
+        var nl = 0;
+        var u = $('#center_bottom');
+        var l = $('.pcfgList');
+        var p = $('.pcfgPage');
+        var n = {page:'main/probe',
+                 sub:'probe',
+                 pg:'sub.requestCfg(p)',
+                 kd:'sub.requestCfg(parseInt(this.value)-1, event)'
+        };
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChangeCfg, true);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + (v.n !== '' ? v.n : polyglot.t('probe.noident', {id:v.id})) + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.clearCfg = function() {
+            clear_visible_split(u);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('probe.noprobe') + '</div>');
+        }
+        
+        sub.resetCfg = function() {
+            paging_reset(n);
+            sub.requestCfg();
+        }
+        
+        cfg.lockList = function() {
+            if(nl == 0) {
+                cFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        cfg.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                cFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        var s = list_search(cFilter, sub.resetCfg);
+        
+        var ru = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) { 
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i,id:sel}));
+                    cFilter.attr('disabled', '');
+                    l.addClass('nomouse_i');
+                    p.addClass('nomouse');
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:46}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        cFilter.attr('disabled', null);
+                        l.removeClass('nomouse_i');
+                        p.removeClass('nomouse');
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        sub.requestCfg = function(po, ev) {
+            do_visible_split(u, function() {
+                ru(po, ev);
+            });
+        }
+        
+        var rm = function(o, it) {
+            cfg.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.s_rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                cfg.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('probe.e_rem'), function(r) { 
+                    r.remove();
+                    cfg.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:48}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        it.remove();
+                        serr.remove();
+                        cfg.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            cfg.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.s_ren', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="probeRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="probeRName" name="probeRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                cfg.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('probe.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    cfg.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:43}), ext_data:JSON.stringify({n:o.id, c:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            o.n = nn;
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            cfg.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                } 
+            };
+        } 
+        
+        var cn = function(o, it) {
+            cfg.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.s_clone', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="probeRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="probeRName" name="probeRName" class="ui input" value="' + o.n + '"></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                cfg.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('probe.e_clone'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    cfg.unlockList(); 
+                });
+                loader.show();
+                var nn = d.val();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:47}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        var ni = $(m({id:r.d, n:nn})).prependTo(l);
+                        it.replaceWith(m(o))
+                        serr.remove();
+                        cfg.unlockList(); 
+                        lb.destroy();
+                        ni.click();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        } 
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.pcfgList .item', 
+            callback:function(key, options) {
+                _this.onChangeCfg();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'clone':
+                        cn(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'clone':{name:polyglot.t('main.clone'), icon:'add'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    (function() {
+        var l = $('.probeList');
+        var p = $('.probePage');
+        var n = {page:'main/probe',
+                 sub:'probe',
+                 pg:'sub.requestProbes(p)',
+                 kd:'sub.requestProbes(parseInt(this.value)-1, event)'
+        };
+        
+        var nl = 0;
+        
+        var j = list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, _this.onChange);
+        
+        var m = function(v) {
+            return '<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + probe_label(v) + '</span></div></div>';
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append(m(v));
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        }
+        
+        sub.onAddProbe = function(d) {
+            change.probe_edit(d.id, probe_label(d), 0);
+            if(l.find('.item').length == 0) {
+                l.html('');
+            }
+            l.prepend(m(d));
+            j(l.children().first());
+        }
+        
+        sub.resetProbes = function() {
+            paging_reset(n);
+            sub.requestProbes();
+        }
+        
+        var s = list_search(pFilter, sub.resetProbes);
+        
+        sub.lockList = function() {
+            if(nl == 0) {
+                pFilter.attr('disabled', '');
+                l.addClass('nomouse_i');
+                p.addClass('nomouse');
+            }
+            nl++;
+        }
+        
+        sub.unlockList = function() {
+            nl--;
+            if(nl == 0) {
+                pFilter.attr('disabled', null);
+                l.removeClass('nomouse_i');
+                p.removeClass('nomouse');
+            }
+        }
+        
+        sub.requestProbes = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            _this.onChange();
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = s({i:n.i,p:(n.po || 0)*n.i});
+                    if(sel_con) {
+                        d.f3 = true;
+                    }
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:40}), ext_data:JSON.stringify(d)}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        var rm = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.rem', {name:o.n}) + 
+                                '</span></div><div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                                
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_rem'), polyglot.t('probe.e_rem'), function(r) { 
+                    r.remove();
+                    sub.unlockList();
+                });
+                loader.show();
+                lock.post('/sys/server/', {data:JSON.stringify({cmd:44}), ext_data:JSON.stringify({id:o.id})}, function(d) {
+                    var r = d.constructor === String ? JSON.parse(d) : d;
+                    loader.remove();
+                    if(r.r == 0) {
+                        change.probe_edit(o.id, '', 1);
+                        it.remove();
+                        serr.remove();
+                        sub.unlockList();
+                    } else {
+                        it.replaceWith(m(o));
+                        serr.show();
+                    }
+                });
+            };
+        }
+        
+        var rn = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.ren', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="probeRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="probeRName" name="probeRName" class="ui input" value="' + o.n + '" required></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('probe.e_ren'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:43}), ext_data:JSON.stringify({m:o.id, a:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            o.n = nn;
+                            change.probe_edit(o.id,  probe_label(o), 2);
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            sub.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                }
+            };
+        } 
+            
+            
+        var as = function(o, it) {
+            sub.lockList();
+            var cl = function(c) {
+                return "\"var t = this;(function(){var ctx=getCtx('main/probe'),sub=ctx['probe'],f=function(event) { " + c + " };f.call(t, event)})()\""; 
+            };
+            
+            it = it.replaceFrom('<div class="item noselect frame"><div class="ui form form-base"><div class="content mouse">' +
+                                '<div class="form-row" style="padding:1em 0;"><span class="text">' + polyglot.t('probe.s_adds', {name:o.n}) + 
+                                '</span></div>' +
+                                '<div class="form-row"><label for="probeRName">' + 
+                                polyglot.t('main.name') + 
+                                '</label><input type="text" id="probeRName" name="probeRName" class="ui input" value="" required></div>' +
+                                '<div class="form-row"><div style="float:right;display:inline-block;">' + 
+                                '<button class="ui blue deny button" onclick=' + cl('sub.abort();') + '>' +
+                                polyglot.t('dialog.cancel')
+                                + '</button><button class="ui blue accept button" onclick=' + cl('sub.submit();') + '>' +
+                                polyglot.t('dialog.accept')
+                                + '</button></div></div></div></div></div>');
+                       
+		    var lb = new FloatLabels(it[0], {'style':1, customEvent:autofill});
+		    var d = it.find('input');
+		    d.focus();
+		    
+            sub.abort = function() {
+                it = it.replaceFrom(m(o), 'active');
+                j.reset(it);
+                sub.unlockList();
+                lb.destroy();
+            };
+            
+            sub.submit = function() {
+                var loader = loader_init(l);
+                var serr = error_init(l, polyglot.t('main.eh_save'), polyglot.t('probe.e_adds'), function(r) {
+                    r.remove(); 
+                    lb.destroy();
+                    sub.unlockList(); 
+                });
+                var nn = d.val();
+                if(nn !== '') {
+                    loader.show();
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:47}), ext_data:JSON.stringify({n:o.id, a:nn})}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        loader.remove();
+                        if(r.r == 0) {
+                            change.probe_edit(o.id,  probe_label(o), 2);
+                            it.replaceWith(m(o))
+                            serr.remove();
+                            sub.unlockList(); 
+                            lb.destroy();
+                        } else {
+                            it.replaceWith(m(o));
+                            serr.show();
+                        }
+                    });
+                }
+            };
+        }
+        
+        $.contextMenu({
+            zIndex: 103,
+            appendTo:'#content',
+            selector:'.probeList .item', 
+            callback:function(key, options) {
+                _this.onChange();
+                j();
+                switch(key) {
+                    case 'remove':
+                        rm(this.o, this.it);
+                        break;
+                    case 'rename':
+                        rn(this.o, this.it);
+                        break;
+                    case 'adds':
+                        as(this.o, this.it);
+                        break;
+                }
+            },
+            items:{
+                'remove':{name:polyglot.t('main.rem'), icon:'delete'},
+                'rename':{name:polyglot.t('main.ren'), icon:'edit'},
+                'adds':{name:polyglot.t('probe.adds'), icon:'add'}
+            },
+            events:{
+                show:function(options){
+                    var it = $(this[0]).closest('.item');
+                    this.o = j.temp(it);
+                    this.it = it;
+                    return !it.hasClass('noselect');
+                },
+                hide:function() {
+                    this.o = null;
+                    this.it = null;
+                    j.reset();
+                }
+            }
+        });
+    })();
+    
+    visibility_init(sub, $('#topbar .ui.visibility.dropdown'), function(i) { return i == 2 ? sub.pane_v(1) : sub.pane(i - (i > 2)); });
+    
+    (function(){
+        $('#uses').css('display', 'none');
+        
+        var _ctx = {};
+        var _sizes = [20, 60, 20];
+        var _panes = ['#left', '#center', '#uses'];
+        
+        var _ctx_v = {dir:'vertical'};
+        var _sizes_v = [60, 40];
+        var _panes_v = ['#center_top', '#center_bottom'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        };
+        
+        sub.pane_v = function(i) {
+            return _panes_v[i];
+        }
+        
+        sub.split = function() {
+            doSplit(_panes, _sizes, _ctx, ['#left', '#uses']);
+            doSplit(_panes_v, _sizes_v, _ctx_v);
+        };
+        
+        sub.split();
+    })();
+
+    (function() {
+        var u = $('#uses');
+        var l = $('.usesList');
+        var p = $('.usesPage');
+        var n = {page:'main/probe',
+                 sub:'probe',
+                 pg:'sub.requestUses(p)',
+                 kd:'sub.requestUses(parseInt(this.value)-1, event)'
+        };
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            },l, p, n, n.po, d);
+        }
+        
+        sub.clearUses = function() {
+            clear_visible_split(u);
+            paging_reset(n);
+            p.html('');
+            l.html('<div class="list_e">' + polyglot.t('probe.noprobe') + '</div>');
+        }
+        
+        sub.resetUses = function() {
+            paging_reset(n);
+            sub.requestUses();
+        }
+        
+        var s = list_search(uFilter, sub.resetUses);
+        
+        var ru = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function() {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i,id:sel}));
+                    uFilter.attr('disabled', '');
+                    l.addClass('nomouse_i');
+                    p.addClass('nomouse');
+                    lock.post('/sys/server/', {data:JSON.stringify({cmd:45}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        uFilter.attr('disabled', null);
+                        l.removeClass('nomouse_i');
+                        p.removeClass('nomouse');
+                        s();
+                        do_visible_path(sub, function() { render(r); });
+                    });
+                }
+            }, l, p, n, po);
+        }
+        
+        sub.requestUses = function(po, ev) {
+            do_visible_split(u, function() {
+                ru(po, ev)
+            });
+        }
+    })();
+    
+    sub.requestProbes();
+
+</script>
+<style>
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/probe_add.html"}###
+</div>
+<div attach="topbar" template>
+    <div class="ui edit dropdown item PROBE_ADD">
+        <div class="text">{{l 'main.edit'}}</div><i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="header">{{l 'probe.probe'}}</div>
+            <div class="item" page_click="ctx.probeAdd();">
+                {{l 'main.add'}}
+            </div>
+        </div>
+    </div>
+    <div class="ui config dropdown item">
+        <div class="text"></div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">{{l 'probe.view_r'}}</div>
+            <div class="item">{{l 'probe.view_c'}}</div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vtree" id="vlist" checked>
+                  <label for="vlist">{{l 'probe.list'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsett" id="vsett" checked>
+                  <label for="vsett">{{l 'probe.setting'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vlsett" id="vlsett" checked>
+                  <label for="vlsett">{{l 'probe.slist'}}</label>
+                </div>
+            </div>
+            <div class="item USER_EDIT">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vuses" id="vuses">
+                  <label for="vuses">{{l 'probe.uses'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="probe" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        } 
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'probe.list'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+                <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="probeFilter">{{l 'main.list_f'}}</label>
+                        <input id="probeFilter" name="probeFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist probeList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu probePage fullw"></div>
+    </div>
+    <div id="center">
+        <div id="center_top">
+            <div class="ui segment" style="height:100%;padding:0;">
+            <div id="probeCfgLabel" class="ui top attached blue label tov"></div>
+                <div></div>
+                <div class="grid_c hide">
+                    <form class="ui form form_c form-base" onsubmit="event.preventDefault();">
+                        <div class="probeCfg cfgTop">
+                            <div class="ui header probeCfgLbl"></div>
+                            <div class="form-row">
+                                <label for="probeCfgId">{{l 'main.id'}}</label>
+                                <input type="text" id="probeCfgId" name="probeCfgId" disabled>
+                            </div>
+                            <div class="form-row">
+                                <label for="probeIdent">{{l 'main.ident'}}</label>
+                                <input type="text" id="probeIdent" name="probeIdent" disabled>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="ui header">{{l 'probe.setting'}}</div>
+                            <div class="form-row">
+                                <label for="probeId">{{l 'main.id'}}</label>
+                                <input type="text" id="probeId" name="probeId" disabled>
+                            </div>
+                            <div class="form-row">
+                                <label for="probeName">{{l 'main.name'}}</label>
+                                <input type="text" id="probeName" name="probeName" disabled>
+                            </div>
+                            <div class="form-row">
+                                <label for="probeDesc">{{l 'main.desc'}}</label>
+                                <textarea id="probeDesc" name="probeDesc"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <label for="probeKey">{{l 'main.key'}}</label>
+                                <textarea id="probeKey" name="probeKey"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <label for="probeUID">{{l 'main.uid'}}</label>
+                                <input type="text" id="probeUID" name="probeUID">
+                            </div>
+                            <div class="form-row">
+                                <label for="probeGID">{{l 'main.gid'}}</label>
+                                <input type="text" id="probeGID" name="probeGID">
+                            </div>
+                            <div class="form-row">
+                                <button class="ui right blue button">{{l 'main.save'}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="grid_e">{{l 'probe.nosetting'}}</div>
+            </div>
+        </div>
+        <div id="center_bottom">
+            <div class="ui segment fullw paging_outer">
+                <div class="ui top attached blue label" style="overflow:visible;">
+                    <div class="tov" style="float:left;width:calc(100% - 30px)">
+                        {{l 'probe.slist'}}
+                    </div>
+                    <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                        <div class="ui search dropdown item">
+                            <i class="ui icon search"></i>
+                        </div>
+                    </div>
+                </div>
+                <div></div>
+                <div class="ui ins hide">
+                    <div class="filter fullw">
+                        <div class="ui icon input fl-wrap fullw tinput">
+                            <i class="angle up link toggl icon"></i>
+                            <label for="pcfgFilter">{{l 'main.list_f'}}</label>
+                            <input id="pcfgFilter" name="pcfgFilter" class="prompt search" type="text">
+                            <i class="search link icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui middle aligned celled selection list plist pcfgList paging_inner content"></div>
+            </div>
+            <div class="ui pagination menu pcfgPage fullw"></div>
+        </div>
+    </div>
+    <div id="uses" class="USER_EDIT">
+        <div class="ui segment fullw paging_outer">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'probe.uses'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="usesFilter">{{l 'main.list_f'}}</label>
+                        <input id="usesFilter" name="usesFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled list plist usesList paging_inner content"></div>
+        </div>
+        <div class="ui pagination menu usesPage fullw"></div>
+    </div>
+</div>

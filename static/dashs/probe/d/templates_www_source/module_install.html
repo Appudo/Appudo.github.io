@@ -1,0 +1,282 @@
+<script sub="module_install">
+    var _this = this;
+    var _canClose = true;
+    var _modal = $('.ui.modal.moduleInst');
+    var _btn = _modal.find('.accept.button');
+    var sel = null;
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity:0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                    
+    $('#inst_name').on('input', onChange);
+                  
+    function onChange() {
+        var v = $('#inst_name').val();
+        var v1 = $('#inst_iname').val();
+        if(v === '' || v1 === '') {
+            _btn.addClass('disabled');
+        } else {
+            _btn.removeClass('disabled');
+        }
+    } 
+                   
+    sub.onOpen = function(after) {
+        sub.after = after;
+        submit_err(-1, true);
+        var n = $('#inst_name');
+        label_reset(n);
+        $('#instFilter')[0].reset();
+        label_reset($('#inst_desc'));
+        label_reset($('#inst_iname'));
+        $('#inst_lock').prop('checked', false);
+        sub.resetGroups();
+        n.focus();
+    };
+    
+    sub.onOk = function() {
+        if(!_canClose)
+            return;
+        var f = _modal.find('input.submit');
+        f.click();
+    }
+    
+    function submit_err(i, nofade) {
+        var el = _modal.find('.moduleInstE')[0];
+        var d = el.firstChild;
+        var h = d.firstChild;
+        var p = h.nextSibling;
+        var hm;
+        var m;
+        switch(i) {
+            case 0:
+                hm = polyglot.t('main.eh_exist');
+                m = polyglot.t('module.e_exist');
+                break;
+            case 1:
+                hm = polyglot.t('main.eh_fail');
+                m = polyglot.t('module.e_inst');
+                break;
+            default:
+                if(nofade) {
+                    d.classList.add('hide');
+                } else {
+                    _fadeOut(d, 200, function() {
+                        d.classList.add('hide');
+                    });
+                }
+                return;
+        }
+        h.textContent = hm;
+        p.textContent = m;
+        _fadeIn(d, 200);
+        d.classList.remove('hide');
+    }
+    
+    this._module_install = function(ev, el_frm) {
+        if(el_frm.checkValidity()) {
+            ev.preventDefault();
+        } else {
+            return;
+        }        
+        _canClose = false;
+        if(!form_set_load(el_frm)) {
+            _canClose = true;
+            return;
+        }
+        
+        submit_err(-1, true);
+        
+        var grid = _modal.find('.grid');
+        grid.addClass('nomouse');
+        _btn.addClass('loading');
+        
+        var frm = new FormData();
+        
+        var data = {n:form_get(el_frm, 'inst_name'), 
+                    i:form_get(el_frm, 'inst_iname'),
+                    d:form_get(el_frm, 'inst_desc'),
+                    l:form_get(el_frm, 'inst_lock')
+        };
+        
+        if(sel != null) {
+            data.g = sel;
+        }
+        
+        frm.append('data', '{"cmd":64}');
+        frm.append('ext_data', JSON.stringify(data));
+        _post('/sys/server/', frm, function(d) {
+            form_set_ready(el_frm);
+            _canClose = true;
+            grid.removeClass('nomouse');
+            _btn.removeClass('loading');
+            var r = d.constructor === String ? JSON.parse(d) : d;
+            if(r.r == 0) {
+                data.id = d.d;
+                sub.after(data);
+                _modal.modal('hide');
+            } else {
+                if(r.r == 14) {
+                    submit_err(0);
+                } else {
+                    submit_err(1);
+                }
+            }
+        }, {responseType:'json'});
+    };
+    
+    (function() {
+        var l = $('.installGroupList');
+        var p = $('.installGroupPage');
+        var n = {page:'main/module',
+                 sub:'module_install',
+                 pg:'sub.requestGroups(p)',
+                 kd:'sub.requestGroups(parseInt(this.value)-1, event)'
+        };
+        
+        list_select(l, function(it) {
+            return {id:parseInt(it.attr('n')), n:it.find('.text').text()};
+        }, function(o) {
+            sel = o.id;
+            onChange();
+        });
+        
+        var render = function(d) {
+            var f = $(document.createDocumentFragment());
+            var i = d.d || [];
+            i.forEach(function(v) {
+                f.append('<div class="item" n="' + v.id + '"><div class="content"><span class="text">' + v.n + '</span></div></div>');
+            });
+            paging_render(function() {
+                l.append(f);
+            }, l, p, n, n.po, d);
+        };
+        
+        sub.resetGroups = function() {
+            sel = null;
+            onChange();
+            paging_reset(n);
+            sub.requestGroups();
+        }
+        
+        var s = list_search($('#instFilter'), sub.resetGroups);
+        
+        sub.requestGroups = function(po, ev) {
+            if(ev && ev.keyCode != 13) {
+                return;
+            }
+            paging_render(function(n) {
+                if(n.iv) {
+                    var d = JSON.stringify(s({i:n.i,p:(n.po || 0)*n.i}));
+                    post('/sys/server/', {data:JSON.stringify({cmd:15}), ext_data:d}, function(d) {
+                        var r = d.constructor === String ? JSON.parse(d) : d;
+                        s();
+                        render(r);
+                    });
+                }
+            }, l, p, n, po);
+        };
+    })();
+</script>
+<style>
+</style>
+<div sub="module_install" class="ui modal moduleInst" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'module.inst'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.moduleInst', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'module.inst_d'}}</p>
+        <div class="moduleInstE">
+            <div class="ui negative message form-row hide" style="margin-bottom:5px;">
+                <div class="header"></div>
+                <p></p>
+            </div>
+        </div>
+        <div style="position:relative;height:100%;">
+            <div class="divide" style="left:57.5%;bottom: -25px;"></div>
+            <div class="ui grid" style="padding:20px;">
+                <div style="width:calc(60% - 2rem);margin:0;"> 
+                    <div class="ui small header">{{l 'module.acfg'}}</div>
+                    <div style="display:inline-block;vertical-align:middle;" class="form-base"> 
+                        <div>
+                            <form action="#" method="post" class="ui form" page_submit="ctx._module_install(event, this);">
+                                <div class="form-row">
+                                    <label for="inst_name">{{l 'main.name'}}</label>
+                                    <input id="inst_name" name="inst_name" type="text" class="field" required="required">
+                                </div>
+                                <div class="form-row">
+                                    <label for="inst_iname">{{l 'module.iname'}}</label>
+                                    <input id="inst_iname" name="inst_iname" type="text" class="field" required="required">
+                                </div>
+                                <div class="form-row">
+                                    <label for="inst_desc">{{l 'main.desc'}}</label>
+                                    <textarea id="inst_desc" name="inst_desc" rows="5"></textarea>
+                                </div>   
+                                <div class="form-row">
+                                    <div class="ui checkbox">
+                                        <input id="inst_lock" name="inst_lock" type="checkbox" tabindex="0" class="hidden">
+                                        <label for="inst_lock">{{l 'main.lock'}}</label>
+                                    </div>
+                                </div>
+                                <input type="submit" class="submit hide">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:40%;margin:0 0 0 2rem;">
+                    <div class="ui small header">{{l 'main.agrp'}}</div>
+                    <div class="fullw" style="height:calc(100% - 2rem);">
+                        <div>
+                            <div class="ui icon input tinput fl-wrap fullw">
+                                <i class="angle up link toggl icon"></i>
+                                <label for="instFilter">{{l 'main.list_f'}}</label>
+                                <input id="instFilter" name="instFilter" class="prompt fullw" type="text">
+                                <i class="search link icon"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment fullw tlist" style="height:calc(100% - 5rem);">
+                            <div class="ui middle aligned celled selection list installGroupList mlist fullw fullh">
+                            </div>
+                        </div>
+                        <div class="ui pagination menu installGroupPage fullw"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

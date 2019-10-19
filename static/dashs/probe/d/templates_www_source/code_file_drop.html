@@ -1,0 +1,537 @@
+<script sub="code_file_drop">
+
+    var _canClose = true;
+    var _modal = $('.ui.modal.fileDrop');
+    _modal.modal({detachable:false,
+                  autofocus: false,
+                        dimmerSettings:{
+                            useCSS:true,
+                            opacity: 0.5
+                        },
+                        onShow:onShowModal,
+                        onHide:function() {
+                            if(_canClose) {
+                                onHideModal();
+                                return true;
+                            } 
+                             
+                            $('body').dimmer('show');
+                            return false;
+                        },
+                        onDeny:function(){
+                            return _canClose;
+                        },
+                        onVisible:onVisibleModal,
+                        onHidden:onHiddenModal
+                    });
+                        
+                
+    var tree;        
+    var setting = { callback:{
+                        beforeClick:function(id, n){
+                            return n.c !== undefined;
+                        },
+                        beforeDrag: beforeDrag,
+				        beforeDrop: beforeDrop,
+				        beforeRename:function(treeId, treeNode, newName) {
+				            var p = treeNode.getParentNode();
+				            return p.c.every(function(n) {
+				                return n == treeNode || n.n !== newName;
+				            });
+				        }
+                    }, 
+                    view:{
+                        selectedMulti:false
+                    },
+                    data:{
+                        key:{
+                            name:'n',
+                            children:'c',
+                            isParent: 'p'
+                        },
+                        keep:{
+                            leaf:true,
+                            parent:true
+                        }
+                    },
+                    edit : {
+                        drag : {
+                            autoExpandTrigger : true,
+                            isCopy : false,
+                            isMove : true,
+                            prev : true,
+                            next : true,
+                            inner : true,
+                            borderMax : 10,
+                            borderMin : -5,
+                            minMoveSize : 5,
+                            maxShowNodeNum : 5,
+                            autoOpenTime : 500
+                        },
+                        editNameSelectAll : false,
+                        enable : true,
+                        showRemoveBtn : false,
+                        showRenameBtn : false
+                    }};
+    var nodes;
+    var fileDrop = $('#fileDrop');
+    var dropFrm = $('#dropFrm');
+    var dirFilter = $('#dirFilter');
+    var extFilter = $('#extFilter');
+    var dirTree = $('#dirTree');
+    var _filter = -1;
+    var filterNodes = function() {};
+    
+    fileDrop.on('change', function(e) {
+        doDrop(fileDrop[0].files);
+        dropFrm[0].reset();
+    });
+    
+    fileDrop.on('click', function(e) {
+		document.body.onfocus = function() {
+		    if(fileDrop[0].value.length == 0) {
+		        endDrop();
+		    }
+		    document.body.onfocus = null;
+		};
+    });
+    
+    dirFilter.on('input', function(e) {
+        clearTimeout(_filter);
+        _filter = setTimeout(filterNodes, 1000);
+    })
+    
+    
+    sub.onOpen = function(after) {
+        sub.after = after;
+        nodes = ctx.getDirs();
+        tree = $.fn.zTree.init(dirTree, setting, nodes);
+        var root = tree.getNodes()[0];
+        clearFilter();
+        extFilter.val(null);
+        
+        tree.selectNode(root);
+        tree.expandAll(false);
+        domy.defer(function() {
+            tree.expandNode(tree.getNodes()[0], true);
+        });
+        
+        filterNodes = function () {
+            _filter = -1;
+            var v = dirFilter.val()
+            tree.showNodes(_hiddenNodes);
+            if(v) {
+                tree.setEditable(false);
+                var l = tree.getNodesByParamFuzzy('n', v);
+                var n = [];
+                collectHide(n, tree.getNodes()[0], l);
+                
+                tree.hideNodes(n);
+                _hiddenNodes = n;
+                tree.expandAll(true);
+            } else {
+                tree.setEditable(true);
+                _hiddenNodes = [];
+            }
+            fixSelect();
+        }
+    }
+        
+    sub.onOpenDir = function() {
+        beginDrop();
+        fileDrop.click();
+    }
+        
+    sub.onOk = function() {
+        clearFilter();
+        tree.expandAll(false);
+        ctx.setDirs(tree.getNodes());
+        _modal.modal('hide');
+        sub.after({});
+    }
+    
+    var dirDrop = $('.dirDrop');
+    
+    function doDrop(items) {
+        beginDrop();
+        var r = tree.getSelectedNodes()[0];
+        var ext = extFilter.val();
+        var isMatch = ext ? picomatch(ext) : null;
+    	var onFile = isMatch ? function(file, path, type) {
+    	    if(isMatch(file.name)) {
+    	        addNode(r, path, file);
+    	    }
+    	} : function(file, path, type) {
+    	    addNode(r, path, file);
+    	}
+    	parseFileList({}, items, onFile, function() {
+            tree.expandNode(tree.getNodes()[0], true);
+            endDrop();
+    	});
+    }
+    
+    function beginDrop() {
+        var b = _modal.find('.ui.button');
+        $(b[1]).addClass('loading');
+        $(b[0]).addClass('disabled');
+        $(b[1]).addClass('disabled');
+        _canClose = false;
+    }
+    
+    function endDrop() {
+        var b = _modal.find('.ui.button');
+        $(b[1]).removeClass('loading');
+        $(b[0]).removeClass('disabled');
+        $(b[1]).removeClass('disabled');
+        _canClose = true;
+    }
+    
+    dirDrop[0].ondrop = function(e) {
+        e.preventDefault();  
+        if(!e.dataTransfer) {
+            return false;
+        }
+        
+        var items;
+        if ((items = e.dataTransfer.items)) {
+        } else 
+        if((items = e.dataTransfer.files)){
+        } else {
+            return false;
+        }
+        
+		doDrop(items);
+    }
+    
+    dirDrop[0].ondragover = function(e) {
+        e.preventDefault();
+    }
+                
+	function parseFileList(info, list, cb, after) {
+		var l = [];
+		for(var i = 0, len = list.length; i < len; i++) {
+			if(list[i].webkitGetAsEntry && list[i].kind=='file') {
+				var item = list[i].webkitGetAsEntry();
+				if(item)
+					l.push(parseFiles(info, item, null, cb));
+			} else if(list[i].webkitRelativePath) {
+				l.push(parseFiles(info, list[i], list[i].webkitRelativePath, cb));
+			}
+		}	
+		$.when.apply($, l).then(function() {
+			after();
+		});
+	}
+
+	function parseFiles(info, item, path, cb) {
+	    if(info.error || info.cancel)
+	        return;
+		path = path || '';
+		var d = $.Deferred();
+		if(item.isFile) {
+			item.file(function(file) {
+				cb(file, path + file.name, 1);
+				d.resolve();
+			}, function(){
+			    info.error = true;
+			});
+		} else 
+		if(item.isDirectory) {
+			var rd = item.createReader();
+			rd.readEntries(function(items, a) {
+				if(items.length == 0) {
+					cb(item, path, 0);
+					d.resolve();
+				} else {
+					var l = [];
+					for(var i = 0, len = items.length; i< len; i++)
+			        	l.push(parseFiles(info, items[i], path + item.name + '/', cb));	
+			        	
+    				$.when.apply($, l).then(function() {
+						d.resolve();
+    				});
+				}
+			}, function(){
+			    info.error = true;
+			});
+		} else {
+			cb(item, path, 1);
+			d.resolve();
+		}
+	    return d;
+	}
+
+    $.contextMenu({
+        zIndex: 103,
+        selector:'.dropLeft', 
+        callback:function(key, options) {
+            switch(key) {
+                case 'add':
+                    addDir();
+                    break;
+            }
+        },
+        items:{
+            'add':{name:polyglot.t('code.ndir'), icon:'add'},
+        },
+        events:{
+            show :function(options){
+            }
+        }
+    });
+    
+    var _opt;
+    function disabled(key, opt) {
+        if(_opt > 0) {
+            return (_opt != 1 || key != 'add_dir') && (key != 'remove' || _opt == 1);
+        } else {
+            return false;
+        }
+    }
+    
+    function fixSelect() {
+        var s = tree.getSelectedNodes();
+        if(s.length == 0) {
+            tree.selectNode(tree.getNodes()[0]);
+        }
+    }
+    
+    $.contextMenu({
+        zIndex: 103,
+        selector:'#dirTree a', 
+        callback:function(key, options) {
+            switch(key) {
+                case 'add_dir':
+                    addDir();
+                    break;
+                case 'remove':
+                    var n = tree.getNodeByTId(this[0].parentNode.id);
+                    tree.removeNode(n);
+                    fixSelect();
+                    break;
+                case 'rename':
+                    var n = tree.getNodeByTId(this[0].parentNode.id);
+                    tree.editName(n);
+                    break;
+            }
+        },
+    
+        items:{
+            'add_dir':{name:polyglot.t('code.ndir'), icon:'add', disabled:disabled},
+            'remove':{name:polyglot.t('main.del'), icon:'remove', disabled:disabled},
+            'rename':{name:polyglot.t('main.ren'), icon:'edit', disabled:disabled},
+        },
+        events:{
+            show :function(options){
+                var n = tree.getNodeByTId(this[0].parentNode.id);
+                var leaf = n.c === undefined;
+                _opt = leaf ? 2 : 0;
+                _opt += n.level == 0;
+                if(!leaf) {
+                    tree.selectNode(n);
+                }
+            }
+        }
+    });
+    
+    var _hiddenNodes = [];
+    
+    function findNode(root, p){
+        var r = root;
+        var idx = 0;
+        var v = p.every(function(n, i) {
+            var c = tree.getNodeByParam("n", n, r);
+            if(!c) {
+                idx = i;
+                return false;
+            }
+            r = c;
+            return true;
+        });
+        if(v) {
+            idx = p.length - 1;
+        }
+        return {i:idx,r:r,v:v};
+    }
+    
+    function addDir() {
+        clearFilter();
+        var r = tree.getSelectedNodes()[0];
+        var nn = {n:polyglot.t('code.new_dir'),c:[],p:true};
+        var n = tree.addNodes(r, nn, true)[0];
+        if(n) {
+            tree.editName(n);
+        }
+    }
+    
+    function addNode(root, p, f) {
+        p = p.split('/');
+        var n = findNode(root, p);
+        var r = n.r;
+        if(r.c === undefined) {
+            return null;
+        }
+        if(!n.v) {
+            var prev = null;
+            var root = null;
+            var nn;
+            for(var i = n.i; i < p.length; i++) {
+                nn = {n:p[i]};
+                if(prev) {
+                    prev.c = [nn];
+                    prev.p = true;
+                } else {
+                    root = nn;
+                }
+                prev = nn;
+            }
+            f._noclone = true;
+            nn.file = f;
+            r = tree.addNodes(r, root, true)[0];
+        } else {
+            f._noclone = true;
+            r.file = f;
+        }
+        
+        return r;
+    }
+    
+    function clearFilter() {
+        clearTimeout(_filter);
+        dirFilter.val(null);
+        tree.showNodes(_hiddenNodes);
+        _hiddenNodes = [];
+        _filter = -1;
+    }
+    
+    function collectHide(r, n, l) {
+        if(n.c !== undefined) {
+            var h = true;
+            n.c.forEach(function(m) {
+                h &= collectHide(r, m, l);
+            });
+            if(h && l.indexOf(n) == -1 && n.level != 0) {
+                r.push(n);
+                return true;
+            }
+        } else {
+            r.push(n);
+            return true;
+        }
+        return false;
+    }
+    
+    function sortNodesByName(items) {
+        return items.slice(0).sort(function(a,b) {
+            return (a['n'] > b['n']) ? 1 :(a['n'] < b['n']) ? -1 :0;
+        });
+    }
+    
+	function beforeDrag(treeId, treeNodes) {
+		return treeNodes != 0;
+	}
+	
+	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+		return targetNode != null && (targetNode.level != 0 || moveType == 'inner');
+	}
+</script>
+<style>
+    .dropLeft {
+        width:60%;
+        height:200px;
+        float:left;
+    }  
+    .dropLeft .ui.segment {
+        padding:5px;
+        height: 100%;
+        overflow: auto;
+    }
+    .dropRight {
+        width:calc(40% - 1rem);
+        height:200px;    
+        float:right;
+        margin-left:1rem;
+    }
+    .dirDrop {
+        border:2px dashed #ccc;
+        border-radius: 0.28571429rem;
+        line-height:5.8rem;
+        margin-top:10px;
+        margin-bottom:10px;
+        text-align:center;
+        cursor:pointer;
+    }
+    .dirDrop .label {
+        display:inline-block;
+        vertical-align:middle;
+        font-weight:bold;
+        line-height:1.5rem;
+        margin-top:-1rem;
+    }
+    
+    .dropRight .input,
+    .dropRight input {
+        width:100%;
+    }
+    
+    .zTreeDragUL {
+        z-index:9999;
+    }
+    
+    .tmpzTreeMove_arrow {
+        z-index:9999;
+    }
+</style>
+<div sub="code_file_drop" class="ui modal fileDrop" role="dialog" aria-modal="true">
+  <div class="ui header blue label">
+    {{l 'code.drop'}}
+  </div>
+  <div class="content">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+		sub.lb = new FloatLabels('.ui.modal.fileDrop', {'style':1, customEvent:autofill});
+    </script>
+    <div class="description">
+        <p>{{l 'code.drop_d'}}</p>
+        <div class="dropLeft">
+            <div class="ui segment">
+                <ul id="dirTree" class="ztree"></ul>
+            </div>
+        </div>
+        <div class="dropRight">
+            <div>
+                <div class="ui icon input fl-wrap">
+                    <i class="search icon"></i>
+                    <label for="dirFilter">{{l 'code.drop_fd'}}</label>
+                    <input id="dirFilter" name="dirFilter" class="prompt" type="text" placeholder="{{l 'code.drop_fd'}}">
+                </div>
+            </div>
+            <form id="dropFrm">
+                <input id="fileDrop" type="file" class="hide" webkitdirectory multiple>
+            </form>
+            <div class="dirDrop" page_click="sub.onOpenDir();">
+                <div class="label">{{l 'code.drop_t'}}</div>
+            </div>
+            <div>
+                <div class="ui icon input fl-wrap">
+                    <i class="filter icon"></i>
+                    <label for="extFilter">{{l 'code.drop_ext'}}</label>
+                    <input id="extFilter" name="extFilter" class="prompt" type="text" placeholder="{{l 'code.drop_ext'}}">
+                </div>
+            </div>
+        </div>
+        <div class="doclear"></div>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui blue deny button">
+      {{l 'dialog.cancel'}}
+    </div>
+    <div class="ui blue accept right labeled icon button" page_click="sub.onOk();">
+      {{l 'dialog.accept'}}
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>

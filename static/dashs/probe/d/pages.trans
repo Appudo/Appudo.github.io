@@ -1,0 +1,369 @@
+{
+    history:{{[
+  {
+    "t": "pub/js/html.js",
+    "s": "templates_www_source/main.html"
+  },
+  {
+    "t": "pub/js/module_trans.js",
+    "s": "templates_www_source/module_trans.html"
+  },
+]}},
+    transform:function(intxt, inname, outname, result) {
+    
+        var do_minify = false;
+        
+        var mini_opt = {
+                  parse: {
+                    bare_returns     : false,
+                    ecma             : 8,
+                    expression       : false,
+                    filename         : null,
+                    html5_comments   : true,
+                    shebang          : true,
+                    strict           : false,
+                    toplevel         : null
+                  },
+                  compress: {
+                    arrows           : true,
+                    booleans         : true,
+                    collapse_vars    : true,
+                    comparisons      : true,
+                    computed_props   : true,
+                    conditionals     : true,
+                    dead_code        : true,
+                    drop_console     : false,
+                    drop_debugger    : true,
+                    ecma             : 5,
+                    evaluate         : true,
+                    expression       : false,
+                    global_defs      : {},
+                    hoist_funs       : false,
+                    hoist_props      : true,
+                    hoist_vars       : false,
+                    ie8              : false,
+                    if_return        : true,
+                    inline           : true,
+                    join_vars        : true,
+                    keep_classnames  : false,
+                    keep_fargs       : true,
+                    keep_fnames      : false,
+                    keep_infinity    : false,
+                    loops            : true,
+                    negate_iife      : true,
+                    passes           : 1,
+                    properties       : true,
+                    pure_getters     : "strict",
+                    pure_funcs       : null,
+                    reduce_funcs     : true,
+                    reduce_vars      : true,
+                    sequences        : true,
+                    side_effects     : true,
+                    switches         : true,
+                    top_retain       : null,
+                    toplevel         : false,
+                    typeofs          : true,
+                    unsafe           : false,
+                    unsafe_arrows    : false,
+                    unsafe_comps     : false,
+                    unsafe_Function  : false,
+                    unsafe_math      : false,
+                    unsafe_methods   : false,
+                    unsafe_proto     : false,
+                    unsafe_regexp    : false,
+                    unsafe_undefined : false,
+                    unused           : true,
+                    warnings         : false
+                  },
+                  mangle: {
+                    eval             : false,
+                    ie8              : false,
+                    keep_classnames  : false,
+                    keep_fnames      : false,
+                    properties       : false,
+                    reserved         : [],
+                    safari10         : false,
+                    toplevel         : false
+                  },
+                  output: {
+                    ascii_only       : false,
+                    beautify         : false,
+                    bracketize       : false,
+                    comments         : /@license|@preserve|^!/,
+                    ecma             : 5,
+                    ie8              : false,
+                    indent_level     : 4,
+                    indent_start     : 0,
+                    inline_script    : true,
+                    keep_quoted_props: false,
+                    max_line_len     : false,
+                    preamble         : null,
+                    preserve_line    : false,
+                    quote_keys       : false,
+                    quote_style      : 0,
+                    safari10         : false,
+                    semicolons       : true,
+                    shebang          : true,
+                    source_map       : null,
+                    webkit           : false,
+                    width            : 80,
+                    wrap_iife        : false
+                  },
+                  wrap: false
+                };
+                
+        var load = [];
+                
+        
+        var loadwait = function(idx, after) {
+            if(idx == load.length) {
+                after();
+            } else {
+                load[idx].w.then(function(data) {
+                    var head = document.getElementsByTagName("head")[0];
+                    var txt = document.createTextNode(data)
+                    var el = document.createElement('script');
+                    el.setAttribute('id', load[idx].id);
+                    el.appendChild(txt);
+                    head.insertBefore(el, head.firstChild);
+                    loadwait(idx + 1, after);
+                });
+            }
+        }
+        
+        var removeLoad = function() {
+            for(var i = 0; i < load.length; i++) {
+                var el = dojo.byId(load[i].id);
+                if(el) {
+                    el.remove();
+                }
+            }
+        }
+        
+        window.module = window.exports = {};
+        
+        load.push({id:'js_handlebars',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/handlebars-4.4.1.js&i=0', function() { })});
+        load.push({id:'js_cssmin',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/cssmin.js&i=0', function() { })});
+        load.push({id:'ujs_minify',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/minify.js&i=0', function() { })});
+        load.push({id:'ujs_utils',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/utils.js&i=0', function() { })});
+        load.push({id:'ujs_ast',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/ast.js&i=0', function() { })});
+        load.push({id:'ujs_parse',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/parse.js&i=0', function() { })});
+        load.push({id:'ujs_transform',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/transform.js&i=0', function() { })});
+        load.push({id:'ujs_scope',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/scope.js&i=0', function() { })});
+        load.push({id:'ujs_output',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/output.js&i=0', function() { })});
+        load.push({id:'ujs_compress',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/compress.js&i=0', function() { })});
+        load.push({id:'ujs_propmangle',w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=template_js/propmangle.js&i=0', function() { })});
+
+        var r = /###.*?###/gm;
+        var sid = 0;
+            
+        var m = outname.split('/');
+        m = m[m.length-1];
+        var node = dojo.create("div", {'style':'display:hidden;'});
+        var ctx = {path:[],sub:[],nolinks:0};
+        var tmpl_data = '';
+        var path = function() {
+            return ctx.path.length ? ctx.path[ctx.path.length-1] : '';
+        }
+        var sub = function() {
+            return ctx.sub.length ? ctx.sub[ctx.sub.length-1] : '';
+        }
+    
+        var patchNode = function(n) {
+            var children = n.childNodes || [];
+            for(var i =0, l = children.length; i < l; i++) {
+                var c = children[i];
+                if(c) {
+                    var has_path = c.hasAttribute && c.hasAttribute('path');
+                    var has_sub = c.hasAttribute && c.hasAttribute('sub');
+                    var has_nolinks = c.hasAttribute && c.hasAttribute('nolinks');
+                    var mpath = null;
+                    if(c.hasAttribute && c.hasAttribute('mpath')) {
+                        mpath = c.getAttribute('mpath').split(' ');
+                        c.removeAttribute('mpath');
+                    }
+                    if(has_path) {
+                        ctx.path.push(c.getAttribute('path'));
+                        c.removeAttribute('path');
+                    }
+                    if(has_sub) {
+                        ctx.sub.push(c.getAttribute('sub'));
+                        c.removeAttribute('sub');
+                    }
+                    if(has_nolinks) {
+                        ctx.nolinks += 1;
+                        c.removeAttribute('nolinks');
+                    }
+                    if(c.nodeType == 3 && 
+                       !/\S/.test(c.nodeValue)) {
+                        n.replaceChild(document.createTextNode(''), c);
+                    } else {
+                        if(c.nodeName == 'STYLE') {
+                            if(do_minify) {
+                                c.textContent = cssmin(c.textContent);
+                            }
+                            
+                            c.id = '_sid' + sid;
+                            
+                            var inner = c.textContent;
+                            inner = appudo.jsonEscape(inner, 0, inner.length);
+                            tmpl_data = 'addS("' + path() + '", "' + c.id +'","' + inner + '"' +  (c.hasAttribute('end') ? ', true' : '') + ');' + tmpl_data;
+                                
+                            if(mpath) {
+                                mpath.forEach(function(n) {
+                                    tmpl_data = 'addS("' + n + '", "' + c.id +'", null' +  (c.hasAttribute('end') ? ', true' : '') + ');' + tmpl_data;
+                                });
+                            }
+                            sid++;
+                            c.parentNode.removeChild(c);
+                            i--;
+                            l--;
+                        } 
+                        else if(c.nodeName == 'SCRIPT') {
+                            if(do_minify) {
+                                var m = minify(c.textContent, mini_opt);
+                                c.textContent = m.code;
+                            }
+                            if(c.hasAttribute('inline')) {
+                                c.removeAttribute('inline');
+                            } else
+                            if(c.hasAttribute('always')) {
+                                tmpl_data = 'addA("' + path() + '","' + sub() + '",function(ctx, path, sub, load) { ' + c.textContent + ' });' + tmpl_data;
+                                c.parentNode.removeChild(c);
+                                i--;
+                                l--;
+                            } else {
+                                var a = '';
+                                if(c.hasAttribute('call')) {
+                                    c.removeAttribute('call');
+                                    a = '()';
+                                }
+                                tmpl_data = 'addJ("' + path() + '","' + sub() + '",function(ctx, path, sub) { ' + c.textContent + ' })' + a + ';' + tmpl_data;
+                                c.parentNode.removeChild(c);
+                                i--;
+                                l--;
+                            }
+                        } else {
+                            patchNode(children[i]);
+                        }
+                    }
+                    if(ctx.nolinks == 0 && c.hasAttribute && c.hasAttribute('href')) {
+                        var href = c.getAttribute('href').trim();
+                        if(href.substr(0, 11) === 'javascript:') {
+                            c.setAttribute('href', "javascript:var t = this;(function(){var ctx=getCtx('" + path() + "'),sub=ctx['" + sub() + "'],f=function(event) {" + href.substr(11, href.length) + "};f.call(t, event)})()");
+                        }
+                    }
+                    var dpl = '';
+                    if(c.hasAttribute && c.hasAttribute('dpl')) {
+                        dpl = c.getAttribute('dpl');
+                    }
+                    if(c.hasAttribute && c.hasAttribute('page_submit')) {
+                        var submit = c.getAttribute('page_submit');
+                        c.setAttribute('onsubmit', "var t = this;(function(){var ctx=getCtx('" + path() + "'),sub=ctx['" + sub() + "'],f=function(event) {" + submit + "};f.call(t, event)})()");
+                        c.removeAttribute('page_submit');
+                    }
+                    if(c.hasAttribute && c.hasAttribute('page_click')) {
+                        var submit = c.getAttribute('page_click');
+                        c.setAttribute('onclick', "var t = this;(function(){var ctx=getCtx('" + path() + "'),sub=ctx['" + sub() + "'],f=function(event) {" + submit + "};f.call(t, event)})()");
+                        c.removeAttribute('page_click');
+                    }
+                    if(c.hasAttribute && c.hasAttribute('bind_click')) {
+                        var submit = c.getAttribute('bind_click');
+                        c.setAttribute('data-bind', "click: var t = this;(function(){var ctx=getCtx('" + path() + "'),sub=ctx['" + sub() + "'],f=function(event) {" + submit + "};f.call(t, event)})()");
+                        c.removeAttribute('bind_click');
+                    }
+                    if(c.hasAttribute && c.hasAttribute('template')) {
+                        c.removeAttribute('template');
+                        var txt = c.innerHTML;
+                        var id = c.getAttribute('attach') || c.id;
+                        txt = window.Handlebars.precompile(txt);
+                        txt = txt.replace('</script>', '<\\/script>');
+                        tmpl_data = 'addTmpl("' + path() + '", "' + id +'",' + txt + ',"' + dpl + '");' + tmpl_data;
+                        c.setAttribute('style', 'display:none;' + (c.getAttribute('style') || ''));
+                        c.innerHTML = '';
+                        if(c.hasAttribute('attach')) {
+                            c.parentNode.removeChild(c);
+                            i--;
+                            l--;
+                        }
+                    }
+                    if(has_nolinks) {
+                        ctx.nolinks -= 1;
+                    }
+                    if(has_path) {
+                        ctx.path.pop();
+                    }
+                    if(has_sub) {
+                        ctx.sub.pop();
+                    }
+                }
+            }
+        }
+            
+        var load_dom = function(intxt, after) {
+            var wait = [];
+            
+            var fixTxt = function(tin) {
+                var pos = 0;
+                var out = "";
+                if(wait.length == 0) {
+                    return tin
+                }
+                for(var i = 0; i < wait.length; i++) {
+                    var w = wait[i];
+                    out += tin.slice(pos, w.index);
+                    out += w.data;
+                    pos = w.index + w.len + 6;
+                }
+                
+                out += tin.slice(pos);
+                return out;
+            }
+            
+            var dowait = function(idx, after) {
+                if(idx == wait.length) {
+                    after();
+                } else {
+                    wait[idx].w.then(function(data) {
+                        load_dom(data, function(r) {
+                            wait[idx].data = r;
+                            dowait(idx + 1, after);
+                        });
+                    });
+                }
+            }
+            
+            while((ma = r.exec(intxt)) != null) {
+                try {
+                    var t = ma[0].slice(3, -3);
+                    var d = JSON.parse(t);
+                    wait.push({index:ma.index,len:t.length,w:appudo.postPlain('/edit/v1/8/3/'+appudo.random(), 'f=' + d.file + '&i=0', function() {
+                    })});
+                } catch(e) {
+                }
+            }
+            
+            dowait(0, function() {
+                after(fixTxt(intxt));
+            });
+        };
+        
+        loadwait(0, function() {
+            window.Handlebars = window.module.exports;
+            load_dom(intxt, function(r) {
+                try {
+                //console.log(r);
+                    node.innerHTML = r; 
+                    patchNode(node);
+                    node.remove();
+                    result(tmpl_data);
+                } catch(e) {
+                    result('');
+                    console.log(e);
+                }
+            
+                removeLoad();
+            });
+        });
+    }
+}

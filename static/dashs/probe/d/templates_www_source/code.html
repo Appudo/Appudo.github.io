@@ -1,0 +1,909 @@
+<script sub="code">
+    console.log('code');
+    
+    var open = $('#topbar .ui.open');
+    var main = $('#content > .sgrid');
+    var editLabel = $('#editLabel')[0];
+    var fileFilter = $('#fileFilter');
+    var codeFilter = $('#codeFilter');
+    var filterNodes = function() {};
+    var dbFile;
+    var srcFile;
+    var sql = null;
+    var lines;
+    var _this = this;
+    
+    fileFilter.on('input', function(e) {
+        e.stopPropagation();
+        clearTimeout(_filter);
+        _filter = setTimeout(filterNodes, 1000);
+    });
+    
+    fileFilter[0].onclick = function(e) { e.stopPropagation(); }; 
+    
+    editLabel.innerText = polyglot.t('code.hedit', {name:polyglot.t('main.nofile')});
+    
+    sub.progress = function(l, t, i) {
+        $(i).progress({percent:(l * 100) / t});
+    };
+     
+    function parse(input, after){
+        var cs = 8388608;
+        var cks = Math.ceil(input.size / cs);
+        var r = new FileReader();
+        var res = [0];
+        var cr = '\n'.charCodeAt(0);
+    
+        var f = function(i) {
+            if(i < cks) {
+                var b =  i * cs;
+                r.onload = function() {
+                    var a = new Int8Array(r.result);
+                    var s = -1;
+                    while((s = a.indexOf(cr, s+1)) != -1) {
+                        res.push(b + s);
+                    }
+                    f(i + 1);
+                };
+                r.readAsArrayBuffer(input.slice(b, b + cs));
+            } else {
+                after(res);
+            }
+        }
+        f(0);
+    }
+    
+    this.fileOpen = function() {
+        $('.ui.modal.fileOpen').modal('show');
+        ctx['code_file_open'].onOpen(function(d) {
+            var _err = false;
+            var lerr = error_init(main, polyglot.t('main.eh_load'), polyglot.t('code.e_load'), function() {
+                lerr.remove();
+            });
+            var loader = loader_init(main, function() {
+                return '<div style="width:50%;">' +
+                            '<div class="ui active progress codeProgA">' +
+                              '<div class="bar">' +
+                                '<div class="progress"></div>' +
+                              '</div>' +
+                              '<div class="label">' + polyglot.t('code.loadA') + '</div>' +
+                            '</div>' +
+                            '<div class="ui active progress codeProgB">' +
+                              '<div class="bar">' +
+                                '<div class="progress"></div>' +
+                              '</div>' +
+                              '<div class="label">' + polyglot.t('code.loadB') + '</div>' +
+                            '</div>' +
+                        '</div>';
+            });
+            loader.show();
+            open.addClass('disabled');
+            var defer = defer_init(2);
+            var after = function() {
+                defer.once(function() {
+                    open.removeClass('disabled');
+                    loader.remove();
+                    if(_err) {
+                        lerr.show();
+                    } else {
+                        change.dasm_open(d.v, probe_label(d.pr));
+                        parse(srcFile, function(l) {
+                            lines = l;
+                            sub.renderList();
+                            lerr.remove();
+                        });
+                    }
+                });
+            };
+            
+            var r = raw_get('/sys/download/', {data:JSON.stringify({cmd:1}),ext_data:JSON.stringify({a:d.pid,b:d.d.b})}, function(d, err) {
+                dbFile = err ? null : d;
+                _err |= err;
+                after();
+                defer.ready();
+            }, {responseType:'blob', noprogress:5000, onprogress: function(ev) {
+                sub.progress(ev.loaded, ev.total, '.codeProgA');
+            }});
+            
+            var r = raw_get('/sys/download/', {data:JSON.stringify({cmd:1}),ext_data:JSON.stringify({a:d.pid,b:d.d.a})}, function(d, err) {
+                srcFile = err ? null : d;
+                _err |= err;
+                after();
+                defer.ready();
+            }, {responseType:'blob', noprogress:5000, onprogress: function(ev) {
+                sub.progress(ev.loaded, ev.total, '.codeProgB');
+            }});
+        });
+    }
+    
+    this.fileDrop = function() {
+        $('.ui.modal.fileDrop').modal('show');
+        ctx['code_file_drop'].onOpen(function(d) {
+        });
+    };
+                   
+    (function(){
+        $('#search').css('display', 'none');             
+        var _ctx = {};
+        var _sizes = [20, 30, 20, 30];
+        var _fill = [0, 10, 0, 10];
+        var _panes = ['#left', '#center', '#search', '#right'];
+        
+        sub.pane = function(i) {
+            return _panes[i];
+        }
+        
+        ctx.split = function() {
+            doSplit(_panes, _sizes, _ctx, ['#left', '#search'], _fill);
+        }
+        
+        ctx.split();
+    })();
+    
+    var editor = ace.edit('editor');
+    editor.setTheme('ace/theme/textmate');
+    editor.session.setMode('ace/mode/c_cpp');
+    editor.setReadOnly(true);
+    
+    var tree;
+    var setting = {callback:{
+        beforeClick:function(id, n){
+            return n.c === undefined;
+        },
+        onClick:function(ev, id, n) {
+            var p = n.getPath();
+            var fp = '';
+            p.shift();
+            p.forEach(function(n) {
+               fp += '/' + n.n; 
+            });
+            openFile(n.file, fp);
+        },
+        beforeRename:function(treeId, treeNode, newName) {
+            var p = treeNode.getParentNode();
+            return p.c.every(function(n) {
+                return n == treeNode || n.n !== newName;
+            });
+        },
+        beforeDrag: beforeDrag,
+        beforeDrop: beforeDrop
+    }, view:{
+        selectedMulti:false,
+        addDiyDom:function(id, n) {
+            if(n.c !== undefined) {
+	            var nd = $("#" + n.tId + "_a");
+	            nd.addClass('nodeDir');
+            }
+        },
+    },
+    data:{
+        key:{
+            name:'n',
+            children:'c',
+            isParent: 'p'
+        },
+        keep:{
+            leaf:true,
+            parent:true
+        }
+    },
+    edit : {
+        drag : {
+            autoExpandTrigger : true,
+            isCopy : false,
+            isMove : true,
+            prev : true,
+            next : true,
+            inner : true,
+            borderMax : 10,
+            borderMin : -5,
+            minMoveSize : 5,
+            maxShowNodeNum : 5,
+            autoOpenTime : 500
+        },
+        editNameSelectAll : false,
+        enable : true,
+        showRemoveBtn : false,
+        showRenameBtn : false
+    }};
+    
+    var nodes = [
+        {n:'/', open:true, c:[]}
+    ];
+        
+    tree = $.fn.zTree.init($('#fileTree'), setting, nodes);
+    
+    filterNodes = function() {
+        _filter = -1;
+        var v = fileFilter.val()
+        tree.showNodes(_hiddenNodes);
+        if(v) {
+            tree.setEditable(false);
+            var l = tree.getNodesByParamFuzzy('n', v);
+            var n = [];
+            collectHide(n, tree.getNodes()[0], l);
+            
+            tree.hideNodes(n);
+            _hiddenNodes = n;
+            tree.expandAll(true);
+        } else {
+            tree.setEditable(true);
+            _hiddenNodes = [];
+        }
+        fixSelect();
+    }
+    
+    $('#topbar .ui.open.dropdown').dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'hide'
+    });
+    
+    var d = $('#topbar .ui.visibility.dropdown');
+    d.dropdown({
+       transition: 'fade up',
+       context: 'body',
+       action:'nothing'
+    });
+    
+    d.find('.checkbox').each(function(i, v) {
+        $(v).checkbox({
+            onChecked: function() {
+                var n = $(sub.pane(i));
+                var el = n[0];
+                el.style.opacity = 0;
+                n.css('display', 'block');
+                ctx.split();
+                _fadeIn(el, 200);
+            },
+            onUnchecked: function() {
+                fadeOut($(sub.pane(i))[0], 200, function() {
+                    ctx.split();
+                });
+            }
+        });
+    });
+    
+    var ld = $('#left .ui.search.dropdown');
+    ld.on('click', function() {
+        var p = fileFilter.parents('.filter').parent();
+        p.toggleClass('hide');
+        var l = $('#left');
+        var c = l.children();
+        p.insertAfter(p.hasClass('hide') ? c.last() : c.first());
+        $('#fileTree').toggleClass('shortFilter');
+        fileFilter.focus();
+    });
+    
+    this.setDirs = function(items) {
+        var n = tree.getNodes();
+        n.forEach(function(v) {
+            tree.removeNode(v);
+        });
+        domy.defer(function() {
+            tree.addNodes(null, items, true);
+            tree.expandNode(tree.getNodes()[0], true);
+        });
+    }
+    
+    this.getDirs = function() {
+        return tree.getNodes();
+    }
+    
+    function openFile(f, p) {
+        var r = new FileReader;
+        change.src_open(p);
+        r.onload = function(v) {
+            $('#editor').removeClass('hide');
+            editor.setValue(r.result);
+            editor.clearSelection();
+            editLabel.innerText = polyglot.t('code.hedit', {name:p});
+            editor.session.setScrollTop(0);
+        }
+        r.readAsText(f);
+    }
+    
+    function fixSelect(clear) {
+        var s = tree.getSelectedNodes();
+        if(clear || s.length == 0) {
+            editLabel.innerText = polyglot.t('code.hedit', {name:polyglot.t('main.nofile')});
+            $('#editor').addClass('hide');
+        }
+    }
+    
+    function addDir(r) {
+        clearFilter();
+        var nn = {n:polyglot.t('code.new_dir'),c:[],p:true};
+        var n = tree.addNodes(r, nn)[0];
+        if(n) {
+            tree.editName(n);
+            fixSelect(true);
+        }
+    }
+    
+	function beforeDrag(treeId, treeNodes) {
+	    if(treeNodes != 0) {
+            fixSelect(treeNodes[0].c !== undefined);
+	    }
+		return treeNodes != 0;
+	}
+	
+	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+		return targetNode != null && (targetNode.level != 0 || moveType == 'inner');
+	}
+	
+	var _filter = -1;
+	var _hiddenNodes = [];
+    function clearFilter() {
+        clearTimeout(_filter);
+        fileFilter.val(null);
+        tree.showNodes(_hiddenNodes);
+        _hiddenNodes = [];
+        _filter = -1;
+    }
+    
+    function collectHide(r, n, l) {
+        if(n.c !== undefined) {
+            var h = true;
+            n.c.forEach(function(m) {
+                h &= collectHide(r, m, l);
+            });
+            if(h && n.level != 0) {
+                r.push(n);
+                return true;
+            }
+        } else {
+            if(l.indexOf(n) == -1) {
+                r.push(n);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    var _opt;
+    function disabled(key, opt) {
+        if(_opt > 0) {
+            return (_opt != 1 || key != 'add_dir') && (key != 'remove' || _opt == 1);
+        } else {
+            return false;
+        }
+    }
+    
+    $.contextMenu({
+        zIndex: 103,
+        appendTo:'#content',
+        selector:'#fileTree a', 
+        callback:function(key, options) {
+            switch(key) {
+                case 'add_dir':
+                    var n = tree.getNodeByTId(this[0].parentNode.id);
+                    addDir(n);
+                    break;
+                case 'remove':
+                    var n = tree.getNodeByTId(this[0].parentNode.id);
+                    tree.removeNode(n);
+                    fixSelect();
+                    break;
+                case 'rename':
+                    var n = tree.getNodeByTId(this[0].parentNode.id);
+                    tree.editName(n);
+                    fixSelect(n.c !== undefined);
+                    break;
+            }
+        },
+        items:{
+            'add_dir':{name:'New Directory', icon:'add', disabled:disabled},
+            'remove':{name:'Remove', icon:'remove', disabled:disabled},
+            'rename':{name:'Rename', icon:'edit', disabled:disabled},
+        },
+        events:{
+            show :function(options){
+                var n = tree.getNodeByTId(this[0].parentNode.id);
+                var leaf = n.c === undefined;
+                _opt = leaf ? 2 : 0;
+                _opt += n.level == 0;
+                if(leaf) {
+                    tree.selectNode(n);
+                }
+            }
+        }
+    }); 
+
+    (function(){
+        var ct = $('#search');
+        var cf = codeFilter;
+        var cl = $('#search .codeList');
+        var l = cf.prev();
+        var t = cf.parent().find('.toggl');
+        
+        var sf = search_filter('#codeFilter', '#search'); 
+        
+        do_visible_split(ct, function() {
+            sf.ld.trigger('click');
+        });
+    
+        sub.toView = function(pos) {
+            var l = sub.getList();   
+            var fl = function(offset) {
+                for(var i = 0; i < lines.length; i++) {
+                    if(lines[i] > offset)
+                        return i - 1 > 0 ? i - 1 : -1;
+                }
+                return -1;
+            }
+            l.scrollTo(fl(pos));
+        }
+    
+        sub.doSearch = function() {
+            var idx = sub.getSIdx();
+            var up = t.hasClass('up');
+            switch(idx) {
+                case 0:
+                    var p = cf.val().split(':');
+                    var tl = p[1].split('-');
+                    var n = p[0];
+                    var ln = parseInt(tl[0]);
+                    var le = parseInt(tl[1]);
+                    var nr = 0;
+                    var nle = isNaN(le);
+                    cl.html('');
+                    if(sql && n && ln) {
+                      sql.qry({
+                            id: 4,
+                            action: 'each',
+                            sql:"select path,line,addr,view_offset from files, lines WHERE lines.cu_file_id=files.id AND lines.line >= ? " + (nle ? '' : 'AND lines.line <= ?') + " AND view_offset IS NOT NULL AND files.path LIKE '%' || ? ORDER BY lines.line " + (up ? 'ASC ' : 'DESC ') + (nle ? ' LIMIT 1;' : ';'),
+                            params:nle ? [ln, n] : [ln, le, n]
+                        }, function(ev) {
+                            var r = ev.data.row;
+                            if(r) { 
+                                if(nr == 0) {
+                                    sub.toView(r.view_offset);
+                                }
+                                nr++;
+                                var sb = function(c) {
+                                    return "\"var t = this;(function(){var ctx=getCtx('main/code'),sub=ctx['code'],f=function(event) { event.preventDefault();" + c + " };f.call(t, event)})()\""; 
+                                };
+                                
+                                cl.append('<a class="ui item" href="#" onclick=' + sb('sub.toView(' + r.view_offset + ');') + '>' + r.path + ':' + r.line + '</a>');
+                            }
+                        });
+                    }
+                    break;
+            }
+        };
+        
+        var s = list_search(cf, sub.doSearch);
+        
+        var sl = function(lbl) {
+            cf.attr('placeholder', lbl);
+            l.text(lbl);
+        };
+        
+        sub.resetSearch = function() {
+            var idx = sub.getSIdx();
+            switch(idx) {
+                case 0:
+                    sl(polyglot.t('code.sch_l2a'));
+                    break;
+            }
+            cf.text('');
+        };
+    })();
+    
+    (function(){
+        var bn;
+        var c = $('#search .ui.codesel.dropdown');
+        var b = $('#search .ui.codebtn.dropdown');
+        var r = $('#search');
+        var idx = -1;
+        c.dropdown({
+           transition: 'fade up',
+           context: 'body',
+           onChange: function(value, text, $choice) {
+                idx = $(c[0].firstChild).children().index($choice[0]);
+                b.children().first().text(polyglot.t('code.view_p') + text);
+                bn = {name:'', src:text.toLowerCase() + '.html'};
+                sub.resetSearch();
+           }
+        });
+        
+        sub.getSIdx = function() {
+            return idx;
+        }
+    
+        _this.codeSel = function() {
+            c.css('width', b.outerWidth(true) + 'px');
+            c.click();
+        };
+        
+        c.dropdown('set selected', polyglot.t('code.view_l2a'));
+    })();
+    
+    (function() {
+        var loader = loader_init(main, function() {
+            return '<div class="ui text loader">' + polyglot.t('code.preload') + '</div>';
+        });
+        var defer = defer_init(1);
+        var pending = false;
+        var worker;
+        
+        loader.show();
+        open.addClass('disabled');
+        
+        var sql = function(b, after) {
+            var _m = {};
+            if(pending) {
+                after(null);
+                return;
+            }
+            pending = true
+            worker.postMessage({
+                id:1,
+                action:'open',
+                buffer:b, 
+            });
+            
+            worker.onmessage = function(event) {
+                worker.onmessage = function(event) {
+                    var d = event.data;
+                    _m[d.id](event);
+                    if(d.findihed) {
+                        delete _m[event.data.id];
+                    }
+                
+                }
+                after({close:function() {
+                    pending = false;
+                }, qry:function(q, after) {
+                    _m[q.id] = after;
+                    worker.postMessage(q);
+                }});
+            };
+            
+            worker.onerror = function(e) { 
+                console.log("Worker error: ", e);
+            };
+        };
+        
+        sub.sql = function(f, q, after) {
+            defer.then(function() {
+                sub.sql = sql;
+                sql(f, q, after);
+            });
+        }
+        
+        var d = {num:0};
+        function after() {
+            if(--d.num == 0) {
+                worker = new Worker(window.URL.createObjectURL(d.worker));
+                worker.postMessage(d.wasm);
+                worker.onmessage = function() {
+                    loader.remove();
+                    open.removeClass('disabled');
+                    defer.ready();
+                };
+            }
+        }
+        
+        _nload('js/worker.sql-wasm.js', d, function(b) {
+            d.worker = b
+            after();
+        }, 0, {responseType:'blob'});
+        
+        _nload('js/sql-wasm.wasm', d, function(b) {
+            d.wasm = b
+            after();
+        }, 0, {responseType:'blob'});
+    
+    })();
+    
+    
+    (function() {
+        var p = $('#right > .content');
+        var list = null;
+        
+        sub.resizeList = function() {
+            if(list) {
+                list.onResize();
+            }
+        }
+        
+        function findLine(offset, s, e) {
+            for(var i = s; i < e; i++) {
+                if(lines[i] > offset)
+                    return i - 1 >= s ? i - 1 : -1;
+            }
+            return -1;
+        }
+        
+        $(window).on('resize', sub.resizeList);
+            
+        sub.getList = function() {
+            return list;
+        }
+        
+        sub.renderList = function() {
+            if(list) {
+                list.destroy();
+            }
+            
+            if(sql) {
+                sql.close();
+            }
+            sub.sql(dbFile, function(s) {
+                sql = s;
+                list = vlist_init(p, {
+                    containerClass:'vlist_ct',
+                    scrollerClass:'vlist_sc',
+                    itemClass:'vlist_it',
+                    holderClass:'vlist_hd',
+                    rowCreator:function(ctx, it, o, i) {
+                        ctx.items.push(it);
+                        return '';
+                    },
+                    beforeRender:function(b, e) {
+                        var ctx = {items:[]};
+                        var r = new FileReader();
+                        var vb = lines[b];
+                        var ve = lines[e];
+                        ctx.defer = defer_init(1);
+                        r.onload = function() {
+                            var lines = r.result.split('\n');
+                            ctx.items.forEach(function(n, i) {
+                                n.html('<pre>' + lines[i] + '</pre>');
+                            });
+                            ctx.defer.ready();
+                        };
+                        ctx.vb = vb;
+                        ctx.ve = ve;
+                        r.readAsText(srcFile.slice(vb, ve));
+                        return ctx;
+                    },
+                    afterRender:function(ctx, b, e, commit) {
+                        ctx.defer.then(function() {
+                            var s = b;
+                            sql.qry({
+                                id: 3,
+                                action: 'each',
+                                sql: 'SELECT view_offset, line, addr, path FROM lines JOIN files ON(lines.cu_file_id = files.id) WHERE ? <= lines.view_offset AND lines.view_offset <= ? ORDER BY view_offset;',
+                                params:[ctx.vb, ctx.ve]
+                            }, function(ev) {
+                                var r = ev.data.row;
+                                if(r) {
+                                    var l = findLine(r.view_offset, s, e);
+                                    if(l != -1) {
+                                        ctx.items[l - b].html('<pre>' + r.path + ':' + r.line  + '</pre>');
+                                        s = l;
+                                    }
+                                }
+                                
+                                if(ev.data.finished) {
+                                    commit();
+                                }
+                            });
+                        });
+                    },
+                    numRows:lines.length
+                });
+            });
+        };
+    })();
+    
+    $(document).one('cacheDestroy', function() {
+        var l = sub.getList();
+        if(l) {
+            l.destroy();
+        }
+        $(window).off('resize', sub.resizeList);
+    });
+</script>
+<style>
+
+#left {
+    overflow: visible;
+}
+
+.nodeDir {
+    
+}
+
+#fileTree {
+    overflow: hidden;
+    height: calc(100% - 2rem);
+}
+
+#fileTree > li {
+    overflow:auto;
+    height:100%;
+    padding:5px;
+}
+
+#fileTree {
+    padding:0;
+}
+
+#right .vlist_ct {
+    overflow:auto;    
+    overflow-x: scroll;
+    position:relative;
+    padding:10px;
+    margin:0;    
+    height:100%;
+}
+
+#right .vlist_sc {
+    position:relative;
+    width:1px;
+}
+
+#right .vlist_hd {
+    position:absolute;
+    top:0;
+    width:calc(100% - 20px);
+}
+
+#right .vlist_it {
+    height:35px;
+    line-height: 35px;
+    width:100%;    
+    vertical-align: middle;
+}
+
+#right .vlist_it.removed {
+    display:none;
+}
+
+#right .vlist_it pre {
+    margin:0;
+}
+
+
+#search .ui.menu {
+    min-height:1.857143em;
+    margin: 0;
+    overflow:hidden;
+}
+
+#search .ui.menu .item {
+    padding:0.2rem 1rem 0.2rem 1rem;
+}
+
+#search .menu > .item:before {
+    background-color: #dedede;
+}
+
+#search .codebtn.dropdown .icon {
+    color: #000;
+}
+
+#search .codebtn.dropdown:not(.selection):hover .icon,
+#search .codebtn.dropdown:not(.selection).active .icon {
+    color:#FFF;
+}
+</style>
+<div attach="modal" template>
+    ###{"file":"templates_www_source/code_file_open.html"}###
+    ###{"file":"templates_www_source/code_file_drop.html"}###
+</div>
+<div attach="topbar" template>
+    <div class="ui open dropdown item">
+         <div class="text">{{l 'code.file'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item" page_click="ctx.fileOpen();">
+                {{l 'code.open'}}
+            </div>
+            <div class="item" page_click="ctx.fileDrop();">
+                {{l 'code.drop'}}
+            </div>
+        </div>
+    </div>
+    <div class="ui visibility dropdown item">
+        <div class="text">{{l 'main.vis'}}</div><i class="dropdown icon"></i>
+         <div class="menu">
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vtree" id="vtree" checked>
+                  <label for="vtree">{{l 'code.vtree'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vedit" id="vedit" checked>
+                  <label for="vedit">{{l 'code.vedit'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vsearch" id="vsearch">
+                  <label for="vsearch">{{l 'code.vsearch'}}</label>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui toggle checkbox">
+                  <input type="checkbox" name="vdiss" id="vdiss" checked>
+                  <label for="vdiss">{{l 'code.vdiss'}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div sub="code" class="sgrid">
+    <script always>
+        if(sub.lb) {
+            sub.lb.destroy();
+        }
+        sub.lb = new FloatLabels('.sgrid', {'style':1, customEvent:autofill});
+    </script>
+    <div id="left" class="ui segment">
+        <div class="ui top attached blue label" style="overflow:visible;">
+            <div class="tov" style="float:left;width:calc(100% - 30px)">
+                {{l 'code.htree'}}
+            </div>
+            <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                <div class="ui search dropdown item">
+                    <i class="ui icon search"></i>
+                </div>
+            </div>
+        </div>
+        <ul id="fileTree" class="ztree"></ul>
+        <div class="ui ins hide">
+           <div class="filter fullw">
+                <div class="ui icon input fl-wrap fullw">
+                    <label for="fileFilter">{{l 'code.drop_ff'}}</label>
+                    <input id="fileFilter" name="fileFilter" class="prompt search" type="text" placeholder="{{l 'code.drop_ff'}}">
+                    <i class="search icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="center" class="ui segment">
+        <div id="editLabel" class="ui top attached blue label tov"></div>
+        <div id="editor" class="grid_c hide editor"></div>
+        <div class="grid_e">{{l 'main.nofile'}}</div>
+    </div>
+    <div id="search">
+        <div class="ui segment fullw paging_outer" style="height: calc(100% - 4.16rem);">
+            <div class="ui top attached blue label" style="overflow:visible;">
+                <div class="tov" style="float:left;width:calc(100% - 30px)">
+                    {{l 'code.vsearch'}}
+                </div>
+                <div class="menu" style="display:inline-block;float:right;widh:20px;">
+                    <div class="ui search dropdown item">
+                        <i class="ui icon search"></i>
+                    </div>
+                </div>
+            </div>
+            <div></div>
+            <div class="ui ins hide">
+               <div class="filter fullw">
+                    <div class="ui icon input fl-wrap fullw tinput">
+                        <i class="angle up link toggl icon"></i>
+                        <label for="codeFilter">{{l 'main.list_f'}}</label>
+                        <input id="codeFilter" name="codeFilter" class="prompt search" type="text">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="ui middle aligned celled selection list plist codeList paging_inner content"></div>
+        </div>
+        <div class="ui codesel dropdown item" style="display:block;width:14.4rem;">
+             <div class="menu" style="width:100%;">
+                <div class="item">{{l 'code.view_l2a'}}</div>
+            </div>
+        </div>
+        <div class="ui menu" style="margin-bottom:0.22rem;">
+            <a class="ui codebtn dropdown item" page_click="ctx.codeSel();">
+                <div class="text"></div><i class="dropdown icon"></i>
+            </a>
+        </div>
+        <div class="ui pagination menu codePage fullw"></div>
+    </div>
+    <div id="right" class="ui segment">
+        <div class="ui top attached blue label tov">
+            {{l 'code.hdiss'}}
+        </div>
+        <div></div>
+        <div class="content" style="height: calc(100% - 35px);"></div>
+    </div>
+</div>
